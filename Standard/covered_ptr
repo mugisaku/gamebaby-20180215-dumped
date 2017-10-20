@@ -1,0 +1,105 @@
+#ifndef COVERED_PTR_TEMPLATE
+#define COVERED_PTR_TEMPLATE
+
+
+#include<memory>
+
+
+template<typename  T>
+class
+covered_ptr
+{
+  T*  raw_pointer;
+
+  template<typename  U> constexpr T*  convert(void*  p){return static_cast<T*>(static_cast<U*>(p));}
+
+public:
+  constexpr covered_ptr(T*  p=nullptr) noexcept: raw_pointer(p){}
+
+  template<typename  U> constexpr covered_ptr(U*  p)             noexcept: raw_pointer(static_cast<T*>(p                )){}
+  template<typename  U> constexpr covered_ptr(covered_ptr<U>  p) noexcept: raw_pointer(convert<U>(p.get_opaque_pointer())){}
+  constexpr covered_ptr(std::unique_ptr<T>&  p) noexcept: raw_pointer(p.get()){}
+
+  covered_ptr&  operator=(T*  p) noexcept
+  {
+    raw_pointer = p;
+
+    return *this;
+  }
+
+  template<typename  U>
+  covered_ptr&  operator=(U*  p) noexcept
+  {
+    raw_pointer = static_cast<T*>(p);
+
+    return *this;
+  }
+
+  template<typename  U>
+  covered_ptr&  operator=(covered_ptr<U>  p) noexcept
+  {
+    raw_pointer = convert<U>(p.get_opaque_pointer());
+
+    return *this;
+  }
+
+  covered_ptr&  operator=(std::unique_ptr<T>&  p) noexcept
+  {
+    raw_pointer = p.get();
+
+    return *this;
+  }
+
+  constexpr operator bool() const noexcept{return raw_pointer;}
+
+
+  covered_ptr&  operator+=(int  i) noexcept
+  {
+    raw_pointer += i;
+
+    return *this;
+  }
+
+
+  covered_ptr&  operator-=(int  i) noexcept
+  {
+    raw_pointer -= i;
+
+    return *this;
+  }
+
+
+  covered_ptr  operator+(int  i) const noexcept{return covered_ptr(raw_pointer+i);}
+  covered_ptr  operator-(int  i) const noexcept{return covered_ptr(raw_pointer-i);}
+
+  constexpr bool  operator==(covered_ptr const&  rhs) const noexcept{return raw_pointer == rhs.raw_pointer;}
+  constexpr bool  operator!=(covered_ptr const&  rhs) const noexcept{return raw_pointer != rhs.raw_pointer;}
+  constexpr bool  operator< (covered_ptr const&  rhs) const noexcept{return raw_pointer <  rhs.raw_pointer;}
+  constexpr bool  operator<=(covered_ptr const&  rhs) const noexcept{return raw_pointer <= rhs.raw_pointer;}
+  constexpr bool  operator> (covered_ptr const&  rhs) const noexcept{return raw_pointer >  rhs.raw_pointer;}
+  constexpr bool  operator>=(covered_ptr const&  rhs) const noexcept{return raw_pointer >= rhs.raw_pointer;}
+
+  constexpr bool  operator==(T const*  p) const noexcept{return raw_pointer == p;}
+  constexpr bool  operator!=(T const*  p) const noexcept{return raw_pointer != p;}
+  constexpr bool  operator< (T const*  p) const noexcept{return raw_pointer <  p;}
+  constexpr bool  operator<=(T const*  p) const noexcept{return raw_pointer <= p;}
+  constexpr bool  operator> (T const*  p) const noexcept{return raw_pointer >  p;}
+  constexpr bool  operator>=(T const*  p) const noexcept{return raw_pointer >= p;}
+
+  constexpr T& operator *() const noexcept{return *raw_pointer;}
+  constexpr T* operator->() const noexcept{return  raw_pointer;}
+  constexpr T& operator[](int  i) const noexcept{return raw_pointer[i];}
+
+  constexpr T const*  get_const_raw_pointer() const noexcept{return raw_pointer;}
+  constexpr void*     get_opaque_pointer()    const noexcept{return raw_pointer;}
+
+};
+
+
+
+
+#endif
+
+
+
+
