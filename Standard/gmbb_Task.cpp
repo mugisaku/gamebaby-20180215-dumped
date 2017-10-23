@@ -1,5 +1,4 @@
 #include"gmbb_Task.hpp"
-#include"gmbb_TaskList.hpp"
 
 
 
@@ -37,7 +36,11 @@ disconnect() noexcept
 
   previous = nullptr;
       next = nullptr;
+
+  group = nullptr;
 }
+
+
 
 
 }

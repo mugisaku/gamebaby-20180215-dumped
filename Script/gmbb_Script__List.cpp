@@ -38,6 +38,8 @@ operator=(List const&  rhs) noexcept
 
   opening = rhs.opening;
   closing = rhs.closing;
+
+  return *this;
 }
 
 
@@ -54,16 +56,84 @@ operator=(List&&  rhs) noexcept
 
   opening = rhs.opening;
   closing = rhs.closing;
+
+  return *this;
 }
 
 
+Value const&
+List::
+operator[](std::string const&  name) const
+{
+  auto  current = first;
+
+    while(current)
+    {
+        if(current->value == name)
+        {
+          return current->value;
+        }
+
+
+      current = current->next;
+    }
+
+
+  throw 0;
+}
+
+
+Value const&
+List::
+operator[](ValueTag const&  tag) const
+{
+  auto  current = first;
+
+    while(current)
+    {
+        if(current->value == tag)
+        {
+          return current->value;
+        }
+
+
+      current = current->next;
+    }
+
+
+  throw 0;
+}
+
+
+
+
+Value const*
+List::
+find_by_name(std::string const&  name) const noexcept
+{
+  auto  current = first;
+
+    while(current)
+    {
+        if(current->value == name)
+        {
+          return &current->value;
+        }
+
+
+      current = current->next;
+    }
+
+
+  return nullptr;
+}
 
 
 void
 List::
 push(Value&&  v) noexcept
 {
-  auto  nd = new Node(std::move(v));
+  auto  nd = new ListNode(std::move(v));
 
     if(last)
     {
@@ -121,7 +191,7 @@ assign(StreamReader&  reader, covered_ptr<List>  parent_, char  op, char  cl)
 
       ctx = reader;
 
-      auto  v = reader(this);
+      auto  v = reader.read_value(this);
 
         if(!v)
         {

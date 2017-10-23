@@ -86,7 +86,7 @@ show_status_reportor() noexcept
     }
 
 
-  task_list::push(*rep);
+  root_task.push(*rep);
 
   rep->set_state(WindowState::full_opened);
 }
@@ -95,7 +95,7 @@ show_status_reportor() noexcept
 void
 hide_status_reportor() noexcept
 {
-  task_list::erase(*rep);
+  root_task.erase(*rep);
 }
 
 

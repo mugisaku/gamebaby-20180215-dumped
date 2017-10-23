@@ -134,6 +134,20 @@ GameItemSpecs const*
 GameItemSpecs::
 find_by_name(std::string const&  name) noexcept
 {
+  auto  p = get();
+
+  auto  ptr = p.first;
+
+    for(int  i = 0;  i < p.second;  ++i)
+    {
+        if(ptr[i].get_name() == name)
+        {
+          return ptr+i;
+        }
+    }
+
+
+  return nullptr;
 }
 
 

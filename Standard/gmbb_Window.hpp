@@ -24,7 +24,7 @@ WindowState
 
 
 class
-Window: public GraphicalTask
+Window: public Task
 {
 protected:
   WindowState  state=WindowState::hidden;
@@ -43,7 +43,7 @@ protected:
 
 public:
   Window(              ) noexcept{}
-  Window(int  w, int  h, Point  pt) noexcept: GraphicalTask(pt){resize(w,h);}
+  Window(int  w, int  h, Point  pt) noexcept: Task(pt){resize(w,h);}
 
   void  resize(int  w, int  h) noexcept;
 

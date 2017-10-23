@@ -8,10 +8,10 @@ namespace{
 
 
 class
-Debugger: public GraphicalTask
+Debugger: public Task
 {
 public:
-  Debugger(): GraphicalTask(Point(0,160)){}
+  Debugger(): Task(Point(0,160)){}
 
   void  render(Image&  dst, Point  offset) const noexcept;
 
@@ -48,7 +48,7 @@ render(gmbb::Image&  dst, Point  offset) const noexcept
 
   offset.y += 14;
 
-  snprintf(buf,sizeof(buf),"pieces %3d",board.get_number_of_actors());
+  snprintf(buf,sizeof(buf),"pieces %3d",board.get_number_of_tasks());
 
   dst.print(buf,offset,glset);
 
@@ -70,14 +70,14 @@ show_debugger() noexcept
     }
 
 
-  task_list::push(*dbg);
+  root_task.push(*dbg);
 }
 
 
 void
 hide_debugger() noexcept
 {
-  task_list::erase(*dbg);
+  root_task.erase(*dbg);
 }
 
 

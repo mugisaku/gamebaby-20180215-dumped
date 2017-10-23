@@ -57,7 +57,7 @@ check() noexcept
 
           current_square->put_item(thrown_item,3);
 
-          effect_director.remove(object);
+          effect_director.erase(object);
 
           event_queue::push(SquareEvent(SquareEventKind::flying_item_collide_with_wall,current_square,nullptr,&thrown_item));
 
@@ -72,7 +72,7 @@ check() noexcept
           event_queue::push(SquareEvent(SquareEventKind::flying_item_collide_with_piece,current_square,p,&thrown_item));
           event_queue::push(PieceEvent(PieceEventKind::collide_with_flying_item,p,nullptr,&thrown_item));
 
-          effect_director.remove(object);
+          effect_director.erase(object);
 
           return true;
         }
@@ -90,7 +90,7 @@ check() noexcept
     {
       event_queue::push(SquareEvent(SquareEventKind::flying_item_erase,next,nullptr,&thrown_item));
 
-      effect_director.remove(object);
+      effect_director.erase(object);
 
       return true;
     }
@@ -192,7 +192,7 @@ throw_item(GameItem const&  item, covered_ptr<Square>  start, Direction  d) noex
   object.set_x_vector(fixed_t(pt.x*count_per_step));
   object.set_y_vector(fixed_t(pt.y*count_per_step));
 
-  effect_director.insert_to_last(object);
+  effect_director.push(object);
 
   is_busy = true;
 }

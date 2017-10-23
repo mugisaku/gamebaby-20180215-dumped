@@ -8,10 +8,10 @@ namespace{
 
 
 class
-StatusMonitor: public GraphicalTask
+StatusMonitor: public Task
 {
 public:
-  StatusMonitor(): GraphicalTask(Point(120,0)){}
+  StatusMonitor(): Task(Point(120,0)){}
 
   void  render(Image&  dst, Point  offset) const noexcept;
 
@@ -44,14 +44,14 @@ show_status_monitor() noexcept
     }
 
 
-  task_list::push(*mon);
+  root_task.push(*mon);
 }
 
 
 void
 hide_status_monitor() noexcept
 {
-  task_list::erase(*mon);
+  root_task.erase(*mon);
 }
 
 

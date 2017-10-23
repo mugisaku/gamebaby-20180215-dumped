@@ -77,7 +77,7 @@ new_piece(std::string const&  name_, int  x, int  y) noexcept
     }
 
 
-  insert_to_last(*p);
+  push(*p);
 
 
   sq.set_piece(p);
@@ -101,7 +101,7 @@ delete_piece(covered_ptr<Piece>  p) noexcept
 {
     if(p)
     {
-      remove(*p);
+      erase(*p);
 
       hunger.emplace_back(&*p);
     }
@@ -132,14 +132,7 @@ update() noexcept
 {
   view_point.transform(board_image_width,board_image_height);
 
-  auto  current = get_first();
-
-    while(current)
-    {
-      current->update();
-
-      current = current->get_next();
-    }
+  Director::update();
 }
 
 

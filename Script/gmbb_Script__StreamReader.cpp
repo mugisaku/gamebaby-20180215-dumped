@@ -1,4 +1,5 @@
 #include"gmbb_Script__StreamReader.hpp"
+#include"gmbb_Script__List.hpp"
 
 
 
@@ -42,14 +43,14 @@ skip_spaces() noexcept
 
 
 namespace{
-constexpr bool
+bool
 isident0(char  c)
 {
   return isalpha(c) || (c == '_');
 }
 
 
-constexpr bool
+bool
 isidentn(char  c)
 {
   return isalnum(c) || (c == '_');
@@ -105,76 +106,107 @@ read_string() noexcept
 }
 
 
-int
+
+
+List*
 StreamReader::
-read_decimal_integer() noexcept
-{
-  int  i = 0;
-
-    while((*pointer >= '1') &&
-          (*pointer <= '9'))
-    {
-      i *= 10;
-
-      i += (*pointer++)-'0';
-    }
-
-
-  return i;
-}
-
-
-int
-StreamReader::
-read_integer_that_begins_by_zero() noexcept
-{
-  auto  c = *pointer;
-
-  return ((c == 'b') || (c == 'B'))? 0
-        :((c == 'o') || (c == 'O'))? 0
-        :((c == 'x') || (c == 'X'))? 0
-        :0;
-}
-
-
-TokenString*
-StreamReader::
-read_token_string(covered_ptr<TokenString>  parent, char  opening, char  closing)
+read_list(covered_ptr<List>  parent, char  opening, char  closing)
 {
   ++pointer;
 
-  return new TokenString(*this,parent,opening,closing);
+  return new List(*this,parent,opening,closing);
 }
 
 
-Token
+Value
 StreamReader::
-operator()(covered_ptr<TokenString>  parent)
+read_value(covered_ptr<List>  parent)
 {
   auto  first_c = *pointer;
 
     if(first_c)
     {
-           if(first_c == '{'){return Token(read_token_string(parent,first_c,'}'));}
-      else if(first_c == '('){return Token(read_token_string(parent,first_c,')'));}
-      else if(first_c == '['){return Token(read_token_string(parent,first_c,']'));}
+      bool  neg = false;
+
+        if(first_c == '-')
+        {
+          ++pointer;
+
+          first_c = *pointer;
+
+          neg = true;
+        }
+
+
+           if(first_c == '{'){return Value(read_list(parent,first_c,'}'));}
+      else if(first_c == '('){return Value(read_list(parent,first_c,')'));}
+      else if(first_c == '['){return Value(read_list(parent,first_c,']'));}
       else
         if(first_c == '\"')
         {
           ++pointer;
 
-          return Token(read_string());
-        }
+          auto  s = read_string();
 
-      else
-        if(first_c == '\'')
-        {
+          skip_spaces();
+
+            if(*pointer == ':')
+            {
+              ++pointer;
+
+              skip_spaces();
+
+
+              auto  v = read_value(parent);
+
+                if(v.get_name().size())
+                {
+                  v = Value(new Value(std::move(v)));
+                }
+
+
+              v.set_name(std::move(s));
+
+              return std::move(v);
+            }
+
+          else
+            {
+              return Value(std::move(s));
+            }
         }
 
       else
         if(isident0(first_c))
         {
-          return Token(Identifier(read_identifier()));
+          auto  s = read_identifier();
+
+          skip_spaces();
+
+            if(*pointer == ':')
+            {
+              ++pointer;
+
+              skip_spaces();
+
+
+              auto  v = read_value(parent);
+
+                if(v.get_name().size())
+                {
+                  v = Value(new Value(std::move(v)));
+                }
+
+
+              v.set_name(std::move(s));
+
+              return std::move(v);
+            }
+
+          else
+            {
+              return Value(std::move(s));
+            }
         }
 
       else
@@ -182,14 +214,18 @@ operator()(covered_ptr<TokenString>  parent)
         {
           ++pointer;
 
-          return Token(read_integer_that_begins_by_zero());
+          auto  v = read_number_that_begins_by_zero();
+
+          return Value(neg? v.neg():v);
         }
 
       else
         if((first_c >= '1') &&
            (first_c <= '9'))
         {
-          return Token(read_decimal_integer());
+          auto  v = read_decimal_number();
+
+          return Value(neg? v.neg():v);
         }
 
       else
@@ -199,7 +235,7 @@ operator()(covered_ptr<TokenString>  parent)
     }
 
 
-  return Token();
+  return Value();
 }
 
 

@@ -10,21 +10,26 @@ using namespace script;
 
 namespace{
 
-std::unordered_map<std::string,TokenString const*>
-map;
+
+std::unordered_map<std::string,ListNode const*>
+routine_map;
+
+
+std::unordered_map<std::string,ListNode const*>
+talk_map;
 
 
 }
 
 
-Token const*
+ListNode const*
 find_routine(std::string const&  name) noexcept
 {
-  auto  res = map.find(name);
+  auto  res = routine_map.find(name);
 
-    if(res != map.cend())
+    if(res != routine_map.cend())
     {
-      return res->second->data();
+      return res->second;
     }
 
 
@@ -39,11 +44,11 @@ open_script(char const*  filepath) noexcept
 
   StreamReader  r(s.data());
 
-  TokenString*  toks;
+  List*  ls;
 
     try
     {
-      toks = new TokenString(r);
+      ls = new List(r);
     }
 
 
@@ -55,26 +60,32 @@ open_script(char const*  filepath) noexcept
     }
 
 
-    if(toks)
+    if(ls)
     {
-      auto   it = toks->cbegin();
-      auto  end = toks->cend();
+      auto  current = ls->get_first();
 
-        while(it != end)
+        while(current)
         {
-            if(*it == TokenKind::identifier)
-            {
-              std::string const&  name = (*it++).get_string();
+          static std::string const  routine_s("routine");
+          static std::string const     talk_s("talk");
 
-                if(*it == TokenKind::token_string)
-                {
-                  map.emplace(name,&(*it++).get_token_string());
-                }
+          auto&  v = current->value;
+
+          current = current->next;
+
+            if(v.is_value(routine_s))
+            {
+              auto&  vv = v.get_value();
+
+              routine_map.emplace(vv.get_name(),vv.get_list().get_first());
             }
 
           else
+            if(v.is_value(talk_s))
             {
-              ++it;
+              auto&  vv = v.get_value();
+
+              talk_map.emplace(vv.get_name(),vv.get_list().get_first());
             }
         }
     }

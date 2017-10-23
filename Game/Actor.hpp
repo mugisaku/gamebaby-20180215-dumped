@@ -28,7 +28,7 @@ Action
 
 
 class
-Actor: public GraphicalTask
+Actor: public Task
 {
   std::vector<Action*>  action_stack;
 

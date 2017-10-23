@@ -254,7 +254,7 @@ main(int  argc, char**  argv)
 
 
 #ifdef EMSCRIPTEN
-  emscripten_set_main_loop(main_loop,24,true);
+  emscripten_set_main_loop(main_loop,0,true);
 #else
     for(;;)
     {

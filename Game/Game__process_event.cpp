@@ -2,6 +2,12 @@
 #include"EventQueue.hpp"
 
 
+//#define dbg_printf(...)  printf(__VA_ARGS__)
+#ifndef dbg_printf
+#define dbg_printf(...)
+#endif
+
+
 namespace gmbb{
 
 
@@ -24,30 +30,37 @@ process_piece_event(PieceEvent const&  evt) noexcept
     {
   case(PieceEventKind::talk):
     {
-      auto  talk = find_talk(evt.piece->get_name(),evt.guest? evt.guest->get_name():none);
+      auto  data = evt.guest->find_talk_data(evt.piece->get_name());
 
-        if(talk)
+        if(data)
         {
-          start_message(talk->data());
+          evt.guest->change_direction(get_opposite(evt.piece->get_direction()));
+
+          start_message(data->content.data());
+        }
+
+      else
+        {
+          start_message("かいわデータがありません\n");
         }
     }
       break;
   case(PieceEventKind::push):
-      printf("piece pushed\n");
+      dbg_printf("piece pushed\n");
       break;
   case(PieceEventKind::start_move):
-      printf("started move\n");
+      dbg_printf("started move\n");
       break;
   case(PieceEventKind::end_move):
-      printf("ended move\n");
+      dbg_printf("ended move\n");
       break;
   case(PieceEventKind::collide_with_flying_item):
-      printf("collided with flying item!\n");
+      dbg_printf("collided with flying item!\n");
       break;
   case(PieceEventKind::null):
       break;
   default:
-      printf("error\n");
+      dbg_printf("error\n");
     }
 }
 
@@ -58,41 +71,41 @@ process_square_event(SquareEvent const&  evt) noexcept
     switch(evt.kind)
     {
   case(SquareEventKind::piece_turn):
-      printf("piece turned!\n");
+      dbg_printf("piece turned!\n");
       break;
   case(SquareEventKind::piece_enter):
-      printf("piece entered into %2d,%2d!\n",evt.square->get_x(),evt.square->get_y());
+      dbg_printf("piece entered into %2d,%2d!\n",evt.square->get_x(),evt.square->get_y());
       break;
   case(SquareEventKind::piece_leave):
-      printf("piece left from %2d,%2d!\n",evt.square->get_x(),evt.square->get_y());
+      dbg_printf("piece left from %2d,%2d!\n",evt.square->get_x(),evt.square->get_y());
       break;
   case(SquareEventKind::piece_insert):
       break;
   case(SquareEventKind::piece_remove):
       break;
   case(SquareEventKind::piece_push):
-      printf("piece pushed!\n");
+      dbg_printf("piece pushed!\n");
       break;
   case(SquareEventKind::flying_item_enter):
-      printf("flying item entered!\n");
+      dbg_printf("flying item entered!\n");
       break;
   case(SquareEventKind::flying_item_leave):
-      printf("flying item left!\n");
+      dbg_printf("flying item left!\n");
       break;
   case(SquareEventKind::flying_item_collide_with_wall):
-      printf("flying item collided with wall!\n");
+      dbg_printf("flying item collided with wall!\n");
       break;
   case(SquareEventKind::flying_item_collide_with_piece):
-      printf("flying item collided with piece!\n");
+      dbg_printf("flying item collided with piece!\n");
       break;
   case(SquareEventKind::flying_item_erase):
-      printf("flying item erased!\n");
+      dbg_printf("flying item erased!\n");
       break;
   case(SquareEventKind::null):
-      printf("null\n");
+      dbg_printf("null\n");
       break;
   default:
-      printf("error\n");
+      dbg_printf("error\n");
     }
 }
 

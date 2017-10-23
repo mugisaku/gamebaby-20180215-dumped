@@ -103,7 +103,7 @@ open_choosing_window() noexcept
 {
   create_window();
 
-  task_list::push(*menu_window);
+  root_task.push(*menu_window);
 
   menu_window->set_state(WindowState::full_opened);
 }
@@ -114,7 +114,7 @@ close_choosing_window() noexcept
 {
     if(menu_window)
     {
-      task_list::erase(*menu_window);
+      root_task.erase(*menu_window);
 
       menu_window->reset_cursor();
     }

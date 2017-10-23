@@ -2,8 +2,8 @@
 #define GMBB_Script_HPP
 
 
-#include"gmbb_Script__TokenString.hpp"
-#include"gmbb_Script__Token.hpp"
+#include"gmbb_Script__List.hpp"
+#include"gmbb_Script__Value.hpp"
 #include"gmbb_Script__StreamReader.hpp"
 
 

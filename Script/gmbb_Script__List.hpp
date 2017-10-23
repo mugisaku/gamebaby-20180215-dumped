@@ -13,24 +13,25 @@ namespace script{
 class StreamReader;
 
 
+struct
+ListNode
+{
+  Value  value;
+
+  ListNode*  next=nullptr;
+
+  ListNode(Value&&  v) noexcept: value(std::move(v)){}
+
+};
+
+
 class
 List
 {
-public:
-  struct Node{
-    Value  value;
-
-    Node*  next=nullptr;
-
-    Node(Value&&  v) noexcept: value(std::move(v)){}
-  };
-
-
-private:
   covered_ptr<List>  parent;
 
-  Node*  first=nullptr;
-  Node*   last=nullptr;
+  ListNode*  first=nullptr;
+  ListNode*   last=nullptr;
 
   uint32_t  number=0;
 
@@ -58,9 +59,14 @@ public:
 
   uint32_t  size() const noexcept{return number;}
 
-  Node const*  get_first() const noexcept{return first;}
+  ListNode const*  get_first() const noexcept{return first;}
 
   void  assign(StreamReader&  reader, covered_ptr<List>  parent_=nullptr, char  op=0, char  cl=0);
+
+  Value const&  operator[](std::string const&  name) const;
+  Value const&  operator[](ValueTag const&  tag) const;
+
+  Value const*  find_by_name(std::string const&  name) const noexcept;
 
   char  get_opening() const noexcept{return opening;}
   char  get_closing() const noexcept{return closing;}

@@ -2,7 +2,8 @@
 #define GMBB_Script__StreamReader_HPP
 
 
-#include"gmbb_Script__Token.hpp"
+#include"gmbb_Script__Value.hpp"
+#include"covered_ptr"
 #include<cstdarg>
 
 
@@ -105,7 +106,7 @@ public:
 
 
 
-class TokenString;
+class List;
 
 
 class
@@ -114,10 +115,25 @@ StreamReader: public StreamContext
   std::string  read_identifier() noexcept;
   std::string  read_string() noexcept;
 
-  int  read_decimal_integer() noexcept;
-  int  read_integer_that_begins_by_zero() noexcept;
+  int     read_binary_integer() noexcept;
+  double  read_binary_fraction() noexcept;
+  Value  read_binary_number() noexcept;
 
-  TokenString*  read_token_string(covered_ptr<TokenString>  parent, char  opening, char  closing);
+  int  read_octal_integer() noexcept;
+  double  read_octal_fraction() noexcept;
+  Value  read_octal_number() noexcept;
+
+  int  read_decimal_integer() noexcept;
+  double  read_decimal_fraction() noexcept;
+  Value  read_decimal_number() noexcept;
+
+  int     read_hexadecimal_integer() noexcept;
+  double  read_hexadecimal_fraction() noexcept;
+  Value  read_hexadecimal_number() noexcept;
+
+  Value  read_number_that_begins_by_zero() noexcept;
+
+  List*  read_list(covered_ptr<List>  parent, char  opening, char  closing);
 
 public:
   StreamReader() noexcept{}
@@ -129,7 +145,7 @@ public:
 
   char  get_char() const noexcept{return *pointer;}
 
-  Token  operator()(covered_ptr<TokenString>  parent=nullptr);
+  Value  read_value(covered_ptr<List>  parent=nullptr);
 
 };
 

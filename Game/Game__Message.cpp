@@ -122,7 +122,7 @@ open_message_window() noexcept
     }
 
 
-  task_list::push(*window);
+  root_task.push(*window);
 
   window->set_state(WindowState::full_opened);
 }
@@ -133,7 +133,7 @@ close_message_window() noexcept
 {
     if(window)
     {
-      task_list::erase(*window);
+      root_task.erase(*window);
 
       close_choosing_window();
     }

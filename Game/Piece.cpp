@@ -30,6 +30,25 @@ reset(Enemy&  enem) noexcept
 
 
 
+TalkData const*
+Piece::
+find_talk_data(std::string const&  target) const noexcept
+{
+    for(auto&  tkdat: talkdata)
+    {
+        if(tkdat.target == target)
+        {
+          return &tkdat;
+        }
+    }
+
+
+  return nullptr;
+}
+
+
+
+
 void
 Piece::
 hold_item(covered_ptr<GameItem>  p) noexcept

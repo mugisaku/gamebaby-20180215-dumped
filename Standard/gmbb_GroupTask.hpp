@@ -39,7 +39,7 @@ public:
 
   covered_ptr<Task>  find_by_name(std::string const&  name_) const noexcept;
 
-  bool  is_group() const noexcept{return true;}
+  bool  is_group() const noexcept override{return true;}
 
   void  print() noexcept;
 

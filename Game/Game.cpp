@@ -14,8 +14,12 @@ Board
 board;
 
 
+GroupTask
+root_task;
+
+
 Director
-effect_director(board);
+effect_director;
 
 
 covered_ptr<Piece>
@@ -102,11 +106,15 @@ initialize() noexcept
   large_glset.load_from_file("large_font.bin");
 
   File  f("",File::get_content_from_file("image.png"));
+
+  open_script("script.sc");
 #else
         glset.load_from_file("/usr/local/share/gmbb/small_font.bin");
   large_glset.load_from_file("/usr/local/share/gmbb/large_font.bin");
 
   File  f("",File::get_content_from_file("../bin/image.png"));
+
+  open_script("../script.sc");
 #endif
 
   board.set_script_processor(process_script);
@@ -119,8 +127,6 @@ initialize() noexcept
 
   hero_piece = board.new_piece("hero",1,1);
 
-  hero_piece->set_name("real hero");
-
   hero_piece->set_controll_callback(controll_hero_piece);
   hero_piece->set_render_callback(render_hero_piece);
 
@@ -128,13 +134,13 @@ initialize() noexcept
   board.set_view_point_by_piece(*hero_piece);
 
 
-  task_list::push(board);
-  task_list::push(effect_director);
+  root_task.push(board);
+  board.push(effect_director);
 
   push_routine(waiting,return_);
 
   show_status_monitor();
-  show_debugger();
+//  show_debugger();
 
     for(int  x = 0;  x < board_width;  ++x)
     {
@@ -167,7 +173,7 @@ step(Controller const&  ctrl)
 {
   process_event();
 
-  task_list::update();
+  root_task.update();
 
 
   call_routine(ctrl);
@@ -175,7 +181,7 @@ step(Controller const&  ctrl)
 
   screen_image.fill();
 
-  task_list::render(screen_image,Point());
+  root_task.render(screen_image,Point());
 }
 
 

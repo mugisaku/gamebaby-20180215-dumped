@@ -8,11 +8,11 @@ using namespace gmbb::script;
 int
 main(int  argc, char**  argv)
 {
-  TokenString  toks;
+  List  ls;
 
     try
     {
-      toks = TokenString("../script.sc");
+      ls = List("../script.sc");
     }
 
 
@@ -33,7 +33,7 @@ main(int  argc, char**  argv)
     }
 
 
-  toks.print();
+  ls.print();
 
 
   return 0;

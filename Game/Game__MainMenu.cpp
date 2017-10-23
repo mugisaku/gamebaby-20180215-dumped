@@ -214,7 +214,7 @@ open_main_menu_window() noexcept
     }
 
 
-  task_list::push(*menu_window);
+  root_task.push(*menu_window);
 
   menu_window->set_state(WindowState::full_opened);
 }
@@ -225,7 +225,7 @@ close_main_menu_window() noexcept
 {
   menu_window->reset_cursor();
 
-  task_list::erase(*menu_window);
+  root_task.erase(*menu_window);
 }
 
 

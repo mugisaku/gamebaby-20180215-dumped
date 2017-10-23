@@ -11,19 +11,30 @@
 namespace gmbb{
 
 
+class GroupTask;
+
+
 class
 Task
 {
   std::string  name;
 
-  bool  active_flag=false;
+  Point  base_point;
+
+  covered_ptr<GroupTask>  group;
 
   covered_ptr<Task>  previous;
   covered_ptr<Task>      next;
 
 public:
+  Task(         ) noexcept{}
+  Task(Point  pt) noexcept: base_point(pt){}
+
   void                set_name(std::string const&  name_)       noexcept{       name = name_;}
   std::string const&  get_name(                         ) const noexcept{return name        ;}
+
+  void   set_base_point(Point  pt)       noexcept{       base_point = pt;}
+  Point  get_base_point(         ) const noexcept{return base_point     ;}
 
   covered_ptr<Task>  get_previous() const noexcept{return previous;}
   covered_ptr<Task>  get_next()     const noexcept{return next;}
@@ -31,32 +42,18 @@ public:
   Task const*  get_const_previous() const noexcept{return previous.get_const_raw_pointer();}
   Task const*  get_const_next()     const noexcept{return next.get_const_raw_pointer();}
 
-  void    set_active_flag() noexcept{active_flag =  true;}
-  void  unset_active_flag() noexcept{active_flag = false;}
-  bool   test_active_flag() const noexcept{return active_flag;}
+  void                    set_group(GroupTask&  grp)       noexcept{       group = &grp;}
+  covered_ptr<GroupTask>  get_group(               ) const noexcept{return group       ;}
 
   void  connect(Task&  new_next) noexcept;
 
   void  disconnect() noexcept;
 
+  virtual bool  is_group() const noexcept{return false;}
+
   virtual void  update() noexcept{}
 
   virtual void  render(Image&  dst, Point  offset) const noexcept{}
-
-};
-
-
-class
-GraphicalTask: public Task
-{
-  Point  base_point;
-
-public:
-  GraphicalTask(         ) noexcept{}
-  GraphicalTask(Point  pt) noexcept: base_point(pt){}
-
-  void   set_base_point(Point  pt) noexcept{base_point = pt;}
-  Point  get_base_point() const noexcept{return base_point;}
 
 };
 

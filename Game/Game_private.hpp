@@ -52,6 +52,11 @@ large_glset;
 
 
 extern
+GroupTask
+root_task;
+
+
+extern
 Director
 effect_director;
 
@@ -61,16 +66,11 @@ void  process_event() noexcept;
 
 
 
-void  push_talk(std::string const&  host_name, std::string const&  guest_name, std::string const&  content) noexcept;
-void  clear_all_talk() noexcept;
-std::string const*  find_talk(std::string const&  host_name, std::string const&  guest_name) noexcept;
-
-
-script::Token const*  find_routine(std::string const&  name) noexcept;
+script::ListNode const*  find_routine(std::string const&  name) noexcept;
 void  open_script(char const*  filepath) noexcept;
 
 
-void  process_script(Director&  di, script::Token const*&  cur);
+void  process_script(Director&  di, script::ListNode const*&  cur);
 
 
 void  controll_hero_piece(Piece&  self) noexcept;
