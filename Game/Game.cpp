@@ -162,9 +162,7 @@ initialize() noexcept
     }}
 
 
-  open_script("../script.sc");
-
-  board.set_script(find_routine("test"));
+  board.set_script(find_gson("routine","test")->get_list().get_first());
 }
 
 

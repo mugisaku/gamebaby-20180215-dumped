@@ -210,12 +210,30 @@ main_loop()
     }
 
 
+  static uint32_t  next;
 
-  ctrl.change_time(SDL_GetTicks());
+  constexpr uint32_t  interval = 40;
 
-  step(ctrl);
+  auto  now = SDL_GetTicks();
 
-  transfer();
+  ctrl.change_time(now);
+
+    if(now >= next)
+    {
+      step(ctrl);
+
+      next += interval;
+
+        while(now >= next)
+        {
+          step(ctrl);
+
+          next += interval;
+        }
+
+
+      transfer();
+    }
 }
 
 

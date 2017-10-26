@@ -11,7 +11,7 @@ class
 StatusReportor: public Window
 {
 public:
-  StatusReportor(): Window(300,80,Point(8,160)){}
+  StatusReportor(): Window(280,80,Point(8,160)){}
 
   void  render(Image&  dst, Point  offset) const noexcept override;
 

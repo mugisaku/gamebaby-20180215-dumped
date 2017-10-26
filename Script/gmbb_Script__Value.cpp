@@ -149,7 +149,11 @@ print() const noexcept
 {
     if(*this)
     {
-      printf("<\"%s\":",name.data());
+        if(name.size())
+        {
+          printf("<\"%s\":",name.data());
+        }
+
 
         switch(kind)
         {
@@ -174,7 +178,10 @@ print() const noexcept
         }
 
 
-      printf(">");
+        if(name.size())
+        {
+          printf(">");
+        }
     }
 
   else

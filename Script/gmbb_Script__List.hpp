@@ -38,8 +38,6 @@ List
   char  opening=0;
   char  closing=0;
 
-  void  push(Value&&  v) noexcept;
-
 public:
   List() noexcept{}
   List(StreamReader&  reader, covered_ptr<List>  parent_=nullptr, char  op=0, char  cl=0)
@@ -54,6 +52,8 @@ public:
   List&  operator=(List&&       rhs) noexcept;
 
   List const*  get_parent() const noexcept{return parent.get_const_raw_pointer();}
+
+  void  push(Value&&  v) noexcept;
 
   void  clear() noexcept;
 

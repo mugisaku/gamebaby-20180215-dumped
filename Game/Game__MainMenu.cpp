@@ -200,7 +200,7 @@ open_main_menu_window() noexcept
         {
           static char16_t const*  text_table[] = {
             u"はなす",u"もちもの",
-            u"あしもと",u"ちゅうだん",
+            u"あしもと",u"",
           };
 
 

@@ -11,7 +11,7 @@ namespace gmbb{
 
 constexpr int  square_size = 24;
 
-constexpr int  screen_width  = 320;
+constexpr int  screen_width  = 288;
 constexpr int  screen_height = 240;
 
 constexpr int  board_width  = 14;

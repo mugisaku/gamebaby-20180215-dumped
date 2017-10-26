@@ -118,7 +118,7 @@ open_message_window() noexcept
 {
     if(!window)
     {
-      window = new MessageWindow(glset,36,4,message_point);
+      window = new MessageWindow(glset,24,4,message_point);
     }
 
 
@@ -175,7 +175,7 @@ start_message_with_choosing(char const*  text, std::initializer_list<char const*
 
   window->push(text);
 
-  prepare_choosing_window(ls,message_point+Point(248,24));
+  prepare_choosing_window(ls,message_point+Point(200,24));
 
   is_finished = false;
 

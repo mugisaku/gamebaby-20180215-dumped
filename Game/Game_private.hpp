@@ -66,7 +66,7 @@ void  process_event() noexcept;
 
 
 
-script::ListNode const*  find_routine(std::string const&  name) noexcept;
+script::Value const*  find_gson(std::string const&  type_name, std::string const&  value_name) noexcept;
 void  open_script(char const*  filepath) noexcept;
 
 

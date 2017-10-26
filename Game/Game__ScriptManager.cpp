@@ -1,5 +1,5 @@
 #include"Game_private.hpp"
-#include<unordered_map>
+#include<vector>
 
 
 namespace gmbb{
@@ -11,25 +11,104 @@ using namespace script;
 namespace{
 
 
-std::unordered_map<std::string,ListNode const*>
-routine_map;
+std::vector<List*>
+list_table;
 
 
-std::unordered_map<std::string,ListNode const*>
-talk_map;
+struct
+Directory
+{
+  std::string  type_name;
+
+  std::vector<Value const*>  value_table;
+
+  Directory(std::string const&  name) noexcept: type_name(name){}
+
+};
+
+
+std::vector<Directory>
+directories;
+
+
+void
+push(Value const&  v, Directory&  d)
+{
+    if(v == ValueKind::list)
+    {
+      auto  cur = v.get_list().get_first();
+
+        while(cur)
+        {
+          d.value_table.emplace_back(&cur->value);
+
+          cur = cur->next;
+        }
+    }
+
+  else
+    if(v == ValueKind::value)
+    {
+      d.value_table.emplace_back(&v.get_value());
+    }
+}
+
+
+void
+push(Value const&  v)
+{
+    for(auto&  d: directories)
+    {
+        if(d.type_name == v.get_name())
+        {
+          push(v,d);
+
+          return;
+        }
+    }
+
+
+  directories.emplace_back(v.get_name());
+
+  push(v,directories.back());
+}
 
 
 }
 
 
-ListNode const*
-find_routine(std::string const&  name) noexcept
+Value const*
+find_gson(std::string const&  type_name, std::string const&  value_name) noexcept
 {
-  auto  res = routine_map.find(name);
-
-    if(res != routine_map.cend())
+/*
+    for(auto&  d: directories)
     {
-      return res->second;
+printf("%s...",d.type_name.data());
+
+    for(auto&  v: d.value_table)
+    {
+v->print();
+printf("\n");
+    }
+    }
+*/
+
+
+    for(auto&  d: directories)
+    {
+        if(d.type_name == type_name)
+        {
+            for(auto  v: d.value_table)
+            {
+                if(*v == value_name)
+                {
+                  return v;
+                }
+            }
+
+
+          return nullptr;
+        }
     }
 
 
@@ -62,31 +141,15 @@ open_script(char const*  filepath) noexcept
 
     if(ls)
     {
+      list_table.emplace_back(ls);
+
       auto  current = ls->get_first();
 
         while(current)
         {
-          static std::string const  routine_s("routine");
-          static std::string const     talk_s("talk");
-
-          auto&  v = current->value;
+          push(current->value);
 
           current = current->next;
-
-            if(v.is_value(routine_s))
-            {
-              auto&  vv = v.get_value();
-
-              routine_map.emplace(vv.get_name(),vv.get_list().get_first());
-            }
-
-          else
-            if(v.is_value(talk_s))
-            {
-              auto&  vv = v.get_value();
-
-              talk_map.emplace(vv.get_name(),vv.get_list().get_first());
-            }
         }
     }
 }
