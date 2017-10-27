@@ -34,9 +34,12 @@ process_piece_event(PieceEvent const&  evt) noexcept
 
         if(data)
         {
+          start_message(find_gson("message","test")->get_list().get_first());
+/*
           evt.guest->change_direction(get_opposite(evt.piece->get_direction()));
 
           start_message(data->content.data());
+*/
         }
 
       else

@@ -9,23 +9,6 @@
 namespace gmbb{
 
 
-struct
-MessageWindow::
-ListNode
-{
-  std::string  name;
-
-  void  (*callback)();
-
-  ListNode*  previous=nullptr;
-  ListNode*      next=nullptr;
-
-  ListNode(std::string const&  name_, void  (*cb)()) noexcept:
-  name(name_), callback(cb){}
-
-};
-
-
 MessageWindow::
 MessageWindow(GlyphSet&  glset, int  column_number, int  row_number, Point  pt) noexcept:
 Window(glset.get_width( )*column_number+16,glset.get_height()*row_number+16,pt),
@@ -108,89 +91,19 @@ push(std::initializer_list<char const*>  ls)
 
 void
 MessageWindow::
-call(std::string const&  name) const noexcept
-{
-  auto  cur = list_node;
-
-    while(cur)
-    {
-        if(cur->name == name)
-        {
-          cur->callback();
-
-          return;
-        }
-
-
-      cur = cur->next;
-    }
-}
-
-
-void
-MessageWindow::
-push_callback(std::string const&  name, void  (*cb)()) noexcept
-{
-    if(cb)
-    {
-      auto  nd = new ListNode(name,cb);
-
-        if(list_node)
-        {
-          nd->next = list_node               ;
-                     list_node->previous = nd;
-        }
-
-
-      list_node = nd;
-    }
-}
-
-
-void
-MessageWindow::
 step()
 {
     if(!text.is_full() && *output_pointer)
     {
-        if(*output_pointer == '$')
+      auto  byte_number = utf8_byte_number(*output_pointer);
+
+        if((output_pointer+byte_number) <= get_buffer_tail())
         {
-          ++output_pointer;
+          auto  c = to_char32(output_pointer,byte_number);
 
-            if(*output_pointer == '$')
-            {
-              text.push(*output_pointer++);
-            }
+          output_pointer += byte_number;
 
-          else
-            if(isident0(*output_pointer))
-            {
-              std::string  name;
-
-              name.reserve(80);
-
-                while(isidentn(*output_pointer))
-                {
-                  name += *output_pointer++;
-                }
-
-
-              call(name);
-            }
-        }
-
-      else
-        {
-          auto  byte_number = utf8_byte_number(*output_pointer);
-
-            if((output_pointer+byte_number) <= get_buffer_tail())
-            {
-              auto  c = to_char32(output_pointer,byte_number);
-
-              output_pointer += byte_number;
-
-              text.push(c);
-            }
+          text.push(c);
         }
     }
 }

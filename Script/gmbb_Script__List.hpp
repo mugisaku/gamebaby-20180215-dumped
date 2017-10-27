@@ -40,8 +40,7 @@ List
 
 public:
   List() noexcept{}
-  List(StreamReader&  reader, covered_ptr<List>  parent_=nullptr, char  op=0, char  cl=0)
-  {assign(reader,parent_,op,cl);}
+  List(StreamReader&  reader, covered_ptr<List>  parent_=nullptr, char  op=0, char  cl=0);
   List(char const*  filepath);
   List(List const&  rhs) noexcept{*this = rhs;}
   List(List&&       rhs) noexcept{*this = std::move(rhs);}

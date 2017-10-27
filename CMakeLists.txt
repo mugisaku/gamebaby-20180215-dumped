@@ -74,6 +74,7 @@ set(GAME_SOURCES
 
 set(SCRIPT_SOURCES
   Script/gmbb_Script__List.cpp
+  Script/gmbb_Script__Cursor.cpp
   Script/gmbb_Script__Value.cpp
   Script/gmbb_Script__StreamReader.cpp
   Script/gmbb_Script__StreamReader__read_number.cpp

@@ -27,7 +27,6 @@ message:{
         choosing:{
           "はい":{
             "うれしいです"
-            
           }
           "いいえ":{
             "かなしいです"
@@ -44,12 +43,12 @@ message:{
 routine: test:{
            new_piece:(
              name:"friend"
-             initial_position:(x:6 y:5)
+             initial_position:(x:3 y:3)
              talk:{
                   with:"hero"
                content:{
                 "ぶきや　ぼうぐは　ちゃんと　そうびしないと"
-                "いみが　ないんだぜ$beep"
+                "いみが　ないんだぜ"
                 "でも　まだ　しょりが　じっそう　されていないから"
                 "ちゃんと　そうびしても"
                 "いみが　ないんだぜ"

@@ -17,6 +17,10 @@ char const*
 table[8];
 
 
+char const**
+pointer;
+
+
 bool
 is_cancelable;
 
@@ -76,25 +80,25 @@ prepare_choosing_window(std::initializer_list<char const*>  ls, Point  point) no
 {
   create_window();
 
-
-  int  row_n = 0;
-
-  auto  it = std::begin(table);
+  pointer = table;
 
     for(auto&  s: ls)
     {
-        if(s)
-        {
-          *it++ = s;
-
-          ++row_n;
-        }
+      append_answer(s);
     }
 
 
-  menu_window->change_row_number(row_n);
-
   menu_window->set_base_point(point);
+}
+
+
+void
+append_answer(char const*  text) noexcept
+{
+    if(text)
+    {
+      *pointer++ = text;
+    }
 }
 
 
@@ -104,6 +108,8 @@ open_choosing_window() noexcept
   create_window();
 
   root_task.push(*menu_window);
+
+  menu_window->change_row_number(pointer-table);
 
   menu_window->set_state(WindowState::full_opened);
 }

@@ -3,6 +3,7 @@
 
 
 #include"gmbb_Script__List.hpp"
+#include"gmbb_Script__Cursor.hpp"
 #include"gmbb_Script__Value.hpp"
 #include"gmbb_Script__StreamReader.hpp"
 

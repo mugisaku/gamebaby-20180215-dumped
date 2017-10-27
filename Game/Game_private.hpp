@@ -66,6 +66,7 @@ void  process_event() noexcept;
 
 
 
+script::Value const*  find_gson(char const*  type_name, char const*  value_name) noexcept;
 script::Value const*  find_gson(std::string const&  type_name, std::string const&  value_name) noexcept;
 void  open_script(char const*  filepath) noexcept;
 
@@ -115,6 +116,7 @@ bool  is_sack_menu_window_opened()      noexcept;
 
 
 void  prepare_choosing_window(std::initializer_list<char const*>  ls, Point  point) noexcept;
+void  append_answer(char const*  text) noexcept;
 void   open_choosing_window() noexcept;
 void  close_choosing_window() noexcept;
 void    start_choosing(bool  cancelable=true) noexcept;
@@ -125,6 +127,7 @@ void   open_message_window() noexcept;
 void  close_message_window() noexcept;
 void  start_message(char const*  text, bool  cleaning=true) noexcept;
 void  start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, bool  cleaning=true) noexcept;
+void  start_message(script::ListNode const*  nd, bool  cleaning=true) noexcept;
 bool  is_message_window_opened()        noexcept;
 
 

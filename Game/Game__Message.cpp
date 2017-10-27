@@ -6,12 +6,25 @@
 namespace gmbb{
 
 
+using namespace script;
+
+
 namespace{
 
 
-constexpr Point  message_point(8,160);
+constexpr Point   message_point(8,160);
+constexpr Point  choosing_point = message_point+Point(200,24);
 
 constexpr uint32_t  key_flags = flags_of_input::p_button;
+
+
+Cursor
+cursor;
+
+
+ListNode const*
+candidates[8];
+
 
 MessageWindow*
 window;
@@ -21,6 +34,16 @@ is_finished;
 
 bool
 has_choosing;
+
+
+void
+clear_candidates() noexcept
+{
+    for(auto&  cd: candidates)
+    {
+      cd = nullptr;
+    }
+}
 
 
 void
@@ -63,9 +86,86 @@ operate_message(Controller const&  ctrl) noexcept
 
 
 void
+make_choosing(ListNode const*  cur) noexcept
+{
+  has_choosing = true;
+
+  prepare_choosing_window({},choosing_point);
+
+  clear_candidates();
+
+  ListNode const**  it = candidates;
+
+    while(cur)
+    {
+      auto&  v = cur->value;
+
+        if(v == ValueKind::list)
+        {
+          append_answer(v.get_name().data());
+
+          *it++ = v.get_list().get_first();
+        }
+
+
+      cur = cur->next;
+    }
+}
+
+
+void
+read_next_line() noexcept
+{
+  auto&  v = *cursor;
+
+  cursor.advance();
+
+    if(v == script::ValueKind::string)
+    {
+      window->push(v.get_string().data());
+    }
+
+  else
+    if(v.is(script::ValueKind::list,"choosing"))
+    {
+      make_choosing(v.get_list().get_first());
+    }
+}
+
+
+void
 return_(int  retval) noexcept
 {
-  pop_routine();
+    if(retval >= 0)
+    {
+      auto  nd = candidates[retval];
+
+        if(nd)
+        {
+          cursor.go_in(nd);
+
+          window->clear();
+
+          clear_candidates();
+
+          is_finished = false;
+        }
+
+      else
+        {
+          pop_routine();
+        }
+    }
+
+  else
+    {
+      pop_routine();
+    }
+
+
+  close_choosing_window();
+
+  has_choosing = false;
 }
 
 
@@ -77,6 +177,12 @@ process(Controller const&  ctrl) noexcept
     if(window->is_remaining())
     {
       operate_message(ctrl);
+    }
+
+  else
+    if(cursor)
+    {
+      read_next_line();
     }
 
   else
@@ -122,6 +228,8 @@ open_message_window() noexcept
     }
 
 
+  clear_candidates();
+
   root_task.push(*window);
 
   window->set_state(WindowState::full_opened);
@@ -163,6 +271,30 @@ start_message(char const*  text, bool  cleaning) noexcept
 
 
 void
+start_message(script::ListNode const*  nd, bool  cleaning) noexcept
+{
+  open_message_window();
+
+    if(cleaning)
+    {
+      window->clear();
+    }
+
+
+  cursor = Cursor(nd);
+
+  clear_candidates();
+
+  is_finished = false;
+
+  has_choosing = false;
+
+
+  push_routine(process,return_);
+}
+
+
+void
 start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, bool  cleaning) noexcept
 {
   open_message_window();
@@ -173,9 +305,11 @@ start_message_with_choosing(char const*  text, std::initializer_list<char const*
     }
 
 
+  clear_candidates();
+
   window->push(text);
 
-  prepare_choosing_window(ls,message_point+Point(200,24));
+  prepare_choosing_window(ls,choosing_point);
 
   is_finished = false;
 

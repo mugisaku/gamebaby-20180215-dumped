@@ -10,6 +10,13 @@ namespace script{
 
 
 List::
+List(StreamReader&  reader, covered_ptr<List>  parent_, char  op, char  cl)
+{
+  assign(reader,parent_,op,cl);
+}
+
+
+List::
 List(char const*  filepath)
 {
   StreamReader  sr(make_string_from_file(filepath).data());

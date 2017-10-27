@@ -77,6 +77,16 @@ push(Value const&  v)
 }
 
 
+script::Value const*
+find_gson(char const*  type_name, char const*  value_name) noexcept
+{
+  std::string  t( type_name);
+  std::string  v(value_name);
+
+  return find_gson(t,v);
+}
+
+
 Value const*
 find_gson(std::string const&  type_name, std::string const&  value_name) noexcept
 {
