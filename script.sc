@@ -1,12 +1,33 @@
+
+
+shop:{
+  test:{
+    commodity:{
+      item:"てつのつるぎ" price:0 number:-1
+    }
+    commodity:{
+      item:"かわのたて" price:0 number:-1
+    }
+    commodity:{
+      item:"やすいおび" price:0 number:-1
+    }
+    commodity:{
+      item:"ただのみず" price:0 number:-1
+    }
+  }
+}
+
+
 message:{
   test:{
     "ちょっと　おじかん　いいですか？"
     choosing:{
       "はい":{
-        "１０えん　ください"
+        "かいもの　していって　ください"
         choosing:{
           "はい":{
             "うれしいです"
+            
           }
           "いいえ":{
             "かなしいです"
@@ -28,7 +49,7 @@ routine: test:{
                   with:"hero"
                content:{
                 "ぶきや　ぼうぐは　ちゃんと　そうびしないと"
-                "いみが　ないんだぜ"
+                "いみが　ないんだぜ$beep"
                 "でも　まだ　しょりが　じっそう　されていないから"
                 "ちゃんと　そうびしても"
                 "いみが　ないんだぜ"

@@ -9,14 +9,31 @@
 namespace gmbb{
 
 
+struct
+MessageWindow::
+ListNode
+{
+  std::string  name;
+
+  void  (*callback)();
+
+  ListNode*  previous=nullptr;
+  ListNode*      next=nullptr;
+
+  ListNode(std::string const&  name_, void  (*cb)()) noexcept:
+  name(name_), callback(cb){}
+
+};
+
+
 MessageWindow::
 MessageWindow(GlyphSet&  glset, int  column_number, int  row_number, Point  pt) noexcept:
 Window(glset.get_width( )*column_number+16,glset.get_height()*row_number+16,pt),
 glyphset(&glset),
-text(column_number,row_number),
-input_pointer( buffer),
-output_pointer(buffer)
+text(column_number,row_number)
 {
+  reset();
+
   Window::set_state(WindowState::open_to_down);
 
   coloring[1] = white;
@@ -26,93 +43,14 @@ output_pointer(buffer)
 
 
 namespace{
-char16_t*
-copy(const char16_t*  src, char16_t*  dst, const char16_t*  const dst_end) noexcept
-{
-    if(dst == dst_end)
-    {
-      return dst;
-    }
+bool  islower(char  c) noexcept{return((c >= 'a') && (c <= 'z'));}
+bool  isupper(char  c) noexcept{return((c >= 'A') && (c <= 'Z'));}
+bool  isalpha(char  c) noexcept{return(isupper(c) || islower(c));}
+bool  isdigit(char  c) noexcept{return((c >= '0') && (c <= '9'));}
+bool  isalnum(char  c) noexcept{return(isalpha(c) || isdigit(c));}
 
-
-    while(dst < dst_end)
-    {
-      auto  c = *src++;
-
-        if(!c)
-        {
-          break;
-        }
-
-
-      *dst++ = c;
-    }
-
-
-  *dst = 0;
-
-  return dst;
-}
-
-
-int
-sscan_id(const char16_t*  s, char16_t*  buf, size_t  n) noexcept
-{
-  int  r = 0;
-
-    if(!n)
-    {
-      return 0;
-    }
-
-
-    if(n == 1)
-    {
-      *buf = 0;
-
-      return 0;
-    }
-
-
-  auto  c = *s++;
-
-    if(isalpha(c) || (c == '_'))
-    {
-      *buf++ = c;
-
-      --n;
-      ++r;
-
-        for(;;)
-        {
-            if(n == 1)
-            {
-              break;
-            }
-
-
-          c = *s++;
-
-            if(isalnum(c) || (c == '_'))
-            {
-              *buf++ = c;
-
-              --n;
-              ++r;
-            }
-
-          else
-            {
-              break;
-            }
-        }
-    }
-
-
-  *buf = 0;
-
-  return r;
-}
+bool  isident0(char  c) noexcept{return(isalpha(c) || (c == '_'));}
+bool  isidentn(char  c) noexcept{return(isalnum(c) || (c == '_'));}
 }
 
 
@@ -132,8 +70,10 @@ void
 MessageWindow::
 reset() noexcept
 {
-   input_pointer = buffer;
+  input_pointer  = buffer;
   output_pointer = buffer;
+
+  buffer[0] = 0;
 }
 
 
@@ -141,16 +81,15 @@ void
 MessageWindow::
 push(char const*  s)
 {
-    while((input_pointer < std::end(buffer)) && *s)
+  auto  tail = get_buffer_tail();
+
+    while(*s && (input_pointer < tail))
     {
-      auto  byte_number = utf8_byte_number(*s);
-
-      auto  c = to_char32(s,byte_number);
-
-      s += byte_number;
-
-      *input_pointer++ = c;
+      *input_pointer++ = *s++;
     }
+
+
+  *input_pointer = 0;
 }
 
 
@@ -169,13 +108,89 @@ push(std::initializer_list<char const*>  ls)
 
 void
 MessageWindow::
+call(std::string const&  name) const noexcept
+{
+  auto  cur = list_node;
+
+    while(cur)
+    {
+        if(cur->name == name)
+        {
+          cur->callback();
+
+          return;
+        }
+
+
+      cur = cur->next;
+    }
+}
+
+
+void
+MessageWindow::
+push_callback(std::string const&  name, void  (*cb)()) noexcept
+{
+    if(cb)
+    {
+      auto  nd = new ListNode(name,cb);
+
+        if(list_node)
+        {
+          nd->next = list_node               ;
+                     list_node->previous = nd;
+        }
+
+
+      list_node = nd;
+    }
+}
+
+
+void
+MessageWindow::
 step()
 {
-    if(output_pointer != input_pointer)
+    if(!text.is_full() && *output_pointer)
     {
-        if(!text.is_full())
+        if(*output_pointer == '$')
         {
-          text.push(*output_pointer++);
+          ++output_pointer;
+
+            if(*output_pointer == '$')
+            {
+              text.push(*output_pointer++);
+            }
+
+          else
+            if(isident0(*output_pointer))
+            {
+              std::string  name;
+
+              name.reserve(80);
+
+                while(isidentn(*output_pointer))
+                {
+                  name += *output_pointer++;
+                }
+
+
+              call(name);
+            }
+        }
+
+      else
+        {
+          auto  byte_number = utf8_byte_number(*output_pointer);
+
+            if((output_pointer+byte_number) <= get_buffer_tail())
+            {
+              auto  c = to_char32(output_pointer,byte_number);
+
+              output_pointer += byte_number;
+
+              text.push(c);
+            }
         }
     }
 }

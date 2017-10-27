@@ -62,6 +62,7 @@ set(GAME_SOURCES
   Game/GameData.cpp
   Game/GameItem.cpp
   Game/GameItemSpecs.cpp
+  Game/Shop.cpp
   Game/Sack.cpp
   Game/Hero.cpp
   Game/Piece.cpp

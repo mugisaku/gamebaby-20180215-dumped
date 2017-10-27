@@ -15,16 +15,26 @@ namespace gmbb{
 class
 MessageWindow: public Window
 {
+  static constexpr size_t  buffer_size = 1024;
+
+  struct ListNode;
+
   Text  text;
 
   GlyphSet const*  glyphset;
 
-  char16_t  buffer[1024];
+  char  buffer[buffer_size+1];
 
-  char16_t const*  output_pointer;
-  char16_t*         input_pointer;
+  char*         input_pointer;
+  char const*  output_pointer;
 
   ColorIndex  coloring[4];
+
+  char const*  get_buffer_tail() const noexcept{return buffer+buffer_size;}
+
+  ListNode*  list_node=nullptr;
+
+  void  call(std::string const&  name) const noexcept;
 
 public:
   MessageWindow(GlyphSet&  glset, int  column_number, int  row_number, Point  pt) noexcept;
@@ -41,6 +51,8 @@ public:
 
   void  push(char const*  s);
   void  push(std::initializer_list<char const*>  ls);
+
+  void  push_callback(std::string const&  name, void  (*cb)()) noexcept;
 
   void  render(Image&  dst, Point  offset) const noexcept override;
 
