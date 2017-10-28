@@ -116,7 +116,7 @@ process(Controller const&  ctrl) noexcept
 
           prepare_choosing_window({fon,"なげる",hero_piece->get_square()->can_put_item()? "おく":nullptr},Point(40,80));
 
-          start_choosing();
+          start_choosing(true,return_);
         }
     }
 
@@ -173,13 +173,13 @@ close_sack_menu_window() noexcept
 
 
 void
-start_sack_menu() noexcept
+start_sack_menu(Return  retcb) noexcept
 {
   open_sack_menu_window();
 
   hero.get_sack().sort();
 
-  push_routine(process,return_);
+  push_routine(process,retcb);
 }
 
 

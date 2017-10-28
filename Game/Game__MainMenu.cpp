@@ -25,56 +25,44 @@ empty;
 
 
 void
-return_(int  retval) noexcept
+return_for_foot_command(int  retval) noexcept
 {
-  constexpr Point  point(80,80);
+  close_sack_menu_window();
 
-    switch(menu_window->get_item_index())
+    if(retval < 0)
     {
-  case(talk):
-      close_message_window();
-      break;
-  case(belongings):
-      close_sack_menu_window();
+      pop_routine();
+    }
+}
 
-        if(retval < 0)
+
+void
+return_for_belongings_command(int  retval) noexcept
+{
+    if(empty && (retval == 0))
+    {
+      auto&  sq = *hero_piece->get_square();
+
+      auto&  item = sq.get_item();
+      auto&  trap = sq.get_trap();
+
+        if(item)
+        {
+          *empty = item             ;
+                   item = GameItem();
+
+          pop_routine();
+        }
+
+      else
+        if(trap)
         {
           pop_routine();
         }
-      break;
-  case(foot):
-    {
-        if(empty && (retval == 0))
-        {
-          auto&  sq = *hero_piece->get_square();
-
-          auto&  item = sq.get_item();
-          auto&  trap = sq.get_trap();
-
-            if(item)
-            {
-              *empty = item             ;
-                       item = GameItem();
-
-              pop_routine();
-            }
-
-          else
-            if(trap)
-            {
-              pop_routine();
-            }
-        }
-
-
-      close_message_window();
-   }
-      break;
-  case(interrupt):
-      break;
-  default:;
-      break;
     }
+
+
+  close_message_window();
 }
 
 
@@ -114,7 +102,7 @@ process(Controller const&  ctrl) noexcept
         }
           break;
       case(belongings):
-          start_sack_menu();
+          start_sack_menu(return_for_belongings_command);
           break;
       case(foot):
         {
@@ -133,12 +121,12 @@ process(Controller const&  ctrl) noexcept
 
                 if(empty)
                 {
-                  start_message_with_choosing(buf,{"ひろう","ひろわない"});
+                  start_message_with_choosing(buf,{"ひろう","ひろわない"},return_for_foot_command);
                 }
 
               else
                 {
-                  start_message(buf);
+                  start_message(buf,return_for_foot_command);
                 }
             }
 
@@ -153,18 +141,18 @@ process(Controller const&  ctrl) noexcept
 
                 if(empty)
                 {
-                  start_message_with_choosing(buf,{"さどうさせる","とりはずす","はかいする"});
+                  start_message_with_choosing(buf,{"さどうさせる","とりはずす","はかいする"},return_for_foot_command);
                 }
 
               else
                 {
-                  start_message(buf);
+                  start_message(buf,return_for_foot_command);
                 }
             }
 
           else
             {
-              start_message("あしもとには　なにもない");
+              start_message("あしもとには　なにもない",return_for_foot_command);
             }
         }
           break;
@@ -237,11 +225,11 @@ is_main_menu_window_opened() noexcept
 
 
 void
-start_main_menu() noexcept
+start_main_menu(Return  retcb) noexcept
 {
   open_main_menu_window();
 
-  push_routine(process,return_);
+  push_routine(process,retcb);
 }
 
 

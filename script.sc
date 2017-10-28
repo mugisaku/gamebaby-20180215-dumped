@@ -27,7 +27,8 @@ message:{
         choosing:{
           "はい":{
             "うれしいです"
-          }
+            call_shop:shop_name:"test"
+         }
           "いいえ":{
             "かなしいです"
           }

@@ -14,10 +14,21 @@ namespace gmbb{
 namespace{
 
 
+
+
+namespace{
+void
+on_finish_talk(int  retval) noexcept
+{
+  close_message_window();
+}
+}
+
+
 void
 process_message_event(MessageEvent const&  evt) noexcept
 {
-  start_message(evt.content);
+  start_message(evt.content,on_finish_talk);
 }
 
 
@@ -34,17 +45,17 @@ process_piece_event(PieceEvent const&  evt) noexcept
 
         if(data)
         {
-          start_message(find_gson("message","test")->get_list().get_first());
+          start_message(find_gson("message","test")->get_list().get_first(),on_finish_talk);
 /*
           evt.guest->change_direction(get_opposite(evt.piece->get_direction()));
 
-          start_message(data->content.data());
+          start_message(data->content.data(),nullptr);
 */
         }
 
       else
         {
-          start_message("かいわデータがありません\n");
+          start_message("かいわデータがありません\n",on_finish_talk);
         }
     }
       break;

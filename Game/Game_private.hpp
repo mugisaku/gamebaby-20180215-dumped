@@ -12,6 +12,19 @@
 namespace gmbb{
 
 
+using Return = Routine::OnReturnCallback;
+
+
+struct
+Avoidable
+{
+  bool  value;
+
+  constexpr Avoidable(bool  v) noexcept: value(v){}
+
+};
+
+
 extern
 Hero
 hero;
@@ -105,29 +118,35 @@ bool  is_status_report_window_opened()  noexcept;
 
 void   open_main_menu_window() noexcept;
 void  close_main_menu_window() noexcept;
-void  start_main_menu() noexcept;
+void  start_main_menu(Return  retcb) noexcept;
 bool  is_main_menu_window_opened() noexcept;
 
 
 void   open_sack_menu_window() noexcept;
 void  close_sack_menu_window() noexcept;
-void  start_sack_menu() noexcept;
+void  start_sack_menu(Return  retcb) noexcept;
 bool  is_sack_menu_window_opened()      noexcept;
+
+
+void   open_shop_menu_window() noexcept;
+void  close_shop_menu_window() noexcept;
+void  start_shop_menu(Return  retcb) noexcept;
 
 
 void  prepare_choosing_window(std::initializer_list<char const*>  ls, Point  point) noexcept;
 void  append_answer(char const*  text) noexcept;
 void   open_choosing_window() noexcept;
 void  close_choosing_window() noexcept;
-void    start_choosing(bool  cancelable=true) noexcept;
+void    start_choosing(Avoidable  avo, Return  retcb) noexcept;
 bool  is_choosing_window_opened()       noexcept;
 
 
 void   open_message_window() noexcept;
 void  close_message_window() noexcept;
-void  start_message(char const*  text, bool  cleaning=true) noexcept;
-void  start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, bool  cleaning=true) noexcept;
-void  start_message(script::ListNode const*  nd, bool  cleaning=true) noexcept;
+void  clear_message_window() noexcept;
+void  start_message(char const*  text, Return  retcb) noexcept;
+void  start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, Return  retcb) noexcept;
+void  start_message(script::ListNode const*  nd, Return  retcb) noexcept;
 bool  is_message_window_opened()        noexcept;
 
 

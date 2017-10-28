@@ -128,13 +128,13 @@ close_choosing_window() noexcept
 
 
 void
-start_choosing(bool  cancelable) noexcept
+start_choosing(Avoidable  avo, Return  retcb) noexcept
 {
   open_choosing_window();
 
-  is_cancelable = cancelable;
+  is_cancelable = avo.value;
 
-  push_routine(process);
+  push_routine(process,retcb);
 }
 
 

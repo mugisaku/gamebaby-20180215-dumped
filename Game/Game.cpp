@@ -70,7 +70,7 @@ waiting(Controller const&  ctrl) noexcept
     {
       open_main_menu_window();
 
-      start_main_menu();
+      start_main_menu(return_);
 
       show_status_reportor();
     }

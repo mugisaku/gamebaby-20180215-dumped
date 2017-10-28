@@ -38,18 +38,15 @@ pop_routine() noexcept
 {
     if(routine_stack.size())
     {
+      auto  ret = routine_stack.back().on_return;
+
       routine_stack.pop_back();
 
       wait_until_button_is_released();
 
-        if(routine_stack.size())
+        if(ret)
         {
-          auto  ret = routine_stack.back().on_return;
-
-            if(ret)
-            {
-              ret(returned_value);
-            }
+          ret(returned_value);
         }
     }
 }

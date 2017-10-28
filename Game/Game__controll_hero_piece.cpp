@@ -57,7 +57,7 @@ pickup_item_if_is(Piece&  actor) noexcept
 
       snprintf(buf,sizeof(buf),fmt,name);
 
-      start_message(buf);
+      start_message(buf,nullptr);
     }
 }
 

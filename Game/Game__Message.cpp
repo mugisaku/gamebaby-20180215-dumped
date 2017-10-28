@@ -126,9 +126,37 @@ read_next_line() noexcept
     }
 
   else
-    if(v.is(script::ValueKind::list,"choosing"))
+    if(v.is_list("choosing"))
     {
       make_choosing(v.get_list().get_first());
+    }
+
+  else
+    if(v.is_value("call_shop"))
+    {
+      auto&  cov = v.get_value();
+
+        if(cov.is_string("shop_name"))
+        {
+          auto  sc = find_gson("shop",cov.get_string().data());
+
+            if(sc)
+            {
+              sc->print();
+            }
+        }
+    }
+
+  else
+    if(v)
+    {
+      printf("[message error] processable value...");
+
+      v.print();
+
+      printf("\n");
+
+      fflush(stdout);
     }
 }
 
@@ -192,7 +220,7 @@ process(Controller const&  ctrl) noexcept
         {
             if(has_choosing)
             {
-              start_choosing();
+              start_choosing(false,return_);
             }
 
           else
@@ -249,15 +277,18 @@ close_message_window() noexcept
 
 
 void
-start_message(char const*  text, bool  cleaning) noexcept
+clear_message_window() noexcept
+{
+  window->clear();
+}
+
+
+void
+start_message(char const*  text, Return  retcb) noexcept
 {
   open_message_window();
 
-    if(cleaning)
-    {
-      window->clear();
-    }
-
+  clear_message_window();
 
   window->push(text);
 
@@ -266,20 +297,16 @@ start_message(char const*  text, bool  cleaning) noexcept
   has_choosing = false;
 
 
-  push_routine(process);
+  push_routine(process,retcb);
 }
 
 
 void
-start_message(script::ListNode const*  nd, bool  cleaning) noexcept
+start_message(script::ListNode const*  nd, Return  retcb) noexcept
 {
   open_message_window();
 
-    if(cleaning)
-    {
-      window->clear();
-    }
-
+  clear_message_window();
 
   cursor = Cursor(nd);
 
@@ -290,20 +317,16 @@ start_message(script::ListNode const*  nd, bool  cleaning) noexcept
   has_choosing = false;
 
 
-  push_routine(process,return_);
+  push_routine(process,retcb);
 }
 
 
 void
-start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, bool  cleaning) noexcept
+start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, Return  retcb) noexcept
 {
   open_message_window();
 
-    if(cleaning)
-    {
-      window->clear();
-    }
-
+  clear_message_window();
 
   clear_candidates();
 
@@ -315,7 +338,7 @@ start_message_with_choosing(char const*  text, std::initializer_list<char const*
 
   has_choosing = true;
 
-  push_routine(process,return_);
+  push_routine(process,retcb);
 }
 
 
