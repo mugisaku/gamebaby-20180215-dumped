@@ -100,6 +100,12 @@ public:
   bool  is_value(  std::string const&  name_) const noexcept{return is(ValueKind::value  ,name_);}
   bool  is_list(   std::string const&  name_) const noexcept{return is(ValueKind::list   ,name_);}
 
+  bool  is_integer() const noexcept{return(kind == ValueKind::integer);}
+  bool  is_real(   ) const noexcept{return(kind == ValueKind::real   );}
+  bool  is_string( ) const noexcept{return(kind == ValueKind::string );}
+  bool  is_value(  ) const noexcept{return(kind == ValueKind::value  );}
+  bool  is_list(   ) const noexcept{return(kind == ValueKind::list   );}
+
   ValueKind  get_kind() const noexcept{return kind;}
 
   void  set_name(std::string&&  new_name) noexcept{name = std::move(new_name);}

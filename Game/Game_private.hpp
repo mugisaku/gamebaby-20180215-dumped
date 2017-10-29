@@ -4,6 +4,7 @@
 
 #include"Game.hpp"
 #include"Board.hpp"
+#include"Shop.hpp"
 #include"GameData.hpp"
 #include"gmbb_Script.hpp"
 #include<initializer_list>

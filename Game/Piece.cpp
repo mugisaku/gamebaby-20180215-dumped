@@ -1,6 +1,7 @@
 #include"Piece.hpp"
 #include"Square.hpp"
 #include"Board.hpp"
+#include"Game_private.hpp"
 
 
 
@@ -30,20 +31,78 @@ reset(Enemy&  enem) noexcept
 
 
 
-TalkData const*
+void
 Piece::
-find_talk_data(std::string const&  target) const noexcept
+make_from(script::List const&  ls) noexcept
 {
-    for(auto&  tkdat: talkdata)
+  auto  cur = ls.get_first();
+
+    while(cur)
     {
-        if(tkdat.target == target)
+      auto&  v = cur->value;
+
+      cur = cur->next;
+
+        if(v.is_string("name"))
         {
-          return &tkdat;
+          set_name(v.get_string());
+
+            if(get_name() == "hero")
+            {
+              hero_piece = this;
+            }
+        }
+
+      else
+        if(v == "role")
+        {
+            if(v.is_list())
+            {
+              role.build_from(v.get_list());
+            }
+
+          else
+            if(v.is_string())
+            {
+              auto  vv = find_gson("role",v.get_string());
+
+                if(vv)
+                {
+                  role.build_from(vv->get_list());
+                }
+            }
+        }
+
+      else
+        if(v.is_list("initial_position"))
+        {
+          auto&  ls = v.get_list();
+
+          auto  x = ls["x"].get_integer();
+          auto  y = ls["y"].get_integer();
+
+          auto&  sq = board->get_square(x,y);
+
+            if(!sq.get_piece())
+            {
+              set_square(&sq);
+
+              sq.set_piece(this);
+
+              set_position_by_current_square();
+            }          
         }
     }
 
 
-  return nullptr;
+  set_render_callback(render_hero_piece);
+
+    if(hero_piece == this)
+    {
+      board->set_view_point_by_piece(*this);
+
+      set_controll_callback(controll_hero_piece);
+    }
 }
 
 

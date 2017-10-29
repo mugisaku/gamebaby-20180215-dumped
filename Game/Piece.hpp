@@ -7,6 +7,7 @@
 #include"Enemy.hpp"
 #include"Square.hpp"
 #include"EffectObject.hpp"
+#include"Role.hpp"
 
 
 namespace gmbb{
@@ -45,21 +46,6 @@ class Board;
 class Square;
 
 
-struct
-TalkData
-{
-  std::string  target;
-  std::string  content;
-
-  TalkData() noexcept{}
-
-  TalkData(std::string const&  target_, std::string const&  content_) noexcept:
-  target(target_),
-  content(content_){}
-
-};
-
-
 class
 Piece: public EffectObject
 {
@@ -69,7 +55,8 @@ Piece: public EffectObject
 
   covered_ptr<Square>  square;
 
-  std::vector<TalkData>  talkdata;
+  Role  role;
+
 
   int  hp    ;
   int  hp_max;
@@ -101,9 +88,9 @@ public:
   void                 set_square(covered_ptr<Square>  sq)       noexcept{       square = sq;}
   covered_ptr<Square>  get_square(                       ) const noexcept{return square     ;}
 
-  void  push_talk_data(TalkData&&  tkdat) noexcept{talkdata.emplace_back(std::move(tkdat));}
+  void  make_from(script::List const&  ls) noexcept;
 
-  TalkData const*  find_talk_data(std::string const&  target) const noexcept;
+  Role const&  get_role() const noexcept{return role;}
 
   int  get_hp()     const noexcept{return hp    ;}
   int  get_hp_max() const noexcept{return hp_max;}

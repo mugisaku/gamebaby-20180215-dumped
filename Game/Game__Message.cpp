@@ -142,7 +142,22 @@ read_next_line() noexcept
 
             if(sc)
             {
-              sc->print();
+              auto  cur = sc->get_list().get_first();
+
+                while(cur)
+                {
+                  auto&  v = cur->value;
+
+                  cur = cur->next;
+
+                    if(v.is_list("commodity"))
+                    {
+                      	shop::read(v.get_list().get_first());
+                    }
+                }
+
+
+              start_shop_menu([](int  retval){close_shop_menu_window();});
             }
         }
     }

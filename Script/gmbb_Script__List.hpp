@@ -72,6 +72,32 @@ public:
 
   void  print() const noexcept;
 
+
+  class Iterator{
+    ListNode const*  node;
+
+  public:
+    Iterator(ListNode const*  nd=nullptr) noexcept: node(nd){}
+
+    operator bool() const noexcept{return node;}
+
+    Value const&  operator*() const noexcept{return node->value;}
+
+    bool  operator!=(Iterator const&  rhs) const noexcept{return(node != rhs.node);}
+
+    Iterator&  operator++() noexcept
+    {
+      node = node->next;
+
+      return *this;
+    }
+
+  };
+
+
+  Iterator  begin() const noexcept{return Iterator(  first);}
+  Iterator    end() const noexcept{return Iterator(nullptr);}
+
 };
 
 

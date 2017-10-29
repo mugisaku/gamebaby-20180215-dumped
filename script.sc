@@ -3,16 +3,13 @@
 shop:{
   test:{
     commodity:{
-      item:"てつのつるぎ" price:0 number:-1
+      name:"さとう" price:0 number:-1
     }
     commodity:{
-      item:"かわのたて" price:0 number:-1
+      name:"しお" price:0 number:-1
     }
     commodity:{
-      item:"やすいおび" price:0 number:-1
-    }
-    commodity:{
-      item:"ただのみず" price:0 number:-1
+      name:"こしょう" price:0 number:-1
     }
   }
 }
@@ -28,7 +25,7 @@ message:{
           "はい":{
             "うれしいです"
             call_shop:shop_name:"test"
-         }
+          }
           "いいえ":{
             "かなしいです"
           }
@@ -41,20 +38,34 @@ message:{
   }
 }
 
+role:{
+  hero:{
+  }
+  friend:{
+    talk_action:{
+         with:"hero"
+      content:{
+       "ぶきや　ぼうぐは　ちゃんと　そうびしないと"
+       "いみが　ないんだぜ"
+       "でも　まだ　しょりが　じっそう　されていないから"
+       "ちゃんと　そうびしても"
+       "いみが　ないんだぜ"
+      }
+    }
+  }
+}
+
+
 routine: test:{
            new_piece:(
+             name:"hero"
+             role:"hero"
+             initial_position:(x:1 y:1)
+           )
+           new_piece:(
              name:"friend"
+             role:"friend"
              initial_position:(x:3 y:3)
-             talk:{
-                  with:"hero"
-               content:{
-                "ぶきや　ぼうぐは　ちゃんと　そうびしないと"
-                "いみが　ないんだぜ"
-                "でも　まだ　しょりが　じっそう　されていないから"
-                "ちゃんと　そうびしても"
-                "いみが　ないんだぜ"
-               }
-             }
            )
          }
 

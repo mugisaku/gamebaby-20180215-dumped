@@ -28,7 +28,7 @@ public:
 
   void  clear_all_distance() noexcept;
 
-  covered_ptr<Piece>  new_piece(std::string const&  name_, int  x, int  y) noexcept;
+  covered_ptr<Piece>  new_piece() noexcept;
 
   void  delete_piece(covered_ptr<Piece>  p) noexcept;
 

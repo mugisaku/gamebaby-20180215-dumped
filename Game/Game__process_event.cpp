@@ -41,16 +41,15 @@ process_piece_event(PieceEvent const&  evt) noexcept
     {
   case(PieceEventKind::talk):
     {
-      auto  data = evt.guest->find_talk_data(evt.piece->get_name());
+      auto&  role = evt.guest->get_role();
+
+      auto  data = role.find_talk_data(evt.piece->get_name());
 
         if(data)
         {
-          start_message(find_gson("message","test")->get_list().get_first(),on_finish_talk);
-/*
           evt.guest->change_direction(get_opposite(evt.piece->get_direction()));
 
-          start_message(data->content.data(),nullptr);
-*/
+          start_message(data,nullptr);
         }
 
       else

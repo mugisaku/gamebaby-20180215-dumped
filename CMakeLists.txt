@@ -43,6 +43,7 @@ endif()
 set(GAME_SOURCES
   Game/Event.cpp
   Game/EventQueue.cpp
+  Game/Shop.cpp
   Game/Actor.cpp
   Game/Director.cpp
   Game/EffectObject.cpp
@@ -50,6 +51,7 @@ set(GAME_SOURCES
   Game/Game__Message.cpp
   Game/Game__MainMenu.cpp
   Game/Game__SackMenu.cpp
+  Game/Game__ShopMenu.cpp
   Game/Game__Choosing.cpp
   Game/Game__StatusMonitor.cpp
   Game/Game__StatusReportor.cpp
@@ -65,6 +67,7 @@ set(GAME_SOURCES
   Game/Shop.cpp
   Game/Sack.cpp
   Game/Hero.cpp
+  Game/Role.cpp
   Game/Piece.cpp
   Game/Square.cpp
   Game/Board.cpp

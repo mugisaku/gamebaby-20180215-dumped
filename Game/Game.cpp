@@ -125,15 +125,6 @@ initialize() noexcept
   character_image.load_png(r);
 
 
-  hero_piece = board.new_piece("hero",1,1);
-
-  hero_piece->set_controll_callback(controll_hero_piece);
-  hero_piece->set_render_callback(render_hero_piece);
-
-
-  board.set_view_point_by_piece(*hero_piece);
-
-
   root_task.push(board);
   board.push(effect_director);
 

@@ -20,9 +20,6 @@ constexpr int  board_height = 14;
 constexpr int  board_image_width  = square_size*board_width ;
 constexpr int  board_image_height = square_size*board_height;
 
-constexpr int  board_image_w = (square_size*board_width );
-constexpr int  board_image_h = (square_size*board_height);
-
 
 extern Image  character_image;
 
