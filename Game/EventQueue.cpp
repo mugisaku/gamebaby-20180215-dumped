@@ -32,7 +32,7 @@ int  number=0;
 
 
 void
-push(Event  evt) noexcept
+push(Event const&  evt) noexcept
 {
   auto  nd = new Node(evt);
 
@@ -53,10 +53,10 @@ push(Event  evt) noexcept
 }
 
 
-Event
-pop() noexcept
+void
+pull(Event&  evt) noexcept
 {
-  auto  evt = first->event;
+  evt = first->event;
 
   auto  next = first->next;
 
@@ -69,9 +69,6 @@ pop() noexcept
     {
       last = nullptr;
     }
-
-
-  return evt;
 }
 
 

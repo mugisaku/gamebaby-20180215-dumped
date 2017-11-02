@@ -25,6 +25,15 @@ empty;
 
 
 void
+return_for_talk_command(int  retval) noexcept
+{
+  close_message_window();
+
+  pop_routine();
+}
+
+
+void
 return_for_foot_command(int  retval) noexcept
 {
   close_sack_menu_window();
@@ -87,19 +96,44 @@ process(Controller const&  ctrl) noexcept
         switch(menu_window->get_item_index())
         {
       case(talk):
-        {
-          auto  target = get_talk_target();
+          {
+            auto  target = get_talk_target();
 
-            if(target)
-            {
-              event_queue::push(PieceEvent{PieceEventKind::talk,hero_piece,target});
-            }
+              if(target)
+              {
+                auto&  role = target->get_role();
 
-          else
-            {
-              event_queue::push(MessageEvent{"その　ほうこうには　だれもいない"});
-            }
-        }
+                auto  tka = role.find_talk_action(hero_piece->get_name());
+
+                  if(tka)
+                  {
+                    Event  evt(EventKind::piece_Talk);
+
+                    evt.piece.piece         = hero_piece;
+                    evt.piece.another_piece = target;
+
+                    event_queue::push(evt);
+
+
+                    evt.piece.another_piece->change_direction(get_opposite(evt.piece.piece->get_direction()));
+
+                    start_message(tka->label.data(),return_for_talk_command);
+                  }
+
+                else
+                  {
+                    start_message("no_data_for_talk",return_for_talk_command);
+                  }
+              }
+
+            else
+              {
+                start_message("there_is_no_one_on_its_direction",return_for_talk_command);
+              }
+
+
+            hide_status_reportor();
+          }
           break;
       case(belongings):
           start_sack_menu(return_for_belongings_command);
@@ -113,40 +147,32 @@ process(Controller const&  ctrl) noexcept
 
             if(item)
             {
-              char  buf[256];
-
               empty = hero.get_sack().find_empty();
-
-              snprintf(buf,sizeof(buf),"%s　がおちている",item->get_name());
 
                 if(empty)
                 {
-                  start_message_with_choosing(buf,{"ひろう","ひろわない"},return_for_foot_command);
+                  start_message("whether_hero_picks_up_item",return_for_foot_command);
                 }
 
               else
                 {
-                  start_message(buf,return_for_foot_command);
+                  start_message("whether_hero_picks_up_item",return_for_foot_command);
                 }
             }
 
           else
             if(trap)
             {
-              char  buf[256];
-
               empty = hero.get_sack().find_empty();
-
-              snprintf(buf,sizeof(buf),"%sのワナ　がある",trap.get_name());
 
                 if(empty)
                 {
-                  start_message_with_choosing(buf,{"さどうさせる","とりはずす","はかいする"},return_for_foot_command);
+                  start_message("",return_for_foot_command);
                 }
 
               else
                 {
-                  start_message(buf,return_for_foot_command);
+                  start_message("",return_for_foot_command);
                 }
             }
 

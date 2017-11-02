@@ -58,8 +58,8 @@ Piece: public EffectObject
   Role  role;
 
 
-  int  hp    ;
-  int  hp_max;
+  int  hp    =0;
+  int  hp_max=0;
 
   int     sleep_count=0;
   int      seal_count=0;

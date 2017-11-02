@@ -31,7 +31,7 @@ go_in(ListNode const*  nd) noexcept
     {
         if(current)
         {
-          stack[depth++] = current->next;
+          stack[depth++] = current;
         }
 
 

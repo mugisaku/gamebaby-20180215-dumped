@@ -11,133 +11,61 @@
 namespace gmbb{
 
 
-namespace{
-
-
-
-
-namespace{
-void
-on_finish_talk(int  retval) noexcept
-{
-  close_message_window();
-}
-}
-
-
-void
-process_message_event(MessageEvent const&  evt) noexcept
-{
-  start_message(evt.content,on_finish_talk);
-}
-
-
-void
-process_piece_event(PieceEvent const&  evt) noexcept
-{
-  static std::string const  none("none");
-
-    switch(evt.kind)
-    {
-  case(PieceEventKind::talk):
-    {
-      auto&  role = evt.guest->get_role();
-
-      auto  data = role.find_talk_data(evt.piece->get_name());
-
-        if(data)
-        {
-          evt.guest->change_direction(get_opposite(evt.piece->get_direction()));
-
-          start_message(data,nullptr);
-        }
-
-      else
-        {
-          start_message("かいわデータがありません\n",on_finish_talk);
-        }
-    }
-      break;
-  case(PieceEventKind::push):
-      dbg_printf("piece pushed\n");
-      break;
-  case(PieceEventKind::start_move):
-      dbg_printf("started move\n");
-      break;
-  case(PieceEventKind::end_move):
-      dbg_printf("ended move\n");
-      break;
-  case(PieceEventKind::collide_with_flying_item):
-      dbg_printf("collided with flying item!\n");
-      break;
-  case(PieceEventKind::null):
-      break;
-  default:
-      dbg_printf("error\n");
-    }
-}
-
-
-void
-process_square_event(SquareEvent const&  evt) noexcept
-{
-    switch(evt.kind)
-    {
-  case(SquareEventKind::piece_turn):
-      dbg_printf("piece turned!\n");
-      break;
-  case(SquareEventKind::piece_enter):
-      dbg_printf("piece entered into %2d,%2d!\n",evt.square->get_x(),evt.square->get_y());
-      break;
-  case(SquareEventKind::piece_leave):
-      dbg_printf("piece left from %2d,%2d!\n",evt.square->get_x(),evt.square->get_y());
-      break;
-  case(SquareEventKind::piece_insert):
-      break;
-  case(SquareEventKind::piece_remove):
-      break;
-  case(SquareEventKind::piece_push):
-      dbg_printf("piece pushed!\n");
-      break;
-  case(SquareEventKind::flying_item_enter):
-      dbg_printf("flying item entered!\n");
-      break;
-  case(SquareEventKind::flying_item_leave):
-      dbg_printf("flying item left!\n");
-      break;
-  case(SquareEventKind::flying_item_collide_with_wall):
-      dbg_printf("flying item collided with wall!\n");
-      break;
-  case(SquareEventKind::flying_item_collide_with_piece):
-      dbg_printf("flying item collided with piece!\n");
-      break;
-  case(SquareEventKind::flying_item_erase):
-      dbg_printf("flying item erased!\n");
-      break;
-  case(SquareEventKind::null):
-      dbg_printf("null\n");
-      break;
-  default:
-      dbg_printf("error\n");
-    }
-}
-
-
-}
-
-
 void
 process_event() noexcept
 {
     while(event_queue::get_number_of_events())
     {
-      auto  evt = event_queue::pop();
+      static Event  evt;
 
-        switch(evt.get_kind())
+      event_queue::pull(evt);
+
+        switch(evt.kind)
         {
-      case(EventKind::piece  ): process_piece_event( evt->piece_event);break;
-      case(EventKind::square ): process_square_event(evt->square_event);break;
-      case(EventKind::message): process_message_event(evt->message_event);break;
+      case(EventKind::message_Start):
+          break;
+      case(EventKind::message_End):
+          break;
+      case(EventKind::piece_Talk):
+          break;
+      case(EventKind::piece_Push_piece):
+          break;
+      case(EventKind::piece_Push_wall):
+          break;
+      case(EventKind::piece_Start_move):
+          break;
+      case(EventKind::piece_End_move):
+          break;
+      case(EventKind::piece_Turn):
+          break;
+      case(EventKind::piece_Enter_into_square):
+          break;
+      case(EventKind::piece_Leave_from_square):
+          break;
+      case(EventKind::piece_Insert_into_square):
+          break;
+      case(EventKind::piece_Remove_from_square):
+          break;
+      case(EventKind::flying_item_Enter_into_square):
+          break;
+      case(EventKind::flying_item_Leave_from_square):
+          break;
+      case(EventKind::flying_item_Collide_with_wall):
+          break;
+      case(EventKind::flying_item_Collide_with_piece):
+          break;
+      case(EventKind::flying_item_Erase):
+          break;
+      case(EventKind::shop_Enter):
+          break;
+      case(EventKind::shop_Buy_item):
+          break;
+      case(EventKind::shop_Sell_item):
+          break;
+      case(EventKind::shop_Exit):
+          break;
+      default:
+          printf("[process event error] unkonwn event\n");
         }
     }
 }

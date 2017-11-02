@@ -65,6 +65,14 @@ public:
   Value const&  operator[](std::string const&  name) const;
   Value const&  operator[](ValueTag const&  tag) const;
 
+  Value const&  get(ValueKind  kind, std::string const&  name) const;
+
+  List const&           get_list(std::string const&  name) const{return get(ValueKind::list   ,name).get_list();}
+  Value const&         get_value(std::string const&  name) const{return get(ValueKind::value  ,name).get_value();}
+  std::string const&  get_string(std::string const&  name) const{return get(ValueKind::string ,name).get_string();}
+  int                get_integer(std::string const&  name) const{return get(ValueKind::integer,name).get_integer();}
+  double                get_real(std::string const&  name) const{return get(ValueKind::real   ,name).get_real();}
+
   Value const*  find_by_name(std::string const&  name) const noexcept;
 
   char  get_opening() const noexcept{return opening;}

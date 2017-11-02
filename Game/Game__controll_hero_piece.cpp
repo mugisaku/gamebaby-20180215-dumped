@@ -65,9 +65,16 @@ pickup_item_if_is(Piece&  actor) noexcept
 void
 prepare_to_move(Piece&  p, Square&  sq, Direction  d) noexcept
 {
+  Event  evt;
+
     if(sq.get_piece())
     {
-      event_queue::push(PieceEvent(PieceEventKind::push,&p,sq.get_piece()));
+      evt.kind = EventKind::piece_Push_piece;
+
+      evt.piece.piece         = &p;
+      evt.piece.another_piece = sq.get_piece();
+
+      event_queue::push(evt);
 
       return;
     }
@@ -75,14 +82,36 @@ prepare_to_move(Piece&  p, Square&  sq, Direction  d) noexcept
 
     if(sq == SquareKind::wall)
     {
-      event_queue::push(SquareEvent(SquareEventKind::piece_push,p.get_square(),&p,nullptr));
+      evt.kind = EventKind::piece_Push_wall;
+
+      evt.piece.piece  = &p;
+      evt.piece.square = &sq;
+
+      event_queue::push(evt);
 
       return;
     }
 
 
-  event_queue::push(SquareEvent(SquareEventKind::piece_leave,p.get_square(),&p,nullptr));
-  event_queue::push(SquareEvent(SquareEventKind::piece_enter,           &sq,&p,nullptr));
+    {
+      evt.kind = EventKind::piece_Leave_from_square;
+
+      evt.piece.piece  = &p;
+      evt.piece.square = p.get_square();
+
+      event_queue::push(evt);
+    }
+
+
+    {
+      evt.kind = EventKind::piece_Enter_into_square;
+
+      evt.piece.piece  = &p;
+      evt.piece.square = &sq;
+
+      event_queue::push(evt);
+    }
+
 
   p.get_square()->set_piece(nullptr);
 
@@ -109,7 +138,12 @@ prepare_to_move(Piece&  p, Square&  sq, Direction  d) noexcept
   p.set_x_vector(fixed_t(pt.x)*2);
   p.set_y_vector(fixed_t(pt.y)*2);
 
-  event_queue::push(PieceEvent(PieceEventKind::start_move,&p,nullptr));
+
+  evt.kind = EventKind::piece_Start_move;
+
+  evt.piece.piece = &p;
+  
+  event_queue::push(evt);
 
   is_busy = true;
 }
@@ -139,7 +173,12 @@ controll_hero_piece(Piece&  self) noexcept
               self.set_x_vector(fixed_t());
               self.set_y_vector(fixed_t());
 
-              event_queue::push(PieceEvent(PieceEventKind::end_move,&self,nullptr));
+
+              Event  evt(EventKind::piece_End_move);
+
+              evt.piece.piece = hero_piece;
+              
+              event_queue::push(evt);
 
               pickup_item_if_is(self);
 
@@ -195,7 +234,13 @@ turn_hero_piece_to_left()
 {
   hero_piece->turn_direction_to_left();
 
-  event_queue::push(SquareEvent(SquareEventKind::piece_turn,hero_piece->get_square(),hero_piece,nullptr));
+
+  Event  evt(EventKind::piece_Turn);
+
+  evt.piece.piece  = hero_piece;
+  evt.piece.square = hero_piece->get_square();
+  
+  event_queue::push(evt);
 }
 
 
@@ -204,7 +249,13 @@ turn_hero_piece_to_right()
 {
   hero_piece->turn_direction_to_right();
 
-  event_queue::push(SquareEvent(SquareEventKind::piece_turn,hero_piece->get_square(),hero_piece,nullptr));
+
+  Event  evt(EventKind::piece_Turn);
+
+  evt.piece.piece  = hero_piece;
+  evt.piece.square = hero_piece->get_square();
+  
+  event_queue::push(evt);
 }
 
 

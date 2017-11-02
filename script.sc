@@ -3,37 +3,93 @@
 shop:{
   test:{
     commodity:{
-      name:"さとう" price:0 number:-1
+      name:"さとう" price:10 number:-1
     }
     commodity:{
-      name:"しお" price:0 number:-1
+      name:"しお" price:10 number:-1
     }
     commodity:{
-      name:"こしょう" price:0 number:-1
+      name:"こしょう" price:30 number:-1
+    }
+    commodity:{
+      name:"しあわせのこな" price:30000 number:-1
     }
   }
 }
 
 
 message:{
-  test:{
-    "ちょっと　おじかん　いいですか？"
+  no_data_for_talk:{
+    text:"かいわデータがありません"
+  }
+
+  there_is_no_one_on_its_direction:{
+    text:"その　ほうこうには　だれも　いない"
+  }
+
+  whether_hero_picks_up_item:{
+    text:"${item_on_square}が　おちている"
     choosing:{
-      "はい":{
-        "かいもの　していって　ください"
+      entry:"ひろう":{
+        trigger_event:"pick_up_item"
+      }
+      entry:"ひろわない":{
+      }
+    }
+  }
+
+
+  advice:{
+    text:"ぶきや　ぼうぐは　ちゃんと　そうびしないと"
+    text:"いみが　ないんだぜ"
+    text:"でも　まだ　しょりが　じっそう　されていないから"
+    text:"ちゃんと　そうびしても"
+    text:"いみが　ないんだぜ"
+  }
+
+  shopping_please:{
+    text:"ちょっと　おじかん　いいですか？"
+    choosing:{
+      entry:"はい":{
+        text:"かいもの　していって　ください"
         choosing:{
-          "はい":{
-            "うれしいです"
-            call_shop:shop_name:"test"
+          entry:"はい":{
+            text:"うれしいです"
+            call_shop:"test"
           }
-          "いいえ":{
-            "かなしいです"
+          entry:"いいえ":{
+            text:"かなしいです"
           }
         }
       }
-      "いいえ":{
-        "そうですか・・・"
+      entry:"いいえ":{
+        text:"そうですか・・・"
       }
+    }
+
+
+    text:"さようなら"
+  }
+
+  needing_happiness_powder:{
+    if:"has_happiness_powder"{
+      text:"あ　あんたが　もっているのは"
+      text:"「しあわせのこな」じゃねえか？"
+      text:"それを　おれに　くれるのかい？"
+      choosing:{
+        entry:"おう　やるよ":{
+          text:"ありがてえ"
+          erase:""
+        }
+        entry:"ぜったいに　やらん":{
+          text:"ちっ　なんでえ"
+          text:"だったら　あっちへ　いきやがれ"
+        }
+      }
+    }
+    else:{
+      text:"ああ　ほしい"
+      text:"「しあわせのこな」が　ほしいぜ"
     }
   }
 }
@@ -44,13 +100,7 @@ role:{
   friend:{
     talk_action:{
          with:"hero"
-      content:{
-       "ぶきや　ぼうぐは　ちゃんと　そうびしないと"
-       "いみが　ないんだぜ"
-       "でも　まだ　しょりが　じっそう　されていないから"
-       "ちゃんと　そうびしても"
-       "いみが　ないんだぜ"
-      }
+      content:"shopping_please"
     }
   }
 }

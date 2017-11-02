@@ -72,6 +72,12 @@ push(char const*  s)
     }
 
 
+    if(input_pointer < tail)
+    {
+      *input_pointer++ = '\n';
+    }
+
+
   *input_pointer = 0;
 }
 
@@ -83,8 +89,6 @@ push(std::initializer_list<char const*>  ls)
     for(auto  s: ls)
     {
       push(s);
-
-      push("\n");
     }
 }
 

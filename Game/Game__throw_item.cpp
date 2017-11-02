@@ -47,6 +47,8 @@ moving_direction;
 bool
 check() noexcept
 {
+  Event  evt;
+
   auto  next = (*current_square)[moving_direction];
 
     if(next)
@@ -59,7 +61,13 @@ check() noexcept
 
           effect_director.erase(object);
 
-          event_queue::push(SquareEvent(SquareEventKind::flying_item_collide_with_wall,current_square,nullptr,&thrown_item));
+
+          evt.kind = EventKind::flying_item_Collide_with_wall;
+
+          evt.flying_item.item   = &thrown_item;
+          evt.flying_item.square = current_square;
+
+          event_queue::push(evt);
 
           return true;
         }
@@ -69,8 +77,13 @@ check() noexcept
         {
           auto  p = next->get_piece();
 
-          event_queue::push(SquareEvent(SquareEventKind::flying_item_collide_with_piece,current_square,p,&thrown_item));
-          event_queue::push(PieceEvent(PieceEventKind::collide_with_flying_item,p,nullptr,&thrown_item));
+
+          evt.kind = EventKind::flying_item_Collide_with_piece;
+
+          evt.flying_item.item  = &thrown_item;
+          evt.flying_item.piece = p;
+
+          event_queue::push(evt);
 
           effect_director.erase(object);
 
@@ -79,8 +92,18 @@ check() noexcept
 
       else
         {
-          event_queue::push(SquareEvent(SquareEventKind::flying_item_leave,current_square,nullptr,&thrown_item));
-          event_queue::push(SquareEvent(SquareEventKind::flying_item_enter,          next,nullptr,&thrown_item));
+          evt.kind = EventKind::flying_item_Leave_from_square;
+
+          evt.flying_item.item   = &thrown_item;
+          evt.flying_item.square = current_square;
+
+          event_queue::push(evt);
+
+
+          evt.kind = EventKind::flying_item_Enter_into_square;
+          evt.flying_item.square = next;
+
+          event_queue::push(evt);
 
           current_square = next;
         }
@@ -88,7 +111,12 @@ check() noexcept
 
   else
     {
-      event_queue::push(SquareEvent(SquareEventKind::flying_item_erase,next,nullptr,&thrown_item));
+      evt.kind = EventKind::flying_item_Erase;
+
+      evt.flying_item.item   = &thrown_item;
+      evt.flying_item.square = next;
+
+      event_queue::push(evt);
 
       effect_director.erase(object);
 
@@ -157,7 +185,13 @@ throw_item(GameItem const&  item, covered_ptr<Square>  start, Direction  d) noex
 
   current_square = start;
 
-  event_queue::push(SquareEvent(SquareEventKind::flying_item_enter,start,nullptr,&thrown_item));
+
+  Event  evt(EventKind::flying_item_Enter_into_square);
+
+  evt.flying_item.item   = &thrown_item;
+  evt.flying_item.square = start;
+
+  event_queue::push(evt);
 
   moving_direction = d;
 

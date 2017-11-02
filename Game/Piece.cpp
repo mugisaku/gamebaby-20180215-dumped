@@ -64,7 +64,7 @@ make_from(script::List const&  ls) noexcept
           else
             if(v.is_string())
             {
-              auto  vv = find_gson("role",v.get_string());
+              auto  vv = find_role_script(v.get_string().data());
 
                 if(vv)
                 {

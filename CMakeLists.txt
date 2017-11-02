@@ -41,7 +41,6 @@ endif()
 
 
 set(GAME_SOURCES
-  Game/Event.cpp
   Game/EventQueue.cpp
   Game/Shop.cpp
   Game/Actor.cpp
@@ -58,7 +57,6 @@ set(GAME_SOURCES
   Game/Game__Debugger.cpp
   Game/Game__controll_hero_piece.cpp
   Game/Game__throw_item.cpp
-  Game/Game__ScriptManager.cpp
   Game/Game__process_script.cpp
   Game/Game__process_event.cpp
   Game/GameData.cpp
@@ -72,6 +70,7 @@ set(GAME_SOURCES
   Game/Square.cpp
   Game/Board.cpp
   Game/Board__render.cpp
+  Game/ScriptManager.cpp
 )
 
 

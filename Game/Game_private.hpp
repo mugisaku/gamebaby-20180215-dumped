@@ -6,7 +6,7 @@
 #include"Board.hpp"
 #include"Shop.hpp"
 #include"GameData.hpp"
-#include"gmbb_Script.hpp"
+#include"ScriptManager.hpp"
 #include<initializer_list>
 
 
@@ -76,15 +76,6 @@ effect_director;
 
 
 void  process_event() noexcept;
-
-
-
-
-script::Value const*  find_gson(char const*  type_name, char const*  value_name) noexcept;
-script::Value const*  find_gson(std::string const&  type_name, std::string const&  value_name) noexcept;
-void  open_script(char const*  filepath) noexcept;
-
-
 void  process_script(Director&  di, script::ListNode const*&  cur);
 
 
@@ -145,8 +136,7 @@ bool  is_choosing_window_opened()       noexcept;
 void   open_message_window() noexcept;
 void  close_message_window() noexcept;
 void  clear_message_window() noexcept;
-void  start_message(char const*  text, Return  retcb) noexcept;
-void  start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, Return  retcb) noexcept;
+void  start_message(char const*  label, Return  retcb) noexcept;
 void  start_message(script::ListNode const*  nd, Return  retcb) noexcept;
 bool  is_message_window_opened()        noexcept;
 

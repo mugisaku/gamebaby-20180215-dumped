@@ -22,11 +22,14 @@ void
 StatusMonitor::
 render(gmbb::Image&  dst, Point  offset) const noexcept
 {
-  char  buf[256];
+    if(hero_piece)
+    {
+      char  buf[256];
 
-  snprintf(buf,sizeof(buf),"HP%3d/%3d",hero_piece->get_hp(),hero_piece->get_hp_max());
+      snprintf(buf,sizeof(buf),"HP%3d/%3d",hero_piece->get_hp(),hero_piece->get_hp_max());
 
-  dst.print(buf,get_base_point()+offset,glset);
+      dst.print(buf,get_base_point()+offset,glset);
+    }
 }
 
 

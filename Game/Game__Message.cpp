@@ -1,4 +1,5 @@
 #include"Game_private.hpp"
+#include"EventQueue.hpp"
 
 
 
@@ -29,11 +30,9 @@ candidates[8];
 MessageWindow*
 window;
 
-bool
-is_finished;
 
 bool
-has_choosing;
+is_finished;
 
 
 void
@@ -86,97 +85,6 @@ operate_message(Controller const&  ctrl) noexcept
 
 
 void
-make_choosing(ListNode const*  cur) noexcept
-{
-  has_choosing = true;
-
-  prepare_choosing_window({},choosing_point);
-
-  clear_candidates();
-
-  ListNode const**  it = candidates;
-
-    while(cur)
-    {
-      auto&  v = cur->value;
-
-        if(v == ValueKind::list)
-        {
-          append_answer(v.get_name().data());
-
-          *it++ = v.get_list().get_first();
-        }
-
-
-      cur = cur->next;
-    }
-}
-
-
-void
-read_next_line() noexcept
-{
-  auto&  v = *cursor;
-
-  cursor.advance();
-
-    if(v == script::ValueKind::string)
-    {
-      window->push(v.get_string().data());
-    }
-
-  else
-    if(v.is_list("choosing"))
-    {
-      make_choosing(v.get_list().get_first());
-    }
-
-  else
-    if(v.is_value("call_shop"))
-    {
-      auto&  cov = v.get_value();
-
-        if(cov.is_string("shop_name"))
-        {
-          auto  sc = find_gson("shop",cov.get_string().data());
-
-            if(sc)
-            {
-              auto  cur = sc->get_list().get_first();
-
-                while(cur)
-                {
-                  auto&  v = cur->value;
-
-                  cur = cur->next;
-
-                    if(v.is_list("commodity"))
-                    {
-                      	shop::read(v.get_list().get_first());
-                    }
-                }
-
-
-              start_shop_menu([](int  retval){close_shop_menu_window();});
-            }
-        }
-    }
-
-  else
-    if(v)
-    {
-      printf("[message error] processable value...");
-
-      v.print();
-
-      printf("\n");
-
-      fflush(stdout);
-    }
-}
-
-
-void
 return_(int  retval) noexcept
 {
     if(retval >= 0)
@@ -207,8 +115,92 @@ return_(int  retval) noexcept
 
 
   close_choosing_window();
+}
 
-  has_choosing = false;
+
+void
+read_next_line() noexcept
+{
+  auto&  v = *cursor;
+
+  cursor.advance();
+
+    if(v.is_string("text"))
+    {
+      window->push(v.get_string().data());
+    }
+
+  else
+    if(v.is_string() && (v.get_string() == "clear"))
+    {
+      window->clear();
+    }
+
+  else
+    if(v.is_list("choosing"))
+    {
+      cursor.go_in(v.get_list().get_first());
+
+      prepare_choosing_window({},choosing_point);
+
+      clear_candidates();
+
+      ListNode const**  it = candidates;
+
+        while(cursor)
+        {
+          auto&  v = *cursor;
+
+          cursor.advance(Cursor::GoUpIfReachedEnd(false));
+
+            if(v.is_value("entry"))
+            {
+              auto&  vv = v.get_value();
+
+              append_answer(vv.get_name().data());
+
+              *it++ = vv.get_list().get_first();
+            }
+        }
+
+
+      start_choosing(Avoidable(false),return_);
+    }
+
+  else
+    if(v.is_string("call_shop"))
+    {
+      auto  sc = find_shop_script(v.get_string().data());
+
+        if(sc && sc->is_list())
+        {
+            for(auto&  vv: sc->get_list())
+            {
+                if(vv.is_list("commodity"))
+                {
+                  shop::read(vv.get_list().get_first());
+                }
+            }
+
+
+          close_main_menu_window();
+          hide_status_reportor();
+
+          start_shop_menu([](int  retval){close_shop_menu_window();});
+        }
+    }
+
+  else
+    if(v)
+    {
+      printf("[message error] unprocessable value...");
+
+      v.print();
+
+      printf("\n");
+
+      fflush(stdout);
+    }
 }
 
 
@@ -233,15 +225,7 @@ process(Controller const&  ctrl) noexcept
     {
         if(is_finished)
         {
-            if(has_choosing)
-            {
-              start_choosing(false,return_);
-            }
-
-          else
-            {
-              pop_routine();
-            }
+          pop_routine();
         }
 
       else
@@ -299,20 +283,26 @@ clear_message_window() noexcept
 
 
 void
-start_message(char const*  text, Return  retcb) noexcept
+start_message(char const*  label, Return  retcb) noexcept
 {
-  open_message_window();
+  auto  v = find_message_script(label);
 
-  clear_message_window();
+    if(v && v->is_list())
+    {
+      Event  evt(EventKind::message_Start);
 
-  window->push(text);
+      evt.message.content = label;
 
-  is_finished = false;
-
-  has_choosing = false;
+      event_queue::push(evt);
 
 
-  push_routine(process,retcb);
+      start_message(v->get_list().get_first(),retcb);
+    }
+
+  else
+    {
+      printf("[start message error] \"%s\"というメッセージのデータはみつからない\n",label);
+    }
 }
 
 
@@ -329,29 +319,6 @@ start_message(script::ListNode const*  nd, Return  retcb) noexcept
 
   is_finished = false;
 
-  has_choosing = false;
-
-
-  push_routine(process,retcb);
-}
-
-
-void
-start_message_with_choosing(char const*  text, std::initializer_list<char const*>  ls, Return  retcb) noexcept
-{
-  open_message_window();
-
-  clear_message_window();
-
-  clear_candidates();
-
-  window->push(text);
-
-  prepare_choosing_window(ls,choosing_point);
-
-  is_finished = false;
-
-  has_choosing = true;
 
   push_routine(process,retcb);
 }

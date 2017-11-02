@@ -12,9 +12,13 @@ namespace gmbb{
 struct
 TalkAction
 {
-  std::string  with;
+  std::string const&  label;
+  std::string const&   with;
 
-  script::ListNode const*  content;
+  TalkAction(std::string const&  label_, std::string const&  with_):
+  label(label_),
+  with(with_)
+  {}
 
 };
 
@@ -29,7 +33,7 @@ Role
 public:
   void  build_from(script::List const&  ls) noexcept;
 
-  script::ListNode const*  find_talk_data(std::string const&  target) const noexcept;
+  TalkAction const*  find_talk_action(std::string const&  target) const noexcept;
 
 };
 

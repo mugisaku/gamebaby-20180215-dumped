@@ -114,6 +114,23 @@ operator[](ValueTag const&  tag) const
 
 
 
+Value const&
+List::
+get(ValueKind  kind, std::string const&  name) const
+{
+    for(auto&  v: *this)
+    {
+        if((v == kind) && (v == name))
+        {
+          return v;
+        }
+    }
+
+
+  throw 0;
+}
+
+
 Value const*
 List::
 find_by_name(std::string const&  name) const noexcept

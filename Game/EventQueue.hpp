@@ -9,17 +9,8 @@ namespace gmbb{
 namespace event_queue{
 
 
-void  push(Event  evt) noexcept;
-
-template<typename  T>
-void
-push(T  t)
-{
-  push(Event(t));
-}
-
-
-Event  pop() noexcept;
+void  push(Event const&  evt) noexcept;
+void  pull(Event&        evt) noexcept;
 
 int  get_number_of_events() noexcept;
 

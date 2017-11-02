@@ -107,14 +107,14 @@ initialize() noexcept
 
   File  f("",File::get_content_from_file("image.png"));
 
-  open_script("script.sc");
+  load_script_file("script.sc");
 #else
         glset.load_from_file("/usr/local/share/gmbb/small_font.bin");
   large_glset.load_from_file("/usr/local/share/gmbb/large_font.bin");
 
   File  f("",File::get_content_from_file("../bin/image.png"));
 
-  open_script("../script.sc");
+  load_script_file("../script.sc");
 #endif
 
   board.set_script_processor(process_script);
@@ -153,7 +153,7 @@ initialize() noexcept
     }}
 
 
-  board.set_script(find_gson("routine","test")->get_list().get_first());
+  board.set_script(find_routine_script("test")->get_list().get_first());
 }
 
 
