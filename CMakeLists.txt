@@ -77,12 +77,12 @@ set(GAME_SOURCES
 )
 
 
-set(SCRIPT_SOURCES
-  Script/gmbb_Script__List.cpp
-  Script/gmbb_Script__Cursor.cpp
-  Script/gmbb_Script__Value.cpp
-  Script/gmbb_Script__StreamReader.cpp
-  Script/gmbb_Script__StreamReader__read_number.cpp
+set(GAMN_SOURCES
+  Gamn/gamn_List.cpp
+  Gamn/gamn_Cursor.cpp
+  Gamn/gamn_Value.cpp
+  Gamn/gamn_StreamReader.cpp
+  Gamn/gamn_StreamReader__read_number.cpp
 )
 
 
@@ -117,11 +117,11 @@ set(STANDARD_SOURCES
 
 
 include_directories(./)
-include_directories(./Script)
+include_directories(./GameNote)
 include_directories(./Standard)
 include_directories(/usr/include/SDL2)
 add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp  ${SCRIPT_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
-add_executable("testScript${EXECUTABLE_EXTENSION}" Script/testScript.cpp ${SCRIPT_SOURCES})
+add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES})
 
 
 if(EMSC)
