@@ -16,7 +16,7 @@ Script
   int  number=0;
 
 public:
-  Script(script::List const&  ls) noexcept;
+  Script(gamn::List const&  ls) noexcept;
  ~Script(){clear();}
 
   void  clear() noexcept;

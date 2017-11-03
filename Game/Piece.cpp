@@ -33,7 +33,7 @@ reset(Enemy&  enem) noexcept
 
 void
 Piece::
-make_from(script::List const&  ls) noexcept
+make_from(gamn::List const&  ls) noexcept
 {
   auto  cur = ls.get_first();
 

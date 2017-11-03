@@ -1,11 +1,10 @@
-#include"gmbb_Script__Value.hpp"
-#include"gmbb_Script__List.hpp"
+#include"gamn_Value.hpp"
+#include"gamn_List.hpp"
 
 
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 
@@ -193,7 +192,7 @@ print() const noexcept
 
 
 
-}}
+}
 
 
 

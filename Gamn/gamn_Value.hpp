@@ -1,5 +1,5 @@
-#ifndef GMBB_Script__Value_HPP
-#define GMBB_Script__Value_HPP
+#ifndef GAMN_Value_HPP
+#define GAMN_Value_HPP
 
 
 #include<string>
@@ -7,8 +7,7 @@
 #include<new>
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 enum class
@@ -126,7 +125,7 @@ public:
 
 
 
-}}
+}
 
 
 

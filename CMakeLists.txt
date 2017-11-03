@@ -34,7 +34,7 @@ if(EMSC)
   set(CMAKE_CXX_COMPILER  em++)
   set(CMAKE_CXX_FLAGS "-std=c++14 -Werror -Wno-switch -O2")
   set(CMAKE_CXX_FLAGS_DEBUG "")
-  set(CMAKE_CXX_LINK_FLAGS  "${CMAKE_CXX_LINK_FLAGS} -s USE_ZLIB=1 -s USE_LIBPNG=1 -s USE_SDL=2 --embed-file image.png --embed-file script.sc --embed-file large_font.bin --embed-file small_font.bin")
+  set(CMAKE_CXX_LINK_FLAGS  "${CMAKE_CXX_LINK_FLAGS} -s USE_ZLIB=1 -s USE_LIBPNG=1 -s USE_SDL=2 --embed-file image.png --embed-file script.gamn --embed-file large_font.bin --embed-file small_font.bin")
 endif()
 
 
@@ -117,15 +117,15 @@ set(STANDARD_SOURCES
 
 
 include_directories(./)
-include_directories(./GameNote)
+include_directories(./Gamn)
 include_directories(./Standard)
 include_directories(/usr/include/SDL2)
-add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp  ${SCRIPT_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
+add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES})
 
 
 if(EMSC)
-add_custom_target(bincopy ALL COMMAND cp ../bin/image.png ./ COMMAND cp ../script.sc ./ COMMAND cp /usr/local/share/gmbb/* ./)
+add_custom_target(bincopy ALL COMMAND cp ../bin/image.png ./ COMMAND cp ../script.gamn ./ COMMAND cp /usr/local/share/gmbb/* ./)
 set_target_properties("testMain${EXECUTABLE_EXTENSION}"  PROPERTIES LINK_FLAGS "--shell-file ../shell.html")
 endif()
 

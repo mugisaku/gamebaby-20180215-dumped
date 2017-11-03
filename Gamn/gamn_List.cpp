@@ -1,12 +1,11 @@
-#include"gmbb_Script__List.hpp"
-#include"gmbb_Script__Value.hpp"
-#include"gmbb_Script__StreamReader.hpp"
+#include"gamn_List.hpp"
+#include"gamn_Value.hpp"
+#include"gamn_StreamReader.hpp"
 
 
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 List::
@@ -281,7 +280,7 @@ print() const noexcept
 }
 
 
-}}
+}
 
 
 

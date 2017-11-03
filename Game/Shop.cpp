@@ -7,7 +7,7 @@ namespace gmbb{
 
 
 Shop::
-Shop(std::string const&  name_, script::List const&  ls) noexcept:
+Shop(std::string const&  name_, gamn::List const&  ls) noexcept:
 name(name_)
 {
     for(auto&  v: ls)
@@ -24,7 +24,7 @@ name(name_)
 
 void
 Shop::
-read(script::ListNode const*  cur) noexcept
+read(gamn::ListNode const*  cur) noexcept
 {
   Commodity  comm;
 

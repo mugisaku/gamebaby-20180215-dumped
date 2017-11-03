@@ -1,8 +1,8 @@
 #include"gmbb_Standard.hpp"
-#include"gmbb_Script.hpp"
+#include"gamn.hpp"
 
 
-using namespace gmbb::script;
+using namespace gamn;
 
 
 int
@@ -12,7 +12,7 @@ main(int  argc, char**  argv)
 
     try
     {
-      ls = List("../script.sc");
+      ls = List("../script.gamn");
     }
 
 

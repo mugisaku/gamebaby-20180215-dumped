@@ -9,7 +9,7 @@ namespace gmbb{
 
 
 ScriptElement::
-ScriptElement(script::Value const&  v) noexcept
+ScriptElement(gamn::Value const&  v) noexcept
 {
     if(v.is_string("text"))
     {

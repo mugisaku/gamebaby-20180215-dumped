@@ -1,13 +1,12 @@
-#ifndef GMBB_Script__List_HPP
-#define GMBB_Script__List_HPP
+#ifndef GAMN_List_HPP
+#define GAMN_List_HPP
 
 
 #include"covered_ptr"
-#include"gmbb_Script__Value.hpp"
+#include"gamn_Value.hpp"
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 class StreamReader;
@@ -109,7 +108,7 @@ public:
 };
 
 
-}}
+}
 
 
 

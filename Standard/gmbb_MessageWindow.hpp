@@ -5,7 +5,6 @@
 #include"gmbb_Figures.hpp"
 #include"gmbb_Window.hpp"
 #include"gmbb_Text.hpp"
-#include"gmbb_Script.hpp"
 
 
 

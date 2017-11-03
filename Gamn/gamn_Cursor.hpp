@@ -1,13 +1,12 @@
-#ifndef GMBB_Script__Cursor_HPP
-#define GMBB_Script__Cursor_HPP
+#ifndef GAMN_Cursor_HPP
+#define GAMN_Cursor_HPP
 
 
 #include"covered_ptr"
-#include"gmbb_Script__List.hpp"
+#include"gamn_List.hpp"
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 class
@@ -44,7 +43,7 @@ public:
 };
 
 
-}}
+}
 
 
 

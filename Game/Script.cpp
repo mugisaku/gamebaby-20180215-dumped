@@ -7,7 +7,7 @@ namespace gmbb{
 
 
 Script::
-Script(script::List const&  ls) noexcept:
+Script(gamn::List const&  ls) noexcept:
 number(ls.size())
 {
             table = new ScriptElement[number];

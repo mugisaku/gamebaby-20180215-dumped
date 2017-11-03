@@ -21,7 +21,7 @@ push_shop(Shop&  shop) noexcept
 
 
 void
-push_shop_from_script(script::ListNode const*  cur) noexcept
+push_shop_from_script(gamn::ListNode const*  cur) noexcept
 {
 }
 

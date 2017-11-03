@@ -3,7 +3,7 @@
 
 
 #include"gmbb_Standard.hpp"
-#include"gmbb_Script.hpp"
+#include"gamn.hpp"
 
 
 namespace gmbb{
@@ -31,7 +31,7 @@ Role
   std::vector<TalkAction>  talk_action_table;
 
 public:
-  void  build_from(script::List const&  ls) noexcept;
+  void  build_from(gamn::List const&  ls) noexcept;
 
   TalkAction const*  find_talk_action(std::string const&  target) const noexcept;
 

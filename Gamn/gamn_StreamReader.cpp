@@ -1,11 +1,10 @@
-#include"gmbb_Script__StreamReader.hpp"
-#include"gmbb_Script__List.hpp"
+#include"gamn_StreamReader.hpp"
+#include"gamn_List.hpp"
 
 
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 void
@@ -274,7 +273,7 @@ make_string_from_file(const char*  filepath)
 }
 
 
-}}
+}
 
 
 

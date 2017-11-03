@@ -7,7 +7,7 @@
 namespace gmbb{
 
 
-using namespace script;
+using namespace gamn;
 
 
 void

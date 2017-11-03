@@ -10,7 +10,7 @@ namespace gmbb{
 
 
 void  push_shop(Shop&  shop) noexcept;
-void  push_shop_from_script(script::ListNode const*  cur) noexcept;
+void  push_shop_from_script(gamn::ListNode const*  cur) noexcept;
 
 covered_ptr<Shop>  find_shop(std::string const&  name) noexcept;
 

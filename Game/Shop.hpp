@@ -3,7 +3,7 @@
 
 
 #include"GameItemSpecs.hpp"
-#include"gmbb_Script.hpp"
+#include"gamn.hpp"
 
 
 namespace gmbb{
@@ -34,10 +34,10 @@ private:
 
   int  number=0;
 
-  void  read(script::ListNode const*  cur) noexcept;
+  void  read(gamn::ListNode const*  cur) noexcept;
 
 public:
-  Shop(std::string const&  name_, script::List const&  ls) noexcept;
+  Shop(std::string const&  name_, gamn::List const&  ls) noexcept;
 
   void  push(Commodity const&  comm) noexcept{table[number++] = comm;}
 

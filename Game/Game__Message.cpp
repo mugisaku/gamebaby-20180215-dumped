@@ -8,7 +8,7 @@
 namespace gmbb{
 
 
-using namespace script;
+using namespace gamn;
 
 
 namespace{
@@ -297,7 +297,7 @@ Script(v->get_list()).print();
 
 
 void
-start_message(script::ListNode const*  nd, Return  retcb) noexcept
+start_message(gamn::ListNode const*  nd, Return  retcb) noexcept
 {
   open_message_window();
 

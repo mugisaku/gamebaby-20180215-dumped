@@ -7,7 +7,7 @@
 namespace gmbb{
 
 
-using namespace script;
+using namespace gamn;
 
 
 namespace{
@@ -86,9 +86,9 @@ find(Table&  tbl, char const*  value_name) noexcept
 }
 
 
-script::Value const*  find_message_script(char const*  value_name) noexcept{find(messages,value_name);}
-script::Value const*  find_routine_script(char const*  value_name) noexcept{find(routines,value_name);}
-script::Value const*  find_role_script(char const*  value_name) noexcept{find(roles,value_name);}
+gamn::Value const*  find_message_script(char const*  value_name) noexcept{find(messages,value_name);}
+gamn::Value const*  find_routine_script(char const*  value_name) noexcept{find(routines,value_name);}
+gamn::Value const*  find_role_script(char const*  value_name) noexcept{find(roles,value_name);}
 
 
 

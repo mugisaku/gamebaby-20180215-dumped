@@ -107,14 +107,14 @@ initialize() noexcept
 
   File  f("",File::get_content_from_file("image.png"));
 
-  load_script_file("script.sc");
+  load_script_file("script.gamn");
 #else
         glset.load_from_file("/usr/local/share/gmbb/small_font.bin");
   large_glset.load_from_file("/usr/local/share/gmbb/large_font.bin");
 
   File  f("",File::get_content_from_file("../bin/image.png"));
 
-  load_script_file("../script.sc");
+  load_script_file("../script.gamn");
 #endif
 
   board.set_script_processor(process_script);

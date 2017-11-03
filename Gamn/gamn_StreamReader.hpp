@@ -1,14 +1,13 @@
-#ifndef GMBB_Script__StreamReader_HPP
-#define GMBB_Script__StreamReader_HPP
+#ifndef GAMN_StreamReader_HPP
+#define GAMN_StreamReader_HPP
 
 
-#include"gmbb_Script__Value.hpp"
+#include"gamn_Value.hpp"
 #include"covered_ptr"
 #include<cstdarg>
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 class
@@ -153,7 +152,7 @@ public:
 std::string  make_string_from_file(const char*  filepath);
 
 
-}}
+}
 
 
 

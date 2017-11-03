@@ -88,7 +88,7 @@ public:
   void                 set_square(covered_ptr<Square>  sq)       noexcept{       square = sq;}
   covered_ptr<Square>  get_square(                       ) const noexcept{return square     ;}
 
-  void  make_from(script::List const&  ls) noexcept;
+  void  make_from(gamn::List const&  ls) noexcept;
 
   Role const&  get_role() const noexcept{return role;}
 

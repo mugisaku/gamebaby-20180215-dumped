@@ -1,10 +1,9 @@
-#include"gmbb_Script__Cursor.hpp"
+#include"gamn_Cursor.hpp"
 
 
 
 
-namespace gmbb{
-namespace script{
+namespace gamn{
 
 
 void
@@ -61,7 +60,7 @@ go_up() noexcept
 }
 
 
-}}
+}
 
 
 

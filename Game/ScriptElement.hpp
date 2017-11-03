@@ -63,7 +63,7 @@ ScriptElement
 
 public:
   ScriptElement() noexcept{}
-  ScriptElement(script::Value const&  v) noexcept;
+  ScriptElement(gamn::Value const&  v) noexcept;
   ScriptElement(ScriptElement const&  rhs) noexcept=delete;
   ScriptElement(ScriptElement&&       rhs) noexcept{*this = std::move(rhs);}
  ~ScriptElement(){clear();}
