@@ -122,7 +122,7 @@ bool  is_sack_menu_window_opened()      noexcept;
 
 void   open_shop_menu_window() noexcept;
 void  close_shop_menu_window() noexcept;
-void  start_shop_menu(Return  retcb) noexcept;
+void  start_shop_menu(char const*  label, Return  retcb) noexcept;
 
 
 void  prepare_choosing_window(std::initializer_list<char const*>  ls, Point  point) noexcept;

@@ -97,7 +97,7 @@ ShopEvent
 {
   EventKind  kind;
 
-  shop::Commodity const*  commodity;
+  Commodity const*  commodity;
 
   int  number;
 

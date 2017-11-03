@@ -1,5 +1,19 @@
 
 
+response:{
+  on_enter:{
+    text:"ここは　こなや　だよ"
+    text:"なにを　かうんだい？"
+  }
+  on_buy:{
+    text:""
+  }
+  on_exit:{
+    text:"また　きてくれよな"
+  }
+}
+
+
 shop:{
   test:{
     commodity:{
@@ -56,6 +70,7 @@ message:{
           entry:"はい":{
             text:"うれしいです"
             call_shop:"test"
+            command:exit
           }
           entry:"いいえ":{
             text:"かなしいです"

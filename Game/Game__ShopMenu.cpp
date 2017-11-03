@@ -1,6 +1,6 @@
 #include"Game_private.hpp"
 #include"EventQueue.hpp"
-#include"Shop.hpp"
+#include"ShopManager.hpp"
 
 
 
@@ -15,12 +15,16 @@ ColumnStyleMenuWindow*
 menu_window;
 
 
+covered_ptr<Shop>
+shop_ptr;
+
+
 void
 callback(Image&  dst, Point  point, int  i)
 {
-    if(i < shop::get_number_of_commodities())
+    if(i < shop_ptr->get_number_of_commodities())
     {
-      auto&  comm = shop::get_commodity(i);
+      auto&  comm = shop_ptr->get_commodity(i);
 
       char  buf[256];
 
@@ -49,7 +53,7 @@ process(Controller const&  ctrl) noexcept
 
     if(ctrl.test(p_button))
     {
-      auto&  comm = shop::get_commodity(menu_window->get_item_index());
+      auto&  comm = shop_ptr->get_commodity(menu_window->get_item_index());
 
       Event  evt(EventKind::shop_Buy_item);
 
@@ -119,15 +123,20 @@ close_shop_menu_window() noexcept
 
 
 void
-start_shop_menu(Return  retcb) noexcept
+start_shop_menu(char const*  label, Return  retcb) noexcept
 {
-  Event  evt(EventKind::shop_Enter);
+  shop_ptr = find_shop(label);
 
-  event_queue::push(evt);
+    if(shop_ptr)
+    {
+      Event  evt(EventKind::shop_Enter);
 
-  open_shop_menu_window();
+      event_queue::push(evt);
 
-  push_routine(process,retcb);
+      open_shop_menu_window();
+
+      push_routine(process,retcb);
+    }
 }
 
 

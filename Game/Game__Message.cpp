@@ -1,4 +1,5 @@
 #include"Game_private.hpp"
+#include"Script.hpp"
 #include"EventQueue.hpp"
 
 
@@ -131,9 +132,12 @@ read_next_line() noexcept
     }
 
   else
-    if(v.is_string() && (v.get_string() == "clear"))
+    if(v.is_string())
     {
-      window->clear();
+      auto  s = v.get_string();
+
+           if(s == "clear"){window->clear();}
+      else if(s == "exit"){pop_routine();}
     }
 
   else
@@ -170,24 +174,10 @@ read_next_line() noexcept
   else
     if(v.is_string("call_shop"))
     {
-      auto  sc = find_shop_script(v.get_string().data());
+      close_main_menu_window();
+        hide_status_reportor();
 
-        if(sc && sc->is_list())
-        {
-            for(auto&  vv: sc->get_list())
-            {
-                if(vv.is_list("commodity"))
-                {
-                  shop::read(vv.get_list().get_first());
-                }
-            }
-
-
-          close_main_menu_window();
-          hide_status_reportor();
-
-          start_shop_menu([](int  retval){close_shop_menu_window();});
-        }
+      start_shop_menu(v.get_string().data(),[](int  retval){close_shop_menu_window();});
     }
 
   else
@@ -295,7 +285,7 @@ start_message(char const*  label, Return  retcb) noexcept
 
       event_queue::push(evt);
 
-
+Script(v->get_list()).print();
       start_message(v->get_list().get_first(),retcb);
     }
 

@@ -43,6 +43,7 @@ endif()
 set(GAME_SOURCES
   Game/EventQueue.cpp
   Game/Shop.cpp
+  Game/ShopManager.cpp
   Game/Actor.cpp
   Game/Director.cpp
   Game/EffectObject.cpp
@@ -70,6 +71,8 @@ set(GAME_SOURCES
   Game/Square.cpp
   Game/Board.cpp
   Game/Board__render.cpp
+  Game/ScriptElement.cpp
+  Game/Script.cpp
   Game/ScriptManager.cpp
 )
 

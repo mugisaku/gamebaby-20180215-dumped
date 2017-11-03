@@ -1,4 +1,5 @@
 #include"ScriptManager.hpp"
+#include"ShopManager.hpp"
 #include<vector>
 #include<cstring>
 
@@ -22,7 +23,6 @@ using Table = std::vector<Value const*>;
 Table  routines;
 Table     roles;
 Table  messages;
-Table     shops;
 
 
 void
@@ -50,7 +50,16 @@ push(Value const&  v)
        if(v == "routine"){push(v,routines);}
   else if(v == "message"){push(v,messages);}
   else if(v == "role"){push(v,roles);}
-  else if(v == "shop"){push(v,shops);}
+  else if(v.is_list("shop"))
+    {
+        for(auto&  vv: v.get_list())
+        {
+            if(vv.is_list())
+            {
+              push_shop(*new Shop(vv.get_name(),vv.get_list()));
+            }
+        }
+    }
 }
 
 
@@ -79,7 +88,6 @@ find(Table&  tbl, char const*  value_name) noexcept
 
 script::Value const*  find_message_script(char const*  value_name) noexcept{find(messages,value_name);}
 script::Value const*  find_routine_script(char const*  value_name) noexcept{find(routines,value_name);}
-script::Value const*  find_shop_script(char const*  value_name) noexcept{find(shops,value_name);}
 script::Value const*  find_role_script(char const*  value_name) noexcept{find(roles,value_name);}
 
 
