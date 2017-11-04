@@ -1,5 +1,4 @@
 #include"Game_private.hpp"
-#include"Script.hpp"
 #include"EventQueue.hpp"
 
 
@@ -34,6 +33,19 @@ window;
 
 bool
 is_finished;
+
+
+class
+Forwarder: public Task
+{
+  uint32_t  last_time=0;
+
+  bool  fast_flag=false;
+
+public:
+  void  update() noexcept override;
+
+} forwarder;
 
 
 void
@@ -86,7 +98,7 @@ operate_message(Controller const&  ctrl) noexcept
 
 
 void
-return_(int  retval) noexcept
+return_for_choosing(int  retval) noexcept
 {
     if(retval >= 0)
     {
@@ -120,6 +132,18 @@ return_(int  retval) noexcept
 
 
 void
+return_for_shopping(int  retval) noexcept
+{
+    if(retval >= 0)
+    {
+    }
+
+
+  close_shop_menu_window();
+}
+
+
+void
 read_next_line() noexcept
 {
   auto&  v = *cursor;
@@ -132,7 +156,7 @@ read_next_line() noexcept
     }
 
   else
-    if(v.is_string())
+    if(v.is_string("command"))
     {
       auto  s = v.get_string();
 
@@ -168,7 +192,7 @@ read_next_line() noexcept
         }
 
 
-      start_choosing(Avoidable(false),return_);
+      start_choosing(Avoidable(false),return_for_choosing);
     }
 
   else
@@ -177,7 +201,7 @@ read_next_line() noexcept
       close_main_menu_window();
         hide_status_reportor();
 
-      start_shop_menu(v.get_string().data(),[](int  retval){close_shop_menu_window();});
+      start_shopping(v.get_string().data(),return_for_shopping);
     }
 
   else
@@ -211,25 +235,16 @@ process(Controller const&  ctrl) noexcept
     }
 
   else
-    if(ctrl.test(p_button))
     {
-        if(is_finished)
-        {
-          pop_routine();
-        }
-
-      else
-        {
-          is_finished = true;
-
-          wait_until_button_is_released();
-        }
+      pop_routine();
     }
+}
 
-  else
-    {
-      is_finished = true;
-    }
+
+void
+Forwarder::
+update() noexcept
+{
 }
 
 
@@ -272,12 +287,19 @@ clear_message_window() noexcept
 }
 
 
+bool
+is_message_window_opened() noexcept
+{
+  return window && window->get_group();
+}
+
+
 void
 start_message(char const*  label, Return  retcb) noexcept
 {
-  auto  v = find_message_script(label);
+  auto  sc = find_script("message",label);
 
-    if(v && v->is_list())
+    if(sc && sc->is_list())
     {
       Event  evt(EventKind::message_Start);
 
@@ -285,8 +307,7 @@ start_message(char const*  label, Return  retcb) noexcept
 
       event_queue::push(evt);
 
-Script(v->get_list()).print();
-      start_message(v->get_list().get_first(),retcb);
+      start_message(*sc->get_list().get_first(),retcb);
     }
 
   else
@@ -297,13 +318,13 @@ Script(v->get_list()).print();
 
 
 void
-start_message(gamn::ListNode const*  nd, Return  retcb) noexcept
+start_message(gamn::ListNode const&  nd, Return  retcb) noexcept
 {
   open_message_window();
 
   clear_message_window();
 
-  cursor = Cursor(nd);
+  cursor = Cursor(&nd);
 
   clear_candidates();
 

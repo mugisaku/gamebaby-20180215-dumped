@@ -17,64 +17,22 @@ std::vector<List*>
 list_table;
 
 
-using Table = std::vector<Value const*>;
-
-
-Table  routines;
-Table     roles;
-Table  messages;
-
-
-void
-push(Value const&  v, Table&  tbl)
-{
-    if(v == ValueKind::list)
-    {
-        for(auto&  v: v.get_list())
-        {
-          tbl.emplace_back(&v);
-        }
-    }
-
-  else
-    if(v == ValueKind::value)
-    {
-      tbl.emplace_back(&v.get_value());
-    }
 }
 
 
-void
-push(Value const&  v)
+
+
+gamn::Value const*
+find_script(char const*  module_name) noexcept
 {
-       if(v == "routine"){push(v,routines);}
-  else if(v == "message"){push(v,messages);}
-  else if(v == "role"){push(v,roles);}
-  else if(v.is_list("shop"))
+    for(auto  ls: list_table)
     {
-        for(auto&  vv: v.get_list())
+        for(auto&  mod: *ls)
         {
-            if(vv.is_list())
+            if(mod.is_list(module_name))
             {
-              push_shop(*new Shop(vv.get_name(),vv.get_list()));
+              return &mod;
             }
-        }
-    }
-}
-
-
-Value const*
-find(Table&  tbl, char const*  value_name) noexcept
-{
-  auto const  len = std::strlen(value_name);
-
-    for(auto&  ptr: tbl)
-    {
-      auto&  name = ptr->get_name();
-
-        if((name.size() == len) && (std::strcmp(name.data(),value_name) == 0))
-        {
-          return ptr;
         }
     }
 
@@ -83,13 +41,29 @@ find(Table&  tbl, char const*  value_name) noexcept
 }
 
 
+gamn::Value const*
+find_script(char const*  module_name, char const*  value_name) noexcept
+{
+    for(auto  ls: list_table)
+    {
+        for(auto&  mod: *ls)
+        {
+            if(mod.is_list(module_name))
+            {
+                for(auto&  v: mod.get_list())
+                {
+                    if(v.get_name() == value_name)
+                    {
+                      return &v;
+                    }
+                }
+            }
+        }
+    }
+
+
+  return nullptr;
 }
-
-
-gamn::Value const*  find_message_script(char const*  value_name) noexcept{find(messages,value_name);}
-gamn::Value const*  find_routine_script(char const*  value_name) noexcept{find(routines,value_name);}
-gamn::Value const*  find_role_script(char const*  value_name) noexcept{find(roles,value_name);}
-
 
 
 void
@@ -118,11 +92,6 @@ load_script_file(char const*  filepath) noexcept
     if(ls)
     {
       list_table.emplace_back(ls);
-
-        for(auto&  v: *ls)
-        {
-          push(v);
-        }
     }
 }
 

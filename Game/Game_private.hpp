@@ -7,6 +7,7 @@
 #include"Shop.hpp"
 #include"GameData.hpp"
 #include"ScriptManager.hpp"
+#include"ShopManager.hpp"
 #include<initializer_list>
 
 
@@ -122,7 +123,10 @@ bool  is_sack_menu_window_opened()      noexcept;
 
 void   open_shop_menu_window() noexcept;
 void  close_shop_menu_window() noexcept;
-void  start_shop_menu(char const*  label, Return  retcb) noexcept;
+void  start_shop_menu(Return  retcb) noexcept;
+
+
+void  start_shopping(char const*  label, Return  retcb) noexcept;
 
 
 void  prepare_choosing_window(std::initializer_list<char const*>  ls, Point  point) noexcept;
@@ -137,8 +141,8 @@ void   open_message_window() noexcept;
 void  close_message_window() noexcept;
 void  clear_message_window() noexcept;
 void  start_message(char const*  label, Return  retcb) noexcept;
-void  start_message(gamn::ListNode const*  nd, Return  retcb) noexcept;
-bool  is_message_window_opened()        noexcept;
+void  start_message(gamn::ListNode const&  nd, Return  retcb) noexcept;
+bool  is_message_window_opened() noexcept;
 
 
 

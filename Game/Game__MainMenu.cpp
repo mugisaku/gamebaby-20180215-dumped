@@ -27,8 +27,6 @@ empty;
 void
 return_for_talk_command(int  retval) noexcept
 {
-  close_message_window();
-
   pop_routine();
 }
 
@@ -246,7 +244,7 @@ close_main_menu_window() noexcept
 bool
 is_main_menu_window_opened() noexcept
 {
-  return *menu_window == WindowState::full_opened;
+  return menu_window && menu_window->get_group();
 }
 
 

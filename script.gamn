@@ -1,21 +1,24 @@
 
 
-response:{
-  on_enter:{
-    text:"ここは　こなや　だよ"
-    text:"なにを　かうんだい？"
-  }
-  on_buy:{
-    text:""
-  }
-  on_exit:{
-    text:"また　きてくれよな"
-  }
-}
-
-
 shop:{
-  test:{
+  powder_shop:{
+    on_enter:{
+      text:"ここは　こなや　だよ"
+      text:"なにを　かうんだい？"
+    }
+    "you want for this, right?":{
+      text:"おっ　$(chosen_commodity)が　ほしいんだね？"
+    }
+    when_money_is_enough:{
+      text:"はいよ　まいど"
+    }
+    when_money_is_not_enough:{
+      text:"おや　おかねが　たりないね"
+    }
+    on_exit:{
+      text:"また　きてくれよな"
+    }
+
     commodity:{
       name:"さとう" price:10 number:-1
     }
@@ -69,7 +72,7 @@ message:{
         choosing:{
           entry:"はい":{
             text:"うれしいです"
-            call_shop:"test"
+            call_shop:"powder_shop"
             command:exit
           }
           entry:"いいえ":{
@@ -121,18 +124,20 @@ role:{
 }
 
 
-routine: test:{
-           new_piece:(
-             name:"hero"
-             role:"hero"
-             initial_position:(x:1 y:1)
-           )
-           new_piece:(
-             name:"friend"
-             role:"friend"
-             initial_position:(x:3 y:3)
-           )
-         }
+routine:{
+  test:{
+    new_piece:(
+      name:"hero"
+      role:"hero"
+      initial_position:(x:1 y:1)
+    )
+    new_piece:(
+      name:"friend"
+      role:"friend"
+      initial_position:(x:3 y:3)
+    )
+  }
+}
 
 
 

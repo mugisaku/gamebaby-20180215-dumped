@@ -1,5 +1,7 @@
 #include"ShopManager.hpp"
+#include"ScriptManager.hpp"
 #include<list>
+#include<memory>
 
 
 
@@ -8,37 +10,65 @@ namespace gmbb{
 
 
 namespace{
-std::list<covered_ptr<Shop>>
+std::list<std::unique_ptr<Shop>>
 list;
+
+
+covered_ptr<Shop>
+current;
+
+
 }
 
 
 void
-push_shop(Shop&  shop) noexcept
+reset_shops() noexcept
 {
-  list.emplace_back(&shop);
-}
+  list.clear();
 
+  auto  mod = find_script("shop");
 
-void
-push_shop_from_script(gamn::ListNode const*  cur) noexcept
-{
+    if(mod && mod->is_list())
+    {
+        for(auto&  v: mod->get_list())
+        {
+            if(v.is_list())
+            {
+              list.emplace_back(new Shop(v.get_name(),v.get_list()));
+            }
+        }
+    }
 }
 
 
 covered_ptr<Shop>
 find_shop(std::string const&  name) noexcept
 {
-    for(auto  ptr: list)
+    for(auto&  ptr: list)
     {
         if(ptr->get_name() == name)
         {
-          return ptr;
+          return ptr.get();
         }
     }
 
 
   return nullptr;
+}
+
+
+covered_ptr<Shop>
+change_current_shop(std::string const&  name) noexcept
+{
+         current = find_shop(name);
+  return current                  ;
+}
+
+
+covered_ptr<Shop>
+get_current_shop() noexcept
+{
+  return current;
 }
 
 

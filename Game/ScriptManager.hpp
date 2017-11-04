@@ -8,9 +8,8 @@
 namespace gmbb{
 
 
-gamn::Value const*  find_message_script(char const*  value_name) noexcept;
-gamn::Value const*  find_routine_script(char const*  value_name) noexcept;
-gamn::Value const*  find_role_script(char const*  value_name) noexcept;
+gamn::Value const*  find_script(char const*  module_name                         ) noexcept;
+gamn::Value const*  find_script(char const*  module_name, char const*  value_name) noexcept;
 
 void  load_script_file(char const*  filepath) noexcept;
 

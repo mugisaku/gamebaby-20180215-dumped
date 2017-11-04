@@ -43,7 +43,7 @@ public:
   void  step();
   void  scroll();
 
-  void  push(char const*  s);
+  void  push(char const*  s, bool  with_newline=true);
   void  push(std::initializer_list<char const*>  ls);
 
   void  render(Image&  dst, Point  offset) const noexcept override;

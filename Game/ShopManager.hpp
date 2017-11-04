@@ -9,10 +9,13 @@
 namespace gmbb{
 
 
-void  push_shop(Shop&  shop) noexcept;
-void  push_shop_from_script(gamn::ListNode const*  cur) noexcept;
+void  reset_shops() noexcept;
+
 
 covered_ptr<Shop>  find_shop(std::string const&  name) noexcept;
+
+covered_ptr<Shop>  change_current_shop(std::string const&  name) noexcept;
+covered_ptr<Shop>     get_current_shop() noexcept;
 
 int  get_number_of_shops() noexcept;
 

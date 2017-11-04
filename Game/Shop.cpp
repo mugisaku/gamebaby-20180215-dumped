@@ -14,7 +14,31 @@ name(name_)
     {
         if(v.is_list("commodity"))
         {
-          read(v.get_list().get_first());
+          read_commodity(v.get_list().get_first());
+        }
+
+      else
+        if(v.is_list("on_enter"))
+        {
+          message_set.on_enter = v.get_list().get_first();
+        }
+
+      else
+        if(v.is_list("on_exit"))
+        {
+          message_set.on_exit = v.get_list().get_first();
+        }
+
+      else
+        if(v.is_list("you want for this, right?"))
+        {
+          message_set.you_want_for_this = v.get_list().get_first();
+        }
+
+      else
+        if(v.is_list("when_money_is_enough"))
+        {
+          message_set.when_money_is_enough = v.get_list().get_first();
         }
     }
 }
@@ -24,7 +48,7 @@ name(name_)
 
 void
 Shop::
-read(gamn::ListNode const*  cur) noexcept
+read_commodity(gamn::ListNode const*  cur) noexcept
 {
   Commodity  comm;
 

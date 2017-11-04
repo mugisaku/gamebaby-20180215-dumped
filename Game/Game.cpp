@@ -45,19 +45,27 @@ large_glset;
 
 
 void
-return_(int  retval) noexcept
-{
-  close_main_menu_window();
-  close_message_window();
-
-  hide_status_reportor();
-}
-
-
-void
 waiting(Controller const&  ctrl) noexcept
 {
   using namespace gmbb::flags_of_input;
+
+    if(is_main_menu_window_opened() ||
+       is_message_window_opened())
+    {
+        if(ctrl.test(p_button))
+        {
+          close_main_menu_window();
+          close_message_window();
+
+          hide_status_reportor();
+
+          wait_until_button_is_released();
+        }
+
+
+      return;
+    }
+
 
   auto  ok = !is_hero_busy();
 
@@ -70,7 +78,7 @@ waiting(Controller const&  ctrl) noexcept
     {
       open_main_menu_window();
 
-      start_main_menu(return_);
+      start_main_menu(nullptr);
 
       show_status_reportor();
     }
@@ -128,7 +136,7 @@ initialize() noexcept
   root_task.push(board);
   board.push(effect_director);
 
-  push_routine(waiting,return_);
+  push_routine(waiting,nullptr);
 
   show_status_monitor();
 //  show_debugger();
@@ -153,7 +161,9 @@ initialize() noexcept
     }}
 
 
-  board.set_script(find_routine_script("test")->get_list().get_first());
+  board.set_script(find_script("routine","test")->get_list().get_first());
+
+  reset_shops();
 }
 
 

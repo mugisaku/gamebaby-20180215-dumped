@@ -52,6 +52,7 @@ set(GAME_SOURCES
   Game/Game__MainMenu.cpp
   Game/Game__SackMenu.cpp
   Game/Game__ShopMenu.cpp
+  Game/Game__Shopping.cpp
   Game/Game__Choosing.cpp
   Game/Game__StatusMonitor.cpp
   Game/Game__StatusReportor.cpp
@@ -71,8 +72,6 @@ set(GAME_SOURCES
   Game/Square.cpp
   Game/Board.cpp
   Game/Board__render.cpp
-  Game/ScriptElement.cpp
-  Game/Script.cpp
   Game/ScriptManager.cpp
 )
 

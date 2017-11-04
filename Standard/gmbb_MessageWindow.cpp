@@ -60,21 +60,79 @@ reset() noexcept
 }
 
 
+namespace{
+void
+scan(char*  dst, char const*&  src, size_t  n) noexcept
+{
+    while(n > 1)
+    {
+      auto  c = *src++;
+
+        if(c == ')')
+        {
+          break;
+        }
+
+      else
+        {
+          *dst++ = c;
+
+          --n;
+        }
+    }
+
+
+  *dst = 0;
+}
+}
+
+
 void
 MessageWindow::
-push(char const*  s)
+push(char const*  s, bool  with_newline)
 {
   auto  tail = get_buffer_tail();
 
     while(*s && (input_pointer < tail))
     {
-      *input_pointer++ = *s++;
+        if(*s == '$')
+        {
+          ++s;
+
+            if(*s == '$')
+            {
+              *input_pointer++ = *s++;
+            }
+
+          else
+            if(*s == '(')
+            {
+              char  buf[256];
+
+              scan(buf,++s,sizeof(buf));
+
+              push(environment::get_value(buf).data(),false);
+            }
+
+          else
+            {
+              *input_pointer++ = *s++;
+            }
+        }
+
+      else
+        {
+          *input_pointer++ = *s++;
+        }
     }
 
 
-    if(input_pointer < tail)
+    if(with_newline)
     {
-      *input_pointer++ = '\n';
+        if(input_pointer < tail)
+        {
+          *input_pointer++ = '\n';
+        }
     }
 
 

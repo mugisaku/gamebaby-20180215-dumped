@@ -8,7 +8,7 @@
 
 
 namespace gmbb{
-namespace env{
+namespace environment{
 
 
 constexpr int  fn1_flag = 0x80;
@@ -23,8 +23,8 @@ constexpr int  fn8_flag = 0x01;
 extern uint8_t  fn_keystate;
 
 
-void                   set_value(const char16_t*  name, const char16_t*  value) noexcept;
-const std::u16string&  get_value(const char16_t*  name                        ) noexcept;
+void                set_value(char const*  name, char const*  value) noexcept;
+std::string const&  get_value(char const*  name                    ) noexcept;
 
 
 }}

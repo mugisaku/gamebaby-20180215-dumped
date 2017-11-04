@@ -18,6 +18,7 @@
 #include"gmbb_ColumnStyleMenuWindow.hpp"
 #include"gmbb_Routine.hpp"
 #include"gmbb_unicode.hpp"
+#include"gmbb_environment.hpp"
 #include"gmbb_IntervalTimer.hpp"
 #include"gmbb_Task.hpp"
 #include"gmbb_GroupTask.hpp"

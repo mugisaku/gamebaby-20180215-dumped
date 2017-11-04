@@ -15,16 +15,14 @@ ColumnStyleMenuWindow*
 menu_window;
 
 
-covered_ptr<Shop>
-shop_ptr;
-
-
 void
 callback(Image&  dst, Point  point, int  i)
 {
-    if(i < shop_ptr->get_number_of_commodities())
+  auto  shop = get_current_shop();
+
+    if(i < shop->get_number_of_commodities())
     {
-      auto&  comm = shop_ptr->get_commodity(i);
+      auto&  comm = shop->get_commodity(i);
 
       char  buf[256];
 
@@ -38,30 +36,12 @@ callback(Image&  dst, Point  point, int  i)
 
 
 void
-return_(int  retval) noexcept
-{
-    if(retval >= 0)
-    {
-    }
-}
-
-
-void
 process(Controller const&  ctrl) noexcept
 {
   using namespace gmbb::flags_of_input;
 
     if(ctrl.test(p_button))
     {
-      auto&  comm = shop_ptr->get_commodity(menu_window->get_item_index());
-
-      Event  evt(EventKind::shop_Buy_item);
-
-      evt.shop.commodity = &comm;
-
-      event_queue::push(evt);
-
-
       pop_routine(menu_window->get_item_index());
     }
 
@@ -73,7 +53,7 @@ process(Controller const&  ctrl) noexcept
       event_queue::push(evt);
 
 
-      pop_routine();
+      pop_routine(-1);
     }
 
   else
@@ -81,8 +61,6 @@ process(Controller const&  ctrl) noexcept
     {
            if(ctrl.test(up_button)   ){menu_window->move_cursor_to_up();  interval_timer.enable();}
       else if(ctrl.test(down_button) ){menu_window->move_cursor_to_down();  interval_timer.enable();}
-//      else if(ctrl.test(left_button) ){menu_window->move_cursor_to_left();  interval_timer.enable();}
-//      else if(ctrl.test(right_button)){menu_window->move_cursor_to_right();  interval_timer.enable();}
       else {interval_timer.disable();}
     }
 }
@@ -123,16 +101,10 @@ close_shop_menu_window() noexcept
 
 
 void
-start_shop_menu(char const*  label, Return  retcb) noexcept
+start_shop_menu(Return  retcb) noexcept
 {
-  shop_ptr = find_shop(label);
-
-    if(shop_ptr)
+    if(get_current_shop())
     {
-      Event  evt(EventKind::shop_Enter);
-
-      event_queue::push(evt);
-
       open_shop_menu_window();
 
       push_routine(process,retcb);
