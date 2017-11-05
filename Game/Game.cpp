@@ -49,15 +49,19 @@ waiting(Controller const&  ctrl) noexcept
 {
   using namespace gmbb::flags_of_input;
 
-    if(is_main_menu_window_opened() ||
-       is_message_window_opened())
+    if(is_main_menu_window_opened())
+    {
+      close_main_menu_window();
+
+      hide_status_reportor();
+    }
+
+
+    if(is_message_window_opened())
     {
         if(ctrl.test(p_button))
         {
-          close_main_menu_window();
           close_message_window();
-
-          hide_status_reportor();
 
           wait_until_button_is_released();
         }

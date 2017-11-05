@@ -97,6 +97,8 @@ process(Controller const&  ctrl) noexcept
           {
             auto  target = get_talk_target();
 
+            clear_message_window();
+
               if(target)
               {
                 auto&  role = target->get_role();

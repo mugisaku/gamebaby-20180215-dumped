@@ -31,10 +31,6 @@ MessageWindow*
 window;
 
 
-bool
-is_finished;
-
-
 class
 Forwarder: public Task
 {
@@ -111,8 +107,6 @@ return_for_choosing(int  retval) noexcept
           window->clear();
 
           clear_candidates();
-
-          is_finished = false;
         }
 
       else
@@ -283,7 +277,10 @@ close_message_window() noexcept
 void
 clear_message_window() noexcept
 {
-  window->clear();
+    if(window)
+    {
+      window->clear();
+    }
 }
 
 
@@ -322,13 +319,15 @@ start_message(gamn::ListNode const&  nd, Return  retcb) noexcept
 {
   open_message_window();
 
-  clear_message_window();
+    if(window->is_stopped())
+    {
+      window->scroll();
+    }
+
 
   cursor = Cursor(&nd);
 
   clear_candidates();
-
-  is_finished = false;
 
 
   push_routine(process,retcb);

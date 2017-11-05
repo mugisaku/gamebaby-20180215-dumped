@@ -6,14 +6,17 @@ shop:{
       text:"ここは　こなや　だよ"
       text:"なにを　かうんだい？"
     }
-    "you want for this, right?":{
-      text:"おっ　$(chosen_commodity)が　ほしいんだね？"
+    confirm_commodity_for_buy:{
+      text:"$(chosen_commodity)が　ほしいんだね？"
     }
     when_money_is_enough:{
-      text:"はいよ　まいど"
+      text:"かってくれて　ありがとうよ"
     }
     when_money_is_not_enough:{
       text:"おや　おかねが　たりないね"
+    }
+    continue_to_buy:{
+      text:"ほかに　ほしいものは　あるかい？"
     }
     on_exit:{
       text:"また　きてくれよな"
@@ -45,7 +48,7 @@ message:{
   }
 
   whether_hero_picks_up_item:{
-    text:"${item_on_square}が　おちている"
+    text:"$(item_on_square)が　おちている"
     choosing:{
       entry:"ひろう":{
         trigger_event:"pick_up_item"

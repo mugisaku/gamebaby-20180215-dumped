@@ -17,8 +17,14 @@ final_retcb;
 
 
 
-void  return_from_message_of_you_want(int  retval) noexcept;
 void  return_from_shop_menu(int  retval) noexcept;
+
+
+void
+return_from_message_of_continue_to_buy(int  retval) noexcept
+{
+  start_shop_menu(return_from_shop_menu);
+}
 
 
 void
@@ -26,19 +32,17 @@ return_from_message_of_when_money_is_enough(int  retval) noexcept
 {
   auto  shop = get_current_shop();
 
-//  auto  msg = shop->get_message_set().when_moey_is_enough;
+  auto  msg = shop->get_message_set().continue_to_buy;
 
-//    if(msg)
+    if(msg)
     {
-//      start_message(*msg,return_from_message_of_you_want);
-
-      start_shop_menu(return_from_shop_menu);
+      start_message(*msg,return_from_message_of_continue_to_buy);
     }
 }
 
 
 void
-return_from_message_of_you_want(int  retval) noexcept
+return_from_message_of_confirm_commodity_for_buy(int  retval) noexcept
 {
   auto  shop = get_current_shop();
 
@@ -69,11 +73,11 @@ return_from_shop_menu(int  retval) noexcept
       event_queue::push(evt);
 
 
-      auto  msg = shop->get_message_set().you_want_for_this;
+      auto  msg = shop->get_message_set().confirm_commodity_for_buy;
 
         if(msg)
         {
-          start_message(*msg,return_from_message_of_you_want);
+          start_message(*msg,return_from_message_of_confirm_commodity_for_buy);
         }
     }
 

@@ -30,15 +30,27 @@ name(name_)
         }
 
       else
-        if(v.is_list("you want for this, right?"))
+        if(v.is_list("confirm_commodity_for_buy"))
         {
-          message_set.you_want_for_this = v.get_list().get_first();
+          message_set.confirm_commodity_for_buy = v.get_list().get_first();
         }
 
       else
         if(v.is_list("when_money_is_enough"))
         {
           message_set.when_money_is_enough = v.get_list().get_first();
+        }
+
+      else
+        if(v.is_list("when_money_is_not_enough"))
+        {
+          message_set.when_money_is_not_enough = v.get_list().get_first();
+        }
+
+      else
+        if(v.is_list("continue_to_buy"))
+        {
+          message_set.continue_to_buy = v.get_list().get_first();
         }
     }
 }

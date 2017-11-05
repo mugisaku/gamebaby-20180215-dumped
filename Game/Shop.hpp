@@ -29,7 +29,8 @@ ShopMessageSet
 
   gamn::ListNode const*  when_money_is_enough=nullptr;
   gamn::ListNode const*  when_money_is_not_enough=nullptr;
-  gamn::ListNode const*  you_want_for_this=nullptr;
+  gamn::ListNode const*  confirm_commodity_for_buy=nullptr;
+  gamn::ListNode const*  continue_to_buy=nullptr;
 
 };
 
