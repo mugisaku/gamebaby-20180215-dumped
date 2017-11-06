@@ -32,64 +32,9 @@ get_glyph_data(char16_t  c) const noexcept
 }
 
 
-void
-GlyphSet::
-load_from_file(char const*  path) noexcept
-{
-  auto  f = fopen(path,"rb");
-
-    if(f)
-    {
-      load_from_file(f);
-
-      fclose(f);
-    }
-}
-
-
 namespace{
 void
-fputc_u16be(uint16_t  c, FILE*  f) noexcept
-{
-  fputc(c>>8,f);
-  fputc(c   ,f);
-}
-
-
-void
-fputc_u32be(uint32_t  c, FILE*  f) noexcept
-{
-  fputc(c>>24,f);
-  fputc(c>>16,f);
-  fputc(c>> 8,f);
-  fputc(c    ,f);
-}
-
-
-uint16_t
-fgetc_u16be(FILE*  f) noexcept
-{
-  uint16_t  c  = fgetc(f)<<8;
-            c |= fgetc(f)   ;
-
-  return c;
-}
-
-
-uint32_t
-fgetc_u32be(FILE*  f) noexcept
-{
-  uint32_t  c  = fgetc(f)<<24;
-            c |= fgetc(f)<<16;
-            c |= fgetc(f)<< 8;
-            c |= fgetc(f)    ;
-
-  return c;
-}
-
-
-void
-load(uint32_t*  ln, int  h, int  line_size, FILE*  f)
+load(uint32_t*  ln, int  h, int  line_size, StreamReader&  r)
 {
     for(int  i = 0;  i < h;  ++i)
     {
@@ -97,18 +42,18 @@ load(uint32_t*  ln, int  h, int  line_size, FILE*  f)
 
         if(line_size <= 8)
         {
-          v = fgetc(f)<<24;
+          v = r.get()<<24;
         }
 
       else
         if(line_size <= 16)
         {
-          v = fgetc_u16be(f)<<16;
+          v = r.get_be16()<<16;
         }
 
       else
         {
-          v = fgetc_u32be(f);
+          v = r.get_be32();
         }
 
 
@@ -125,21 +70,36 @@ load(uint32_t*  ln, int  h, int  line_size, FILE*  f)
 
 void
 GlyphSet::
-load_from_file(FILE*  f) noexcept
+load_from_file(char const*  path) noexcept
+{
+  Stream  s;
+
+    if(s.set_content_from_file(path))
+    {
+      auto  r = s.make_reader();
+
+      load_from_stream(r);
+    }
+}
+
+
+void
+GlyphSet::
+load_from_stream(StreamReader&  r) noexcept
 {
   clear();
 
-  this->width          = fgetc(f);
-  this->height         = fgetc(f);
-  this->bits_per_pixel = fgetc(f);
+  this->width          = r.get();
+  this->height         = r.get();
+  this->bits_per_pixel = r.get();
 
   int  const line_size = this->bits_per_pixel*this->width;
 
-  auto  n = fgetc_u16be(f);
+  auto  n = r.get_be16();
 
     while(n--)
     {
-      auto  unicode = fgetc_u16be(f);
+      auto  unicode = r.get_be16();
 
         if(unicode >= 0xFF00)
         {
@@ -155,7 +115,7 @@ load_from_file(FILE*  f) noexcept
         }
 
 
-      load(ln,this->height,line_size,f);
+      load(ln,this->height,line_size,r);
     }
 }
 
@@ -166,34 +126,31 @@ void
 GlyphSet::
 save_to_file(char const*  path) const noexcept
 {
-  auto  f = fopen(path,"wb");
+  Stream  s;
 
-    if(f)
-    {
-      save_to_file(f);
+  StreamWriter  w(&s);
 
-      fclose(f);
-    }
+  save_to_stream(w);
+
+  s.output_content_to_file(path);
 }
 
 
 void
 GlyphSet::
-save_to_file(FILE*  f) const noexcept
+save_to_stream(StreamWriter&  w) const noexcept
 {
   auto&  bpp = this->bits_per_pixel;
 
   int  const line_size = 2*this->width;
 
-  fputc(this->width,f);
-  fputc(this->height,f);
-  fputc(2,f);
+  w.put(this->width);
+  w.put(this->height);
+  w.put(2);
 
-  fpos_t  pos;
+  auto  off = w.get_offset();
 
-  fgetpos(f,&pos);
-
-  fputc_u16be(0,f);
+  w.put_be16(0);
 
 
   int  n = 0;
@@ -206,7 +163,7 @@ save_to_file(FILE*  f) const noexcept
         {
           ++n;
 
-          fputc_u16be(unicode,f);
+          w.put_be16(unicode);
 
             if(bpp == 1)
             {
@@ -250,9 +207,9 @@ save_to_file(FILE*  f) const noexcept
                     }
 
 
-                       if(line_size <=  8){fputc(      v,f);}
-                  else if(line_size <= 16){fputc_u16be(v,f);}
-                  else                    {fputc_u32be(v,f);}
+                       if(line_size <=  8){w.put(     v);}
+                  else if(line_size <= 16){w.put_be16(v);}
+                  else                    {w.put_be32(v);}
                 }
             }
 
@@ -260,7 +217,7 @@ save_to_file(FILE*  f) const noexcept
             {
                 for(int  y = 0;  y < this->height;  ++y)
                 {
-                  fputc_u32be(ln[y],f);
+                  w.put_be32(ln[y]);
                 }
             }
         }
@@ -270,9 +227,9 @@ save_to_file(FILE*  f) const noexcept
     }
 
 
-  fsetpos(f,&pos);
+  w.set_offset(off);
 
-  fputc_u16be(n,f);
+  w.put_be16(n);
 }
 
 

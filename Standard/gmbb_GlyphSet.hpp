@@ -5,7 +5,9 @@
 #include<cstdint>
 #include<cstdio>
 #include<cstddef>
-#include<string>
+#include"gmbb_Stream.hpp"
+#include"gmbb_StreamReader.hpp"
+#include"gmbb_StreamWriter.hpp"
 
 
 namespace gmbb{
@@ -39,11 +41,11 @@ public:
 
   uint32_t const*  get_glyph_data(char16_t  c) const noexcept;
 
-  void  load_from_file(char const*  path) noexcept;
-  void  load_from_file(FILE*  f) noexcept;
+  void  load_from_file(char const*  path)       noexcept;
+  void    save_to_file(char const*  path) const noexcept;
 
-  void  save_to_file(char const*  path) const noexcept;
-  void  save_to_file(FILE*  f) const noexcept;
+  void  load_from_stream(StreamReader&  r)       noexcept;
+  void    save_to_stream(StreamWriter&  w) const noexcept;
 
 };
 

@@ -1,4 +1,4 @@
-#include"gmbb_File.hpp"
+#include"gmbb_Stream.hpp"
 #include<cstdio>
 #include<zlib.h>
 
@@ -10,19 +10,11 @@ namespace gmbb{
 
 
 
-File::
-File(std::string&&  name_, std::string&&  content_) noexcept:
-name(std::move(name_)),
-content(std::move(content_))
-{
-}
-
-
-File::
-File(FileReader&  r) noexcept
+Stream::
+Stream(StreamReader&  r) noexcept
 {
   auto  len = r.get_be32();
-
+std::string  name;
   name.resize(len);
 
   auto  it = name.begin();
@@ -48,34 +40,33 @@ File(FileReader&  r) noexcept
 
 
 
-std::string
-File::
-get_content_from_file(const char*  path, bool  use_zlib) noexcept
+bool
+Stream::
+set_content_from_file(const char*  path) noexcept
 {
-  std::string  s;
+  content.clear();
 
-    if(use_zlib)
+  auto  gz = gzopen(path,"rb");
+
+    if(gz)
     {
-      auto  gz = gzopen(path,"rb");
-
-        if(gz)
+        for(;;)
         {
-            for(;;)
+          auto  c = gzgetc(gz);
+
+            if(gzeof(gz))
             {
-              auto  c = gzgetc(gz);
-
-                if(gzeof(gz))
-                {
-                  break;
-                }
-
-
-              s.push_back(c);
+              break;
             }
 
 
-          gzclose(gz);
+          content.push_back(c);
         }
+
+
+      gzclose(gz);
+
+      return true;
     }
 
   else
@@ -94,22 +85,26 @@ get_content_from_file(const char*  path, bool  use_zlib) noexcept
                 }
 
 
-              s.push_back(c);
+              content.push_back(c);
             }
 
 
           fclose(f);
+
+          return true;
         }
     }
 
 
-  return std::move(s);
+  return false;
 }
 
 
+
+
 void
-File::
-put_content_to_file(const char*  path, const std::string&  content, bool  use_zlib) noexcept
+Stream::
+output_content_to_file(const char*  path, bool  use_zlib) const noexcept
 {
     if(use_zlib)
     {

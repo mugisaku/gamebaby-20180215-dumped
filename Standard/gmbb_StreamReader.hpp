@@ -1,5 +1,5 @@
-#ifndef GMBB_FILEREADER_HPP
-#define GMBB_FILEREADER_HPP
+#ifndef GMBB_StreamReader_HPP
+#define GMBB_StreamReader_HPP
 
 
 #include<cstddef>
@@ -11,14 +11,14 @@ namespace gmbb{
 
 
 class
-FileReader
+StreamReader
 {
   char const*    begin;
   char const*      end;
   char const*  current;
 
 public:
-  FileReader(const char*  p, size_t  length) noexcept;
+  StreamReader(const char*  p, size_t  length) noexcept;
 
   void  rewind() noexcept{current = begin;}
 
@@ -28,7 +28,7 @@ public:
   int  get_be16() noexcept;
   int  get_be32() noexcept;
 
-  bool  test_eof() const noexcept{return current >= end;}
+  operator bool() const noexcept{return current < end;}
 
 };
 

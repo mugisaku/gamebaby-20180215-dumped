@@ -113,18 +113,20 @@ get_screen_image() noexcept
 void
 initialize() noexcept
 {
-#ifdef EMSCRIPTEN
-        glset.load_from_file("small_font.bin");
-  large_glset.load_from_file("large_font.bin");
+  Stream  image_s;
 
-  File  f("",File::get_content_from_file("image.png"));
+#ifdef EMSCRIPTEN
+        glset.load_from_file("small_font.z");
+  large_glset.load_from_file("large_font.z");
+
+  image_s.set_content_from_file("image.png");
 
   load_script_file("script.gamn");
 #else
-        glset.load_from_file("/usr/local/share/gmbb/small_font.bin");
-  large_glset.load_from_file("/usr/local/share/gmbb/large_font.bin");
+        glset.load_from_file("/usr/local/share/gmbb/small_font.gz");
+  large_glset.load_from_file("/usr/local/share/gmbb/large_font.gz");
 
-  File  f("",File::get_content_from_file("../bin/image.png"));
+  image_s.set_content_from_file("../bin/image.png");
 
   load_script_file("../script.gamn");
 #endif
@@ -132,7 +134,7 @@ initialize() noexcept
   board.set_script_processor(process_script);
 
 
-  auto  r = f.make_reader();
+  auto  r = image_s.make_reader();
 
   character_image.load_png(r);
 

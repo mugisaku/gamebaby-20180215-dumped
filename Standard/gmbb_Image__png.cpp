@@ -13,7 +13,7 @@ namespace{
 void
 read(png_structp  png, png_bytep  buf, png_size_t  size)
 {
-  auto&  r = *static_cast<FileReader*>(png_get_io_ptr(png));
+  auto&  r = *static_cast<StreamReader*>(png_get_io_ptr(png));
 
     while(size--)
     {
@@ -25,7 +25,7 @@ read(png_structp  png, png_bytep  buf, png_size_t  size)
 
 void
 Image::
-load_png(FileReader&  r) noexcept
+load_png(StreamReader&  r) noexcept
 {
   auto  png      = png_create_read_struct(PNG_LIBPNG_VER_STRING,nullptr,nullptr,nullptr);
   auto  png_info = png_create_info_struct(png);

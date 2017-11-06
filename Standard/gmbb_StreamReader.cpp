@@ -1,4 +1,4 @@
-#include"gmbb_FileReader.hpp"
+#include"gmbb_StreamReader.hpp"
 #include<cstdio>
 
 
@@ -9,8 +9,8 @@ namespace gmbb{
 
 
 
-FileReader::
-FileReader(const char*  p, size_t  length) noexcept:
+StreamReader::
+StreamReader(const char*  p, size_t  length) noexcept:
 begin(p),
 current(p),
 end(p+length)
@@ -21,17 +21,15 @@ end(p+length)
 
 
 int
-FileReader::
+StreamReader::
 get() noexcept
 {
-  unsigned char  v = *current++;
-
-  return v;
+  return static_cast<unsigned char>(*current++);
 }
 
 
 int
-FileReader::
+StreamReader::
 get_be16() noexcept
 {
   int  v = get()<<8;
@@ -43,7 +41,7 @@ get_be16() noexcept
 
 
 int
-FileReader::
+StreamReader::
 get_be32() noexcept
 {
   int  v = get()<<24;

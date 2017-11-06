@@ -7,7 +7,7 @@
 #include<string>
 #include<memory>
 #include"gmbb_GlyphSet.hpp"
-#include"gmbb_FileReader.hpp"
+#include"gmbb_StreamReader.hpp"
 #include"gmbb_Figures.hpp"
 #include"gmbb_Palette.hpp"
 
@@ -49,7 +49,7 @@ public:
 
   void  resize(int  w, int  h) noexcept;
 
-  void  load_png(FileReader&  r) noexcept;
+  void  load_png(StreamReader&  r) noexcept;
 
   int   get_width() const noexcept{return this->width ;}
   int  get_height() const noexcept{return this->height;}
