@@ -150,12 +150,24 @@ read_next_line() noexcept
     }
 
   else
-    if(v.is_string("command"))
+    if(v.is_string("reference"))
+    {
+      auto  sc = find_script("message",v.get_string().data());
+
+        if(sc && sc->is_list())
+        {
+          cursor.go_in(sc->get_list().get_first());
+        }
+    }
+
+  else
+    if(v.is_string("function"))
     {
       auto  s = v.get_string();
 
            if(s == "clear"){window->clear();}
       else if(s == "exit"){pop_routine();}
+      else if(s == "pick_up_item_on_square"){pick_up_item_on_square(*hero_piece);}
     }
 
   else
@@ -288,6 +300,15 @@ bool
 is_message_window_opened() noexcept
 {
   return window && window->get_group();
+}
+
+
+
+
+bool
+is_message_window_clean() noexcept
+{
+  return window && window->is_clean();
 }
 
 

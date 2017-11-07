@@ -34,12 +34,7 @@ return_for_talk_command(int  retval) noexcept
 void
 return_for_foot_command(int  retval) noexcept
 {
-  close_sack_menu_window();
-
-    if(retval < 0)
-    {
-      pop_routine();
-    }
+  pop_routine();
 }
 
 
@@ -69,6 +64,7 @@ return_for_belongings_command(int  retval) noexcept
     }
 
 
+  close_sack_menu_window();
   close_message_window();
 }
 
@@ -91,6 +87,8 @@ process(Controller const&  ctrl) noexcept
 
     if(ctrl.test(p_button))
     {
+     clear_message_window();
+
         switch(menu_window->get_item_index())
         {
       case(talk):
@@ -151,12 +149,14 @@ process(Controller const&  ctrl) noexcept
 
                 if(empty)
                 {
+                  environment::set_value("item_on_square",(*item).get_name());
+
                   start_message("whether_hero_picks_up_item",return_for_foot_command);
                 }
 
               else
                 {
-                  start_message("whether_hero_picks_up_item",return_for_foot_command);
+                  start_message("when_has_no_empty",return_for_foot_command);
                 }
             }
 
@@ -178,7 +178,7 @@ process(Controller const&  ctrl) noexcept
 
           else
             {
-              start_message("あしもとには　なにもない",return_for_foot_command);
+              start_message("when_square_has_no_item",return_for_foot_command);
             }
         }
           break;

@@ -164,11 +164,14 @@ open_sack_menu_window() noexcept
 void
 close_sack_menu_window() noexcept
 {
-  menu_window->reset_cursor();
+    if(menu_window)
+    {
+      menu_window->reset_cursor();
 
-  root_task.erase(*menu_window);
+      root_task.erase(*menu_window);
 
-  menu_window->set_state(WindowState::hidden);
+      menu_window->set_state(WindowState::hidden);
+    }
 }
 
 

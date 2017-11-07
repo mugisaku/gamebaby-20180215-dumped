@@ -83,6 +83,8 @@ void  process_script(Director&  di, gamn::ListNode const*&  cur);
 void  controll_hero_piece(Piece&  self) noexcept;
 void    render_hero_piece(Piece const&  self, Image&  dst, Point  dst_point) noexcept;
 
+void  pick_up_item_on_square(Piece&  actor) noexcept;
+
 void  throw_item(GameItem const&  item, covered_ptr<Square>  start, Direction  d) noexcept;
 
 void  move_hero_piece_to_forward();
@@ -143,6 +145,7 @@ void  clear_message_window() noexcept;
 void  start_message(char const*  label, Return  retcb) noexcept;
 void  start_message(gamn::ListNode const&  nd, Return  retcb) noexcept;
 bool  is_message_window_opened() noexcept;
+bool  is_message_window_clean() noexcept;
 
 
 

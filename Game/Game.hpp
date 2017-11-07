@@ -8,7 +8,7 @@
 namespace gmbb{
 
 
-Image const&  get_screen_image() noexcept;
+Image const&  update_screen() noexcept;
 
 void  initialize() noexcept;
 

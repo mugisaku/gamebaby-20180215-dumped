@@ -47,11 +47,9 @@ write(uint8_t*&  ptr, int  pitch, uint32_t  v)
 
 
 void
-transfer()
+transfer(const Image&  img)
 {
   auto  base_ptr = static_cast<uint8_t*>(surface->pixels);
-
-  auto&  img = get_screen_image();
 
   const int  w     = img.get_width();
   const int  h     = img.get_height();
@@ -232,7 +230,7 @@ main_loop()
         }
 
 
-      transfer();
+      transfer(update_screen());
     }
 }
 
@@ -250,7 +248,7 @@ main(int  argc, char**  argv)
 
   SDL_ShowCursor(SDL_DISABLE);
 
-  auto&  img = get_screen_image();
+  auto&  img = update_screen();
 
   window = SDL_CreateWindow("GAME BABY - " __DATE__,SDL_WINDOWPOS_CENTERED,
                                                     SDL_WINDOWPOS_CENTERED,

@@ -34,7 +34,8 @@ public:
 
   operator bool() const noexcept{return specs;}
 
-  GameItemSpecs const*  operator->() const noexcept{return specs;}
+  GameItemSpecs const&  operator* () const noexcept{return *specs;}
+  GameItemSpecs const*  operator->() const noexcept{return  specs;}
 
 
   GameItemSpecs const&  get_specs() const noexcept{return *specs;}

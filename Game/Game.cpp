@@ -45,20 +45,28 @@ large_glset;
 
 
 void
+return_(int  retval) noexcept
+{
+  close_sack_menu_window();
+  close_main_menu_window();
+
+  hide_status_reportor();
+}
+
+
+void
 waiting(Controller const&  ctrl) noexcept
 {
   using namespace gmbb::flags_of_input;
 
-    if(is_main_menu_window_opened())
-    {
-      close_main_menu_window();
-
-      hide_status_reportor();
-    }
-
-
     if(is_message_window_opened())
     {
+        if(is_message_window_clean())
+        {
+          close_message_window();
+        }
+
+      else
         if(ctrl.test(p_button))
         {
           close_message_window();
@@ -82,7 +90,7 @@ waiting(Controller const&  ctrl) noexcept
     {
       open_main_menu_window();
 
-      start_main_menu(nullptr);
+      start_main_menu(return_);
 
       show_status_reportor();
     }
@@ -104,8 +112,13 @@ waiting(Controller const&  ctrl) noexcept
 
 
 Image const&
-get_screen_image() noexcept
+update_screen() noexcept
 {
+  screen_image.fill();
+
+  root_task.render(screen_image,Point());
+
+
   return screen_image;
 }
 
@@ -116,8 +129,8 @@ initialize() noexcept
   Stream  image_s;
 
 #ifdef EMSCRIPTEN
-        glset.load_from_file("small_font.z");
-  large_glset.load_from_file("large_font.z");
+        glset.load_from_file("small_font.gz");
+  large_glset.load_from_file("large_font.gz");
 
   image_s.set_content_from_file("image.png");
 
@@ -180,13 +193,7 @@ step(Controller const&  ctrl)
 
   root_task.update();
 
-
   call_routine(ctrl);
-
-
-  screen_image.fill();
-
-  root_task.render(screen_image,Point());
 }
 
 

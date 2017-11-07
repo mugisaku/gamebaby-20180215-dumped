@@ -26,43 +26,6 @@ is_busy;
 
 
 void
-pickup_item_if_is(Piece&  actor) noexcept
-{
-  auto&  sq = *actor.get_square();
-
-  auto&  i = sq.get_item();
-
-    if(i)
-    {
-      actor.change_action_index(ActionIndex::message);
-
-      char  buf[256] = {0};
-
-      auto  pickedup = hero.get_sack().try_to_push_item(i);
-
-      char const*  fmt = "%sを　ひろった";
-
-      auto  name = i->get_name();
-
-        if(!pickedup)
-        {
-          fmt = "%sがおちていたが　もちものがいっぱいで　ひろえない";
-        }
-
-      else
-        {
-          i = GameItem();
-        }
-
-
-      snprintf(buf,sizeof(buf),fmt,name);
-
-      start_message(buf,nullptr);
-    }
-}
-
-
-void
 prepare_to_move(Piece&  p, Square&  sq, Direction  d) noexcept
 {
   Event  evt;
@@ -153,6 +116,39 @@ prepare_to_move(Piece&  p, Square&  sq, Direction  d) noexcept
 
 
 void
+pick_up_item_on_square(Piece&  actor) noexcept
+{
+  auto&  sq = *actor.get_square();
+
+  auto&  i = sq.get_item();
+
+    if(i)
+    {
+      actor.change_action_index(ActionIndex::message);
+
+      auto  pickedup = hero.get_sack().try_to_push_item(i);
+
+      clear_message_window();
+
+        if(!pickedup)
+        {
+          start_message("when_has_no_empty",nullptr);
+        }
+
+      else
+        {
+          environment::set_value("item_on_square",i->get_name());
+
+          start_message("picked_up_item_on_square",nullptr);
+
+          i = GameItem();
+        }
+
+    }
+}
+
+
+void
 controll_hero_piece(Piece&  self) noexcept
 {
     switch(self.get_action_index())
@@ -180,7 +176,7 @@ controll_hero_piece(Piece&  self) noexcept
               
               event_queue::push(evt);
 
-              pickup_item_if_is(self);
+              pick_up_item_on_square(self);
 
               self.change_action_index(ActionIndex::null);
 

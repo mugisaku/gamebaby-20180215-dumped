@@ -47,11 +47,27 @@ message:{
     text:"その　ほうこうには　だれも　いない"
   }
 
-  whether_hero_picks_up_item:{
+  when_square_has_no_item:{
+    text:"あしもとには　なにもない"
+  }
+
+  when_has_no_empty:{
+    text:"もちものが　いっぱいで　ひろうことが　できない"
+  }
+
+  picked_up_item_on_square:{
+    text:"$(item_on_square)を　ひろった"
+  }
+
+  item_is_on_square:{
     text:"$(item_on_square)が　おちている"
+  }
+
+  whether_hero_picks_up_item:{
+    reference:item_is_on_square
     choosing:{
       entry:"ひろう":{
-        trigger_event:"pick_up_item"
+        function:pick_up_item
       }
       entry:"ひろわない":{
       }
