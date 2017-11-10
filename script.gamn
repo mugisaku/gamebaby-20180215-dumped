@@ -108,36 +108,56 @@ message:{
     text:"さようなら"
   }
 
-  needing_happiness_powder:{
-    if:"has_happiness_powder"{
-      text:"あ　あんたが　もっているのは"
-      text:"「しあわせのこな」じゃねえか？"
-      text:"それを　おれに　くれるのかい？"
-      choosing:{
-        entry:"おう　やるよ":{
-          text:"ありがてえ"
-          erase:""
-        }
-        entry:"ぜったいに　やらん":{
-          text:"ちっ　なんでえ"
-          text:"だったら　あっちへ　いきやがれ"
-        }
+
+  when_has_happiness_powder:{
+    text:"あ　あんたが　もっているのは"
+    text:"「しあわせのこな」じゃねえか？"
+    text:"それを　おれに　くれるのかい？"
+    choosing:{
+      entry:"おう　やるよ":{
+        text:"ありがてえ"
+        erase:""
       }
-    }
-    else:{
-      text:"ああ　ほしい"
-      text:"「しあわせのこな」が　ほしいぜ"
-    }
+      entry:"ぜったいに　やらん":{
+        text:"ちっ　なんでえ"
+        text:"だったら　あっちへ　いきやがれ"
+      }
+  }
+
+  when_has_no_happiness_powder:{
+    text:"ああ　ほしい"
+    text:"「しあわせのこな」が　ほしいぜ"
+  }
+
+
+  needing_happiness_powder:{
+    "has_happiness_powder"? when_has_happiness_powder
+                          : when_has_no_happiness_powder
   }
 }
 
 role:{
   hero:{
   }
+
   friend:{
     talk_action:{
          with:"hero"
+      content:"advice"
+    }
+  }
+
+  seller:{
+    talk_action:{
+         with:"hero"
       content:"shopping_please"
+    }
+  }
+
+  man_that_need_happiness_powder:{
+    talk_action:{
+         with:"hero"
+      content:"needing_happiness_powder"
     }
   }
 }
@@ -150,10 +170,23 @@ routine:{
       role:"hero"
       initial_position:(x:1 y:1)
     )
+
     new_piece:(
       name:"friend"
       role:"friend"
       initial_position:(x:3 y:3)
+    )
+
+    new_piece:(
+      name:"friend"
+      role:"seller"
+      initial_position:(x:4 y:1)
+    )
+
+    new_piece:(
+      name:"friend"
+      role:"man_that_need_happiness_powder"
+      initial_position:(x:1 y:2)
     )
   }
 }

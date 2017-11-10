@@ -73,6 +73,8 @@ set(GAME_SOURCES
   Game/Board.cpp
   Game/Board__render.cpp
   Game/ScriptManager.cpp
+  Game/Messembly.cpp
+  Game/Messembly_ImageBuilder.cpp
 )
 
 

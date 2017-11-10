@@ -119,7 +119,65 @@ read_list(covered_ptr<List>  parent, char  opening, char  closing)
 
 Value
 StreamReader::
-read_value(covered_ptr<List>  parent)
+read_child_value(std::string&&  s, covered_ptr<List>  parent)
+{
+  ++pointer;
+
+  skip_spaces();
+
+
+  auto  v = read_value(parent);
+
+    if(v.get_name().size())
+    {
+      v = Value(new Value(std::move(v)));
+    }
+
+
+  v.set_name(std::move(s));
+
+  return std::move(v);
+}
+
+
+Value
+StreamReader::
+read_pair(std::string&&  s, covered_ptr<List>  parent)
+{
+  ++pointer;
+
+  skip_spaces();
+
+
+  auto  pair = new Pair;
+
+  pair->left = read_value(parent,Contracept(true));
+
+    if(*pointer != ':')
+    {
+      throw StreamError(*this,"値を仕切る':'がない  %c",*pointer);
+    }
+
+
+  ++pointer;
+
+  skip_spaces();
+
+
+  pair->right = read_value(parent,Contracept(true));
+
+
+  Value  pv(pair);
+
+  pv.set_name(std::move(s));
+
+  return std::move(pv);
+}
+
+
+Value
+StreamReader::
+read_value(covered_ptr<List>  parent, Contracept  contracept)
 {
   auto  first_c = *pointer;
 
@@ -149,24 +207,15 @@ read_value(covered_ptr<List>  parent)
 
           skip_spaces();
 
-            if(*pointer == ':')
+            if(!contracept.value  && (*pointer == ':'))
             {
-              ++pointer;
+              return read_child_value(std::move(s),parent);
+            }
 
-              skip_spaces();
-
-
-              auto  v = read_value(parent);
-
-                if(v.get_name().size())
-                {
-                  v = Value(new Value(std::move(v)));
-                }
-
-
-              v.set_name(std::move(s));
-
-              return std::move(v);
+          else
+            if(*pointer == '?')
+            {
+              return read_pair(std::move(s),parent);
             }
 
           else
@@ -182,24 +231,15 @@ read_value(covered_ptr<List>  parent)
 
           skip_spaces();
 
-            if(*pointer == ':')
+            if(!contracept.value  && (*pointer == ':'))
             {
-              ++pointer;
+              return read_child_value(std::move(s),parent);
+            }
 
-              skip_spaces();
-
-
-              auto  v = read_value(parent);
-
-                if(v.get_name().size())
-                {
-                  v = Value(new Value(std::move(v)));
-                }
-
-
-              v.set_name(std::move(s));
-
-              return std::move(v);
+          else
+            if(*pointer == '?')
+            {
+              return read_pair(std::move(s),parent);
             }
 
           else

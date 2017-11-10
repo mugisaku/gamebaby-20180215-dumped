@@ -161,6 +161,26 @@ read_next_line() noexcept
     }
 
   else
+    if(v.is_value("if"))
+    {
+      auto&  vv = v.get_value();
+
+        if(vv.is_list())
+        {
+          auto  env = environment::get_value(vv.get_name().data()).data();
+
+            if(*env == '1')
+            {
+              cursor.go_in(vv.get_list().get_first());
+            }
+
+          else
+            {
+            }
+        }
+    }
+
+  else
     if(v.is_string("function"))
     {
       auto  s = v.get_string();

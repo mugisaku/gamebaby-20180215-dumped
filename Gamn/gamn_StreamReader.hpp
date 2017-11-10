@@ -108,6 +108,16 @@ public:
 class List;
 
 
+struct
+Contracept
+{
+  bool  value;
+
+  explicit constexpr Contracept(bool  v) noexcept: value(v){}
+
+};
+
+
 class
 StreamReader: public StreamContext
 {
@@ -134,6 +144,9 @@ StreamReader: public StreamContext
 
   List*  read_list(covered_ptr<List>  parent, char  opening, char  closing);
 
+  Value  read_child_value(std::string&&  s, covered_ptr<List>  parent);
+  Value  read_pair(       std::string&&  s, covered_ptr<List>  parent);
+
 public:
   StreamReader() noexcept{}
   StreamReader(char const*  p) noexcept: StreamContext(p){}
@@ -144,7 +157,7 @@ public:
 
   char  get_char() const noexcept{return *pointer;}
 
-  Value  read_value(covered_ptr<List>  parent=nullptr);
+  Value  read_value(covered_ptr<List>  parent=nullptr, Contracept  contracept=Contracept(false));
 
 };
 
