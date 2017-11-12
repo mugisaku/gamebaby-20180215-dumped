@@ -9,6 +9,13 @@ namespace      gmbb{
 namespace messembly{
 
 
+class Machine;
+
+using TextTransfer     = void  (*)(const std::string&  name);
+using ExternalFunction = bool  (*)(const std::string&  name);
+using ChoosingCallback = void  (*)(Machine&  m, const Choosing&  cho);
+
+
 class
 Machine
 {
@@ -23,14 +30,18 @@ Machine
 
   std::vector<uint32_t>  call_stack;
 
-  bool  (*xfunction)(const std::string&  name);
+  TextTransfer          text_transfer=nullptr;
+  ExternalFunction  external_function=nullptr;
+  ChoosingCallback  choosing_callback=nullptr;
 
-  const Image*  image;
-
-  MessageWindow*  window;
+  const Image*  image=nullptr;
 
 public:
-  bool  is_slept() const noexcept{return slept;}
+  void  set_text_transfer(        TextTransfer  cb){    text_transfer = cb;}
+  void  set_external_function(ExternalFunction  cb){external_function = cb;}
+  void  set_choosing_callback(ChoosingCallback  cb){choosing_callback = cb;}
+
+  bool   is_slept() const noexcept{return  slept;}
   bool  is_halted() const noexcept{return halted;}
 
   uint32_t  get_pc(           ) const noexcept{return pc    ;}

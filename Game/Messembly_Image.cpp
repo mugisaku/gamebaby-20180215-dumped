@@ -45,6 +45,34 @@ void
 Image::
 print() const noexcept
 {
+  uint32_t  i = 0;
+
+    for(auto&  instr: binary)
+    {
+      printf("  %4d ",i++);
+
+      auto  imm = instr.get_imm();
+
+        switch(instr.get_opcode())
+        {
+      case(Opcode::nop): printf("nop");break;
+      case(Opcode::sfl): printf("sfl \"%s\"",string_table[imm].data());break;
+      case(Opcode::ufl): printf("ufl \"%s\"",string_table[imm].data());break;
+      case(Opcode::tfl): printf("tfl \"%s\"",string_table[imm].data());break;
+      case(Opcode::txt): printf("txt \"%s\"",string_table[imm].data());break;
+      case(Opcode::eq ): printf("eq  %4d",imm);break;
+      case(Opcode::neq): printf("neq %4d",imm);break;
+      case(Opcode::jmp): printf("jmp %4d",imm);break;
+      case(Opcode::bra): printf("bra %4d",imm);break;
+      case(Opcode::cho): printf("cho");break;
+      case(Opcode::xfn): printf("xfn %s",string_table[imm].data());break;
+      case(Opcode::cal): printf("cal %s",string_table[imm].data());break;
+      case(Opcode::ret): printf("ret");break;
+        }
+
+
+      printf("\n");
+    }
 }
 
 

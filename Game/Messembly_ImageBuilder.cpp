@@ -13,13 +13,21 @@ Source
 {
   Opcode  opcode;
 
-  ImageBuilder::MetaSymbol*  symbol=nullptr;
+  Symbol*  symbol=nullptr;
 
   uint32_t  imm;
 
   Source(){}
   Source(Opcode  op, uint32_t  imm_): opcode(op), imm(imm_){}
-  Source(Opcode  op, ImageBuilder::MetaSymbol&  sym): opcode(op), symbol(&sym){}
+  Source(Opcode  op, Symbol&  sym): opcode(op), symbol(&sym){}
+
+  void  update() noexcept
+  {
+      if(symbol)
+      {
+        imm = symbol->index;
+      }
+  }
 
 };
 
@@ -38,8 +46,8 @@ ElementKind
 union
 ElementData
 {
-  ImageBuilder::MetaSymbol*  symbol;
-  Source                     source;
+  Symbol*  symbol;
+  Source   source;
 
    ElementData(){}
   ~ElementData(){}
@@ -57,9 +65,9 @@ Element
 
 
   Element(){}
-  Element(MetaSymbol&  sym, bool  isent) noexcept: kind(isent? ElementKind::entry:ElementKind::label){data.symbol = &sym;}
+  Element(Symbol&  sym, bool  isent) noexcept: kind(isent? ElementKind::entry:ElementKind::label){data.symbol = &sym;}
   Element(Opcode  op, uint32_t  imm) noexcept: kind(ElementKind::source){new(&data) Source(op,imm);}
-  Element(Opcode  op, MetaSymbol&  sym) noexcept: kind(ElementKind::source){new(&data) Source(op,sym);}
+  Element(Opcode  op, Symbol&  sym) noexcept: kind(ElementKind::source){new(&data) Source(op,sym);}
 
         ElementData*  operator->()       noexcept{return &data;}
   const ElementData*  operator->() const noexcept{return &data;}
@@ -162,7 +170,7 @@ append_entry_symbol(const std::string&  s) noexcept
 
 
 
-ImageBuilder::MetaSymbol&
+Symbol&
 ImageBuilder::
 get_label_symbol(const std::string&  s) noexcept
 {
@@ -183,7 +191,7 @@ get_label_symbol(const std::string&  s) noexcept
 }
 
 
-ImageBuilder::MetaSymbol&
+Symbol&
 ImageBuilder::
 get_entry_symbol(const std::string&  s) noexcept
 {
@@ -415,7 +423,21 @@ finalize() noexcept
         if(e.is_entry() ||
            e.is_label())
         {
-          e->symbol->Symbol::index = index;
+          e->symbol->index = index;
+        }
+    }
+
+
+  cur = first;
+
+    while(cur)
+    {
+      auto&  e = *cur            ;
+                  cur = cur->next;
+
+        if(e.is_source())
+        {
+          e->source.update();
         }
     }
 }
@@ -510,11 +532,11 @@ print() const noexcept
           case(Opcode::txt): printf("txt \"%s\"",string_list[src.imm].data());break;
           case(Opcode::eq ): printf("eq  %4d",src.imm);break;
           case(Opcode::neq): printf("neq %4d",src.imm);break;
-          case(Opcode::jmp): printf("jmp %s(%4d)",src.symbol->name.data(),src.symbol->Symbol::index);break;
-          case(Opcode::bra): printf("bra %s(%4d)",src.symbol->name.data(),src.symbol->Symbol::index);break;
+          case(Opcode::jmp): printf("jmp %s(%4d)",src.symbol->name.data(),src.symbol->index);break;
+          case(Opcode::bra): printf("bra %s(%4d)",src.symbol->name.data(),src.symbol->index);break;
           case(Opcode::cho): printf("cho");break;
           case(Opcode::xfn): printf("xfn %s",string_list[src.imm].data());break;
-          case(Opcode::cal): printf("cal %s(%4d)",src.symbol->name.data(),src.symbol->Symbol::index);break;
+          case(Opcode::cal): printf("cal %s(%4d)",src.symbol->name.data(),src.symbol->index);break;
           case(Opcode::ret): printf("ret");break;
             }
 

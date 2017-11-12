@@ -60,9 +60,9 @@ Symbol
   Symbol():
   index(0){}
 
-  Symbol(const std::string&  name_):
+  Symbol(const std::string&  name_, uint32_t  i=0):
   name(name_),
-  index(0){}
+  index(i){}
 
 };
 

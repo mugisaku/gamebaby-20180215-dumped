@@ -47,15 +47,18 @@ step() noexcept
         }
       break;
   case(Opcode::txt):
-//      window->push(image->get_string(instr.get_imm()).data());
+        if(text_transfer)
+        {
+          text_transfer(image->get_string(instr.get_imm()));
+        }
       break;
   case(Opcode::jmp):
-      pc = image->get_label_symbol(instr.get_imm()).index;
+      pc = instr.get_imm();
       break;
   case(Opcode::bra):
         if(boolean)
         {
-          pc = image->get_label_symbol(instr.get_imm()).index;
+          pc = instr.get_imm();
         }
       break;
   case(Opcode::eq):
@@ -65,29 +68,24 @@ step() noexcept
       boolean = (chosen_value != instr.get_imm());
       break;
   case(Opcode::cho):
+        if(choosing_callback)
         {
           auto&  choosing = image->get_choosing(instr.get_imm());
 
-            for(auto&  ent: choosing.entries)
-            {
-//              append_answer(ent.data());
-            }
-
-
           slept = true;
 
-//          start_choosing(Avoidable(false),return_from_choosing);
+          choosing_callback(*this,choosing);
         }
       break;
   case(Opcode::xfn):
-        if(xfunction)
+        if(external_function)
         {
-          boolean = xfunction(image->get_string(instr.get_imm()));
+          boolean = external_function(image->get_string(instr.get_imm()));
         }
       break;
   case(Opcode::cal):
-      call_stack.emplace_back(pc)                                                ;
-                              pc = image->get_entry_symbol(instr.get_imm()).index;
+      call_stack.emplace_back(pc)                 ;
+                              pc = instr.get_imm();
       break;
   case(Opcode::ret):
         if(call_stack.size())
@@ -128,6 +126,12 @@ reset(const Image*  img, const char*  entry_name) noexcept
     if(img)
     {
       auto  sym = img->find_entry_symbol(entry_name);
+
+        if(!sym)
+        {
+          printf("[messembly error] エントリー%sが見つからない",entry_name);
+        }
+
 
       pc = sym? sym->index:0;
     }

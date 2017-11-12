@@ -15,20 +15,8 @@ namespace messembly{
 class
 ImageBuilder
 {
-public:
-  struct MetaSymbol: public Symbol{
-    uint32_t  index;
-
-    MetaSymbol(const std::string&  name, uint32_t  i=0) noexcept:
-    Symbol(name),
-    index(i){}
-
-  };
-
-
-private:
-  std::list<MetaSymbol>   entry_symbol_list;
-  std::list<MetaSymbol>   label_symbol_list;
+  std::list<Symbol>   entry_symbol_list;
+  std::list<Symbol>   label_symbol_list;
   std::vector<std::string>  string_list;
 
   std::vector<Choosing>   choosing_list;
@@ -43,8 +31,8 @@ private:
   void  append_label_symbol(const std::string&  s) noexcept;
   void  append_entry_symbol(const std::string&  s) noexcept;
 
-  MetaSymbol&  get_label_symbol(const std::string&  s) noexcept;
-  MetaSymbol&  get_entry_symbol(const std::string&  s) noexcept;
+  Symbol&  get_label_symbol(const std::string&  s) noexcept;
+  Symbol&  get_entry_symbol(const std::string&  s) noexcept;
 
   void  push_element(Element*  e) noexcept;
 

@@ -116,12 +116,12 @@ message:{
     choosing:{
       entry:"おう　やるよ":{
         text:"ありがてえ"
-        erase:""
       }
       entry:"ぜったいに　やらん":{
         text:"ちっ　なんでえ"
         text:"だったら　あっちへ　いきやがれ"
       }
+    }
   }
 
   when_has_no_happiness_powder:{
