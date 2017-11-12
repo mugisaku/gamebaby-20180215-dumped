@@ -278,41 +278,6 @@ read_value(covered_ptr<List>  parent, Contracept  contracept)
 }
 
 
-
-
-std::string
-make_string_from_file(const char*  filepath)
-{
-  FileStream  fs(filepath);
-
-    if(fs)
-    {
-      std::string  s;
-
-        for(;;)
-        {
-          auto  c = fs.getc();
-
-            if(fs.eof() || fs.error())
-            {
-              break;
-            }
-
-
-          s += c;
-        }
-
-
-      return std::move(s);
-    }
-
-  else
-    {
-      throw StreamError(StreamContext(),"%sがみつからない",filepath);
-    }
-}
-
-
 }
 
 

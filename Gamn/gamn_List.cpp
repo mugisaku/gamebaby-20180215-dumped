@@ -1,6 +1,7 @@
 #include"gamn_List.hpp"
 #include"gamn_Value.hpp"
 #include"gamn_StreamReader.hpp"
+#include"gmbb_Stream.hpp"
 
 
 
@@ -18,7 +19,11 @@ List(StreamReader&  reader, covered_ptr<List>  parent_, char  op, char  cl)
 List::
 List(char const*  filepath)
 {
-  StreamReader  sr(make_string_from_file(filepath).data());
+  gmbb::Stream  s;
+
+  s.set_content_from_file(filepath);
+
+  StreamReader  sr(s.get_content().data());
 
   assign(sr);
 }

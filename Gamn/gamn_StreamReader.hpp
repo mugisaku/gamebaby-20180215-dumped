@@ -162,9 +162,6 @@ public:
 };
 
 
-std::string  make_string_from_file(const char*  filepath);
-
-
 }
 
 

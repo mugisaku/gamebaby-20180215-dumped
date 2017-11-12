@@ -1,5 +1,6 @@
 #include"ShopManager.hpp"
 #include"ScriptManager.hpp"
+#include"gmbb_Stream.hpp"
 #include<list>
 #include<memory>
 

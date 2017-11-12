@@ -74,6 +74,7 @@ set(GAME_SOURCES
   Game/Board__render.cpp
   Game/ScriptManager.cpp
   Game/Messembly.cpp
+  Game/Messembly_Image.cpp
   Game/Messembly_ImageBuilder.cpp
 )
 
@@ -121,7 +122,8 @@ include_directories(./Gamn)
 include_directories(./Standard)
 include_directories(/usr/include/SDL2)
 add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
-add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES})
+add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES})
+add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 
 
 if(EMSC)

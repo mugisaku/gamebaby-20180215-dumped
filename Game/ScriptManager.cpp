@@ -1,5 +1,6 @@
 #include"ScriptManager.hpp"
 #include"ShopManager.hpp"
+#include"gmbb_Stream.hpp"
 #include<vector>
 #include<cstring>
 
@@ -69,9 +70,11 @@ find_script(char const*  module_name, char const*  value_name) noexcept
 void
 load_script_file(char const*  filepath) noexcept
 {
-  auto  s = make_string_from_file(filepath);
+  gmbb::Stream  s;
 
-  StreamReader  r(s.data());
+  s.set_content_from_file(filepath);
+
+  gamn::StreamReader  r(s.get_content().data());
 
   List*  ls;
 
