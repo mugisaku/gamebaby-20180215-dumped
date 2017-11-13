@@ -19,8 +19,6 @@ ImageBuilder
   std::list<Symbol>   label_symbol_list;
   std::vector<std::string>  string_list;
 
-  std::vector<Choosing>   choosing_list;
-
   class Element;
 
   Element*  first=nullptr;

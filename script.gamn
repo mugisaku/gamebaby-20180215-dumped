@@ -2,26 +2,6 @@
 
 shop:{
   powder_shop:{
-    on_enter:{
-      text:"ここは　こなや　だよ"
-      text:"なにを　かうんだい？"
-    }
-    confirm_commodity_for_buy:{
-      text:"$(chosen_commodity)が　ほしいんだね？"
-    }
-    when_money_is_enough:{
-      text:"かってくれて　ありがとうよ"
-    }
-    when_money_is_not_enough:{
-      text:"おや　おかねが　たりないね"
-    }
-    continue_to_buy:{
-      text:"ほかに　ほしいものは　あるかい？"
-    }
-    on_exit:{
-      text:"また　きてくれよな"
-    }
-
     commodity:{
       name:"さとう" price:10 number:-1
     }
@@ -39,6 +19,26 @@ shop:{
 
 
 message:{
+  on_enter:{
+    text:"ここは　こなや　だよ"
+    text:"なにを　かうんだい？"
+  }
+  confirm_commodity_for_buy:{
+    text:"$(chosen_commodity)が　ほしいんだね？"
+  }
+  when_money_is_enough:{
+    text:"かってくれて　ありがとうよ"
+  }
+  when_money_is_not_enough:{
+    text:"おや　おかねが　たりないね"
+  }
+  continue_to_buy:{
+    text:"ほかに　ほしいものは　あるかい？"
+  }
+  on_exit:{
+    text:"また　きてくれよな"
+  }
+
   no_data_for_talk:{
     text:"かいわデータがありません"
   }
@@ -74,14 +74,6 @@ message:{
     }
   }
 
-
-  advice:{
-    text:"ぶきや　ぼうぐは　ちゃんと　そうびしないと"
-    text:"いみが　ないんだぜ"
-    text:"でも　まだ　しょりが　じっそう　されていないから"
-    text:"ちゃんと　そうびしても"
-    text:"いみが　ないんだぜ"
-  }
 
   shopping_please:{
     text:"ちょっと　おじかん　いいですか？"
@@ -140,13 +132,6 @@ role:{
   hero:{
   }
 
-  friend:{
-    talk_action:{
-         with:"hero"
-      content:"advice"
-    }
-  }
-
   seller:{
     talk_action:{
          with:"hero"
@@ -169,12 +154,6 @@ routine:{
       name:"hero"
       role:"hero"
       initial_position:(x:1 y:1)
-    )
-
-    new_piece:(
-      name:"friend"
-      role:"friend"
-      initial_position:(x:3 y:3)
     )
 
     new_piece:(

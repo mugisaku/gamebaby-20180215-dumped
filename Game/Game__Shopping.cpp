@@ -30,28 +30,14 @@ return_from_message_of_continue_to_buy(int  retval) noexcept
 void
 return_from_message_of_when_money_is_enough(int  retval) noexcept
 {
-  auto  shop = get_current_shop();
-
-  auto  msg = shop->get_message_set().continue_to_buy;
-
-    if(msg)
-    {
-      start_message(*msg,return_from_message_of_continue_to_buy);
-    }
+  start_message("continue_to_buy",return_from_message_of_continue_to_buy);
 }
 
 
 void
 return_from_message_of_confirm_commodity_for_buy(int  retval) noexcept
 {
-  auto  shop = get_current_shop();
-
-  auto  msg = shop->get_message_set().when_money_is_enough;
-
-    if(msg)
-    {
-      start_message(*msg,return_from_message_of_when_money_is_enough);
-    }
+  start_message("when_money_is_enough",return_from_message_of_when_money_is_enough);
 }
 
 
@@ -73,12 +59,7 @@ return_from_shop_menu(int  retval) noexcept
       event_queue::push(evt);
 
 
-      auto  msg = shop->get_message_set().confirm_commodity_for_buy;
-
-        if(msg)
-        {
-          start_message(*msg,return_from_message_of_confirm_commodity_for_buy);
-        }
+      start_message("confirm_commodity_for_buy",return_from_message_of_confirm_commodity_for_buy);
     }
 
   else
@@ -91,18 +72,7 @@ return_from_shop_menu(int  retval) noexcept
       close_shop_menu_window();
 
 
-      auto  on_exit = shop->get_message_set().on_exit;
-
-        if(on_exit)
-        {
-          start_message(*on_exit,final_retcb);
-        }
-
-      else
-        if(final_retcb)
-        {
-          final_retcb(0);
-        }
+      start_message("on_exit",final_retcb);
     }
 }
 
@@ -128,13 +98,7 @@ start_shopping(char const*  label, Return  retcb) noexcept
 
       final_retcb = retcb;
 
-
-      auto  on_enter = get_current_shop()->get_message_set().on_enter;
-
-        if(on_enter)
-        {
-          start_message(*on_enter,return_from_message_of_on_enter);
-        }
+      start_message("on_enter",return_from_message_of_on_enter);
     }
 }
 

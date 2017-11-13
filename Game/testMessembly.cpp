@@ -58,35 +58,43 @@ main(int  argc, char**  argv)
 
   Machine  m;
 
-  m.reset(&img,"when_has_happiness_powder");
+  m.reset(img,"when_has_happiness_powder");
 
-  m.set_text_transfer([](const std::string&  s_){
-    printf("%s\n",s_.data());
-  });
-
-  m.set_choosing_callback([](Machine&  m, const Choosing&  cho){
-    int  n = 1;
-
-      for(auto&  ent: cho.entries)
-      {
-        printf("  %2d <%s>\n",n++,ent.data());
-      }
-
-
-    printf("[input a number you want]\n");
+  m.set_process_callback([](Machine&  m, const std::string&  txt){
+    static int  n;
 
     char  buf[256];
 
-    fgets(buf,sizeof(buf),stdin);
+    int  res;
 
-      while(sscanf(buf,"%d",&n) != 1)
+      switch(m.get_opcode())
       {
+    case(Opcode::ttx):
+        printf("%s\n",txt.data());
+        break;
+    case(Opcode::adb):
+        printf("  %2d <%s>\n",++n,txt.data());
+        break;
+    case(Opcode::xch):
+        printf("[input a number you want]\n");
+
+        n = 0;
+
         fgets(buf,sizeof(buf),stdin);
+
+          while(sscanf(buf,"%d",&res) != 1)
+          {
+            fgets(buf,sizeof(buf),stdin);
+          }
+
+
+        m.set_chosen_value(res-1);
+        break;
+    case(Opcode::xfn):
+        break;
       }
-
-
-    m.set_chosen_value(n? n-1:0);
   });
+
 
     while(!m.is_halted())
     {

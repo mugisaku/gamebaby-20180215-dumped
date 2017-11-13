@@ -1,6 +1,7 @@
 #include"ScriptManager.hpp"
 #include"ShopManager.hpp"
 #include"gmbb_Stream.hpp"
+#include"Messembly_ImageBuilder.hpp"
 #include<vector>
 #include<cstring>
 
@@ -18,9 +19,20 @@ std::vector<List*>
 list_table;
 
 
+messembly::Image
+image;
+
+
 }
 
 
+
+
+bool
+reset_machine(messembly::Machine&  m, const char*  entry_name) noexcept
+{
+  return m.reset(image,entry_name);
+}
 
 
 gamn::Value const*
@@ -95,6 +107,20 @@ load_script_file(char const*  filepath) noexcept
     if(ls)
     {
       list_table.emplace_back(ls);
+
+        for(auto&  v: *ls)
+        {
+            if(v.is_list("message"))
+            {
+              messembly::ImageBuilder  builder;
+
+              builder.push_entry_list(v.get_list());
+
+              builder.finalize();
+
+              image = builder.build();
+            }
+        }
     }
 }
 

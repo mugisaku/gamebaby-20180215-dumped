@@ -21,20 +21,6 @@ Commodity
 };
 
 
-struct
-ShopMessageSet
-{
-  gamn::ListNode const*  on_enter=nullptr;
-  gamn::ListNode const*  on_exit =nullptr;
-
-  gamn::ListNode const*  when_money_is_enough=nullptr;
-  gamn::ListNode const*  when_money_is_not_enough=nullptr;
-  gamn::ListNode const*  confirm_commodity_for_buy=nullptr;
-  gamn::ListNode const*  continue_to_buy=nullptr;
-
-};
-
-
 class
 Shop
 {
@@ -48,16 +34,12 @@ private:
 
   int  number=0;
 
-  ShopMessageSet  message_set;
-
   void  read_commodity(gamn::ListNode const*  cur) noexcept;
 
 public:
   Shop(std::string const&  name_, gamn::List const&  ls) noexcept;
 
   void  push(Commodity const&  comm) noexcept{table[number++] = comm;}
-
-  ShopMessageSet const&  get_message_set() const noexcept{return message_set;}
 
   std::string const&  get_name() const noexcept{return name;}
 

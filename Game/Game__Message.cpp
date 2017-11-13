@@ -1,5 +1,6 @@
 #include"Game_private.hpp"
 #include"EventQueue.hpp"
+#include"Messembly_ImageBuilder.hpp"
 
 
 
@@ -19,38 +20,58 @@ constexpr Point  choosing_point = message_point+Point(200,24);
 constexpr uint32_t  key_flags = flags_of_input::p_button;
 
 
-Cursor
-cursor;
-
-
-ListNode const*
-candidates[8];
+messembly::Machine
+m;
 
 
 MessageWindow*
 window;
 
 
-class
-Forwarder: public Task
+void
+return_for_choosing(int  retval) noexcept
 {
-  uint32_t  last_time=0;
+    if(retval >= 0)
+    {
+      m.set_chosen_value(retval);
+    }
 
-  bool  fast_flag=false;
 
-public:
-  void  update() noexcept override;
-
-} forwarder;
+  close_choosing_window();
+}
 
 
 void
-clear_candidates() noexcept
+proc_cb(messembly::Machine&  m, const std::string&  text)
 {
-    for(auto&  cd: candidates)
-    {
-      cd = nullptr;
-    }
+  using namespace messembly;
+
+  static bool  flag;
+
+      switch(m.get_opcode())
+      {
+    case(Opcode::ttx):
+        window->push(text.data());
+        break;
+    case(Opcode::adb):
+          if(!flag)
+          {
+            prepare_choosing_window({},choosing_point);
+
+            flag = true;
+          }
+
+
+        append_answer(text.data());
+        break;
+    case(Opcode::xch):
+        flag = false;
+
+        start_choosing(Avoidable(false),return_for_choosing);
+        break;
+    case(Opcode::xfn):
+        break;
+      }
 }
 
 
@@ -80,7 +101,7 @@ operate_message(Controller const&  ctrl) noexcept
 
     if(ctrl.test(p_button))
     {
-      interval_time /= 5;
+      interval_time /= 10;
     }
 
 
@@ -90,38 +111,6 @@ operate_message(Controller const&  ctrl) noexcept
 
       window->step();
     }
-}
-
-
-void
-return_for_choosing(int  retval) noexcept
-{
-    if(retval >= 0)
-    {
-      auto  nd = candidates[retval];
-
-        if(nd)
-        {
-          cursor.go_in(nd);
-
-          window->clear();
-
-          clear_candidates();
-        }
-
-      else
-        {
-          pop_routine();
-        }
-    }
-
-  else
-    {
-      pop_routine();
-    }
-
-
-  close_choosing_window();
 }
 
 
@@ -138,113 +127,6 @@ return_for_shopping(int  retval) noexcept
 
 
 void
-read_next_line() noexcept
-{
-  auto&  v = *cursor;
-
-  cursor.advance();
-
-    if(v.is_string("text"))
-    {
-      window->push(v.get_string().data());
-    }
-
-  else
-    if(v.is_string("reference"))
-    {
-      auto  sc = find_script("message",v.get_string().data());
-
-        if(sc && sc->is_list())
-        {
-          cursor.go_in(sc->get_list().get_first());
-        }
-    }
-
-  else
-    if(v.is_value("if"))
-    {
-      auto&  vv = v.get_value();
-
-        if(vv.is_list())
-        {
-          auto  env = environment::get_value(vv.get_name().data()).data();
-
-            if(*env == '1')
-            {
-              cursor.go_in(vv.get_list().get_first());
-            }
-
-          else
-            {
-            }
-        }
-    }
-
-  else
-    if(v.is_string("function"))
-    {
-      auto  s = v.get_string();
-
-           if(s == "clear"){window->clear();}
-      else if(s == "exit"){pop_routine();}
-      else if(s == "pick_up_item_on_square"){pick_up_item_on_square(*hero_piece);}
-    }
-
-  else
-    if(v.is_list("choosing"))
-    {
-      cursor.go_in(v.get_list().get_first());
-
-      prepare_choosing_window({},choosing_point);
-
-      clear_candidates();
-
-      ListNode const**  it = candidates;
-
-        while(cursor)
-        {
-          auto&  v = *cursor;
-
-          cursor.advance(Cursor::GoUpIfReachedEnd(false));
-
-            if(v.is_value("entry"))
-            {
-              auto&  vv = v.get_value();
-
-              append_answer(vv.get_name().data());
-
-              *it++ = vv.get_list().get_first();
-            }
-        }
-
-
-      start_choosing(Avoidable(false),return_for_choosing);
-    }
-
-  else
-    if(v.is_string("call_shop"))
-    {
-      close_main_menu_window();
-        hide_status_reportor();
-
-      start_shopping(v.get_string().data(),return_for_shopping);
-    }
-
-  else
-    if(v)
-    {
-      printf("[message error] unprocessable value...");
-
-      v.print();
-
-      printf("\n");
-
-      fflush(stdout);
-    }
-}
-
-
-void
 process(Controller const&  ctrl) noexcept
 {
   using namespace gmbb::flags_of_input;
@@ -255,22 +137,15 @@ process(Controller const&  ctrl) noexcept
     }
 
   else
-    if(cursor)
+    if(!m.is_halted())
     {
-      read_next_line();
+      m.step();
     }
 
   else
     {
       pop_routine();
     }
-}
-
-
-void
-Forwarder::
-update() noexcept
-{
 }
 
 
@@ -283,10 +158,10 @@ open_message_window() noexcept
     if(!window)
     {
       window = new MessageWindow(glset,24,4,message_point);
+
+      m.set_process_callback(proc_cb);
     }
 
-
-  clear_candidates();
 
   root_task.push(*window);
 
@@ -335,40 +210,20 @@ is_message_window_clean() noexcept
 void
 start_message(char const*  label, Return  retcb) noexcept
 {
-  auto  sc = find_script("message",label);
+  Event  evt(EventKind::message_Start);
 
-    if(sc && sc->is_list())
-    {
-      Event  evt(EventKind::message_Start);
+  evt.message.content = label;
 
-      evt.message.content = label;
+  event_queue::push(evt);
 
-      event_queue::push(evt);
+  reset_machine(m,label);
 
-      start_message(*sc->get_list().get_first(),retcb);
-    }
-
-  else
-    {
-      printf("[start message error] \"%s\"というメッセージのデータはみつからない\n",label);
-    }
-}
-
-
-void
-start_message(gamn::ListNode const&  nd, Return  retcb) noexcept
-{
   open_message_window();
 
     if(window->is_stopped())
     {
       window->scroll();
     }
-
-
-  cursor = Cursor(&nd);
-
-  clear_candidates();
 
 
   push_routine(process,retcb);

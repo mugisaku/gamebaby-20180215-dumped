@@ -21,7 +21,9 @@ step() noexcept
 
   auto  instr = image->get_instruction(pc++);
 
-    switch(instr.get_opcode())
+  opcode = instr.get_opcode();
+
+    switch(opcode)
     {
   case(Opcode::nop):
       break;
@@ -43,13 +45,15 @@ step() noexcept
         {
           auto  name = image->get_string(instr.get_imm()).data();
 
-          boolean = environment::get_value(name)[0] == '1';
+          boolean = environment::get_value(name)[0] != '0';
         }
       break;
-  case(Opcode::txt):
-        if(text_transfer)
+  case(Opcode::ttx):
+  case(Opcode::adb):
+  case(Opcode::xfn):
+        if(process_cb)
         {
-          text_transfer(image->get_string(instr.get_imm()));
+          process_cb(*this,image->get_string(instr.get_imm()));
         }
       break;
   case(Opcode::jmp):
@@ -67,20 +71,14 @@ step() noexcept
   case(Opcode::neq):
       boolean = (chosen_value != instr.get_imm());
       break;
-  case(Opcode::cho):
-        if(choosing_callback)
+  case(Opcode::xch):
+        if(process_cb)
         {
-          auto&  choosing = image->get_choosing(instr.get_imm());
+          static const std::string  dummy_s("CHOOSING");
 
           slept = true;
 
-          choosing_callback(*this,choosing);
-        }
-      break;
-  case(Opcode::xfn):
-        if(external_function)
-        {
-          boolean = external_function(image->get_string(instr.get_imm()));
+          process_cb(*this,dummy_s);
         }
       break;
   case(Opcode::cal):
@@ -117,30 +115,32 @@ set_chosen_value(uint32_t  v) noexcept
 }
 
 
-void
+bool
 Machine::
-reset(const Image*  img, const char*  entry_name) noexcept
+reset(const Image&  img, const char*  entry_name) noexcept
 {
-  image = img;
+  image = &img;
 
-    if(img)
+  auto  sym = img.find_entry_symbol(entry_name);
+
+    if(!sym)
     {
-      auto  sym = img->find_entry_symbol(entry_name);
+      printf("[messembly error] エントリー%sが見つからない",entry_name);
 
-        if(!sym)
-        {
-          printf("[messembly error] エントリー%sが見つからない",entry_name);
-        }
+      halted = true;
 
-
-      pc = sym? sym->index:0;
+      return false;
     }
 
+
+  pc = sym->index;
 
    slept = false;
   halted = false;
 
   call_stack.clear();
+
+  return true;
 }
 
 

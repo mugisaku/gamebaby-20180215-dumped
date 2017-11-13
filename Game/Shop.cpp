@@ -16,42 +16,6 @@ name(name_)
         {
           read_commodity(v.get_list().get_first());
         }
-
-      else
-        if(v.is_list("on_enter"))
-        {
-          message_set.on_enter = v.get_list().get_first();
-        }
-
-      else
-        if(v.is_list("on_exit"))
-        {
-          message_set.on_exit = v.get_list().get_first();
-        }
-
-      else
-        if(v.is_list("confirm_commodity_for_buy"))
-        {
-          message_set.confirm_commodity_for_buy = v.get_list().get_first();
-        }
-
-      else
-        if(v.is_list("when_money_is_enough"))
-        {
-          message_set.when_money_is_enough = v.get_list().get_first();
-        }
-
-      else
-        if(v.is_list("when_money_is_not_enough"))
-        {
-          message_set.when_money_is_not_enough = v.get_list().get_first();
-        }
-
-      else
-        if(v.is_list("continue_to_buy"))
-        {
-          message_set.continue_to_buy = v.get_list().get_first();
-        }
     }
 }
 

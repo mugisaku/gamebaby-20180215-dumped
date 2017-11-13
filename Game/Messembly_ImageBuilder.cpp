@@ -112,7 +112,6 @@ clear() noexcept
    last = nullptr;
 
         string_list.clear();
-      choosing_list.clear();
   entry_symbol_list.clear();
   label_symbol_list.clear();
 }
@@ -229,52 +228,47 @@ push_choosing(const gamn::List&  ls, Status&  st) noexcept
 
   append_label_symbol(begin_s);
 
-  Choosing  cho;
+  std::vector<const gamn::Value*>  entries;
 
-    for(auto&  vv: ls)
+    for(auto&  v: ls)
     {
-        if(vv.is_value("entry"))
+        if(v.is_value("entry"))
         {
-          auto&  vvv = vv.get_value();
+          auto&  vv = v.get_value();
 
-          cho.entries.emplace_back(vvv.get_name());
+          push_element(new Element(Opcode::adb,append_string(vv.get_name())));
+
+          entries.emplace_back(&vv);
         }
     }
 
 
-  auto  cho_i = choosing_list.size();
-
-  push_element(new Element(Opcode::cho,cho_i));
+  push_element(new Element(Opcode::xch,0));
 
   int  n = 0;
 
-    for(auto&  vv: ls)
+    for(auto&  v: entries)
     {
-        if(vv.is_value("entry"))
-        {
-          snprintf(buf,sizeof(buf),"%s_entry%03d_begin",base_s.data(),n+1);
+      snprintf(buf,sizeof(buf),"%s_entry%03d_begin",base_s.data(),n+1);
 
-          const std::string  next_ent_begin_s(buf);
+      const std::string  next_ent_begin_s(buf);
 
 
-          push_element(new Element(Opcode::neq,n));
-          push_element(new Element(Opcode::bra,get_label_symbol(next_ent_begin_s)));
+      push_element(new Element(Opcode::neq,n));
+      push_element(new Element(Opcode::bra,get_label_symbol(next_ent_begin_s)));
 
-          push_value(vv.get_value(),st);
+      push_value(*v,st);
 
-          push_element(new Element(Opcode::jmp,get_label_symbol(end_s)));
+      push_element(new Element(Opcode::jmp,get_label_symbol(end_s)));
 
-          append_label_symbol(next_ent_begin_s);
+      append_label_symbol(next_ent_begin_s);
 
 
-          ++n;
-        }
+      ++n;
     }
 
 
   append_label_symbol(end_s);
-
-  choosing_list.emplace_back(std::move(cho));
 }
 
 
@@ -307,11 +301,15 @@ push_value(const gamn::Value&  v, Status&  st) noexcept
       auto&  name = v.get_name();
       auto&     s = v.get_string();
 
-           if(name == "text"      ){push_element(new Element(Opcode::txt,append_string(s)));}
+           if(name == "text"      ){push_element(new Element(Opcode::ttx,append_string(s)));}
       else if(name == "set_flag"  ){push_element(new Element(Opcode::sfl,append_string(s)));}
       else if(name == "unset_flag"){push_element(new Element(Opcode::ufl,append_string(s)));}
       else if(name == "reference" ){push_element(new Element(Opcode::cal,get_entry_symbol(s)));}
       else if(name == "function"  ){push_element(new Element(Opcode::xfn,append_string(s)));}
+      else
+        {
+          push_element(new Element(Opcode::cal,get_entry_symbol(s)));
+        }
     }
 
   else
@@ -352,17 +350,6 @@ push_value(const gamn::Value&  v, Status&  st) noexcept
       push_value(p.right,st);
 
       append_label_symbol(cond_end_s);
-    }
-
-  else
-    if(v.is_string("call_shop"))
-    {
-/*
-      close_main_menu_window();
-        hide_status_reportor();
-
-      start_shopping(v.get_string().data(),return_for_shopping);
-*/
     }
 }
 
@@ -470,11 +457,9 @@ build() const noexcept
   std::vector<Symbol>  entry_symbol_table;
   std::vector<Symbol>  label_symbol_table;
   std::vector<std::string>   string_table;
-  std::vector<Choosing>    choosing_table;
   std::vector<Instruction>  binary;
 
   transfer(      string_list,      string_table);
-  transfer(    choosing_list,    choosing_table);
   transfer(entry_symbol_list,entry_symbol_table);
   transfer(label_symbol_list,label_symbol_table);
 
@@ -497,7 +482,6 @@ build() const noexcept
   return Image(std::move(entry_symbol_table),
                std::move(label_symbol_table),
                std::move(string_table),
-               std::move(choosing_table),
                std::move(binary));
 }
 
@@ -529,12 +513,13 @@ print() const noexcept
           case(Opcode::sfl): printf("sfl \"%s\"",string_list[src.imm].data());break;
           case(Opcode::ufl): printf("ufl \"%s\"",string_list[src.imm].data());break;
           case(Opcode::tfl): printf("tfl \"%s\"",string_list[src.imm].data());break;
-          case(Opcode::txt): printf("txt \"%s\"",string_list[src.imm].data());break;
+          case(Opcode::ttx): printf("ttx \"%s\"",string_list[src.imm].data());break;
+          case(Opcode::adb): printf("adb \"%s\"",string_list[src.imm].data());break;
           case(Opcode::eq ): printf("eq  %4d",src.imm);break;
           case(Opcode::neq): printf("neq %4d",src.imm);break;
           case(Opcode::jmp): printf("jmp %s(%4d)",src.symbol->name.data(),src.symbol->index);break;
           case(Opcode::bra): printf("bra %s(%4d)",src.symbol->name.data(),src.symbol->index);break;
-          case(Opcode::cho): printf("cho");break;
+          case(Opcode::xch): printf("xch");break;
           case(Opcode::xfn): printf("xfn %s",string_list[src.imm].data());break;
           case(Opcode::cal): printf("cal %s(%4d)",src.symbol->name.data(),src.symbol->index);break;
           case(Opcode::ret): printf("ret");break;

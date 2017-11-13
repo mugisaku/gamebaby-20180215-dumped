@@ -143,7 +143,6 @@ void   open_message_window() noexcept;
 void  close_message_window() noexcept;
 void  clear_message_window() noexcept;
 void  start_message(char const*  label, Return  retcb) noexcept;
-void  start_message(gamn::ListNode const&  nd, Return  retcb) noexcept;
 bool  is_message_window_opened() noexcept;
 bool  is_message_window_clean() noexcept;
 
