@@ -17,8 +17,6 @@ namespace{
 constexpr Point   message_point(8,160);
 constexpr Point  choosing_point = message_point+Point(200,24);
 
-constexpr uint32_t  key_flags = flags_of_input::p_button;
-
 
 messembly::Machine
 m;
@@ -70,6 +68,7 @@ proc_cb(messembly::Machine&  m, const std::string&  text)
         start_choosing(Avoidable(false),return_for_choosing);
         break;
     case(Opcode::xfn):
+        process_string(m,text);
         break;
       }
 }
@@ -78,11 +77,9 @@ proc_cb(messembly::Machine&  m, const std::string&  text)
 void
 operate_message(Controller const&  ctrl) noexcept
 {
-  using namespace gmbb::flags_of_input;
-
     if(window->is_stopped())
     {
-        if(ctrl.test(p_button))
+        if(ctrl.is_p_button_pressing())
         {
           window->scroll();
 
@@ -99,7 +96,7 @@ operate_message(Controller const&  ctrl) noexcept
 
   static uint32_t  last_time;
 
-    if(ctrl.test(p_button))
+    if(ctrl.is_p_button_pressing())
     {
       interval_time /= 10;
     }
@@ -129,8 +126,6 @@ return_for_shopping(int  retval) noexcept
 void
 process(Controller const&  ctrl) noexcept
 {
-  using namespace gmbb::flags_of_input;
-
     if(window->is_remaining())
     {
       operate_message(ctrl);

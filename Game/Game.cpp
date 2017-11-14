@@ -6,6 +6,14 @@
 namespace gmbb{
 
 
+bool  screen_modify;
+bool  screen_reverse;
+
+int  screen_r;
+int  screen_g;
+int  screen_b;
+
+
 Hero
 hero;
 
@@ -57,8 +65,6 @@ return_(int  retval) noexcept
 void
 waiting(Controller const&  ctrl) noexcept
 {
-  using namespace gmbb::flags_of_input;
-
     if(is_message_window_opened())
     {
         if(is_message_window_clean())
@@ -67,7 +73,7 @@ waiting(Controller const&  ctrl) noexcept
         }
 
       else
-        if(ctrl.test(p_button))
+        if(ctrl.is_p_button_pressing())
         {
           close_message_window();
 
@@ -81,12 +87,12 @@ waiting(Controller const&  ctrl) noexcept
 
   auto  ok = !is_hero_busy();
 
-    if(ok && ctrl.test(p_button))
+    if(ok && ctrl.is_p_button_pressing())
     {
     }
 
   else
-    if(ok && ctrl.test(n_button))
+    if(ok && ctrl.is_n_button_pressing())
     {
       open_main_menu_window();
 
@@ -99,10 +105,10 @@ waiting(Controller const&  ctrl) noexcept
     {
         if(ok && interval_timer.check(280,ctrl.get_time()))
         {
-               if(ctrl.test(up_button   )){move_hero_piece_to_forward();  interval_timer.enable();}
-          else if(ctrl.test(left_button )){turn_hero_piece_to_left( );  interval_timer.enable();}
-          else if(ctrl.test(right_button)){turn_hero_piece_to_right();  interval_timer.enable();}
-          else if(ctrl.test(down_button )){move_hero_piece_to_backward();  interval_timer.enable();}
+               if(   ctrl.is_up_button_pressing()){move_hero_piece_to_forward();  interval_timer.enable();}
+          else if( ctrl.is_left_button_pressing()){turn_hero_piece_to_left( );  interval_timer.enable();}
+          else if(ctrl.is_right_button_pressing()){turn_hero_piece_to_right();  interval_timer.enable();}
+          else if( ctrl.is_down_button_pressing()){move_hero_piece_to_backward();  interval_timer.enable();}
           else {interval_timer.disable();}
         }
     }
@@ -117,6 +123,18 @@ update_screen() noexcept
   screen_image.fill();
 
   root_task.render(screen_image,Point());
+
+    if(screen_modify)
+    {
+      screen_image.add(screen_r,
+                       screen_g,
+                       screen_b);
+
+        if(screen_reverse)
+        {
+          screen_image.reverse_color();
+        }
+    }
 
 
   return screen_image;
@@ -155,7 +173,8 @@ initialize() noexcept
   root_task.push(board);
   board.push(effect_director);
 
-  push_routine(waiting,nullptr);
+//  push_routine(waiting,nullptr);
+  push_routine(close_game,nullptr);
 
   show_status_monitor();
 //  show_debugger();

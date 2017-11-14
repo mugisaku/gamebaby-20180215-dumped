@@ -48,6 +48,50 @@ fill(Pixel  pix) noexcept
 }
 
 
+namespace{
+int
+clamp(int  n) noexcept
+{
+  return (n <= 0)? 0:
+         (n >= 7)? 7:n;
+}
+}
+
+
+void
+Image::
+add(int  r, int  g, int  b) noexcept
+{
+    for(auto&  pix: pixels)
+    {
+        if(pix.index)
+        {
+          auto  new_r = clamp(pix.index.r()+r);
+          auto  new_g = clamp(pix.index.g()+g);
+          auto  new_b = clamp(pix.index.b()+b);
+
+          pix.index = ColorIndex(new_r,new_g,new_b);
+        }
+    }
+}
+
+
+void
+Image::
+reverse_color() noexcept
+{
+    for(auto&  pix: pixels)
+    {
+        if(pix.index)
+        {
+          auto  new_r = (7-pix.index.r());
+          auto  new_g = (7-pix.index.g());
+          auto  new_b = (7-pix.index.b());
+
+          pix.index = ColorIndex(new_r,new_g,new_b);
+        }
+    }
+}
 
 
 }

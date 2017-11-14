@@ -105,29 +105,27 @@ quit()
 void
 process_key_down(const SDL_KeyboardEvent&  evt)
 {
-  using namespace gmbb::flags_of_input;
-
   if(!evt.repeat)
   {
       switch(evt.keysym.sym)
       {
-    case(SDLK_UP   ): ctrl.set(   up_button);break;
-    case(SDLK_LEFT ): ctrl.set( left_button);break;
-    case(SDLK_RIGHT): ctrl.set(right_button);break;
-    case(SDLK_DOWN ): ctrl.set( down_button);break;
+    case(SDLK_UP   ): ctrl.set(   Controller::up_button_flag);break;
+    case(SDLK_LEFT ): ctrl.set( Controller::left_button_flag);break;
+    case(SDLK_RIGHT): ctrl.set(Controller::right_button_flag);break;
+    case(SDLK_DOWN ): ctrl.set( Controller::down_button_flag);break;
 
-    case(SDLK_SPACE ): ctrl.set(start_button);break;
+    case(SDLK_SPACE ): ctrl.set(Controller::start_button_flag);break;
     case(SDLK_LSHIFT):
-    case(SDLK_RSHIFT): ctrl.set(shift_button);break;
+    case(SDLK_RSHIFT): ctrl.set(Controller::shift_button_flag);break;
 
     case(SDLK_RETURN):
     case(SDLK_z):
-        ctrl.set(p_button);
+        ctrl.set(Controller::p_button_flag);
         break;
     case(SDLK_RCTRL):
     case(SDLK_LCTRL):
     case(SDLK_x    ):
-        ctrl.set(n_button);
+        ctrl.set(Controller::n_button_flag);
         break;
     case(SDLK_F1):
         SDL_SaveBMP(surface,"__SCREEN.bmp");
@@ -140,27 +138,25 @@ process_key_down(const SDL_KeyboardEvent&  evt)
 void
 process_key_up(const SDL_KeyboardEvent&  evt)
 {
-  using namespace gmbb::flags_of_input;
-
     switch(evt.keysym.sym)
     {
-  case(SDLK_UP   ): ctrl.unset(   up_button);break;
-  case(SDLK_LEFT ): ctrl.unset( left_button);break;
-  case(SDLK_RIGHT): ctrl.unset(right_button);break;
-  case(SDLK_DOWN ): ctrl.unset( down_button);break;
+  case(SDLK_UP   ): ctrl.unset(   Controller::up_button_flag);break;
+  case(SDLK_LEFT ): ctrl.unset( Controller::left_button_flag);break;
+  case(SDLK_RIGHT): ctrl.unset(Controller::right_button_flag);break;
+  case(SDLK_DOWN ): ctrl.unset( Controller::down_button_flag);break;
 
-  case(SDLK_SPACE ): ctrl.unset(start_button);break;
+  case(SDLK_SPACE ): ctrl.unset(Controller::start_button_flag);break;
   case(SDLK_LSHIFT):
-  case(SDLK_RSHIFT): ctrl.unset(shift_button);break;
+  case(SDLK_RSHIFT): ctrl.unset(Controller::shift_button_flag);break;
 
   case(SDLK_RETURN):
   case(SDLK_z     ):
-      ctrl.unset(p_button);
+      ctrl.unset(Controller::p_button_flag);
       break;
   case(SDLK_RCTRL):
   case(SDLK_LCTRL):
   case(SDLK_x    ):
-      ctrl.unset(n_button);
+      ctrl.unset(Controller::n_button_flag);
       break;
     }
 }

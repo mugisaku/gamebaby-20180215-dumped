@@ -8,7 +8,8 @@ namespace gmbb{
 
 
 namespace{
-constexpr uint32_t  key_flags = (flags_of_input::p_button|flags_of_input::n_button);
+constexpr uint32_t  key_flags = (Controller::p_button_flag|
+                                 Controller::n_button_flag);
 
 
 uint32_t

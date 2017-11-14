@@ -83,8 +83,8 @@ message:{
         choosing:{
           entry:"はい":{
             text:"うれしいです"
-            call_shop:"powder_shop"
-            command:exit
+            function:"shop powder_shop"
+            function:"exit"
           }
           entry:"いいえ":{
             text:"かなしいです"
@@ -108,6 +108,7 @@ message:{
     choosing:{
       entry:"おう　やるよ":{
         text:"ありがてえ"
+        function:"close_game"
       }
       entry:"ぜったいに　やらん":{
         text:"ちっ　なんでえ"

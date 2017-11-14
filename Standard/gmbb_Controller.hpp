@@ -43,22 +43,32 @@ public:
 
   uint32_t  get_time() const noexcept{return time;}
 
+
+  static constexpr uint32_t       up_button_flag = 0x001;
+  static constexpr uint32_t     left_button_flag = 0x002;
+  static constexpr uint32_t    right_button_flag = 0x004;
+  static constexpr uint32_t     down_button_flag = 0x008;
+  static constexpr uint32_t        p_button_flag = 0x010;
+  static constexpr uint32_t        n_button_flag = 0x020;
+  static constexpr uint32_t    start_button_flag = 0x040;
+  static constexpr uint32_t    shift_button_flag = 0x080;
+  static constexpr uint32_t   mouse_lbutton_flag = 0x100;
+  static constexpr uint32_t   mouse_rbutton_flag = 0x200;
+
+  bool       is_up_button_pressing() const noexcept{return test(    up_button_flag);}
+  bool     is_left_button_pressing() const noexcept{return test(  left_button_flag);}
+  bool    is_right_button_pressing() const noexcept{return test( right_button_flag);}
+  bool     is_down_button_pressing() const noexcept{return test(  down_button_flag);}
+  bool        is_p_button_pressing() const noexcept{return test(     p_button_flag);}
+  bool        is_n_button_pressing() const noexcept{return test(     n_button_flag);}
+  bool    is_start_button_pressing() const noexcept{return test( start_button_flag);}
+  bool    is_shift_button_pressing() const noexcept{return test( shift_button_flag);}
+  bool   is_mouse_lbutton_pressing() const noexcept{return test(mouse_lbutton_flag);}
+  bool   is_mouse_rbutton_pressing() const noexcept{return test(mouse_rbutton_flag);}
+
+
 };
 
-
-namespace flags_of_input{
-constexpr uint32_t            none(0);
-constexpr uint32_t       up_button( 0x001);
-constexpr uint32_t     left_button( 0x002);
-constexpr uint32_t    right_button( 0x004);
-constexpr uint32_t     down_button( 0x008);
-constexpr uint32_t        p_button( 0x010);
-constexpr uint32_t        n_button( 0x020);
-constexpr uint32_t    start_button( 0x040);
-constexpr uint32_t    shift_button( 0x080);
-constexpr uint32_t   mouse_lbutton( 0x100);
-constexpr uint32_t   mouse_rbutton( 0x200);
-}
 
 }
 

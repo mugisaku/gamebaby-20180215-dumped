@@ -83,9 +83,7 @@ get_talk_target() noexcept
 void
 process(Controller const&  ctrl) noexcept
 {
-  using namespace gmbb::flags_of_input;
-
-    if(ctrl.test(p_button))
+    if(ctrl.is_p_button_pressing())
     {
      clear_message_window();
 
@@ -190,15 +188,15 @@ process(Controller const&  ctrl) noexcept
     }
 
   else
-    if(ctrl.test(n_button))
+    if(ctrl.is_n_button_pressing())
     {
       pop_routine();
     }
 
-  else if(ctrl.test(up_button)   ){menu_window->move_cursor_to_up();}
-  else if(ctrl.test(down_button) ){menu_window->move_cursor_to_down();}
-  else if(ctrl.test(left_button) ){menu_window->move_cursor_to_left();}
-  else if(ctrl.test(right_button)){menu_window->move_cursor_to_right();}
+  else if(ctrl.is_up_button_pressing()   ){menu_window->move_cursor_to_up();}
+  else if(ctrl.is_down_button_pressing() ){menu_window->move_cursor_to_down();}
+  else if(ctrl.is_left_button_pressing() ){menu_window->move_cursor_to_left();}
+  else if(ctrl.is_right_button_pressing()){menu_window->move_cursor_to_right();}
 }
 
 

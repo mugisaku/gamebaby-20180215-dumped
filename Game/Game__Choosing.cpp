@@ -28,15 +28,13 @@ is_cancelable;
 void
 process(Controller const&  ctrl) noexcept
 {
-  using namespace gmbb::flags_of_input;
-
-    if(ctrl.test(p_button))
+    if(ctrl.is_p_button_pressing())
     {
       pop_routine(menu_window->get_item_index());
     }
 
   else
-    if(is_cancelable && ctrl.test(n_button))
+    if(is_cancelable && ctrl.is_n_button_pressing())
     {
       pop_routine(-1);
     }
@@ -44,8 +42,8 @@ process(Controller const&  ctrl) noexcept
   else
     if(interval_timer.check(200,ctrl.get_time()))
     {
-           if(ctrl.test(up_button)  ){  menu_window->move_cursor_to_up();  interval_timer.enable();}
-      else if(ctrl.test(down_button)){  menu_window->move_cursor_to_down();  interval_timer.enable();}
+           if(ctrl.is_up_button_pressing()  ){  menu_window->move_cursor_to_up();  interval_timer.enable();}
+      else if(ctrl.is_down_button_pressing()){  menu_window->move_cursor_to_down();  interval_timer.enable();}
       else {interval_timer.disable();}
     }
 }

@@ -59,6 +59,7 @@ set(GAME_SOURCES
   Game/Game__Debugger.cpp
   Game/Game__controll_hero_piece.cpp
   Game/Game__throw_item.cpp
+  Game/Game__process_string.cpp
   Game/Game__process_script.cpp
   Game/Game__process_event.cpp
   Game/GameData.cpp

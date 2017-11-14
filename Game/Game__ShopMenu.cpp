@@ -38,15 +38,15 @@ callback(Image&  dst, Point  point, int  i)
 void
 process(Controller const&  ctrl) noexcept
 {
-  using namespace gmbb::flags_of_input;
-
-    if(ctrl.test(p_button))
+    if(ctrl.is_p_button_pressing())
     {
-      pop_routine(menu_window->get_item_index());
+      auto  i = menu_window->get_item_index();
+
+      pop_routine(i);
     }
 
   else
-    if(ctrl.test(n_button))
+    if(ctrl.is_n_button_pressing())
     {
       Event  evt(EventKind::shop_Exit);
 
@@ -59,8 +59,13 @@ process(Controller const&  ctrl) noexcept
   else
     if(interval_timer.check(200,ctrl.get_time()))
     {
-           if(ctrl.test(up_button)   ){menu_window->move_cursor_to_up();  interval_timer.enable();}
-      else if(ctrl.test(down_button) ){menu_window->move_cursor_to_down();  interval_timer.enable();}
+      auto  shop = get_current_shop();
+
+      auto  i = menu_window->get_item_index();
+      auto  n = shop->get_number_of_commodities()-1;
+
+           if(ctrl.is_up_button_pressing()   && (i    )){menu_window->move_cursor_to_up();  interval_timer.enable();}
+      else if(ctrl.is_down_button_pressing() && (i < n)){menu_window->move_cursor_to_down();  interval_timer.enable();}
       else {interval_timer.disable();}
     }
 }

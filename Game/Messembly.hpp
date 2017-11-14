@@ -51,6 +51,7 @@ public:
   bool  reset(const Image&  img, const char*  entry_name) noexcept;
 
   void  step() noexcept;
+  void  halt() noexcept{halted = true;}
 
 };
 

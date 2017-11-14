@@ -27,6 +27,14 @@ Avoidable
 };
 
 
+extern bool  screen_modify;
+extern bool  screen_reverse;
+
+extern int  screen_r;
+extern int  screen_g;
+extern int  screen_b;
+
+
 extern
 Hero
 hero;
@@ -76,6 +84,9 @@ Director
 effect_director;
 
 
+void  close_game(const Controller&  ctrl) noexcept;
+
+void  process_string(messembly::Machine&  m, const std::string&  s) noexcept;
 void  process_event() noexcept;
 void  process_script(Director&  di, gamn::ListNode const*&  cur);
 

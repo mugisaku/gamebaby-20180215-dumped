@@ -45,7 +45,9 @@ step() noexcept
         {
           auto  name = image->get_string(instr.get_imm()).data();
 
-          boolean = environment::get_value(name)[0] != '0';
+          auto&  v = environment::get_value(name);
+
+          boolean = (v.size() && (v[0] != '0'));
         }
       break;
   case(Opcode::ttx):

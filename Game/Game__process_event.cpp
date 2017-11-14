@@ -59,6 +59,14 @@ process_event() noexcept
       case(EventKind::shop_Enter):
           break;
       case(EventKind::shop_Buy_item):
+            {
+              auto&  comm = *evt.shop.commodity;
+
+                if(comm.name == "しあわせのこな")
+                {
+                  environment::set_value("has_happiness_powder","1");
+                }
+            }
           break;
       case(EventKind::shop_Sell_item):
           break;

@@ -61,6 +61,9 @@ public:
 
   void  fill(Pixel  pix=Pixel()) noexcept;
 
+  void  add(int  r, int  g, int  b) noexcept;
+  void  reverse_color() noexcept;
+
 
   void  draw_dot(       Point  pt, ColorIndex  i) noexcept;
   void  draw_dot_safely(Point  pt, ColorIndex  i) noexcept;

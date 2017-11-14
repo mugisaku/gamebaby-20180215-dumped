@@ -334,20 +334,20 @@ push_value(const gamn::Value&  v, Status&  st) noexcept
       string_list.emplace_back(v.get_name());
 
 
-      push_element(new Element(Opcode::bra,get_label_symbol(right_begin_s)));
+      push_element(new Element(Opcode::bra,get_label_symbol(left_begin_s)));
 
 
       auto&  p = v.get_pair();
 
-      append_label_symbol(left_begin_s);
-
-      push_value(p.left,st);
-
-      push_element(new Element(Opcode::jmp,get_label_symbol(cond_end_s)));
-
       append_label_symbol(right_begin_s);
 
       push_value(p.right,st);
+
+      push_element(new Element(Opcode::jmp,get_label_symbol(cond_end_s)));
+
+      append_label_symbol(left_begin_s);
+
+      push_value(p.left,st);
 
       append_label_symbol(cond_end_s);
     }
