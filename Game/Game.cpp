@@ -142,8 +142,7 @@ initialize() noexcept
   root_task.push(board);
   board.push(effect_director);
 
-//  push_routine(waiting,nullptr);
-  push_routine(close_game,nullptr);
+  push_routine(waiting,nullptr);
 
   show_status_monitor();
 //  show_debugger();

@@ -34,7 +34,26 @@ int  get_add_g() noexcept;
 int  get_add_b() noexcept;
 
 
+Image&  get_image() noexcept;
+
 const Image&  update(const Task&  root_task) noexcept;
+
+struct
+Subtitle
+{
+  const char*  string;
+
+  Point  point;
+
+  const GlyphSet*  glyphset;
+
+  Subtitle*  previous=nullptr;
+  Subtitle*      next=nullptr;
+
+};
+
+
+void  insert_subtitle(Subtitle&  subt) noexcept;
 
 
 }}

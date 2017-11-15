@@ -67,7 +67,8 @@ message:{
     reference:item_is_on_square
     choosing:{
       entry:"ひろう":{
-        function:pick_up_item
+        function:"pick_up_item"
+        picked_up_item_on_square
       }
       entry:"ひろわない":{
       }

@@ -13,6 +13,10 @@ ColumnStyleMenuWindow*
 menu_window;
 
 
+int
+answer_length_max;
+
+
 char const*
 table[8];
 
@@ -74,17 +78,13 @@ create_window() noexcept
 
 
 void
-prepare_choosing_window(std::initializer_list<char const*>  ls, Point  point) noexcept
+prepare_choosing_window(Point  point) noexcept
 {
   create_window();
 
   pointer = table;
 
-    for(auto&  s: ls)
-    {
-      append_answer(s);
-    }
-
+  answer_length_max = 0;
 
   menu_window->set_base_point(point);
 }
@@ -96,6 +96,8 @@ append_answer(char const*  text) noexcept
     if(text)
     {
       *pointer++ = text;
+
+      answer_length_max = std::max(answer_length_max,(int)u8slen(text));
     }
 }
 
@@ -106,6 +108,8 @@ open_choosing_window() noexcept
   create_window();
 
   root_task.push(*menu_window);
+
+  menu_window->change_item_width(answer_length_max);
 
   menu_window->change_row_number(pointer-table);
 

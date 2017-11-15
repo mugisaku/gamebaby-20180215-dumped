@@ -112,7 +112,11 @@ process(Controller const&  ctrl) noexcept
           char const*  fon = gi->get_first_operation_name();
 
 
-          prepare_choosing_window({fon,"なげる",hero_piece->get_square()->can_put_item()? "おく":nullptr},Point(40,80));
+          prepare_choosing_window(Point(40,80));
+
+          append_answer(fon);
+          append_answer("なげる");
+          append_answer(hero_piece->get_square()->can_put_item()? "おく":nullptr);
 
           start_choosing(true,return_);
         }

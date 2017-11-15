@@ -96,6 +96,20 @@ close_game(const Controller&  ctrl) noexcept
           screen::set_add_b(screen::get_add_b()-1);
 
           --n;
+
+            if(!n)
+            {
+              static screen::Subtitle  subt;
+
+              subt.string = "とりあえず、おしまい";
+              subt.glyphset = &glset;
+
+              screen::insert_subtitle(subt);
+
+              screen::set_fill_color(red);
+
+              screen::disable_render();
+            }
         }
     }
 }
@@ -111,7 +125,21 @@ process_string(messembly::Machine&  m, const std::string&  s) noexcept
       auto&  s0 = ss[0];
 
            if(s0 == "exit"){m.halt();}
-      else if(s0 == "close_game"){push_routine(close_game);}
+      else
+        if(s0 == "close_game")
+        {
+          screen::set_fill_color(ColorIndex());
+          screen::disable_render();
+
+          push_routine(close_game);
+        }
+
+      else
+        if(s0 == "pick_up_item")
+        {
+          *pickup_parameter.dst = *pickup_parameter.src             ;
+                                  *pickup_parameter.src = GameItem();
+        }
     }
 
   else
@@ -124,6 +152,19 @@ process_string(messembly::Machine&  m, const std::string&  s) noexcept
         {
           start_shopping(s1.data(),nullptr);
         }
+    }
+
+  else
+    {
+      printf("[process string error]");
+
+        for(auto&  s: ss)
+        {
+          printf(" %s",s.data());
+        }
+
+
+      printf("\n");
     }
 }
 

@@ -34,6 +34,10 @@ public:
   void  move_cursor_to_up()    noexcept;
   void  move_cursor_to_down()  noexcept;
 
+  const Menu&  get_menu() const noexcept{return menu;}
+
+  void  change_item_width(int  n) noexcept;
+
   void  change_row_number(int  n) noexcept;
 
   void  reset_cursor() noexcept;

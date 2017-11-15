@@ -25,6 +25,17 @@ extern Image  character_image;
 Rectangle  get_rectangle_for_item(GameItem const&  itm) noexcept;
 
 
+struct
+PickUpParameter
+{
+  covered_ptr<GameItem>  dst;
+  covered_ptr<GameItem>  src;
+
+};
+
+extern PickUpParameter   pickup_parameter;
+
+
 }
 
 

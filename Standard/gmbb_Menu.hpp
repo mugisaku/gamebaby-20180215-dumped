@@ -37,6 +37,9 @@ public:
   constexpr int  get_item_width()  const noexcept{return item_width ;}
   constexpr int  get_item_height() const noexcept{return item_height;}
 
+  void  set_item_width( int  n) noexcept{item_width  = n;}
+  void  set_item_height(int  n) noexcept{item_height = n;}
+
   constexpr int  get_row_number() const noexcept{return row_number;}
   constexpr int  get_image_height() const noexcept{return item_height*row_number;}
 

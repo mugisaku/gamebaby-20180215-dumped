@@ -13,7 +13,7 @@ ColorIndex
 {
   uint16_t  code;
 
-  constexpr ColorIndex(uint16_t  code_=0) noexcept: code(code_? (code_|01000):0){}
+  constexpr ColorIndex(uint16_t  code_=0) noexcept: code(code_){}
   constexpr ColorIndex(int  ri, int  gi, int  bi) noexcept: code(01000|(ri<<6)|(gi<<3)|bi){}
 
   constexpr operator bool() const noexcept{return code>>9;}
@@ -30,16 +30,16 @@ ColorIndex
 
 
 namespace predefined_color_index{
-constexpr ColorIndex        null(0000);
-constexpr ColorIndex       white(0777);
-constexpr ColorIndex       black(0000);
-constexpr ColorIndex        gray(0333);
-constexpr ColorIndex  light_gray(0555);
-constexpr ColorIndex   dark_gray(0111);
-constexpr ColorIndex         red(0700);
-constexpr ColorIndex       green(0070);
-constexpr ColorIndex        blue(0007);
-constexpr ColorIndex      yellow(0770);
+constexpr ColorIndex        null(00000);
+constexpr ColorIndex       white(01777);
+constexpr ColorIndex       black(01000);
+constexpr ColorIndex        gray(01333);
+constexpr ColorIndex  light_gray(01555);
+constexpr ColorIndex   dark_gray(01111);
+constexpr ColorIndex         red(01700);
+constexpr ColorIndex       green(01070);
+constexpr ColorIndex        blue(01007);
+constexpr ColorIndex      yellow(01770);
 }
 
 

@@ -7,6 +7,23 @@ namespace gmbb{
 
 
 size_t
+u8slen(const char*  s) noexcept
+{
+  size_t  len = 0;
+
+    while(*s)
+    {
+      s += utf8_byte_number(*s);
+
+      ++len;
+    }
+
+
+  return len;
+}
+
+
+size_t
 utf8_byte_number(unsigned char  c)
 {
        if(!(c>>7)             ){return 1;}

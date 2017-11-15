@@ -25,6 +25,9 @@ int  add_b;
 ColorIndex
 fill_color;
 
+Subtitle*  first;
+Subtitle*   last;
+
 
 }
 
@@ -49,6 +52,9 @@ void  set_add_b(int  v) noexcept{add_b = v;}
 int  get_add_r() noexcept{return add_r;}
 int  get_add_g() noexcept{return add_g;}
 int  get_add_b() noexcept{return add_b;}
+
+
+Image&  get_image() noexcept{return image;}
 
 
 const Image&
@@ -85,7 +91,35 @@ update(const Task&  root_task) noexcept
     }
 
 
+  auto  cur = first;
+
+    while(cur)
+    {
+      image.print(cur->string,cur->point,*cur->glyphset);
+
+      cur = cur->next;
+    }
+
+
   return image;
+}
+
+
+void
+insert_subtitle(Subtitle&  subt) noexcept
+{
+    if(last)
+    {
+      last->next = &subt;
+    }
+
+  else
+    {
+      first = &subt;
+    }
+
+
+  last = &subt;
 }
 
 

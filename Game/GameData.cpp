@@ -44,6 +44,8 @@ get_rectangle_for_item(GameItem const&  itm) noexcept
 }
 
 
+PickUpParameter
+pickup_parameter;
 
 
 }

@@ -15,7 +15,7 @@ namespace{
 
 
 constexpr Point   message_point(8,160);
-constexpr Point  choosing_point = message_point+Point(200,24);
+constexpr Point  choosing_point = message_point+Point(160,24);
 
 
 messembly::Machine
@@ -54,7 +54,7 @@ proc_cb(messembly::Machine&  m, const std::string&  text)
     case(Opcode::adb):
           if(!flag)
           {
-            prepare_choosing_window({},choosing_point);
+            prepare_choosing_window(choosing_point);
 
             flag = true;
           }

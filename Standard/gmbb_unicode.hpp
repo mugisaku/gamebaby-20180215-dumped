@@ -19,6 +19,9 @@ struct invalid_utf8_byte_number{};
 size_t  utf8_byte_number(unsigned char  c);
 
 
+size_t  u8slen(const char*  s) noexcept;
+
+
 char32_t  to_char32(const char*  utf8, size_t  byte_number);
 
 int  u16vsnprintf(char16_t*  buf, size_t  n, char const* fmt, va_list  ap);

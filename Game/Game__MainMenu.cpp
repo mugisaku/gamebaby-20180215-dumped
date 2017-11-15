@@ -20,10 +20,6 @@ ScrollStyleMenuWindow*
 menu_window;
 
 
-covered_ptr<GameItem>
-empty;
-
-
 void
 return_for_talk_command(int  retval) noexcept
 {
@@ -41,7 +37,7 @@ return_for_foot_command(int  retval) noexcept
 void
 return_for_belongings_command(int  retval) noexcept
 {
-    if(empty && (retval == 0))
+    if(retval == 0)
     {
       auto&  sq = *hero_piece->get_square();
 
@@ -50,9 +46,6 @@ return_for_belongings_command(int  retval) noexcept
 
         if(item)
         {
-          *empty = item             ;
-                   item = GameItem();
-
           pop_routine();
         }
 
@@ -143,11 +136,14 @@ process(Controller const&  ctrl) noexcept
 
             if(item)
             {
-              empty = hero.get_sack().find_empty();
+              auto  empty = hero.get_sack().find_empty();
 
                 if(empty)
                 {
                   environment::set_value("item_on_square",(*item).get_name());
+
+                  pickup_parameter.dst = empty;
+                  pickup_parameter.src = &item;
 
                   start_message("whether_hero_picks_up_item",return_for_foot_command);
                 }
@@ -161,7 +157,7 @@ process(Controller const&  ctrl) noexcept
           else
             if(trap)
             {
-              empty = hero.get_sack().find_empty();
+              auto  empty = hero.get_sack().find_empty();
 
                 if(empty)
                 {

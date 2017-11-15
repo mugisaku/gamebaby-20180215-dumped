@@ -197,7 +197,6 @@ print() const noexcept
               data.value->print();
               break;
           case(ValueKind::pair):
-              data.pair;
               break;
           case(ValueKind::list):
               data.list->print();

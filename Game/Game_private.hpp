@@ -134,7 +134,7 @@ void  start_shop_menu(Return  retcb) noexcept;
 void  start_shopping(char const*  label, Return  retcb) noexcept;
 
 
-void  prepare_choosing_window(std::initializer_list<char const*>  ls, Point  point) noexcept;
+void  prepare_choosing_window(Point  point) noexcept;
 void  append_answer(char const*  text) noexcept;
 void   open_choosing_window() noexcept;
 void  close_choosing_window() noexcept;

@@ -31,6 +31,18 @@ get_item_index() const noexcept
 
 void
 ColumnStyleMenuWindow::
+change_item_width(int  n) noexcept
+{
+  menu.set_item_width(8*n);
+
+  Window::resize(menu.get_item_width()  +16,
+                 menu.get_image_height()+16);
+
+}
+
+
+void
+ColumnStyleMenuWindow::
 reset_cursor() noexcept
 {
   page_index = 0;
