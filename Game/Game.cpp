@@ -6,14 +6,6 @@
 namespace gmbb{
 
 
-bool  screen_modify;
-bool  screen_reverse;
-
-int  screen_r;
-int  screen_g;
-int  screen_b;
-
-
 Hero
 hero;
 
@@ -36,10 +28,6 @@ hero_piece;
 
 IntervalTimer
 interval_timer;
-
-
-Image
-screen_image(screen_width,screen_height);
 
 
 GlyphSet
@@ -115,29 +103,10 @@ waiting(Controller const&  ctrl) noexcept
 }
 
 
-
-
-Image const&
+const Image&
 update_screen() noexcept
 {
-  screen_image.fill();
-
-  root_task.render(screen_image,Point());
-
-    if(screen_modify)
-    {
-      screen_image.add(screen_r,
-                       screen_g,
-                       screen_b);
-
-        if(screen_reverse)
-        {
-          screen_image.reverse_color();
-        }
-    }
-
-
-  return screen_image;
+  return screen::update(root_task);
 }
 
 
@@ -202,6 +171,10 @@ initialize() noexcept
   board.set_script(find_script("routine","test")->get_list().get_first());
 
   reset_shops();
+
+
+  screen::enable_render();
+  screen::set_fill_color(black);
 }
 
 

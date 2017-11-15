@@ -101,8 +101,8 @@ void
 Board::
 set_view_point_by_piece(Piece&  p) noexcept
 {
-  view_point.x = p.get_base_point().x+(24*2)-(screen_width /2);
-  view_point.y = p.get_base_point().y+(24  )-(screen_height/2);
+  view_point.x = p.get_base_point().x+(24*2)-(screen::width /2);
+  view_point.y = p.get_base_point().y+(24  )-(screen::height/2);
 }
 
 

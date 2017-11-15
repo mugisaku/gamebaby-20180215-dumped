@@ -34,7 +34,7 @@ render_row(Square const*  begin,
            Square const*  current,
            Square const*  end, Image&  dst, Point  offset) noexcept
 {
-    while(offset.x < screen_width)
+    while(offset.x < screen::width)
     {
         if(current >= end)
         {
@@ -54,8 +54,8 @@ void
 Board::
 render(Image&  dst, Point  offset) const noexcept
 {
-  constexpr int  w = (screen_width /square_size);
-  constexpr int  h = (screen_height/square_size);
+  constexpr int  w = (screen::width /square_size);
+  constexpr int  h = (screen::height/square_size);
 
   Point  start_point = view_point/square_size;
   Point    rem_point = view_point%square_size;
@@ -63,7 +63,7 @@ render(Image&  dst, Point  offset) const noexcept
   int  dst_x = -rem_point.x;
   int  dst_y = -rem_point.y;
 
-    while(dst_y < screen_height)
+    while(dst_y < screen::height)
     {
         if(start_point.y >= board_height)
         {

@@ -3,12 +3,13 @@
 
 
 #include"gmbb_Standard.hpp"
+#include"Screen.hpp"
 
 
 namespace gmbb{
 
 
-Image const&  update_screen() noexcept;
+const Image&  update_screen() noexcept;
 
 void  initialize() noexcept;
 

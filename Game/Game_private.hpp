@@ -27,14 +27,6 @@ Avoidable
 };
 
 
-extern bool  screen_modify;
-extern bool  screen_reverse;
-
-extern int  screen_r;
-extern int  screen_g;
-extern int  screen_b;
-
-
 extern
 Hero
 hero;

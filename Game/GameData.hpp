@@ -3,6 +3,7 @@
 
 
 #include"gmbb_Standard.hpp"
+#include"Screen.hpp"
 #include"GameItem.hpp"
 
 
@@ -10,9 +11,6 @@ namespace gmbb{
 
 
 constexpr int  square_size = 24;
-
-constexpr int  screen_width  = 288;
-constexpr int  screen_height = 240;
 
 constexpr int  board_width  = 14;
 constexpr int  board_height = 14;

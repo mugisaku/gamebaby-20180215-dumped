@@ -244,12 +244,10 @@ main(int  argc, char**  argv)
 
   SDL_ShowCursor(SDL_DISABLE);
 
-  auto&  img = update_screen();
-
   window = SDL_CreateWindow("GAME BABY - " __DATE__,SDL_WINDOWPOS_CENTERED,
                                                     SDL_WINDOWPOS_CENTERED,
-                                                    img.get_width()*2,
-                                                    img.get_height()*2,0);
+                                                    screen::width*2,
+                                                    screen::height*2,0);
 
   surface = SDL_GetWindowSurface(window);
 

@@ -87,13 +87,13 @@ close_game(const Controller&  ctrl) noexcept
     {
         if(ctrl.get_time() >= (last+interval))
         {
-          screen_modify = true;
+          screen::enable_add_color();
 
           last = ctrl.get_time();
 
-          --screen_r;
-          --screen_g;
-          --screen_b;
+          screen::set_add_r(screen::get_add_r()-1);
+          screen::set_add_g(screen::get_add_g()-1);
+          screen::set_add_b(screen::get_add_b()-1);
 
           --n;
         }

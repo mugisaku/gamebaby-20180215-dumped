@@ -47,6 +47,7 @@ set(GAME_SOURCES
   Game/Actor.cpp
   Game/Director.cpp
   Game/EffectObject.cpp
+  Game/Screen.cpp
   Game/Game.cpp
   Game/Game__Message.cpp
   Game/Game__MainMenu.cpp
