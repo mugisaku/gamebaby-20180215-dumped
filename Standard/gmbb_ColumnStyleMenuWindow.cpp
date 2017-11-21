@@ -8,7 +8,7 @@ namespace gmbb{
 
 
 ColumnStyleMenuWindow::
-ColumnStyleMenuWindow(Menu const&  menu_, int  page_n, Point  pt) noexcept:
+ColumnStyleMenuWindow(Menu  menu_, int  page_n, Point  pt) noexcept:
 menu(menu_),
 page_number(page_n)
 {

@@ -13,17 +13,12 @@ IntervalTimer
 {
   uint32_t  last=0;
 
-  bool  available=false;
-
 public:
   IntervalTimer() noexcept{}
 
-  void   enable() noexcept{available =  true;}
-  void  disable() noexcept{available = false;}
-
   bool  check_step(uint32_t  interval, uint32_t  now) noexcept
   {
-      if(!available || ((last+interval) < now))
+      if((last+interval) < now)
       {
         last += interval;
 
@@ -36,7 +31,7 @@ public:
 
   bool  check(uint32_t  interval, uint32_t  now) noexcept
   {
-      if(!available || ((last+interval) < now))
+      if((last+interval) < now)
       {
         last = now;
 

@@ -25,7 +25,7 @@ ColumnStyleMenuWindow: public Window
   int  page_number;
 
 public:
-  ColumnStyleMenuWindow(Menu const&  menu_, int  page_n, Point  pt) noexcept;
+  ColumnStyleMenuWindow(Menu  menu_, int  page_n, Point  pt) noexcept;
 
   int  get_item_index() const noexcept;
 

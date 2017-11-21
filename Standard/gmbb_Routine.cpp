@@ -1,4 +1,5 @@
 #include"gmbb_Routine.hpp"
+#include"Pointer.hpp"
 #include<vector>
 
 
@@ -8,6 +9,24 @@ namespace gmbb{
 
 
 namespace{
+
+
+struct
+Routine
+{
+  const Pointer<const char>  label;
+
+    costep_t const    costep;
+  coreturn_t const  coreturn;
+
+  constexpr Routine(Pointer<const char>  label_, costep_t  st, coreturn_t  ret) noexcept:
+  label(label_),
+  costep(st),
+  coreturn(ret){}
+
+};
+
+
 constexpr uint32_t  key_flags = (Controller::p_button_flag|
                                  Controller::n_button_flag);
 
@@ -21,44 +40,66 @@ returned_value;
 
 
 std::vector<Routine>
-routine_stack;
+stack;
+
+
 }
 
 
+
+
 void
-push_routine(Routine::OnStepCallback  st, Routine::OnReturnCallback  ret) noexcept
+push_routine(Pointer<const char>  label, costep_t  st, coreturn_t  ret) noexcept
 {
-  routine_stack.emplace_back(st,ret);
+  stack.emplace_back(label,st,ret);
 
   wait_until_button_is_released();
 }
 
 
 void
-pop_routine() noexcept
+pop_routine(Pointer<const char>  label) noexcept
 {
-    if(routine_stack.size())
+  static FixedString  base("[pop_routine error]");
+
+
+    if(stack.size())
     {
-      auto  ret = routine_stack.back().on_return;
+      auto  r = stack.back();
 
-      routine_stack.pop_back();
-
-      wait_until_button_is_released();
-
-        if(ret)
+        if(r.label == label)
         {
-          ret(returned_value);
+          auto  ret = r.coreturn;
+
+          stack.pop_back();
+
+          wait_until_button_is_released();
+
+            if(ret)
+            {
+              ret(returned_value);
+            }
         }
+
+      else
+        {
+          printf("%s %s != %s",base.pointer,r.label,label);
+        }
+    }
+
+  else
+    {
+      printf("%s has no stack in %s from %s\n",base.pointer,label);
     }
 }
 
 
 void
-pop_routine(int  v) noexcept
+pop_routine(Pointer<const char>  label, int  v) noexcept
 {
   returned_value = v;
 
-  pop_routine();
+  pop_routine(label);
 }
 
 
@@ -76,7 +117,15 @@ call_routine(Controller const&  ctrl) noexcept
 
     if(!(flags&key_flags))
     {
-      routine_stack.back().on_step(ctrl);
+        if(stack.size())
+        {
+          stack.back().costep(ctrl);
+        }
+
+      else
+        {
+          printf("[call_routine error] have no stack\n");
+        }
     }
 }
 

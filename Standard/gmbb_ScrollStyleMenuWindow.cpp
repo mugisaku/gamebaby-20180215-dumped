@@ -8,7 +8,7 @@ namespace gmbb{
 
 
 ScrollStyleMenuWindow::
-ScrollStyleMenuWindow(Menu const&  menu_, int  col_n, int  row_n, Point  pt) noexcept:
+ScrollStyleMenuWindow(Menu  menu_, int  col_n, int  row_n, Point  pt) noexcept:
 menu(menu_),
 column_number(col_n),
 row_number(row_n)

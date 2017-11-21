@@ -90,6 +90,28 @@ set(GAMN_SOURCES
 )
 
 
+set(TS_SOURCES
+  TypeSystem/ts_Value.cpp
+  TypeSystem/ts_Object.cpp
+  TypeSystem/ts_i8_type.cpp
+)
+
+
+set(BATTLE_SOURCES
+  Battle/TemporaryData.cpp
+  Battle/SystemData.cpp
+  Battle/SavedData.cpp
+  Battle/EmbeddedData.cpp
+  Battle/FrontInterface.cpp
+  Battle/Screen.cpp
+  Battle/Startup_PartyMaking.cpp
+  Battle/Startup_CharacterMaking.cpp
+  Battle/Startup_ClassChoosing.cpp
+  Battle/Startup_NameMaking.cpp
+  Battle/Battle.cpp
+)
+
+
 set(STANDARD_SOURCES
   Standard/gmbb_unicode.cpp
   Standard/gmbb_environment.cpp
@@ -105,6 +127,7 @@ set(STANDARD_SOURCES
   Standard/gmbb_Menu.cpp
   Standard/gmbb_ScrollStyleMenuWindow.cpp
   Standard/gmbb_ColumnStyleMenuWindow.cpp
+  Standard/gmbb_StringBuffer.cpp
   Standard/gmbb_Stream.cpp
   Standard/gmbb_StreamReader.cpp
   Standard/gmbb_StreamWriter.cpp
@@ -122,8 +145,11 @@ set(STANDARD_SOURCES
 include_directories(./)
 include_directories(./Gamn)
 include_directories(./Standard)
+include_directories(./TypeSystem)
 include_directories(/usr/include/SDL2)
+add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
 add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
+add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
 add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES})
 add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 

@@ -14,7 +14,7 @@
 namespace gmbb{
 
 
-using Return = Routine::OnReturnCallback;
+using Return = Routine::ReturnCallback;
 
 
 struct

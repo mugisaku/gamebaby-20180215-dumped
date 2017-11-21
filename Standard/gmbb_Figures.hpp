@@ -96,6 +96,22 @@ Point
   }
 
 
+  Point&  move_x(int  n) noexcept
+  {
+    x += n;
+
+    return *this;
+  }
+
+
+  Point&  move_y(int  n) noexcept
+  {
+    y += n;
+
+    return *this;
+  }
+
+
   void  transform(int  w, int  h) noexcept
   {
       if(x < 0)

@@ -27,7 +27,7 @@ ScrollStyleMenuWindow: public Window
   Point  cursor;
 
 public:
-  ScrollStyleMenuWindow(Menu const&  menu_, int  col_n, int  row_n, Point  pt) noexcept;
+  ScrollStyleMenuWindow(Menu  menu_, int  col_n, int  row_n, Point  pt) noexcept;
 
   int  get_item_index() const noexcept{return (column_number*(y_base+cursor.y))+cursor.x;}
 

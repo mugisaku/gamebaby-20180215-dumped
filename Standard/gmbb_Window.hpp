@@ -27,7 +27,7 @@ class
 Window: public Task
 {
 protected:
-  WindowState  state=WindowState::hidden;
+  WindowState  state=WindowState::full_opened;
 
   Pixel  pixels[4] = {Pixel(predefined_color_index::null),
                       Pixel(predefined_color_index::blue      ,30000),

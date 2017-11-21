@@ -1,5 +1,5 @@
-#ifndef GMBB_Messanbly_Image_HPP
-#define GMBB_Messanbly_Image_HPP
+#ifndef GMBB_Messembly_Image_HPP
+#define GMBB_Messembly_Image_HPP
 
 
 #include"gmbb_Standard.hpp"
