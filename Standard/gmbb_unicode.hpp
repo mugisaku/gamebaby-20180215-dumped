@@ -6,6 +6,7 @@
 #include<cstdint>
 #include<cstddef>
 #include<cstdarg>
+#include"Pointer.hpp"
 
 
 namespace gmbb{
@@ -19,16 +20,13 @@ struct invalid_utf8_byte_number{};
 size_t  utf8_byte_number(unsigned char  c);
 
 
-size_t  u8slen(const char*  s) noexcept;
+size_t  u8slen(ro_ptr<char>  s) noexcept;
 
 
-char32_t  to_char32(const char*  utf8, size_t  byte_number);
+char32_t  to_char32(ro_ptr<char>  utf8, size_t  byte_number);
 
-int  u16vsnprintf(char16_t*  buf, size_t  n, char const* fmt, va_list  ap);
-int  u16snprintf(char16_t*  buf, size_t  n, char const* fmt, ...);
-
-std::u16string  to_u16string(char const*  s);
-std::string  to_string(char16_t const*  u16s);
+std::u16string  to_u16string(ro_ptr<char>  s);
+std::string     to_string(ro_ptr<char16_t>  u16s);
 
 
 struct

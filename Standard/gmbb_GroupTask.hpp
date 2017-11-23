@@ -13,8 +13,8 @@ namespace gmbb{
 class
 GroupTask: public Task
 {
-  covered_ptr<Task>  first;
-  covered_ptr<Task>   last;
+  rw_ptr<Task>  first;
+  rw_ptr<Task>   last;
 
   uint32_t  number=0;
 
@@ -27,17 +27,17 @@ public:
 
   uint32_t  get_number_of_tasks() const noexcept{return number;}
 
-  covered_ptr<Task>  get_first() const noexcept{return first;}
-  covered_ptr<Task>   get_last() const noexcept{return  last;}
+  rw_ptr<Task>  get_first() const noexcept{return first;}
+  rw_ptr<Task>   get_last() const noexcept{return  last;}
 
-  Task const*  get_const_first() const noexcept{return first.get_const_raw_pointer();}
-  Task const*   get_const_last() const noexcept{return  last.get_const_raw_pointer();}
+  ro_ptr<Task>  get_ro_first() const noexcept{return first.get_ro();}
+  ro_ptr<Task>   get_ro_last() const noexcept{return  last.get_ro();}
 
   void  update() noexcept override;
 
   void  render(Image&  dst, Point  offset) const noexcept override;
 
-  covered_ptr<Task>  find_by_name(std::string const&  name_) const noexcept;
+  rw_ptr<Task>  find_by_name(std::string const&  name_) const noexcept;
 
   bool  is_group() const noexcept override{return true;}
 

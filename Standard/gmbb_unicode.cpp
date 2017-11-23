@@ -7,7 +7,7 @@ namespace gmbb{
 
 
 size_t
-u8slen(const char*  s) noexcept
+u8slen(ro_ptr<char>  s) noexcept
 {
   size_t  len = 0;
 
@@ -55,7 +55,7 @@ encode(int  c, int  shift_amount=0) noexcept
 
 
 char32_t
-to_char32(const char*  utf8, size_t  byte_number)
+to_char32(ro_ptr<char>  utf8, size_t  byte_number)
 {
   char32_t  c = 0;
 
@@ -97,7 +97,7 @@ to_char32(const char*  utf8, size_t  byte_number)
 
 
 std::string
-to_string(char16_t const*  u16s)
+to_string(ro_ptr<char16_t>  u16s)
 {
   std::string  s;
 
@@ -112,7 +112,7 @@ to_string(char16_t const*  u16s)
 
 
 std::u16string
-to_u16string(char const*  s)
+to_u16string(ro_ptr<char>  s)
 {
   std::u16string  u16s;
 
@@ -132,54 +132,6 @@ to_u16string(char const*  s)
 
 
 
-int
-u16vsnprintf(char16_t*  buf, size_t  n, char const* fmt, va_list  ap)
-{
-  char  cbuf[2048];
-
-  int  res = vsnprintf(cbuf,sizeof(cbuf),fmt,ap);
-
-    if(res < (n/sizeof(char16_t)))
-    {
-      char const*  p = cbuf;
-
-        while(*p)
-        {
-          auto  byte_number = utf8_byte_number(*p);
-
-          *buf++ = to_char32(p,byte_number);
-
-          p += byte_number;
-        }
-
-
-      *buf = 0;
-
-      return res;
-    }
-
-
-  return -1;
-}
-
-
-int
-u16snprintf(char16_t*  buf, size_t  n, char const* fmt, ...)
-{
-  va_list  ap;
-  va_start(ap,fmt);
-
-  auto  res = u16vsnprintf(buf,n,fmt,ap);
-
-  va_end(ap);
-
-
-  return res;
-}
-
-
-
-
 UTF8Chunk::
 UTF8Chunk(char32_t  c)
 {
@@ -191,7 +143,7 @@ UTF8Chunk&
 UTF8Chunk::
 operator=(char32_t  c)
 {
-  char*  p = codes;
+  rw_ptr<char>  p = codes;
 
     if(c <= 0x7F)
     {

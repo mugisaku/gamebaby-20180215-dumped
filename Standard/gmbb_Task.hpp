@@ -4,7 +4,7 @@
 
 #include"gmbb_Figures.hpp"
 #include"gmbb_Image.hpp"
-#include"covered_ptr"
+#include"Pointer.hpp"
 #include<string>
 
 
@@ -21,10 +21,10 @@ Task
 
   Point  base_point;
 
-  covered_ptr<GroupTask>  group;
+  rw_ptr<GroupTask>  group;
 
-  covered_ptr<Task>  previous;
-  covered_ptr<Task>      next;
+  rw_ptr<Task>  previous;
+  rw_ptr<Task>      next;
 
 public:
   Task(         ) noexcept{}
@@ -36,14 +36,14 @@ public:
   void   set_base_point(Point  pt)       noexcept{       base_point = pt;}
   Point  get_base_point(         ) const noexcept{return base_point     ;}
 
-  covered_ptr<Task>  get_previous() const noexcept{return previous;}
-  covered_ptr<Task>  get_next()     const noexcept{return next;}
+  rw_ptr<Task>  get_previous() const noexcept{return previous;}
+  rw_ptr<Task>  get_next()     const noexcept{return next;}
 
-  Task const*  get_const_previous() const noexcept{return previous.get_const_raw_pointer();}
-  Task const*  get_const_next()     const noexcept{return next.get_const_raw_pointer();}
+  ro_ptr<Task>  get_ro_previous() const noexcept{return previous.get_ro();}
+  ro_ptr<Task>  get_ro_next()     const noexcept{return next.get_ro();}
 
-  void                    set_group(GroupTask&  grp)       noexcept{       group = &grp;}
-  covered_ptr<GroupTask>  get_group(               ) const noexcept{return group       ;}
+  void               set_group(GroupTask&  grp)       noexcept{       group = &grp;}
+  rw_ptr<GroupTask>  get_group(               ) const noexcept{return group       ;}
 
   void  connect(Task&  new_next) noexcept;
 

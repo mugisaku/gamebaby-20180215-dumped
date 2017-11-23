@@ -1,4 +1,4 @@
-#include"gmbb_MessageWindow.hpp"
+#include"gmbb_LinearCharacterBuffer.hpp"
 #include"gmbb_environment.hpp"
 #include"gmbb_unicode.hpp"
 #include<cctype>
@@ -7,20 +7,6 @@
 
 
 namespace gmbb{
-
-
-MessageWindow::
-MessageWindow(GlyphSet&  glset, int  column_number, int  row_number, Point  pt) noexcept:
-Window(glset.get_width( )*column_number+16,glset.get_height()*row_number+16,pt),
-glyphset(&glset),
-text(column_number,row_number)
-{
-  reset();
-
-  Window::set_state(WindowState::open_to_down);
-
-  coloring[1] = white;
-}
 
 
 
@@ -40,29 +26,44 @@ bool  isidentn(char  c) noexcept{return(isalnum(c) || (c == '_'));}
 
 
 void
-MessageWindow::
+LinearCharacterBuffer::
 clear() noexcept
 {
-  text.clear();
+  delete[] data_source          ;
+           data_source = nullptr;
 
-  reset();
+  data_length = 0;
 }
 
 
 void
-MessageWindow::
+LinearCharacterBuffer::
 reset() noexcept
 {
-  input_pointer  = buffer;
-  output_pointer = buffer;
+   input_pointer = data_source;
+  output_pointer = data_source;
 
-  buffer[0] = 0;
+  input_pointer[0] = 0;
+}
+
+
+void
+LinearCharacterBuffer::
+resize(size_t  length) noexcept
+{
+  clear();
+
+  data_source = new char[length+1];
+
+  data_length = length;
+
+  data_tail = data_source+data_length;
 }
 
 
 namespace{
 void
-scan(char*  dst, char const*&  src, size_t  n) noexcept
+scan(rw_ptr<char>  dst, ro_ptr<char>&  src, size_t  n) noexcept
 {
     while(n > 1)
     {
@@ -88,12 +89,10 @@ scan(char*  dst, char const*&  src, size_t  n) noexcept
 
 
 void
-MessageWindow::
-push(char const*  s, bool  with_newline)
+LinearCharacterBuffer::
+push(ro_ptr<char>  s, bool  with_newline)
 {
-  auto  tail = get_buffer_tail();
-
-    while(*s && (input_pointer < tail))
+    while(*s && (input_pointer < data_tail))
     {
         if(*s == '$')
         {
@@ -129,7 +128,7 @@ push(char const*  s, bool  with_newline)
 
     if(with_newline)
     {
-        if(input_pointer < tail)
+        if(input_pointer < data_tail)
         {
           *input_pointer++ = '\n';
         }
@@ -141,8 +140,8 @@ push(char const*  s, bool  with_newline)
 
 
 void
-MessageWindow::
-push(std::initializer_list<char const*>  ls)
+LinearCharacterBuffer::
+push(std::initializer_list<ro_ptr<char>>  ls)
 {
     for(auto  s: ls)
     {
@@ -151,44 +150,26 @@ push(std::initializer_list<char const*>  ls)
 }
 
 
-void
-MessageWindow::
-step()
+char16_t
+LinearCharacterBuffer::
+pop() noexcept
 {
-    if(!text.is_full() && *output_pointer)
+    if(*output_pointer)
     {
       auto  byte_number = utf8_byte_number(*output_pointer);
 
-        if((output_pointer+byte_number) <= get_buffer_tail())
+        if((output_pointer+static_cast<int>(byte_number)) <= data_tail)
         {
           auto  c = to_char32(output_pointer,byte_number);
 
           output_pointer += byte_number;
 
-          text.push(c);
+          return c;
         }
     }
-}
 
 
-void
-MessageWindow::
-scroll()
-{
-  text.rotate();
-}
-
-
-void
-MessageWindow::
-render(Image&  dst, Point  offset) const noexcept
-{
-  Window::render(dst,offset);
-
-    if(Window::get_state() == WindowState::full_opened)
-    {
-      text.render(dst,get_base_point()+offset+8,*glyphset,coloring);
-    }
+  return 0;
 }
 
 

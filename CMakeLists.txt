@@ -98,6 +98,7 @@ set(TS_SOURCES
 
 
 set(BATTLE_SOURCES
+  Battle/CharacterData.cpp
   Battle/TemporaryData.cpp
   Battle/SystemData.cpp
   Battle/SavedData.cpp
@@ -113,6 +114,8 @@ set(BATTLE_SOURCES
 
 
 set(STANDARD_SOURCES
+  Standard/gmbb_SawtoothCharacterBuffer.cpp
+  Standard/gmbb_LinearCharacterBuffer.cpp
   Standard/gmbb_unicode.cpp
   Standard/gmbb_environment.cpp
   Standard/gmbb_RandomNumber.cpp
@@ -122,8 +125,6 @@ set(STANDARD_SOURCES
   Standard/gmbb_GroupTask.cpp
   Standard/gmbb_Window.cpp
   Standard/gmbb_Window__draw_frame.cpp
-  Standard/gmbb_Text.cpp
-  Standard/gmbb_MessageWindow.cpp
   Standard/gmbb_Menu.cpp
   Standard/gmbb_ScrollStyleMenuWindow.cpp
   Standard/gmbb_ColumnStyleMenuWindow.cpp

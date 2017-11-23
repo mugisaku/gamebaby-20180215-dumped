@@ -14,12 +14,12 @@ namespace{
 struct
 Routine
 {
-  const Pointer<const char>  label;
+  const ro_ptr<char>  label;
 
     costep_t const    costep;
   coreturn_t const  coreturn;
 
-  constexpr Routine(Pointer<const char>  label_, costep_t  st, coreturn_t  ret) noexcept:
+  constexpr Routine(ro_ptr<char>  label_, costep_t  st, coreturn_t  ret) noexcept:
   label(label_),
   costep(st),
   coreturn(ret){}
@@ -49,7 +49,7 @@ stack;
 
 
 void
-push_routine(Pointer<const char>  label, costep_t  st, coreturn_t  ret) noexcept
+push_routine(ro_ptr<char>  label, costep_t  st, coreturn_t  ret) noexcept
 {
   stack.emplace_back(label,st,ret);
 
@@ -58,7 +58,7 @@ push_routine(Pointer<const char>  label, costep_t  st, coreturn_t  ret) noexcept
 
 
 void
-pop_routine(Pointer<const char>  label) noexcept
+pop_routine(ro_ptr<char>  label) noexcept
 {
   static FixedString  base("[pop_routine error]");
 
@@ -95,7 +95,7 @@ pop_routine(Pointer<const char>  label) noexcept
 
 
 void
-pop_routine(Pointer<const char>  label, int  v) noexcept
+pop_routine(ro_ptr<char>  label, int  v) noexcept
 {
   returned_value = v;
 

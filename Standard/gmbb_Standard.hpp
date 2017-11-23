@@ -4,7 +4,6 @@
 
 #include"gmbb_Palette.hpp"
 #include"gmbb_Image.hpp"
-#include"gmbb_MessageWindow.hpp"
 #include"gmbb_GlyphSet.hpp"
 #include"gmbb_Figures.hpp"
 #include"gmbb_RandomNumber.hpp"

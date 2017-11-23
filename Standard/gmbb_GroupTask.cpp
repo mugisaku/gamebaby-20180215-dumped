@@ -83,7 +83,7 @@ erase(Task&  t) noexcept
 }
 
 
-covered_ptr<Task>
+rw_ptr<Task>
 GroupTask::
 find_by_name(std::string const&  name_) const noexcept
 {
@@ -99,7 +99,7 @@ find_by_name(std::string const&  name_) const noexcept
       else
         if(next->is_group())
         {
-          auto  cogrp = static_cast<GroupTask const*>(next.get_const_raw_pointer());
+          rw_ptr<GroupTask>  cogrp(next);
 
           auto  res = cogrp->find_by_name(name_);
 
@@ -137,7 +137,7 @@ void
 GroupTask::
 render(Image&  dst, Point  offset) const noexcept
 {
-  auto  current = first.get_const_raw_pointer();
+  auto  current = first.get_ro();
 
   offset += get_base_point();
 
@@ -145,7 +145,7 @@ render(Image&  dst, Point  offset) const noexcept
     {
       current->render(dst,offset);
 
-      current = current->get_const_next();
+      current = current->get_ro_next();
     }
 }
 
@@ -154,7 +154,7 @@ void
 GroupTask::
 print() noexcept
 {
-  auto  current = first.get_const_raw_pointer();
+  auto  current = first.get_ro();
 
   printf("[print task]\n");
 
@@ -162,7 +162,7 @@ print() noexcept
     {
       printf("%s\n",current->get_name().data());
 
-      current = current->get_const_next();
+      current = current->get_ro_next();
     }
 
 

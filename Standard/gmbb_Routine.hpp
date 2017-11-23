@@ -14,10 +14,10 @@ using   costep_t = void  (*)(Controller const&  ctrl);
 using coreturn_t = void  (*)(int  value);
 
 
-void  push_routine(Pointer<const char>  label, costep_t  st, coreturn_t  ret=nullptr) noexcept;
+void  push_routine(ro_ptr<char>  label, costep_t  st, coreturn_t  ret=nullptr) noexcept;
 
-void   pop_routine(Pointer<const char>  label        ) noexcept;
-void   pop_routine(Pointer<const char>  label, int  v) noexcept;
+void   pop_routine(ro_ptr<char>  label        ) noexcept;
+void   pop_routine(ro_ptr<char>  label, int  v) noexcept;
 
 void  wait_until_button_is_released() noexcept;
 
