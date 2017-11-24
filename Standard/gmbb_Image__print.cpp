@@ -12,7 +12,7 @@ namespace gmbb{
 
 void
 Image::
-print(char16_t  c, Point  pt, GlyphSet const&  glset, ColorIndex const*  coloring) noexcept
+print(char16_t  c, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring) noexcept
 {
   auto  p = glset.get_glyph_data(c);
 
@@ -53,7 +53,7 @@ print(char16_t  c, Point  pt, GlyphSet const&  glset, ColorIndex const*  colorin
 
 void
 Image::
-print(const char*  s, Point  pt, GlyphSet const&  glset, ColorIndex const*  coloring) noexcept
+print(ro_ptr<char>  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring) noexcept
 {
     while(*s)
     {
@@ -74,7 +74,7 @@ print(const char*  s, Point  pt, GlyphSet const&  glset, ColorIndex const*  colo
 
 void
 Image::
-print(const char16_t*  s, Point  pt, GlyphSet const&  glset, ColorIndex const*  coloring) noexcept
+print(ro_ptr<char16_t>  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring) noexcept
 {
     while(*s)
     {
@@ -85,6 +85,22 @@ print(const char16_t*  s, Point  pt, GlyphSet const&  glset, ColorIndex const*  
 }
 
 
+
+
+void
+Image::
+print(const char*  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring) noexcept
+{
+  print(ro_ptr<char>(s),pt,glset,coloring);
+}
+
+
+void
+Image::
+print(const char16_t*  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring) noexcept
+{
+  print(ro_ptr<char16_t>(s),pt,glset,coloring);
+}
 
 
 }

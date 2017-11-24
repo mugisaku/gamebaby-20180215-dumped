@@ -58,6 +58,8 @@ resize(size_t  length) noexcept
   data_length = length;
 
   data_tail = data_source+data_length;
+
+  reset();
 }
 
 

@@ -3,6 +3,16 @@
 
 
 #include<cstddef>
+#include<cstdint>
+
+
+#ifndef report
+#define report printf("[report] %s, %s, %d\n",__FILE__,__func__,__LINE__);
+#endif
+
+
+template<typename  T>  class  ro_ptr;
+template<typename  T>  class  rw_ptr;
 
 
 template<typename  T>
@@ -20,8 +30,10 @@ public:
   template<typename  U>
   constexpr ro_ptr(const U*  ptr) noexcept: data(static_cast<const T*>(ptr)){}
 
+  constexpr ro_ptr(rw_ptr<T>  rhs) noexcept: data(rhs.get_raw()){}
+
   template<typename  U>
-  constexpr ro_ptr(const ro_ptr<U>&  rhs) noexcept: data(static_cast<const T*>(rhs.get_raw())){}
+  constexpr ro_ptr(rw_ptr<U>  rhs) noexcept: data(static_cast<const T*>(rhs.get_raw())){}
 
   constexpr const value_type*  operator->() const noexcept{return  data;}
   constexpr const value_type&  operator *() const noexcept{return *data;}
@@ -29,8 +41,8 @@ public:
   constexpr ro_ptr  operator+(int  i) const noexcept{return ro_ptr(data+i);}
   constexpr ro_ptr  operator-(int  i) const noexcept{return ro_ptr(data-i);}
 
-  constexpr ptrdiff_t  operator-(const T*  p)        const noexcept{return(data-p);}
-  constexpr ptrdiff_t  operator-(const ro_ptr&  rhs) const noexcept{return(data-rhs.data);}
+  constexpr ptrdiff_t  operator-(const T*  p) const noexcept{return(data-p);}
+  constexpr ptrdiff_t  operator-(ro_ptr  rhs) const noexcept{return(data-rhs.data);}
 
   constexpr bool  operator==(const T*  p) const noexcept{return data == p;}
   constexpr bool  operator!=(const T*  p) const noexcept{return data != p;}
@@ -39,12 +51,19 @@ public:
   constexpr bool  operator> (const T*  p) const noexcept{return data >  p;}
   constexpr bool  operator>=(const T*  p) const noexcept{return data >= p;}
 
-  constexpr bool  operator==(const ro_ptr&  rhs) const noexcept{return data == rhs.data;}
-  constexpr bool  operator!=(const ro_ptr&  rhs) const noexcept{return data != rhs.data;}
-  constexpr bool  operator< (const ro_ptr&  rhs) const noexcept{return data <  rhs.data;}
-  constexpr bool  operator<=(const ro_ptr&  rhs) const noexcept{return data <= rhs.data;}
-  constexpr bool  operator> (const ro_ptr&  rhs) const noexcept{return data >  rhs.data;}
-  constexpr bool  operator>=(const ro_ptr&  rhs) const noexcept{return data >= rhs.data;}
+  constexpr bool  operator==(ro_ptr  rhs) const noexcept{return data == rhs.data;}
+  constexpr bool  operator!=(ro_ptr  rhs) const noexcept{return data != rhs.data;}
+  constexpr bool  operator< (ro_ptr  rhs) const noexcept{return data <  rhs.data;}
+  constexpr bool  operator<=(ro_ptr  rhs) const noexcept{return data <= rhs.data;}
+  constexpr bool  operator> (ro_ptr  rhs) const noexcept{return data >  rhs.data;}
+  constexpr bool  operator>=(ro_ptr  rhs) const noexcept{return data >= rhs.data;}
+
+  constexpr bool  operator==(rw_ptr<T>  rhs) const noexcept{return data == rhs.get_raw();}
+  constexpr bool  operator!=(rw_ptr<T>  rhs) const noexcept{return data != rhs.get_raw();}
+  constexpr bool  operator< (rw_ptr<T>  rhs) const noexcept{return data <  rhs.get_raw();}
+  constexpr bool  operator<=(rw_ptr<T>  rhs) const noexcept{return data <= rhs.get_raw();}
+  constexpr bool  operator> (rw_ptr<T>  rhs) const noexcept{return data >  rhs.get_raw();}
+  constexpr bool  operator>=(rw_ptr<T>  rhs) const noexcept{return data >= rhs.get_raw();}
 
   constexpr const value_type&  operator[](int  i) const noexcept{return data[i];}
 
@@ -119,6 +138,8 @@ public:
     return p;
   }
 
+  constexpr uintptr_t  to_uintptr() const noexcept{return reinterpret_cast<uintptr_t>(data);}
+
 };
 
 
@@ -139,7 +160,7 @@ public:
   constexpr rw_ptr(U*  ptr) noexcept: data(static_cast<T*>(ptr)){}
 
   template<typename  U>
-  constexpr rw_ptr(const rw_ptr<U>&  rhs) noexcept: data(static_cast<T*>(rhs.data)){}
+  constexpr rw_ptr(rw_ptr<U>  rhs) noexcept: data(static_cast<T*>(rhs.data)){}
 
   using value_type = T;
 
@@ -149,8 +170,8 @@ public:
   constexpr rw_ptr  operator+(int  i) const noexcept{return rw_ptr(data+i);}
   constexpr rw_ptr  operator-(int  i) const noexcept{return rw_ptr(data-i);}
 
-  constexpr ptrdiff_t  operator-(const T*  p)        const noexcept{return(data-p);}
-  constexpr ptrdiff_t  operator-(const rw_ptr&  rhs) const noexcept{return(data-rhs.data);}
+  constexpr ptrdiff_t  operator-(const T*  p) const noexcept{return(data-p);}
+  constexpr ptrdiff_t  operator-(rw_ptr  rhs) const noexcept{return(data-rhs.data);}
 
   constexpr bool  operator==(const T*  p) const noexcept{return data == p;}
   constexpr bool  operator!=(const T*  p) const noexcept{return data != p;}
@@ -159,17 +180,25 @@ public:
   constexpr bool  operator> (const T*  p) const noexcept{return data >  p;}
   constexpr bool  operator>=(const T*  p) const noexcept{return data >= p;}
 
-  constexpr bool  operator==(const rw_ptr&  rhs) const noexcept{return data == rhs.data;}
-  constexpr bool  operator!=(const rw_ptr&  rhs) const noexcept{return data != rhs.data;}
-  constexpr bool  operator< (const rw_ptr&  rhs) const noexcept{return data <  rhs.data;}
-  constexpr bool  operator<=(const rw_ptr&  rhs) const noexcept{return data <= rhs.data;}
-  constexpr bool  operator> (const rw_ptr&  rhs) const noexcept{return data >  rhs.data;}
-  constexpr bool  operator>=(const rw_ptr&  rhs) const noexcept{return data >= rhs.data;}
+  constexpr bool  operator==(rw_ptr  rhs) const noexcept{return data == rhs.data;}
+  constexpr bool  operator!=(rw_ptr  rhs) const noexcept{return data != rhs.data;}
+  constexpr bool  operator< (rw_ptr  rhs) const noexcept{return data <  rhs.data;}
+  constexpr bool  operator<=(rw_ptr  rhs) const noexcept{return data <= rhs.data;}
+  constexpr bool  operator> (rw_ptr  rhs) const noexcept{return data >  rhs.data;}
+  constexpr bool  operator>=(rw_ptr  rhs) const noexcept{return data >= rhs.data;}
+
+  constexpr bool  operator==(ro_ptr<T>  rhs) const noexcept{return data == rhs.get_raw();}
+  constexpr bool  operator!=(ro_ptr<T>  rhs) const noexcept{return data != rhs.get_raw();}
+  constexpr bool  operator< (ro_ptr<T>  rhs) const noexcept{return data <  rhs.get_raw();}
+  constexpr bool  operator<=(ro_ptr<T>  rhs) const noexcept{return data <= rhs.get_raw();}
+  constexpr bool  operator> (ro_ptr<T>  rhs) const noexcept{return data >  rhs.get_raw();}
+  constexpr bool  operator>=(ro_ptr<T>  rhs) const noexcept{return data >= rhs.get_raw();}
 
   constexpr value_type&  operator[](int  i) const noexcept{return data[i];}
 
   constexpr operator bool() const noexcept{return data;}
 
+  constexpr const T*  get_raw() const noexcept{return data;}
   constexpr void*  get_opaque() const noexcept{return data;}
 
 
@@ -240,6 +269,8 @@ public:
 
 
   constexpr ro_ptr<T>  get_ro() const noexcept{return ro_ptr<T>(data);}
+
+  constexpr uintptr_t  to_uintptr() const noexcept{return reinterpret_cast<uintptr_t>(data);}
 
 };
 

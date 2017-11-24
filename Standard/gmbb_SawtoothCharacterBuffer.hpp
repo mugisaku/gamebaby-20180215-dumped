@@ -28,7 +28,7 @@ public:
     ro_ptr<Line>  ptr;
 
   public:
-    Iterator(ro_ptr<Line>  p=ro_ptr<Line>()) noexcept: ptr(p){}
+    Iterator(ro_ptr<Line>  p=nullptr) noexcept: ptr(p){}
 
     ro_ptr<char16_t>  operator*() const noexcept{return ptr->data.get_ro();}
 

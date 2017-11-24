@@ -41,11 +41,11 @@ const Image&  update(const Task&  root_task) noexcept;
 struct
 Subtitle
 {
-  const char*  string;
+  ro_ptr<char>  string;
 
   Point  point;
 
-  const GlyphSet*  glyphset;
+  ro_ptr<GlyphSet>  glyphset;
 
   Subtitle*  previous=nullptr;
   Subtitle*      next=nullptr;

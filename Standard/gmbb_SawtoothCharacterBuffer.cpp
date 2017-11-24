@@ -40,6 +40,11 @@ reset() noexcept
 
       cur = cur->next;
     }
+
+
+  current = first;
+
+  last->next = nullptr;
 }
 
 
@@ -47,6 +52,14 @@ void
 SawtoothCharacterBuffer::
 resize(int  col_n, int  row_n) noexcept
 {
+    if(row_n <= 1)
+    {
+      printf("[resize error]\n");
+
+      return;
+    }
+
+
   clear();
 
   number_of_columns = col_n;
@@ -67,12 +80,18 @@ resize(int  col_n, int  row_n) noexcept
                 first = line_p++;
       current = first           ;
 
+      current->data = data_p           ;
+                      data_p += col_n+1;
+
       current->data[0] = 0;
 
         while(row_n--)
         {
                     current->next = line_p++;
           current = current->next           ;
+
+          current->data = data_p           ;
+                          data_p += col_n+1;
 
           current->data[0] = 0;
         }
@@ -118,15 +137,21 @@ push(char16_t  c) noexcept
         if(c == '\n')
         {
           current = current->next;
+
+          current_length = 0;
         }
 
       else
+        if(c)
         {
           current->data[current_length++] = c;
+          current->data[current_length  ] = 0;
 
             if(current_length > (number_of_columns-1))
             {
               current = current->next;
+
+              current_length = 0;
             }
         }
     }

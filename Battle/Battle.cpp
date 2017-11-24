@@ -15,19 +15,52 @@ FixedString
 label("battle");
 
 
-//MessageWindow
-//message_window(system_data::glset,20,6,Point(0,160));
+constexpr int  cols = 26;
+constexpr int  rows =  5;
 
 
-Window
-message_window;
+SawtoothCharacterBuffer
+sc_buffer(cols,rows);
+
+
+LinearCharacterBuffer
+lc_buffer(1024);
+
+
+class
+CommentaryWindow: public Window
+{
+public:
+  CommentaryWindow(): Window(8*(cols+2),16*(rows+1),Point(32,140))
+  {
+  }
+
+
+  void  render(Image&  dst, Point  offset) const noexcept override
+  {
+    Window::render(dst,offset);
+
+    offset += get_base_point();
+
+    offset.x += 8;
+    offset.y += 8;
+
+      for(auto  s: sc_buffer)
+      {
+        dst.print(s,offset,system_data::glset);
+
+        offset.y += 16;
+      }
+  }
+
+} comment_window;
 
 
 class
 MonitorWindow: public Window
 {
 public:
-  MonitorWindow(): Window(8*20,16*5,Point(128,160)){}
+  MonitorWindow(): Window(8*20,16*6,Point(128,144)){}
 
   void  render(Image&  dst, Point  offset) const noexcept override
   {
@@ -56,6 +89,12 @@ public:
 void
 step(const Controller&  ctrl) noexcept
 {
+    if(lc_buffer.is_remaining())
+    {
+      auto  c = lc_buffer.pop();
+
+      sc_buffer.push(c);
+    }
 }
 
 
@@ -65,8 +104,10 @@ step(const Controller&  ctrl) noexcept
 void
 start_battle(coreturn_t  ret) noexcept
 {
+  lc_buffer.push("まものが　あらわれた");
+
   system_data::root_task.push(monitor_window);
-  system_data::root_task.push(message_window);
+  system_data::root_task.push(comment_window);
 
   push_routine(label.pointer,step,ret);
 }

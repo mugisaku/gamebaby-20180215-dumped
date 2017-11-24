@@ -10,6 +10,7 @@
 #include"gmbb_StreamReader.hpp"
 #include"gmbb_Figures.hpp"
 #include"gmbb_Palette.hpp"
+#include"Pointer.hpp"
 
 
 
@@ -82,9 +83,11 @@ public:
   void  draw_rectangle_safely(Rectangle const&  rect, Pixel  pix) noexcept;
   void  fill_rectangle(       Rectangle         rect, Pixel  pix) noexcept;
 
-  void  print(      char16_t   c, Point  pt, GlyphSet const&  glset, ColorIndex const*  coloring=default_coloring) noexcept;
-  void  print(const char*      s, Point  pt, GlyphSet const&  glset, ColorIndex const*  coloring=default_coloring) noexcept;
-  void  print(const char16_t*  s, Point  pt, GlyphSet const&  glset, ColorIndex const*  coloring=default_coloring) noexcept;
+  void  print(       char16_t   c, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring=default_coloring) noexcept;
+  void  print(ro_ptr<char    >  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring=default_coloring) noexcept;
+  void  print(ro_ptr<char16_t>  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring=default_coloring) noexcept;
+  void  print(const char    *  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring=default_coloring) noexcept;
+  void  print(const char16_t*  s, Point  pt, GlyphSet const&  glset, ro_ptr<ColorIndex>  coloring=default_coloring) noexcept;
 
   void  transfer(Image const&  src, Rectangle  src_rect, Point  dst_pt, int  z=0) noexcept;
 
