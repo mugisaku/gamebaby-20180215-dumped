@@ -5,6 +5,16 @@
 namespace gmbb{
 
 
+
+
+void
+CharacterData::
+set_name(const char*  new_name) noexcept
+{
+  snprintf(name,sizeof(name),"%s",new_name);
+}
+
+
 void
 CharacterData::
 set_name(const NameBuffer&  nambuf) noexcept

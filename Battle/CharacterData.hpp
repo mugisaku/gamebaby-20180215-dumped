@@ -4,6 +4,7 @@
 
 #include<cstdint>
 #include<string>
+#include"Pointer.hpp"
 
 
 namespace gmbb{
@@ -27,11 +28,11 @@ ClassData
 
   const char*  name;
 
-  int  strength_of_attack;
-  int    number_of_attacks;
+  int  strength_of_attack=0;
+  int    number_of_attacks=0;
 
-  int  strength_of_guard;
-  int    number_of_guards;
+  int  strength_of_guard=0;
+  int    number_of_guards=0;
 
 };
 
@@ -75,7 +76,44 @@ CharacterData
   int  hp=hp_max;
   int  mp=mp_max;
 
+  void  set_name(const char*  new_name) noexcept;
   void  set_name(const NameBuffer&  nambuf) noexcept;
+
+  
+
+};
+
+
+enum class
+ActionKind
+{
+  null,
+  attack,
+  guard,
+
+};
+
+
+enum class
+TargetKind
+{
+  null,
+  one,
+  all_of_heroes_side,
+  all_of_enemies_side,
+
+};
+
+
+struct
+Action
+{
+  ActionKind  kind;
+
+  rw_ptr<CharacterData>   actor;
+  rw_ptr<CharacterData>  target;
+
+  TargetKind  target_kind;
 
 };
 

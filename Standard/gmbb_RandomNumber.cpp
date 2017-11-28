@@ -5,34 +5,81 @@
 
 
 namespace gmbb{
+namespace random_number{
 
 
 namespace{
-std::random_device
-randev;
+
+
+std::default_random_engine
+engine;
+
+
+std::vector<std::uniform_real_distribution<>>
+uniform_table;
+
+
+std::vector<std::normal_distribution<>>
+normal_table;
+
+
 }
 
 
-RandomNumber::
-RandomNumber() noexcept
+void
+initialize() noexcept
 {
-  reset();
+  engine = std::default_random_engine(std::random_device()());
 }
 
 
-RandomNumber::
-RandomNumber(uint32_t  x_, uint32_t  y_, uint32_t  z_, uint32_t  w_) noexcept
+Descriptor
+add_uniform(double  min, double  max) noexcept
 {
-  reset(x_,y_,z_,w_);
+  auto  i = uniform_table.size();
+
+  uniform_table.emplace_back(min,max);
+
+  return Descriptor((i<<16)|1);
+}
+
+
+Descriptor
+add_normal(double  mean, double  stddev) noexcept
+{
+  auto  i = uniform_table.size();
+
+  normal_table.emplace_back(mean,stddev);
+
+  return Descriptor((i<<16)|2);
+}
+
+
+double
+Descriptor::
+operator()() const noexcept
+{
+  auto  i = value>>16;
+
+    switch(value&3)
+    {
+  case(1): return uniform_table[i](engine);break;
+  case(2): return  normal_table[i](engine);break;
+    }
+
+
+  return 0;
 }
 
 
 
 
 void
-RandomNumber::
+Seed::
 reset() noexcept
 {
+  std::random_device  randev;
+
   x = randev();
   y = randev();
   z = randev();
@@ -41,7 +88,7 @@ reset() noexcept
 
 
 void
-RandomNumber::
+Seed::
 reset(uint32_t  x_, uint32_t  y_, uint32_t  z_, uint32_t  w_) noexcept
 {
   x = x_;
@@ -51,39 +98,7 @@ reset(uint32_t  x_, uint32_t  y_, uint32_t  z_, uint32_t  w_) noexcept
 }
 
 
-uint32_t
-RandomNumber::
-generate() noexcept
-{
-  uint32_t  t = x ^ (x << 11);
-
-  x = y;
-  y = z;
-  z = w;
-
-  w = (w ^ (w >> 19)) ^ (t ^ (t >> 8)); 
-
-  return w;
-}
-
-
-uint32_t
-RandomNumber::
-generate(uint32_t  max) noexcept
-{
-  auto  n = generate();
-
-    if(!max)
-    {
-      return 0;
-    }
-
-
-  return n%max;
-}
-
-
-}
+}}
 
 
 

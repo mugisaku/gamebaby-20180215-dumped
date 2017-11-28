@@ -21,6 +21,10 @@ GlyphSet
 large_glset;
 
 
+LinearCharacterBuffer
+char_buffer(1024);
+
+
 
 
 }}

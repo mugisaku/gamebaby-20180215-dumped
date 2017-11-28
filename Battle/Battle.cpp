@@ -1,6 +1,5 @@
 #include"Battle.hpp"
-#include"SystemData.hpp"
-#include"SavedData.hpp"
+#include<list>
 
 
 
@@ -15,52 +14,16 @@ FixedString
 label("battle");
 
 
-constexpr int  cols = 26;
-constexpr int  rows =  5;
-
-
-SawtoothCharacterBuffer
-sc_buffer(cols,rows);
-
-
-LinearCharacterBuffer
-lc_buffer(1024);
+constexpr int  status_window_h = (16*3);
 
 
 class
-CommentaryWindow: public Window
+StatusWindow: public Window
 {
+  const int  index;
+
 public:
-  CommentaryWindow(): Window(8*(cols+2),16*(rows+1),Point(32,140))
-  {
-  }
-
-
-  void  render(Image&  dst, Point  offset) const noexcept override
-  {
-    Window::render(dst,offset);
-
-    offset += get_base_point();
-
-    offset.x += 8;
-    offset.y += 8;
-
-      for(auto  s: sc_buffer)
-      {
-        dst.print(s,offset,system_data::glset);
-
-        offset.y += 16;
-      }
-  }
-
-} comment_window;
-
-
-class
-MonitorWindow: public Window
-{
-public:
-  MonitorWindow(): Window(8*20,16*6,Point(128,144)){}
+  StatusWindow(int  i): Window(8*9,status_window_h,Point(216,status_window_h*i)), index(i){}
 
   void  render(Image&  dst, Point  offset) const noexcept override
   {
@@ -74,42 +37,118 @@ public:
     StringBuffer  sbuf;
 
 
-    dst.print("NAME      HP  MP",offset,system_data::glset);
+    auto  ch = saved_data::party.members[index];
 
-
-    auto&  ch = saved_data::characters[0];
-
-    dst.print(ch.name,offset.move_y(16),system_data::glset);
-    dst.print(sbuf("%4d %3d",ch.hp,ch.mp),offset.move_x(8*8),system_data::glset);
+      if(ch)
+      {
+        dst.print(ch->name,offset,system_data::glset);
+        dst.print(sbuf("HP %4d",ch->hp),offset.move_y(8),system_data::glset);
+        dst.print(sbuf("MP %4d",ch->mp),offset.move_y(8),system_data::glset);
+      }
   }
 
-} monitor_window;
+} status_windows[4] = {
+    StatusWindow(0),
+    StatusWindow(1),
+    StatusWindow(2),
+    StatusWindow(3)
+  };
+
+
+coreturn_t
+ret_hunger;
+
+
+std::list<Action>
+action_list;
+
+
+void  return_from_action_choosing(int  retval) noexcept;
 
 
 void
-step(const Controller&  ctrl) noexcept
+return_from_action_processing(int  retval) noexcept
 {
-    if(lc_buffer.is_remaining())
+    if(action_list.size())
     {
-      auto  c = lc_buffer.pop();
+      tmp::action = action_list.front();
 
-      sc_buffer.push(c);
+      action_list.pop_front();
+
+      start_action_processing(return_from_action_processing);
+    }
+
+  else
+    {
+      clear_stream_text();
+
+      start_action_choosing(return_from_action_choosing,0);
     }
 }
 
 
+void
+return_from_action_choosing(int  retval) noexcept
+{
+  terminate_action_choosing();
+
+    if(retval == 0)
+    {
+      start_action_choosing(return_from_action_choosing,0);
+    }
+
+  else
+    if(retval == 1)
+    {
+      action_list.emplace_back(tmp::action);
+
+      tmp::action = action_list.front();
+
+      action_list.pop_front();
+
+      start_action_processing(return_from_action_processing);
+    }
+}
+
+
+void
+return_from_stream_text(int  retval) noexcept
+{
+  clear_stream_text();
+
+  start_action_choosing(return_from_action_choosing,0);
+}
+
+
+}
+
+
+void
+terminate_battle() noexcept
+{
+    for(auto&  w: status_windows)
+    {
+      system_data::root_task.erase(w);
+    }
 }
 
 
 void
 start_battle(coreturn_t  ret) noexcept
 {
-  lc_buffer.push("まものが　あらわれた");
+  ret_hunger = ret;
 
-  system_data::root_task.push(monitor_window);
-  system_data::root_task.push(comment_window);
+  system_data::char_buffer.push("まものが　あらわれた");
 
-  push_routine(label.pointer,step,ret);
+  tmp::enemy.set_name("おばけがえる");
+
+    for(auto&  w: status_windows)
+    {
+      system_data::root_task.push(w);
+    }
+
+
+  start_stream_text(return_from_stream_text);
 }
 
 

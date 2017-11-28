@@ -30,6 +30,10 @@ GroupTask
 root_task;
 
 
+extern LinearCharacterBuffer
+char_buffer;
+
+
 }}
 
 

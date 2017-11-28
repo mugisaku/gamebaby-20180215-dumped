@@ -110,6 +110,9 @@ set(BATTLE_SOURCES
   Battle/Startup_ClassChoosing.cpp
   Battle/Startup_NameMaking.cpp
   Battle/Battle.cpp
+  Battle/Battle_StreamText.cpp
+  Battle/Battle_ActionChoosing.cpp
+  Battle/Battle_ActionProcessing.cpp
 )
 
 
@@ -151,6 +154,7 @@ include_directories(/usr/include/SDL2)
 add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
 add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
+add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
 add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES})
 add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 

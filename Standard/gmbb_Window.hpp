@@ -44,6 +44,7 @@ protected:
 public:
   Window(              ) noexcept{}
   Window(int  w, int  h, Point  pt) noexcept: Task(pt){resize(w,h);}
+  Window(Rectangle  rect) noexcept: Task(rect){resize(rect.w,rect.h);}
 
   void  resize(int  w, int  h) noexcept;
 

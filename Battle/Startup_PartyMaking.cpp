@@ -35,6 +35,10 @@ return_from_character_making(int  retval) noexcept
   ch = tmp::character_data;
 
   ch.set_name(tmp::name_buffer);
+
+  saved_data::party.members[0] = &ch;
+
+  saved_data::party.number_of_members = 1;
 }
 
 
