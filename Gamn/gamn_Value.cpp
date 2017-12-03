@@ -1,5 +1,7 @@
 #include"gamn_Value.hpp"
 #include"gamn_List.hpp"
+#include"gamn_String.hpp"
+#include<cstdio>
 
 
 
@@ -16,26 +18,19 @@ operator=(Value&&  rhs) noexcept
   clear();
 
   std::swap(kind,rhs.kind);
-  std::swap(name,rhs.name);
 
     switch(kind)
     {
   case(ValueKind::null):
       break;
   case(ValueKind::string):
-      new(&data) std::string(std::move(rhs.data.string));
+      new(&data) String(std::move(rhs.data.string));
       break;
   case(ValueKind::integer):
       data.integer = rhs.data.integer;
       break;
   case(ValueKind::real):
       data.real = rhs.data.real;
-      break;
-  case(ValueKind::value):
-      data.value = rhs.data.value;
-      break;
-  case(ValueKind::pair):
-      data.pair = rhs.data.pair;
       break;
   case(ValueKind::list):
       data.list = rhs.data.list;
@@ -49,31 +44,24 @@ operator=(Value&&  rhs) noexcept
 
 Value&
 Value::
-operator=(Value const&  rhs) noexcept
+operator=(const Value&  rhs) noexcept
 {
   clear();
 
   kind = rhs.kind;
-  name = rhs.name;
 
     switch(kind)
     {
   case(ValueKind::null):
       break;
   case(ValueKind::string):
-      new(&data) std::string(rhs.data.string);
+      new(&data) String(rhs.data.string);
       break;
   case(ValueKind::integer):
       data.integer = rhs.data.integer;
       break;
   case(ValueKind::real):
       data.real = rhs.data.real;
-      break;
-  case(ValueKind::value):
-      data.value = new Value(*rhs.data.value);
-      break;
-  case(ValueKind::pair):
-      data.pair = new Pair(*rhs.data.pair);
       break;
   case(ValueKind::list):
       data.list = new List(*rhs.data.list);
@@ -111,23 +99,15 @@ void
 Value::
 clear() noexcept
 {
-  name.clear();
-
     switch(kind)
     {
   case(ValueKind::null):
       break;
   case(ValueKind::string):
-      data.string.~basic_string();
+      data.string.~String();
       break;
   case(ValueKind::integer):
   case(ValueKind::real):
-      break;
-  case(ValueKind::value):
-      delete data.value;
-      break;
-  case(ValueKind::pair):
-      delete data.pair;
       break;
   case(ValueKind::list):
       delete data.list;
@@ -142,12 +122,10 @@ clear() noexcept
 
 
 
-int                  Value::get_integer() const noexcept{return data.integer;}
-double               Value::get_real() const noexcept{return data.real;}
-std::string const&   Value::get_string() const noexcept{return data.string;}
-Value const&         Value::get_value() const noexcept{return *data.value;}
-Pair const&          Value::get_pair() const noexcept{return *data.pair;}
-List const&          Value::get_list() const noexcept{return *data.list;}
+int            Value::get_integer() const noexcept{return data.integer;}
+double            Value::get_real() const noexcept{return data.real;}
+const String&   Value::get_string() const noexcept{return data.string;}
+const List&       Value::get_list() const noexcept{return *data.list;}
 
 
 
@@ -156,64 +134,23 @@ void
 Value::
 print() const noexcept
 {
-    if(*this)
+    switch(kind)
     {
-        if(is_pair())
-        {
-          printf("<\"%s\"? ",name.data());
-
-          data.pair->left.print();
-
-          printf(":");
-
-          data.pair->right.print();
-
-          printf(">");
-        }
-
-      else
-        {
-            if(name.size())
-            {
-              printf("<\"%s\":",name.data());
-            }
-
-
-            switch(kind)
-            {
-          case(ValueKind::null):
-              printf("(null)");
-              break;
-          case(ValueKind::string):
-              printf("\"%s\"",data.string.data());
-              break;
-          case(ValueKind::integer):
-              printf("%d",data.integer);
-              break;
-          case(ValueKind::real):
-              printf("%f",data.real);
-              break;
-          case(ValueKind::value):
-              data.value->print();
-              break;
-          case(ValueKind::pair):
-              break;
-          case(ValueKind::list):
-              data.list->print();
-              break;
-            }
-
-
-            if(name.size())
-            {
-              printf(">");
-            }
-        }
-    }
-
-  else
-    {
+  case(ValueKind::null):
       printf("(null)");
+      break;
+  case(ValueKind::string):
+      data.string.print();
+      break;
+  case(ValueKind::integer):
+      printf("%d",data.integer);
+      break;
+  case(ValueKind::real):
+      printf("%f",data.real);
+      break;
+  case(ValueKind::list):
+      data.list->print();
+      break;
     }
 }
 

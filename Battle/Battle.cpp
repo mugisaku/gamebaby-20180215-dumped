@@ -37,13 +37,13 @@ public:
     StringBuffer  sbuf;
 
 
-    auto  ch = saved_data::party.members[index];
+    auto  ch = sav::party.members[index];
 
       if(ch)
       {
-        dst.print(ch->name,offset,system_data::glset);
-        dst.print(sbuf("HP %4d",ch->hp),offset.move_y(8),system_data::glset);
-        dst.print(sbuf("MP %4d",ch->mp),offset.move_y(8),system_data::glset);
+        dst.print(ch->name.data(),offset,system_data::glset);
+        dst.print(sbuf("HP %4d",ch->current_hp),offset.move_y(8),system_data::glset);
+        dst.print(sbuf("MP %4d",ch->current_mp),offset.move_y(8),system_data::glset);
       }
   }
 
@@ -71,7 +71,7 @@ return_from_action_processing(int  retval) noexcept
 {
     if(action_list.size())
     {
-      tmp::action = action_list.front();
+      action = action_list.front();
 
       action_list.pop_front();
 
@@ -100,9 +100,9 @@ return_from_action_choosing(int  retval) noexcept
   else
     if(retval == 1)
     {
-      action_list.emplace_back(tmp::action);
+      action_list.emplace_back(action);
 
-      tmp::action = action_list.front();
+      action = action_list.front();
 
       action_list.pop_front();
 
@@ -140,7 +140,15 @@ start_battle(coreturn_t  ret) noexcept
 
   system_data::char_buffer.push("まものが　あらわれた");
 
-  tmp::enemy.set_name("おばけがえる");
+  auto&  ene = enemy_player_table[0];
+
+  ene.name = "おばけがえる";
+
+  ene.body_strength = 30;
+  ene.mind_strength =  0;
+  ene.agility       =  7;
+  ene.update();
+  ene.replenish_hp();
 
     for(auto&  w: status_windows)
     {

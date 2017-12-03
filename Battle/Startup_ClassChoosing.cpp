@@ -1,6 +1,5 @@
 #include"Startup.hpp"
 #include"SystemData.hpp"
-#include"EmbeddedData.hpp"
 
 
 
@@ -15,12 +14,13 @@ FixedString
 label("class choosing");
 
 
-const ClassData
+const PlayerBase
 classes[] =
 {
-  {ClassID::warrior,    "せんし",16,4,20,4},
-  {ClassID::hunter ,"かりゅうど",80,1, 8,2},
-  {ClassID:: thief ,  "とうぞく", 8,8,10,5},
+  {    "せんし",32),MindStrength( 4),Agility(20),Defense(40),Intellect(8),0,0,},
+  {"かりゅうど",24),MindStrength(10),Agility(40),Defense(16),Intellect(8)},
+  {  "とうぞく",16),MindStrength( 2),Agility(60),Defense( 8),Intellect(8)},
+
 };
 
 
@@ -29,12 +29,12 @@ render(Image&  dst, Point  point, int  index)
 {
   auto&  cl = classes[index];
 
-  dst.print(cl.name,point,system_data::glset);
+  dst.print(cl.name.data(),point,system_data::glset);
 }
 
 
 ColumnStyleMenuWindow
-menu_window(Menu(8*8,16,(sizeof(classes)/sizeof(*classes)),render),1,Point(40,60));
+menu_window(Menu(8*8,16,(sizeof(classes)/sizeof(*classes)),render),1,Point(80,60));
 
 
 class
@@ -57,7 +57,7 @@ class
 SpecsWindow: public Window
 {
 public:
-  SpecsWindow(): Window(8*13,16*5,Point(120,60)){}
+  SpecsWindow(): Window(8*31,16*7,Point(16,128)){}
 
   void  render(Image&  dst, Point  offset) const noexcept override
   {
@@ -70,12 +70,22 @@ public:
 
     StringBuffer  sbuf;
 
-    auto&  cl = classes[menu_window.get_item_index()];
+    const int  y_base = offset.y;
 
-    dst.print(sbuf("こうげきりょく　　%2d",cl.strength_of_attack),offset           ,system_data::glset);
-    dst.print(sbuf("こうげきかいすう　%2d",cl.number_of_attacks) ,offset.move_y(16),system_data::glset);
-    dst.print(sbuf("ぼうぎょりょく　　%2d",cl.strength_of_guard) ,offset.move_y(16),system_data::glset);
-    dst.print(sbuf("ぼうぎょかいすう　%2d",cl.number_of_guards)  ,offset.move_y(16),system_data::glset);
+    const auto&  pl = tmp::player;
+
+    dst.print(sbuf("たいりょく　　　%2d",pl.body_strength),offset           ,system_data::glset);
+//    dst.print(sbuf("せいしんりょく　%2d",pl.mind_strength),offset.move_y(16),system_data::glset);
+    dst.print(sbuf("すばやさ　　　　%2d",pl.agility      ),offset.move_y(16),system_data::glset);
+    dst.print(sbuf("しゅびりょく　　%2d",pl.defense      ),offset.move_y(16),system_data::glset);
+//    dst.print(sbuf("ちりょく　　　　%2d",pl.intellect    ),offset.move_y(16),system_data::glset);
+
+    offset.x +=   8*12;
+    offset.y  = y_base;
+
+    dst.print(sbuf("こうげき　%3d…かいすう　%2d",pl.attack_strength,pl.number_of_attacks),offset           ,system_data::glset);
+    dst.print(sbuf("ぼうぎょ　%3d…かいすう　%2d",pl.guard_strength,pl.number_of_guards)  ,offset.move_y(16),system_data::glset);
+//    dst.print(sbuf("まほう　　%3d…かいすう　%2d",pl.magic_strength,pl.number_of_magics)  ,offset.move_y(16),system_data::glset);
   }
 
 } specs_window;
@@ -88,12 +98,19 @@ step(Controller const&  ctrl) noexcept
     {
            if(ctrl.is_up_button_pressing()  ){menu_window.move_cursor_to_up()  ;}
       else if(ctrl.is_down_button_pressing()){menu_window.move_cursor_to_down();}
+
+      static_cast<PlayerBase&>(tmp::hero) = classes[menu_window.get_item_index()];
+
+      tmp::player = Player(tmp::hero);
+
+      tmp::player.update();
     }
 
 
     if(ctrl.is_p_button_pressing())
     {
-      tmp::character_data.class_data = classes[menu_window.get_item_index()];
+      tmp::player.replenish_hp();
+      tmp::player.replenish_mp();
 
       pop_routine(label.pointer);
     }

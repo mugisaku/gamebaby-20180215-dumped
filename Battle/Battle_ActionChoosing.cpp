@@ -42,19 +42,19 @@ step(const Controller&  ctrl) noexcept
 
         if(i == 0)
         {
-          tmp::action.actor       = &saved_data::characters[0];
-          tmp::action.target      = &tmp::enemy;
-          tmp::action.target_kind = TargetKind::one;
-          tmp::action.kind        = ActionKind::attack;
+          action.actor       = &hero_player_table[0];
+          action.target      = &enemy_player_table[0];
+          action.target_kind = TargetKind::one;
+          action.kind        = ActionKind::attack;
         }
 
       else
         if(i == 1)
         {
-          tmp::action.actor       = &saved_data::characters[0];
-          tmp::action.target      = nullptr;
-          tmp::action.target_kind = TargetKind::null;
-          tmp::action.kind        = ActionKind::guard;
+          action.actor       = &hero_player_table[0];
+          action.target      = nullptr;
+          action.target_kind = TargetKind::null;
+          action.kind        = ActionKind::guard;
         }
 
 
@@ -89,10 +89,10 @@ terminate_action_choosing() noexcept
 void
 start_action_choosing(coreturn_t  ret, int  num) noexcept
 {
-  tmp::action.actor       = nullptr;
-  tmp::action.target      = nullptr;
-  tmp::action.target_kind = TargetKind::null;
-  tmp::action.kind        = ActionKind::null;
+  action.actor       = nullptr;
+  action.target      = nullptr;
+  action.target_kind = TargetKind::null;
+  action.kind        = ActionKind::null;
 
   system_data::root_task.push(menu_window);
 

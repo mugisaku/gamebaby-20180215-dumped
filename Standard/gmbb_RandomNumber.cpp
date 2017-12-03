@@ -15,14 +15,6 @@ std::default_random_engine
 engine;
 
 
-std::vector<std::uniform_real_distribution<>>
-uniform_table;
-
-
-std::vector<std::normal_distribution<>>
-normal_table;
-
-
 }
 
 
@@ -33,42 +25,23 @@ initialize() noexcept
 }
 
 
-Descriptor
-add_uniform(double  min, double  max) noexcept
+double
+UniformDistribution::
+operator()(double  min, double  max) const noexcept
 {
-  auto  i = uniform_table.size();
+  std::uniform_real_distribution<>  dist(min,max);
 
-  uniform_table.emplace_back(min,max);
-
-  return Descriptor((i<<16)|1);
-}
-
-
-Descriptor
-add_normal(double  mean, double  stddev) noexcept
-{
-  auto  i = uniform_table.size();
-
-  normal_table.emplace_back(mean,stddev);
-
-  return Descriptor((i<<16)|2);
+  return dist(engine);
 }
 
 
 double
-Descriptor::
-operator()() const noexcept
+NormalDistribution::
+operator()(double  mean, double  stddev) const noexcept
 {
-  auto  i = value>>16;
+  std::normal_distribution<>  dist(mean,stddev);
 
-    switch(value&3)
-    {
-  case(1): return uniform_table[i](engine);break;
-  case(2): return  normal_table[i](engine);break;
-    }
-
-
-  return 0;
+  return dist(engine);
 }
 
 

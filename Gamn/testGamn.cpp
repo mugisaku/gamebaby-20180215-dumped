@@ -8,11 +8,17 @@ using namespace gamn;
 int
 main(int  argc, char**  argv)
 {
+    if(argc != 2)
+    {
+      return 0;
+    }
+
+
   List  ls;
 
     try
     {
-      ls = List("../script.gamn");
+      ls = List(argv[1]);
     }
 
 

@@ -275,6 +275,29 @@ public:
 };
 
 
+template<typename  T>
+inline ro_ptr<T>
+make_ro(const T&  t) noexcept
+{
+  return ro_ptr<T>(&t);
+}
+
+
+inline ro_ptr<char>
+make_ro(const char*  s) noexcept
+{
+  return ro_ptr<char>(s);
+}
+
+
+template<typename  T>
+inline rw_ptr<T>
+make_rw(T&  t) noexcept
+{
+  return rw_ptr<T>(&t);
+}
+
+
 #endif
 
 

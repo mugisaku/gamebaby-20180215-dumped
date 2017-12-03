@@ -1,7 +1,7 @@
 #include"gamn_List.hpp"
 #include"gamn_Value.hpp"
 #include"gamn_StreamReader.hpp"
-#include"gmbb_Stream.hpp"
+#include<cstring>
 
 
 
@@ -10,22 +10,60 @@ namespace gamn{
 
 
 List::
-List(StreamReader&  reader, covered_ptr<List>  parent_, char  op, char  cl)
+List(StreamReader&  reader, char  cl)
 {
-  assign(reader,parent_,op,cl);
+  assign(reader,cl);
 }
 
 
 List::
-List(char const*  filepath)
+List(const char*  filepath)
 {
-  gmbb::Stream  s;
+  auto  f = fopen(filepath,"rb");
 
-  s.set_content_from_file(filepath);
+    if(f)
+    {
+      size_t  len = 0;
 
-  StreamReader  sr(s.get_content().data());
+        for(;;)
+        {
+          fgetc(f);
 
-  assign(sr);
+            if(feof(f))
+            {
+              break;
+            }
+
+
+          ++len;
+        }
+
+
+      auto  buf = new char[len+1];
+
+      auto  p = buf;
+
+      rewind(f);
+
+        while(len--)
+        {
+          *p++ = fgetc(f);
+        }
+
+
+      *p = 0;
+
+      StreamReader  sr(buf);
+
+      assign(sr);
+
+      delete[] buf;
+    }
+
+  else
+    {
+      printf("[gamn list construct error] %sを開けない",filepath);
+    }
 }
 
 
@@ -33,7 +71,7 @@ List(char const*  filepath)
 
 List&
 List::
-operator=(List const&  rhs) noexcept
+operator=(const List&  rhs) noexcept
 {
   clear();
 
@@ -46,9 +84,6 @@ operator=(List const&  rhs) noexcept
       current = current->next;
     }
 
-
-  opening = rhs.opening;
-  closing = rhs.closing;
 
   return *this;
 }
@@ -65,91 +100,24 @@ operator=(List&&  rhs) noexcept
 
   number = rhs.number;
 
-  opening = rhs.opening;
-  closing = rhs.closing;
-
   return *this;
 }
 
 
-Value const&
+
+
+const Value*
 List::
-operator[](std::string const&  name) const
+find_named_value(const char*  name) const noexcept
 {
-  auto  current = first;
+  auto  len = std::strlen(name);
 
-    while(current)
-    {
-        if(current->value == name)
-        {
-          return current->value;
-        }
-
-
-      current = current->next;
-    }
-
-
-  throw 0;
-}
-
-
-Value const&
-List::
-operator[](ValueTag const&  tag) const
-{
-  auto  current = first;
-
-    while(current)
-    {
-        if(current->value == tag)
-        {
-          return current->value;
-        }
-
-
-      current = current->next;
-    }
-
-
-  throw 0;
-}
-
-
-
-
-Value const&
-List::
-get(ValueKind  kind, std::string const&  name) const
-{
     for(auto&  v: *this)
     {
-        if((v == kind) && (v == name))
+        if(v.is_string() && v.get_string().compare(len,name))
         {
-          return v;
+          return v.get_string().get_value();
         }
-    }
-
-
-  throw 0;
-}
-
-
-Value const*
-List::
-find_by_name(std::string const&  name) const noexcept
-{
-  auto  current = first;
-
-    while(current)
-    {
-        if(current->value == name)
-        {
-          return &current->value;
-        }
-
-
-      current = current->next;
     }
 
 
@@ -182,14 +150,9 @@ push(Value&&  v) noexcept
 
 void
 List::
-assign(StreamReader&  reader, covered_ptr<List>  parent_, char  op, char  cl)
+assign(StreamReader&  reader, char  cl)
 {
   clear();
-
-  parent = parent_;
-
-  opening = op;
-  closing = cl;
 
   StreamContext  ctx;
 
@@ -207,27 +170,37 @@ assign(StreamReader&  reader, covered_ptr<List>  parent_, char  op, char  cl)
         }
 
       else
-        if((c == ')') ||
-           (c == '}') ||
-           (c == ']') ||
-           (c == ',') ||
-           (c == ';'))
+        if(!c)
         {
-          throw StreamError(reader,"%cで閉じられている",c);
+          throw StreamError(reader,"}で閉じられていない");
         }
 
-
-      ctx = reader;
-
-      auto  v = reader.read_value(this);
-
-        if(!v)
+      else
+        if(c == '}')
         {
-          break;
+          throw StreamError(reader,"余分な}");
         }
 
+      else
+        if(c == ',')
+        {
+          reader.advance(1);
+        }
 
-      push(std::move(v));
+      else
+        {
+          ctx = reader;
+
+          auto  v = reader.read_value();
+
+            if(!v)
+            {
+              break;
+            }
+
+
+          push(std::move(v));
+        }
     }
 
 
@@ -254,11 +227,6 @@ clear() noexcept
    last = nullptr;
 
   number = 0;
-
-  opening = 0;
-  closing = 0;
-
-  parent = nullptr;
 }
 
 
@@ -266,22 +234,17 @@ void
 List::
 print() const noexcept
 {
-    if(opening){printf("%c",opening);}
+  printf("{");
 
-
-  auto  current = first;
-
-    while(current)
+    for(auto&  v: *this)
     {
-      current->value.print();
-
-      current = current->next;
+      v.print();
 
       printf(" ");
     }
 
 
-    if(closing){printf("%c",closing);}
+  printf("}");
 }
 
 

@@ -83,8 +83,8 @@ set(GAME_SOURCES
 
 set(GAMN_SOURCES
   Gamn/gamn_List.cpp
-  Gamn/gamn_Cursor.cpp
   Gamn/gamn_Value.cpp
+  Gamn/gamn_String.cpp
   Gamn/gamn_StreamReader.cpp
   Gamn/gamn_StreamReader__read_number.cpp
 )
@@ -98,11 +98,9 @@ set(TS_SOURCES
 
 
 set(BATTLE_SOURCES
-  Battle/CharacterData.cpp
   Battle/TemporaryData.cpp
   Battle/SystemData.cpp
   Battle/SavedData.cpp
-  Battle/EmbeddedData.cpp
   Battle/FrontInterface.cpp
   Battle/Screen.cpp
   Battle/Startup_PartyMaking.cpp
@@ -110,6 +108,8 @@ set(BATTLE_SOURCES
   Battle/Startup_ClassChoosing.cpp
   Battle/Startup_NameMaking.cpp
   Battle/Battle.cpp
+  Battle/BattlePlayer.cpp
+  Battle/Battle_TemporaryData.cpp
   Battle/Battle_StreamText.cpp
   Battle/Battle_ActionChoosing.cpp
   Battle/Battle_ActionProcessing.cpp
@@ -155,7 +155,7 @@ add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCE
 add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
 add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
-add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES})
+add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES})
 add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 
 

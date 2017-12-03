@@ -2,23 +2,23 @@
 #define game_SavedData_HPP
 
 
-#include"Player.hpp"
-#include"CharacterData.hpp"
+#include"BattleHero.hpp"
 #include"Pointer.hpp"
 
 
 namespace gmbb{
-namespace saved_data{
+namespace sav{
 
 
-extern CharacterData  characters[4];
+extern Hero  hero_table[4];
+
 
 struct
 Party
 {
   static constexpr int  max_number_of_members = 4;
 
-  rw_ptr<CharacterData>  members[max_number_of_members] = {0};
+  rw_ptr<Hero>  members[max_number_of_members] = {0};
 
   int  number_of_members = 0;
 

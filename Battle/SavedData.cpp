@@ -2,10 +2,10 @@
 
 
 namespace gmbb{
-namespace saved_data{
+namespace sav{
 
 
-CharacterData  characters[4];
+Hero  hero_table[4];
 
 
 Party  party;

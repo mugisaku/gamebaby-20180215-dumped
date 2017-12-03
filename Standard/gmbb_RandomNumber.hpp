@@ -9,25 +9,23 @@ namespace gmbb{
 namespace random_number{
 
 
-class
-Descriptor
+void  initialize() noexcept;
+
+
+struct
+NormalDistribution
 {
-  uint32_t  value;
-
-public:
-  Descriptor(uint32_t  v=0) noexcept: value(v){}
-
-  operator bool() const noexcept{return value;}
-
-  double  operator()() const noexcept;
+  double  operator()(double  mean, double  stddev) const noexcept;
 
 };
 
 
-void  initialize() noexcept;
+struct
+UniformDistribution
+{
+  double  operator()(double  min, double  max) const noexcept;
 
-Descriptor  add_normal(double  mean, double  stddev) noexcept;
-Descriptor  add_uniform(double  min, double  max) noexcept;
+};
 
 
 struct

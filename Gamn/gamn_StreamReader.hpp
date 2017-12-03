@@ -3,8 +3,8 @@
 
 
 #include"gamn_Value.hpp"
-#include"covered_ptr"
 #include<cstdarg>
+#include<cstdio>
 
 
 namespace gamn{
@@ -108,21 +108,16 @@ public:
 class List;
 
 
-struct
-Contracept
-{
-  bool  value;
-
-  explicit constexpr Contracept(bool  v) noexcept: value(v){}
-
-};
-
-
 class
 StreamReader: public StreamContext
 {
-  std::string  read_identifier() noexcept;
-  std::string  read_string() noexcept;
+  char*  buffer=nullptr;
+
+  size_t            length=0;
+  size_t  allocated_length=0;
+
+  String  read_identifier() noexcept;
+  String  read_string() noexcept;
 
   int     read_binary_integer() noexcept;
   double  read_binary_fraction() noexcept;
@@ -142,14 +137,18 @@ StreamReader: public StreamContext
 
   Value  read_number_that_begins_by_zero() noexcept;
 
-  List*  read_list(covered_ptr<List>  parent, char  opening, char  closing);
+  List*  read_list();
 
-  Value  read_child_value(std::string&&  s, covered_ptr<List>  parent);
-  Value  read_pair(       std::string&&  s, covered_ptr<List>  parent);
+  void  clear_buffer() noexcept;
+
+  void  push(char  c) noexcept;
+
+  void  allocate_initial_buffer() noexcept;
 
 public:
-  StreamReader() noexcept{}
-  StreamReader(char const*  p) noexcept: StreamContext(p){}
+  StreamReader() noexcept{allocate_initial_buffer();}
+  StreamReader(char const*  p) noexcept: StreamContext(p){allocate_initial_buffer();}
+ ~StreamReader(){delete[] buffer;}
 
   void  skip_spaces() noexcept;
 
@@ -157,7 +156,7 @@ public:
 
   char  get_char() const noexcept{return *pointer;}
 
-  Value  read_value(covered_ptr<List>  parent=nullptr, Contracept  contracept=Contracept(false));
+  Value  read_value();
 
 };
 

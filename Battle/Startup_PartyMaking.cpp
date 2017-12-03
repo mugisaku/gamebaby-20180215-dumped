@@ -30,15 +30,15 @@ return_from_character_making(int  retval) noexcept
     }
 
 
-  auto&  ch = saved_data::characters[0];
+  auto&  h = sav::hero_table[0];
 
-  ch = tmp::character_data;
+  h = tmp::hero;
 
-  ch.set_name(tmp::name_buffer);
+  h.name = tmp::name_buffer.to_string();
 
-  saved_data::party.members[0] = &ch;
+  sav::party.members[0] = &h;
 
-  saved_data::party.number_of_members = 1;
+  sav::party.number_of_members = 1;
 }
 
 

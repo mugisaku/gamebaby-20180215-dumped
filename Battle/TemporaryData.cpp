@@ -9,16 +9,12 @@ NameBuffer
 name_buffer;
 
 
-CharacterData
-character_data;
+Hero
+hero;
 
 
-CharacterData
-enemy;
-
-
-Action
-action;
+Player
+player;
 
 
 uint32_t  last_time;

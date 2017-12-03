@@ -21,10 +21,6 @@ StringBuffer
 sbuf;
 
 
-random_number::Descriptor
-desc;
-
-
 struct
 ResultOfAttack
 {
@@ -39,27 +35,30 @@ get_result_of_attack() noexcept
 {
   ResultOfAttack  res;
 
-  auto&   actor_cldat = tmp::action.actor->class_data;
-  auto&  target_cldat = tmp::action.target->class_data;
+  random_number::UniformDistribution  uni_dist;
+  random_number::NormalDistribution  norm_dist;
 
-    for(int  n = 0;  n < actor_cldat.number_of_attacks;  ++n)
+    for(int  n = 0;  n < action.actor->number_of_attacks;  ++n)
     {
-        if(1)
+        if(uni_dist(0,99) < 70)
         {
           ++res.hit_count;
 
           int  guard_point = 0;
 
-            for(int  nn = 0;  nn < target_cldat.number_of_guards;  ++nn)
+            for(int  nn = 0;  nn < action.target->number_of_guards;  ++nn)
             {
-                if(1)
+                if(uni_dist(0,99) < 80)
                 {
-                  guard_point += target_cldat.number_of_guards;
+                  double  mean = action.target->guard_strength;
+                  auto  stddev = mean/10;
+
+                  guard_point += norm_dist(mean,stddev);
                 }
             }
 
 
-          auto  damage_point = actor_cldat.number_of_attacks;
+          auto  damage_point = action.actor->attack_strength;
 
           res.damage_point += (damage_point > guard_point)? damage_point-guard_point:1;
         }
@@ -88,8 +87,7 @@ step_attack(const Controller&  ctrl) noexcept
     switch(phase_count)
     {
   case(1):
-      system_data::char_buffer.push(sbuf("%sは　%sに",tmp::action.actor->name,tmp::action.target->name));
-      system_data::char_buffer.push(sbuf("こうげき！"));
+      system_data::char_buffer.push(sbuf("%sは　%sに こうげき！",action.actor->name.data(),action.target->name.data()));
       start_stream_text(return_from_some_routine);
       break;
   case(0):
@@ -112,7 +110,7 @@ step_guard(const Controller&  ctrl) noexcept
     switch(phase_count)
     {
   case(0):
-      system_data::char_buffer.push(sbuf("%sは　ぼうぎょを　かためた",tmp::action.actor->name));
+      system_data::char_buffer.push(sbuf("%sは　ぼうぎょを　かためた",action.actor->name.data()));
       start_stream_text(return_from_some_routine);
       break;
     }
@@ -122,7 +120,7 @@ step_guard(const Controller&  ctrl) noexcept
 void
 step(const Controller&  ctrl) noexcept
 {
-    switch(tmp::action.kind)
+    switch(action.kind)
     {
   case(ActionKind::attack):
       step_attack(ctrl);
@@ -144,25 +142,13 @@ step(const Controller&  ctrl) noexcept
 void
 start_action_processing(coreturn_t  ret) noexcept
 {
-    if(!desc)
-    {
-      desc = random_number::add_normal(0.0,80.0);
-for(auto  n = 0;  n < 100;++n)
-{
-printf("%8d\n",(uint32_t)desc());
-}
-
-
-    }
-
-
-    switch(tmp::action.kind)
+    switch(action.kind)
     {
   case(ActionKind::null):
       phase_count = 0;
       break;
   case(ActionKind::attack):
-      phase_count = 0;
+      phase_count = 1;
       break;
   case(ActionKind::guard):
       phase_count = 0;

@@ -1,5 +1,6 @@
 #include"gamn_StreamReader.hpp"
 #include"gamn_List.hpp"
+#include<cstring>
 
 
 
@@ -43,41 +44,69 @@ skip_spaces() noexcept
 
 namespace{
 bool
-isident0(char  c)
+isalpha(char  c) noexcept
+{
+  return(((c >= 'a') && (c <= 'z')) ||
+         ((c >= 'A') && (c <= 'Z')));
+}
+
+
+bool
+isdigit(char  c) noexcept
+{
+  return((c >= '0') && (c <= '9'));
+}
+
+
+bool
+isalnum(char  c) noexcept
+{
+  return(isalpha(c) || isdigit(c));
+}
+
+
+bool
+isident0(char  c) noexcept
 {
   return isalpha(c) || (c == '_');
 }
 
 
 bool
-isidentn(char  c)
+isidentn(char  c) noexcept
 {
   return isalnum(c) || (c == '_');
 }
 }
 
 
-std::string
+String
 StreamReader::
 read_identifier() noexcept
 {
-  std::string  s;
+  String  s;
+
+  clear_buffer();
 
     while(isidentn(*pointer))
     {
-      s += *pointer++;
+      push(*pointer++);
     }
 
+
+  s.assign(buffer,length);
 
   return std::move(s);
 }
 
 
-std::string
+String
 StreamReader::
 read_string() noexcept
 {
-  std::string  s;
+  String  s;
+
+  clear_buffer();
 
     while(*pointer)
     {
@@ -96,88 +125,61 @@ read_string() noexcept
 
       else
         {
-          s += c;
+          push(c);
         }
     }
 
+
+  s.assign(buffer,length);
 
   return std::move(s);
 }
 
 
-
-
-List*
+void
 StreamReader::
-read_list(covered_ptr<List>  parent, char  opening, char  closing)
+push(char  c) noexcept
 {
-  ++pointer;
-
-  return new List(*this,parent,opening,closing);
-}
-
-
-Value
-StreamReader::
-read_child_value(std::string&&  s, covered_ptr<List>  parent)
-{
-  ++pointer;
-
-  skip_spaces();
-
-
-  auto  v = read_value(parent);
-
-    if(v.get_name().size())
+    if(length >= allocated_length)
     {
-      v = Value(new Value(std::move(v)));
+      auto  new_buffer = new char[allocated_length*2];
+
+      std::memcpy(new_buffer,buffer,allocated_length);
+
+      delete[] buffer             ;
+               buffer = new_buffer;
+
+      allocated_length *= 2;
     }
 
 
-  v.set_name(std::move(s));
-
-  return std::move(v);
+  buffer[length++] = c;
 }
 
 
-Value
+void
 StreamReader::
-read_pair(std::string&&  s, covered_ptr<List>  parent)
+allocate_initial_buffer() noexcept
 {
-  ++pointer;
+  constexpr size_t  initial_allocation_size = 1024;
 
-  skip_spaces();
+  buffer = new char[initial_allocation_size];
 
-
-  auto  pair = new Pair;
-
-  pair->left = read_value(parent,Contracept(true));
-
-    if(*pointer != ':')
-    {
-      throw StreamError(*this,"値を仕切る':'がない  %c",*pointer);
-    }
+  allocated_length = initial_allocation_size;
+}
 
 
-  ++pointer;
-
-  skip_spaces();
-
-
-  pair->right = read_value(parent,Contracept(true));
-
-
-  Value  pv(pair);
-
-  pv.set_name(std::move(s));
-
-  return std::move(pv);
+void
+StreamReader::
+clear_buffer() noexcept
+{
+  length = 0;
 }
 
 
 Value
 StreamReader::
-read_value(covered_ptr<List>  parent, Contracept  contracept)
+read_value()
 {
   auto  first_c = *pointer;
 
@@ -195,9 +197,13 @@ read_value(covered_ptr<List>  parent, Contracept  contracept)
         }
 
 
-           if(first_c == '{'){return Value(read_list(parent,first_c,'}'));}
-      else if(first_c == '('){return Value(read_list(parent,first_c,')'));}
-      else if(first_c == '['){return Value(read_list(parent,first_c,']'));}
+        if(first_c == '{')
+        {
+          ++pointer;
+
+          return Value(new List(*this,'}'));
+        }
+
       else
         if(first_c == '\"')
         {
@@ -207,21 +213,17 @@ read_value(covered_ptr<List>  parent, Contracept  contracept)
 
           skip_spaces();
 
-            if(!contracept.value  && (*pointer == ':'))
+            if(*pointer == ':')
             {
-              return read_child_value(std::move(s),parent);
+              ++pointer;
+
+              skip_spaces();
+
+              s.set_value(new Value(read_value()));
             }
 
-          else
-            if(*pointer == '?')
-            {
-              return read_pair(std::move(s),parent);
-            }
 
-          else
-            {
-              return Value(std::move(s));
-            }
+          return Value(std::move(s));
         }
 
       else
@@ -231,21 +233,17 @@ read_value(covered_ptr<List>  parent, Contracept  contracept)
 
           skip_spaces();
 
-            if(!contracept.value  && (*pointer == ':'))
+            if(*pointer == ':')
             {
-              return read_child_value(std::move(s),parent);
+              ++pointer;
+
+              skip_spaces();
+
+              s.set_value(new Value(read_value()));
             }
 
-          else
-            if(*pointer == '?')
-            {
-              return read_pair(std::move(s),parent);
-            }
 
-          else
-            {
-              return Value(std::move(s));
-            }
+          return Value(std::move(s));
         }
 
       else
@@ -269,7 +267,7 @@ read_value(covered_ptr<List>  parent, Contracept  contracept)
 
       else
         {
-          throw StreamError(*this,"%cは処理できない ",first_c);
+          throw StreamError(*this,"%c(%d)は処理できない ",first_c,first_c);
         }
     }
 

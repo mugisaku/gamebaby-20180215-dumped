@@ -3,7 +3,7 @@
 
 
 #include"gmbb_Standard.hpp"
-#include"CharacterData.hpp"
+#include"BattlePlayer.hpp"
 
 
 namespace gmbb{
@@ -12,11 +12,8 @@ namespace tmp{
 
 extern NameBuffer  name_buffer;
 
-extern CharacterData  character_data;
-
-extern CharacterData  enemy;
-
-extern Action  action;
+extern Hero  hero;
+extern Player  player;
 
 extern uint32_t  last_time;
 extern uint32_t  next_time;
