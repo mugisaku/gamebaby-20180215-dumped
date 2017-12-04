@@ -55,8 +55,9 @@ public:
   void  assign(StreamReader&  reader, char  cl=0);
 
   const Value*  find_named_value(const char*  name) const noexcept;
+  const Value*  access(std::initializer_list<const char*>  ls) const noexcept;
 
-  void  print() const noexcept;
+  void  print(int  indent=0) const noexcept;
 
 
   class Iterator{

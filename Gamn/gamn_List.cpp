@@ -125,6 +125,49 @@ find_named_value(const char*  name) const noexcept
 }
 
 
+const Value*
+List::
+access(std::initializer_list<const char*>  ls) const noexcept
+{
+  auto  it     = ls.begin();
+  auto  it_end = ls.end();
+
+  const Value*  v = nullptr;
+
+    if(it != it_end)
+    {
+      v = find_named_value(*it++);
+
+        if(!v)
+        {
+          return nullptr;
+        }
+
+
+        while(it != it_end)
+        {
+            if(!v->is_list())
+            {
+              return nullptr;
+            }
+
+
+          v = v->get_list().find_named_value(*it++);
+
+            if(!v)
+            {
+              return nullptr;
+            }
+        }
+    }
+
+
+  return v;
+}
+
+
+
+
 void
 List::
 push(Value&&  v) noexcept
@@ -232,19 +275,34 @@ clear() noexcept
 
 void
 List::
-print() const noexcept
+print(int  indent) const noexcept
 {
-  printf("{");
+  printf("{\n");
 
     for(auto&  v: *this)
     {
-      v.print();
+        for(int  n = 0;  n < indent;  ++n)
+        {
+          printf("  ");
+        }
 
-      printf(" ");
+
+      v.print(indent+1);
+
+      printf("\n");
     }
 
 
-  printf("}");
+    if(indent)
+    {
+        for(int  n = 0;  n < indent-1;  ++n)
+        {
+          printf("  ");
+        }
+    }
+
+
+  printf("}\n");
 }
 
 

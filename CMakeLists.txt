@@ -86,6 +86,7 @@ set(GAMN_SOURCES
   Gamn/gamn_Value.cpp
   Gamn/gamn_String.cpp
   Gamn/gamn_StreamReader.cpp
+  Gamn/gamn_StreamReader__skip.cpp
   Gamn/gamn_StreamReader__read_number.cpp
 )
 

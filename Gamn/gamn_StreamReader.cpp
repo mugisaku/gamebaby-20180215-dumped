@@ -8,40 +8,6 @@
 namespace gamn{
 
 
-void
-StreamReader::
-skip_spaces() noexcept
-{
-    for(;;)
-    {
-      auto  c = *pointer;
-
-        if((c ==  ' ') ||
-           (c == '\t') ||
-           (c == '\r') ||
-           (c == '\v'))
-        {
-          ++pointer;
-        }
-
-      else           
-        if(c == '\n')
-        {
-          ++pointer;
-
-          newline();
-        }
-
-      else
-        {
-          break;
-        }           
-    }
-}
-
-
-
-
 namespace{
 bool
 isalpha(char  c) noexcept
@@ -80,6 +46,8 @@ isidentn(char  c) noexcept
 }
 
 
+
+
 String
 StreamReader::
 read_identifier() noexcept
@@ -102,7 +70,7 @@ read_identifier() noexcept
 
 String
 StreamReader::
-read_string() noexcept
+read_string(char  close_char) noexcept
 {
   String  s;
 
@@ -112,7 +80,7 @@ read_string() noexcept
     {
       auto  c = *pointer++;
 
-        if(c == '\"')
+        if(c == close_char)
         {
           break;
         }
@@ -205,11 +173,12 @@ read_value()
         }
 
       else
-        if(first_c == '\"')
+        if((first_c == '\"') ||
+           (first_c == '\''))
         {
           ++pointer;
 
-          auto  s = read_string();
+          auto  s = read_string(first_c);
 
           skip_spaces();
 

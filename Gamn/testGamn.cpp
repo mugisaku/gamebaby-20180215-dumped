@@ -41,6 +41,17 @@ main(int  argc, char**  argv)
 
   ls.print();
 
+  printf("\n");
+
+  auto  v = ls.access({"class"});
+
+    if(v)
+    {
+      v->print();
+
+      printf("\n");
+    }
+
 
   return 0;
 }

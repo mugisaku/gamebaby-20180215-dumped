@@ -117,7 +117,7 @@ StreamReader: public StreamContext
   size_t  allocated_length=0;
 
   String  read_identifier() noexcept;
-  String  read_string() noexcept;
+  String  read_string(char  close_char) noexcept;
 
   int     read_binary_integer() noexcept;
   double  read_binary_fraction() noexcept;
@@ -144,6 +144,9 @@ StreamReader: public StreamContext
   void  push(char  c) noexcept;
 
   void  allocate_initial_buffer() noexcept;
+
+  void  skip_linestyle_comment();
+  void  skip_blockstyle_comment();
 
 public:
   StreamReader() noexcept{allocate_initial_buffer();}

@@ -111,7 +111,7 @@ set_value(Value*  v) noexcept
 
 void
 String::
-print() const noexcept
+print(int  indent) const noexcept
 {
   printf("\"%s\"",data);
 
@@ -119,7 +119,7 @@ print() const noexcept
     {
       printf(":");
 
-      value->print();
+      value->print(indent);
     }
 }
 

@@ -78,7 +78,7 @@ public:
   const String&      get_string() const noexcept;
   const List&          get_list() const noexcept;
 
-  void  print() const noexcept;
+  void  print(int  indent=0) const noexcept;
 
 };
 

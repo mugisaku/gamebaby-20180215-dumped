@@ -132,7 +132,7 @@ const List&       Value::get_list() const noexcept{return *data.list;}
 
 void
 Value::
-print() const noexcept
+print(int  indent) const noexcept
 {
     switch(kind)
     {
@@ -140,7 +140,7 @@ print() const noexcept
       printf("(null)");
       break;
   case(ValueKind::string):
-      data.string.print();
+      data.string.print(indent);
       break;
   case(ValueKind::integer):
       printf("%d",data.integer);
@@ -149,7 +149,7 @@ print() const noexcept
       printf("%f",data.real);
       break;
   case(ValueKind::list):
-      data.list->print();
+      data.list->print(indent);
       break;
     }
 }

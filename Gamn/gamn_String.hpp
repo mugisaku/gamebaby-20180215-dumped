@@ -47,7 +47,7 @@ public:
   void          set_value(Value*  v) noexcept;
   const Value*  get_value() const noexcept{return value;}
 
-  void  print() const noexcept;
+  void  print(int  indent=0) const noexcept;
 
 };
 
