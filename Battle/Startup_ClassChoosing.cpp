@@ -1,5 +1,6 @@
 #include"Startup.hpp"
 #include"SystemData.hpp"
+#include"ReadOnlyData.hpp"
 
 
 
@@ -14,27 +15,17 @@ FixedString
 label("class choosing");
 
 
-const PlayerBase
-classes[] =
-{
-  {    "せんし",32),MindStrength( 4),Agility(20),Defense(40),Intellect(8),0,0,},
-  {"かりゅうど",24),MindStrength(10),Agility(40),Defense(16),Intellect(8)},
-  {  "とうぞく",16),MindStrength( 2),Agility(60),Defense( 8),Intellect(8)},
-
-};
-
-
 void
 render(Image&  dst, Point  point, int  index)
 {
-  auto&  cl = classes[index];
+  auto&  plb = ro::player_base_table[index];
 
-  dst.print(cl.name.data(),point,system_data::glset);
+  dst.print(plb.name.data(),point,system_data::glset);
 }
 
 
 ColumnStyleMenuWindow
-menu_window(Menu(8*8,16,(sizeof(classes)/sizeof(*classes)),render),1,Point(80,60));
+menu_window(Menu(8*8,16,3,render),1,Point(80,60));
 
 
 class
@@ -99,7 +90,7 @@ step(Controller const&  ctrl) noexcept
            if(ctrl.is_up_button_pressing()  ){menu_window.move_cursor_to_up()  ;}
       else if(ctrl.is_down_button_pressing()){menu_window.move_cursor_to_down();}
 
-      static_cast<PlayerBase&>(tmp::hero) = classes[menu_window.get_item_index()];
+      static_cast<PlayerBase&>(tmp::hero) = ro::player_base_table[menu_window.get_item_index()];
 
       tmp::player = Player(tmp::hero);
 

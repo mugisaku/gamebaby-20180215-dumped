@@ -9,66 +9,6 @@
 namespace gamn{
 
 
-List::
-List(StreamReader&  reader, char  cl)
-{
-  assign(reader,cl);
-}
-
-
-List::
-List(const char*  filepath)
-{
-  auto  f = fopen(filepath,"rb");
-
-    if(f)
-    {
-      size_t  len = 0;
-
-        for(;;)
-        {
-          fgetc(f);
-
-            if(feof(f))
-            {
-              break;
-            }
-
-
-          ++len;
-        }
-
-
-      auto  buf = new char[len+1];
-
-      auto  p = buf;
-
-      rewind(f);
-
-        while(len--)
-        {
-          *p++ = fgetc(f);
-        }
-
-
-      *p = 0;
-
-      StreamReader  sr(buf);
-
-      assign(sr);
-
-      delete[] buf;
-    }
-
-  else
-    {
-      printf("[gamn list construct error] %sを開けない",filepath);
-    }
-}
-
-
-
-
 List&
 List::
 operator=(const List&  rhs) noexcept
@@ -104,6 +44,22 @@ operator=(List&&  rhs) noexcept
 }
 
 
+
+
+const Value&
+List::
+get_named_value(const char*  name) const
+{
+  auto  v = find_named_value(name);
+
+    if(!v)
+    {
+      throw value_was_not_found{name};
+    }
+
+
+  return *v;
+}
 
 
 const Value*
@@ -248,6 +204,58 @@ assign(StreamReader&  reader, char  cl)
 
 
   push(Value());
+}
+
+
+void
+List::
+open(const char*  filepath)
+{
+  auto  f = fopen(filepath,"rb");
+
+    if(f)
+    {
+      size_t  len = 0;
+
+        for(;;)
+        {
+          fgetc(f);
+
+            if(feof(f))
+            {
+              break;
+            }
+
+
+          ++len;
+        }
+
+
+      auto  buf = new char[len+1];
+
+      auto  p = buf;
+
+      rewind(f);
+
+        while(len--)
+        {
+          *p++ = fgetc(f);
+        }
+
+
+      *p = 0;
+
+      StreamReader  sr(buf);
+
+      assign(sr);
+
+      delete[] buf;
+    }
+
+  else
+    {
+      printf("[gamn list construct error] %sを開けない",filepath);
+    }
 }
 
 

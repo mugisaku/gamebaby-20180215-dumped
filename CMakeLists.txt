@@ -82,12 +82,12 @@ set(GAME_SOURCES
 
 
 set(GAMN_SOURCES
-  Gamn/gamn_List.cpp
-  Gamn/gamn_Value.cpp
-  Gamn/gamn_String.cpp
-  Gamn/gamn_StreamReader.cpp
-  Gamn/gamn_StreamReader__skip.cpp
-  Gamn/gamn_StreamReader__read_number.cpp
+  libgbdn/list.cpp
+  libgbdn/value.cpp
+  libgbdn/string.cpp
+  libgbdn/stream_reader.cpp
+  libgbdn/stream_reader__skip.cpp
+  libgbdn/stream_reader__read_number.cpp
 )
 
 
@@ -102,6 +102,7 @@ set(BATTLE_SOURCES
   Battle/TemporaryData.cpp
   Battle/SystemData.cpp
   Battle/SavedData.cpp
+  Battle/ReadOnlyData.cpp
   Battle/FrontInterface.cpp
   Battle/Screen.cpp
   Battle/Startup_PartyMaking.cpp
@@ -154,7 +155,7 @@ include_directories(./TypeSystem)
 include_directories(/usr/include/SDL2)
 add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
 add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
-add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
+add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES} ${GAMN_SOURCES})
 add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
 add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES})
 add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})

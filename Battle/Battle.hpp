@@ -5,6 +5,7 @@
 #include"gmbb_Standard.hpp"
 #include"SystemData.hpp"
 #include"TemporaryData.hpp"
+#include"ReadOnlyData.hpp"
 #include"Battle_TemporaryData.hpp"
 #include"SavedData.hpp"
 

@@ -24,6 +24,15 @@ ListNode
 };
 
 
+struct
+value_was_not_found
+{
+  const char*  name;
+  
+};
+
+
+
 class
 List
 {
@@ -34,8 +43,8 @@ List
 
 public:
   List() noexcept{}
-  List(StreamReader&  reader, char  cl=0);
-  List(const char*  filepath);
+  List(StreamReader&  reader, char  cl=0){assign(reader,cl);}
+  List(const char*  filepath){open(filepath);}
   List(const List&   rhs) noexcept{*this = rhs;}
   List(      List&&  rhs) noexcept{*this = std::move(rhs);}
  ~List(){clear();}
@@ -52,8 +61,10 @@ public:
 
   ListNode const*  get_first() const noexcept{return first;}
 
+  void  open(const char*  filepath);
   void  assign(StreamReader&  reader, char  cl=0);
 
+  const Value&   get_named_value(const char*  name) const;
   const Value*  find_named_value(const char*  name) const noexcept;
   const Value*  access(std::initializer_list<const char*>  ls) const noexcept;
 

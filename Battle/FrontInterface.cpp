@@ -38,6 +38,8 @@ initialize() noexcept
 #endif
 
 
+  ro::load();
+
   screen::enable_render();
   screen::set_fill_color(black);
 

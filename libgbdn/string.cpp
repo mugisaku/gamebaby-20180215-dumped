@@ -78,7 +78,7 @@ bool
 String::
 compare(size_t  len, const char*  str) const noexcept
 {
-  return(length == len) && (std::memcpy(data,str,len) == 0);
+  return(length == len) && (std::memcmp(data,str,len) == 0);
 }
 
 
