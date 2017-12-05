@@ -1,17 +1,17 @@
-#include"gamn_List.hpp"
-#include"gamn_Value.hpp"
-#include"gamn_StreamReader.hpp"
+#include"list.hpp"
+#include"value.hpp"
+#include"stream_reader.hpp"
 #include<cstring>
 
 
 
 
-namespace gamn{
+namespace gbdn{
 
 
-List&
-List::
-operator=(const List&  rhs) noexcept
+list&
+list::
+operator=(const list&  rhs) noexcept
 {
   clear();
 
@@ -19,7 +19,7 @@ operator=(const List&  rhs) noexcept
 
     while(current)
     {
-      push(Value(current->value));
+      push(value(current->content_value));
 
       current = current->next;
     }
@@ -29,9 +29,9 @@ operator=(const List&  rhs) noexcept
 }
 
 
-List&
-List::
-operator=(List&&  rhs) noexcept
+list&
+list::
+operator=(list&&  rhs) noexcept
 {
   clear();
 
@@ -46,8 +46,8 @@ operator=(List&&  rhs) noexcept
 
 
 
-const Value&
-List::
+const value&
+list::
 get_named_value(const char*  name) const
 {
   auto  v = find_named_value(name);
@@ -62,8 +62,8 @@ get_named_value(const char*  name) const
 }
 
 
-const Value*
-List::
+const value*
+list::
 find_named_value(const char*  name) const noexcept
 {
   auto  len = std::strlen(name);
@@ -81,14 +81,14 @@ find_named_value(const char*  name) const noexcept
 }
 
 
-const Value*
-List::
+const value*
+list::
 access(std::initializer_list<const char*>  ls) const noexcept
 {
   auto  it     = ls.begin();
   auto  it_end = ls.end();
 
-  const Value*  v = nullptr;
+  const value*  v = nullptr;
 
     if(it != it_end)
     {
@@ -125,10 +125,10 @@ access(std::initializer_list<const char*>  ls) const noexcept
 
 
 void
-List::
-push(Value&&  v) noexcept
+list::
+push(value&&  v) noexcept
 {
-  auto  nd = new ListNode(std::move(v));
+  auto  nd = new list_node(std::move(v));
 
     if(last)
     {
@@ -148,12 +148,12 @@ push(Value&&  v) noexcept
 
 
 void
-List::
-assign(StreamReader&  reader, char  cl)
+list::
+assign(stream_reader&  reader, char  cl)
 {
   clear();
 
-  StreamContext  ctx;
+  stream_context  ctx;
 
     for(;;)
     {
@@ -171,13 +171,13 @@ assign(StreamReader&  reader, char  cl)
       else
         if(!c)
         {
-          throw StreamError(reader,"}で閉じられていない");
+          throw stream_error(reader,"}で閉じられていない");
         }
 
       else
         if(c == '}')
         {
-          throw StreamError(reader,"余分な}");
+          throw stream_error(reader,"余分な}");
         }
 
       else
@@ -203,12 +203,12 @@ assign(StreamReader&  reader, char  cl)
     }
 
 
-  push(Value());
+  push(value());
 }
 
 
 void
-List::
+list::
 open(const char*  filepath)
 {
   auto  f = fopen(filepath,"rb");
@@ -245,7 +245,7 @@ open(const char*  filepath)
 
       *p = 0;
 
-      StreamReader  sr(buf);
+      stream_reader  sr(buf);
 
       assign(sr);
 
@@ -260,7 +260,7 @@ open(const char*  filepath)
 
 
 void
-List::
+list::
 clear() noexcept
 {
   auto  current = first;
@@ -282,7 +282,7 @@ clear() noexcept
 
 
 void
-List::
+list::
 print(int  indent) const noexcept
 {
   printf("{\n");

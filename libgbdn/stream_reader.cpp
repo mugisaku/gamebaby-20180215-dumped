@@ -1,11 +1,11 @@
-#include"gamn_StreamReader.hpp"
-#include"gamn_List.hpp"
+#include"stream_reader.hpp"
+#include"list.hpp"
 #include<cstring>
 
 
 
 
-namespace gamn{
+namespace gbdn{
 
 
 namespace{
@@ -48,11 +48,11 @@ isidentn(char  c) noexcept
 
 
 
-String
-StreamReader::
+string
+stream_reader::
 read_identifier() noexcept
 {
-  String  s;
+  string  s;
 
   clear_buffer();
 
@@ -68,11 +68,11 @@ read_identifier() noexcept
 }
 
 
-String
-StreamReader::
+string
+stream_reader::
 read_string(char  close_char) noexcept
 {
-  String  s;
+  string  s;
 
   clear_buffer();
 
@@ -105,7 +105,7 @@ read_string(char  close_char) noexcept
 
 
 void
-StreamReader::
+stream_reader::
 push(char  c) noexcept
 {
     if(length >= allocated_length)
@@ -126,7 +126,7 @@ push(char  c) noexcept
 
 
 void
-StreamReader::
+stream_reader::
 allocate_initial_buffer() noexcept
 {
   constexpr size_t  initial_allocation_size = 1024;
@@ -138,15 +138,15 @@ allocate_initial_buffer() noexcept
 
 
 void
-StreamReader::
+stream_reader::
 clear_buffer() noexcept
 {
   length = 0;
 }
 
 
-Value
-StreamReader::
+value
+stream_reader::
 read_value()
 {
   auto  first_c = *pointer;
@@ -169,7 +169,7 @@ read_value()
         {
           ++pointer;
 
-          return Value(new List(*this,'}'));
+          return value(new list(*this,'}'));
         }
 
       else
@@ -188,11 +188,11 @@ read_value()
 
               skip_spaces();
 
-              s.set_value(new Value(read_value()));
+              s.set_value(new value(read_value()));
             }
 
 
-          return Value(std::move(s));
+          return value(std::move(s));
         }
 
       else
@@ -208,11 +208,11 @@ read_value()
 
               skip_spaces();
 
-              s.set_value(new Value(read_value()));
+              s.set_value(new value(read_value()));
             }
 
 
-          return Value(std::move(s));
+          return value(std::move(s));
         }
 
       else
@@ -222,7 +222,7 @@ read_value()
 
           auto  v = read_number_that_begins_by_zero();
 
-          return Value(neg? v.neg():v);
+          return value(neg? -v.get_integer():v.get_integer());
         }
 
       else
@@ -231,17 +231,17 @@ read_value()
         {
           auto  v = read_decimal_number();
 
-          return Value(neg? v.neg():v);
+          return value(neg? -v.get_integer():v.get_integer());
         }
 
       else
         {
-          throw StreamError(*this,"%c(%d)は処理できない ",first_c,first_c);
+          throw stream_error(*this,"%c(%d)は処理できない ",first_c,first_c);
         }
     }
 
 
-  return Value();
+  return value();
 }
 
 

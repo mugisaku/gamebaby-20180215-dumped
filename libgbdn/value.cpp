@@ -1,19 +1,19 @@
-#include"gamn_Value.hpp"
-#include"gamn_List.hpp"
-#include"gamn_String.hpp"
+#include"value.hpp"
+#include"list.hpp"
+#include"string.hpp"
 #include<cstdio>
 
 
 
 
-namespace gamn{
+namespace gbdn{
 
 
 
 
-Value&
-Value::
-operator=(Value&&  rhs) noexcept
+value&
+value::
+operator=(value&&  rhs) noexcept
 {
   clear();
 
@@ -21,19 +21,19 @@ operator=(Value&&  rhs) noexcept
 
     switch(kind)
     {
-  case(ValueKind::null):
+  case(kind_type::null):
       break;
-  case(ValueKind::string):
-      new(&data) String(std::move(rhs.data.string));
+  case(kind_type::string):
+      new(&data) string(std::move(rhs.data.s));
       break;
-  case(ValueKind::integer):
-      data.integer = rhs.data.integer;
+  case(kind_type::integer):
+      data.i = rhs.data.i;
       break;
-  case(ValueKind::real):
-      data.real = rhs.data.real;
+  case(kind_type::real):
+      data.r = rhs.data.r;
       break;
-  case(ValueKind::list):
-      data.list = rhs.data.list;
+  case(kind_type::list):
+      data.ls = rhs.data.ls;
       break;
     }
 
@@ -42,9 +42,9 @@ operator=(Value&&  rhs) noexcept
 }
 
 
-Value&
-Value::
-operator=(const Value&  rhs) noexcept
+value&
+value::
+operator=(const value&  rhs) noexcept
 {
   clear();
 
@@ -52,40 +52,20 @@ operator=(const Value&  rhs) noexcept
 
     switch(kind)
     {
-  case(ValueKind::null):
+  case(kind_type::null):
       break;
-  case(ValueKind::string):
-      new(&data) String(rhs.data.string);
+  case(kind_type::string):
+      new(&data) string(rhs.data.s);
       break;
-  case(ValueKind::integer):
-      data.integer = rhs.data.integer;
+  case(kind_type::integer):
+      data.i = rhs.data.i;
       break;
-  case(ValueKind::real):
-      data.real = rhs.data.real;
+  case(kind_type::real):
+      data.r = rhs.data.r;
       break;
-  case(ValueKind::list):
-      data.list = new List(*rhs.data.list);
+  case(kind_type::list):
+      data.ls = new list(*rhs.data.ls);
       break;
-    }
-
-
-  return *this;
-}
-
-
-Value&
-Value::
-neg() noexcept
-{
-    switch(kind)
-    {
-  case(ValueKind::integer):
-      data.integer = -data.integer;
-      break;
-  case(ValueKind::real):
-      data.real = -data.real;
-      break;
-  default:;
     }
 
 
@@ -96,60 +76,60 @@ neg() noexcept
 
 
 void
-Value::
+value::
 clear() noexcept
 {
     switch(kind)
     {
-  case(ValueKind::null):
+  case(kind_type::null):
       break;
-  case(ValueKind::string):
-      data.string.~String();
+  case(kind_type::string):
+      data.s.~string();
       break;
-  case(ValueKind::integer):
-  case(ValueKind::real):
+  case(kind_type::integer):
+  case(kind_type::real):
       break;
-  case(ValueKind::list):
-      delete data.list;
+  case(kind_type::list):
+      delete data.ls;
       break;
     }
 
 
-  kind = ValueKind::null;
+  kind = kind_type::null;
 }
 
 
 
 
 
-int            Value::get_integer() const noexcept{return data.integer;}
-double            Value::get_real() const noexcept{return data.real;}
-const String&   Value::get_string() const noexcept{return data.string;}
-const List&       Value::get_list() const noexcept{return *data.list;}
+int            value::get_integer() const noexcept{return data.i;}
+double            value::get_real() const noexcept{return data.r;}
+const string&   value::get_string() const noexcept{return data.s;}
+const list&       value::get_list() const noexcept{return *data.ls;}
 
 
 
 
 void
-Value::
+value::
 print(int  indent) const noexcept
 {
     switch(kind)
     {
-  case(ValueKind::null):
+  case(kind_type::null):
       printf("(null)");
       break;
-  case(ValueKind::string):
-      data.string.print(indent);
+  case(kind_type::string):
+      data.s.print(indent);
       break;
-  case(ValueKind::integer):
-      printf("%d",data.integer);
+  case(kind_type::integer):
+      printf("%d",data.i);
       break;
-  case(ValueKind::real):
-      printf("%f",data.real);
+  case(kind_type::real):
+      printf("%f",data.r);
       break;
-  case(ValueKind::list):
-      data.list->print(indent);
+  case(kind_type::list):
+      data.ls->print(indent);
       break;
     }
 }

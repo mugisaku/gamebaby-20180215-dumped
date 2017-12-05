@@ -81,10 +81,10 @@ set(GAME_SOURCES
 )
 
 
-set(GAMN_SOURCES
+set(GBDN_SOURCES
+  libgbdn/string.cpp
   libgbdn/list.cpp
   libgbdn/value.cpp
-  libgbdn/string.cpp
   libgbdn/stream_reader.cpp
   libgbdn/stream_reader__skip.cpp
   libgbdn/stream_reader__read_number.cpp
@@ -149,16 +149,16 @@ set(STANDARD_SOURCES
 
 
 include_directories(./)
-include_directories(./Gamn)
+include_directories(./)
 include_directories(./Standard)
 include_directories(./TypeSystem)
 include_directories(/usr/include/SDL2)
 add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
-add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
-add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES} ${GAMN_SOURCES})
+add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GBDN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
+add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES} ${GBDN_SOURCES})
 add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
-add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GAMN_SOURCES})
-add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAMN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
+add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GBDN_SOURCES})
+add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GBDN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
 
 
 if(EMSC)

@@ -1,25 +1,28 @@
-#ifndef GAMN_List_HPP
-#define GAMN_List_HPP
+#ifndef LIBGBDN_LIST_HPP
+#define LIBGBDN_LIST_HPP
 
 
-#include"gamn_Value.hpp"
+#include"value.hpp"
 #include<cstdint>
 
 
-namespace gamn{
+namespace gbdn{
 
 
-class StreamReader;
+class stream_reader;
+class list;
 
 
-struct
-ListNode
+class
+list_node
 {
-  Value  value;
+  friend class list;
 
-  ListNode*  next=nullptr;
+  value  content_value;
 
-  ListNode(Value&&  v) noexcept: value(std::move(v)){}
+  list_node*  next=nullptr;
+
+  list_node(value&&  v) noexcept: content_value(std::move(v)){}
 
 };
 
@@ -34,56 +37,56 @@ value_was_not_found
 
 
 class
-List
+list
 {
-  ListNode*  first=nullptr;
-  ListNode*   last=nullptr;
+  list_node*  first=nullptr;
+  list_node*   last=nullptr;
 
   uint32_t  number=0;
 
 public:
-  List() noexcept{}
-  List(StreamReader&  reader, char  cl=0){assign(reader,cl);}
-  List(const char*  filepath){open(filepath);}
-  List(const List&   rhs) noexcept{*this = rhs;}
-  List(      List&&  rhs) noexcept{*this = std::move(rhs);}
- ~List(){clear();}
+  list() noexcept{}
+  list(stream_reader&  reader, char  cl=0){assign(reader,cl);}
+  list(const char*  filepath){open(filepath);}
+  list(const list&   rhs) noexcept{*this = rhs;}
+  list(      list&&  rhs) noexcept{*this = std::move(rhs);}
+ ~list(){clear();}
 
 
-  List&  operator=(const List&   rhs) noexcept;
-  List&  operator=(      List&&  rhs) noexcept;
+  list&  operator=(const list&   rhs) noexcept;
+  list&  operator=(      list&&  rhs) noexcept;
 
-  void  push(Value&&  v) noexcept;
+  void  push(value&&  v) noexcept;
 
   void  clear() noexcept;
 
   uint32_t  size() const noexcept{return number;}
 
-  ListNode const*  get_first() const noexcept{return first;}
+  list_node const*  get_first() const noexcept{return first;}
 
   void  open(const char*  filepath);
-  void  assign(StreamReader&  reader, char  cl=0);
+  void  assign(stream_reader&  reader, char  cl=0);
 
-  const Value&   get_named_value(const char*  name) const;
-  const Value*  find_named_value(const char*  name) const noexcept;
-  const Value*  access(std::initializer_list<const char*>  ls) const noexcept;
+  const value&   get_named_value(const char*  name) const;
+  const value*  find_named_value(const char*  name) const noexcept;
+  const value*  access(std::initializer_list<const char*>  ls) const noexcept;
 
   void  print(int  indent=0) const noexcept;
 
 
-  class Iterator{
-    ListNode const*  node;
+  class iterator{
+    list_node const*  node;
 
   public:
-    Iterator(ListNode const*  nd=nullptr) noexcept: node(nd){}
+    iterator(list_node const*  nd=nullptr) noexcept: node(nd){}
 
     operator bool() const noexcept{return node;}
 
-    const Value&  operator*() const noexcept{return node->value;}
+    const value&  operator*() const noexcept{return node->content_value;}
 
-    bool  operator!=(const Iterator&  rhs) const noexcept{return(node != rhs.node);}
+    bool  operator!=(const iterator&  rhs) const noexcept{return(node != rhs.node);}
 
-    Iterator&  operator++() noexcept
+    iterator&  operator++() noexcept
     {
       node = node->next;
 
@@ -93,8 +96,8 @@ public:
   };
 
 
-  Iterator  begin() const noexcept{return Iterator(  first);}
-  Iterator    end() const noexcept{return Iterator(nullptr);}
+  iterator  begin() const noexcept{return iterator(  first);}
+  iterator    end() const noexcept{return iterator(nullptr);}
 
 };
 

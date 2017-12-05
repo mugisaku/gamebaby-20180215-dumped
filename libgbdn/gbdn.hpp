@@ -1,10 +1,10 @@
-#ifndef GAMN_HPP
-#define GAMN_HPP
+#ifndef GBDN_HPP
+#define GBDN_HPP
 
 
-#include"gamn_List.hpp"
-#include"gamn_Value.hpp"
-#include"gamn_StreamReader.hpp"
+#include"list.hpp"
+#include"value.hpp"
+#include"stream_reader.hpp"
 
 
 

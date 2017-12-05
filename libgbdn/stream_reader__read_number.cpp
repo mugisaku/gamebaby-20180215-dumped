@@ -1,14 +1,14 @@
-#include"gamn_StreamReader.hpp"
-#include"gamn_List.hpp"
+#include"stream_reader.hpp"
+#include"list.hpp"
 
 
 
 
-namespace gamn{
+namespace gbdn{
 
 
-Value
-StreamReader::
+value
+stream_reader::
 read_binary_number() noexcept
 {
   auto  i = read_binary_integer();
@@ -17,16 +17,16 @@ read_binary_number() noexcept
     {
       ++pointer;
 
-      return Value(i+read_binary_fraction());
+      return value(i+read_binary_fraction());
     }
 
 
-  return Value(i);
+  return value(i);
 }
 
 
-Value
-StreamReader::
+value
+stream_reader::
 read_octal_number() noexcept
 {
   auto  i = read_octal_integer();
@@ -35,16 +35,16 @@ read_octal_number() noexcept
     {
       ++pointer;
 
-      return Value(i+read_octal_fraction());
+      return value(i+read_octal_fraction());
     }
 
 
-  return Value(i);
+  return value(i);
 }
 
 
-Value
-StreamReader::
+value
+stream_reader::
 read_decimal_number() noexcept
 {
   auto  i = read_decimal_integer();
@@ -53,16 +53,16 @@ read_decimal_number() noexcept
     {
       ++pointer;
 
-      return Value(i+read_decimal_fraction());
+      return value(i+read_decimal_fraction());
     }
 
 
-  return Value(i);
+  return value(i);
 }
 
 
-Value
-StreamReader::
+value
+stream_reader::
 read_hexadecimal_number() noexcept
 {
   auto  i = read_hexadecimal_integer();
@@ -71,18 +71,18 @@ read_hexadecimal_number() noexcept
     {
       ++pointer;
 
-      return Value(i+read_hexadecimal_fraction());
+      return value(i+read_hexadecimal_fraction());
     }
 
 
-  return Value(i);
+  return value(i);
 }
 
 
 
 
 int
-StreamReader::
+stream_reader::
 read_binary_integer() noexcept
 {
   int  i = 0;
@@ -117,7 +117,7 @@ read_binary_integer() noexcept
 
 
 double
-StreamReader::
+stream_reader::
 read_binary_fraction() noexcept
 {
   double  d = 0.0;
@@ -154,7 +154,7 @@ read_binary_fraction() noexcept
 
 
 int
-StreamReader::
+stream_reader::
 read_octal_integer() noexcept
 {
   int  i = 0;
@@ -173,7 +173,7 @@ read_octal_integer() noexcept
 
 
 double
-StreamReader::
+stream_reader::
 read_octal_fraction() noexcept
 {
   double  d = 0.0;
@@ -193,7 +193,7 @@ read_octal_fraction() noexcept
 
 
 int
-StreamReader::
+stream_reader::
 read_decimal_integer() noexcept
 {
   int  i = 0;
@@ -212,7 +212,7 @@ read_decimal_integer() noexcept
 
 
 double
-StreamReader::
+stream_reader::
 read_decimal_fraction() noexcept
 {
   double  d = 0.0;
@@ -232,7 +232,7 @@ read_decimal_fraction() noexcept
 
 
 int
-StreamReader::
+stream_reader::
 read_hexadecimal_integer() noexcept
 {
   int  i = 0;
@@ -289,7 +289,7 @@ read_hexadecimal_integer() noexcept
 
 
 double
-StreamReader::
+stream_reader::
 read_hexadecimal_fraction() noexcept
 {
   double  d = 0.0;
@@ -346,8 +346,8 @@ read_hexadecimal_fraction() noexcept
 }
 
 
-Value
-StreamReader::
+value
+stream_reader::
 read_number_that_begins_by_zero() noexcept
 {
   auto  c = *pointer++;
@@ -355,8 +355,8 @@ read_number_that_begins_by_zero() noexcept
   return ((c == 'b') || (c == 'B'))? read_binary_number()
         :((c == 'o') || (c == 'O'))? read_octal_number()
         :((c == 'x') || (c == 'X'))? read_hexadecimal_number()
-        :((c == '.')              )? Value(read_decimal_fraction())
-        : Value(0);
+        :((c == '.')              )? value(read_decimal_fraction())
+        : value(0);
 }
 
 

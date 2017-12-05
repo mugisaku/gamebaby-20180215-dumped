@@ -1,8 +1,7 @@
-#include"gmbb_Standard.hpp"
-#include"gamn.hpp"
+#include"gbdn.hpp"
 
 
-using namespace gamn;
+using namespace gbdn;
 
 
 int
@@ -14,15 +13,15 @@ main(int  argc, char**  argv)
     }
 
 
-  List  ls;
+  list  ls;
 
     try
     {
-      ls = List(argv[1]);
+      ls = list(argv[1]);
     }
 
 
-    catch(StreamError const&  err)
+    catch(const stream_error&  err)
     {
       err.print();
 

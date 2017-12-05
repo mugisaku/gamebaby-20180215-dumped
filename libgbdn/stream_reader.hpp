@@ -1,53 +1,27 @@
-#ifndef GAMN_StreamReader_HPP
-#define GAMN_StreamReader_HPP
+#ifndef LIBGBDN_StreamReader_HPP
+#define LIBGBDN_StreamReader_HPP
 
 
-#include"gamn_Value.hpp"
+#include"value.hpp"
 #include<cstdarg>
 #include<cstdio>
 
 
-namespace gamn{
+namespace gbdn{
 
 
 class
-FileStream
+stream_context
 {
-  FILE*  f;
-
-public:
-  FileStream(char const*  filepath) noexcept: f(fopen(filepath,"rb")){}
- ~FileStream()
-  {
-      if(f)
-      {
-        fclose(f);
-      }
-  }
-
-
-  char  getc() const noexcept{return fgetc(f);};
-
-  operator bool() const noexcept{return f;}
-
-  bool  eof()   const noexcept{return feof(f);}
-  bool  error() const noexcept{return ferror(f);}
-
-};
-
-
-class
-StreamContext
-{
-  char const*  header;
+  const char*  header;
 
   int  line_number=1;
 
 protected:
-  char const*  pointer;
+  const char*  pointer;
 
 public:
-  StreamContext(char const*  p=nullptr) noexcept: header(p), pointer(p){}
+  stream_context(char const*  p=nullptr) noexcept: header(p), pointer(p){}
 
   int  get_line_number() const noexcept{return line_number;}
   char const*  get_pointer() const noexcept{return pointer;}
@@ -78,13 +52,13 @@ public:
 
 
 class
-StreamError: public StreamContext
+stream_error: public stream_context
 {
   char  buf[256];
 
 public:
-  StreamError(StreamContext const&  ctx, char const*  fmt, ...):
-  StreamContext(ctx)
+  stream_error(const stream_context&  ctx, const char*  fmt, ...):
+  stream_context(ctx)
   {
     va_list  ap;
     va_start(ap,fmt);
@@ -96,7 +70,7 @@ public:
 
   void  print() const noexcept
   {
-    StreamContext::print();
+    stream_context::print();
 
     printf("\n: %s\n",buf);
   }
@@ -105,39 +79,37 @@ public:
 
 
 
-class List;
+class list;
 
 
 class
-StreamReader: public StreamContext
+stream_reader: public stream_context
 {
   char*  buffer=nullptr;
 
   size_t            length=0;
   size_t  allocated_length=0;
 
-  String  read_identifier() noexcept;
-  String  read_string(char  close_char) noexcept;
+  string  read_identifier() noexcept;
+  string  read_string(char  close_char) noexcept;
 
   int     read_binary_integer() noexcept;
   double  read_binary_fraction() noexcept;
-  Value  read_binary_number() noexcept;
+  value  read_binary_number() noexcept;
 
   int  read_octal_integer() noexcept;
   double  read_octal_fraction() noexcept;
-  Value  read_octal_number() noexcept;
+  value  read_octal_number() noexcept;
 
   int  read_decimal_integer() noexcept;
   double  read_decimal_fraction() noexcept;
-  Value  read_decimal_number() noexcept;
+  value  read_decimal_number() noexcept;
 
   int     read_hexadecimal_integer() noexcept;
   double  read_hexadecimal_fraction() noexcept;
-  Value  read_hexadecimal_number() noexcept;
+  value  read_hexadecimal_number() noexcept;
 
-  Value  read_number_that_begins_by_zero() noexcept;
-
-  List*  read_list();
+  value  read_number_that_begins_by_zero() noexcept;
 
   void  clear_buffer() noexcept;
 
@@ -149,9 +121,9 @@ StreamReader: public StreamContext
   void  skip_blockstyle_comment();
 
 public:
-  StreamReader() noexcept{allocate_initial_buffer();}
-  StreamReader(char const*  p) noexcept: StreamContext(p){allocate_initial_buffer();}
- ~StreamReader(){delete[] buffer;}
+  stream_reader() noexcept{allocate_initial_buffer();}
+  stream_reader(char const*  p) noexcept: stream_context(p){allocate_initial_buffer();}
+ ~stream_reader(){delete[] buffer;}
 
   void  skip_spaces() noexcept;
 
@@ -159,7 +131,7 @@ public:
 
   char  get_char() const noexcept{return *pointer;}
 
-  Value  read_value();
+  value  read_value();
 
 };
 

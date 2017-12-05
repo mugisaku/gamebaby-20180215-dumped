@@ -1,5 +1,5 @@
-#include"gamn_String.hpp"
-#include"gamn_Value.hpp"
+#include"string.hpp"
+#include"value.hpp"
 #include<cstring>
 #include<cstdio>
 #include<utility>
@@ -7,47 +7,47 @@
 
 
 
-namespace gamn{
+namespace gbdn{
 
 
 
 
 char
-String::
+string::
 null;
 
 
 
 
-String&
-String::
-operator=(const String&   rhs) noexcept
+string&
+string::
+operator=(const string&   rhs) noexcept
 {
   clear();
 
-  assign(rhs.data,rhs.length,rhs.value? new Value(*rhs.value):nullptr);
+  assign(rhs.data,rhs.length,rhs.companion_value? new value(*rhs.companion_value):nullptr);
 
   return *this;
 }
 
 
-String&
-String::
-operator=(String&&  rhs) noexcept
+string&
+string::
+operator=(string&&  rhs) noexcept
 {
   clear();
 
   length = rhs.length;
 
-  std::swap( data,rhs.data );
-  std::swap(value,rhs.value);
+  std::swap(           data,rhs.data           );
+  std::swap(companion_value,rhs.companion_value);
 
   return *this;
 }
 
 
 bool
-String::
+string::
 operator==(const char*  s) const noexcept
 {
   return(std::strcmp(data,s) == 0);
@@ -57,7 +57,7 @@ operator==(const char*  s) const noexcept
 
 
 void
-String::
+string::
 clear() noexcept
 {
     if(data != &null)
@@ -69,13 +69,13 @@ clear() noexcept
 
   length = 0;
 
-  delete value          ;
-         value = nullptr;
+  delete companion_value          ;
+         companion_value = nullptr;
 }
 
 
 bool
-String::
+string::
 compare(size_t  len, const char*  str) const noexcept
 {
   return(length == len) && (std::memcmp(data,str,len) == 0);
@@ -83,8 +83,8 @@ compare(size_t  len, const char*  str) const noexcept
 
 
 void
-String::
-assign(const char*  str, size_t  len, Value*  v) noexcept
+string::
+assign(const char*  str, size_t  len, value*  v) noexcept
 {
   clear();
 
@@ -96,30 +96,30 @@ assign(const char*  str, size_t  len, Value*  v) noexcept
 
   data[length] = 0;
 
-  value = v;
+  companion_value = v;
 }
 
 
 void
-String::
-set_value(Value*  v) noexcept
+string::
+set_value(value*  v) noexcept
 {
-  delete value    ;
-         value = v;
+  delete companion_value    ;
+         companion_value = v;
 }
 
 
 void
-String::
+string::
 print(int  indent) const noexcept
 {
   printf("\"%s\"",data);
 
-    if(value)
+    if(companion_value)
     {
       printf(":");
 
-      value->print(indent);
+      companion_value->print(indent);
     }
 }
 

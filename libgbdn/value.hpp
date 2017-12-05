@@ -1,82 +1,68 @@
-#ifndef GAMN_Value_HPP
-#define GAMN_Value_HPP
+#ifndef LIBGBDN_value_HPP
+#define LIBGBDN_value_HPP
 
 
-#include"gamn_String.hpp"
+#include"string.hpp"
 #include<new>
 
 
-namespace gamn{
+namespace gbdn{
 
 
-enum class
-ValueKind
-{
-  null,
-  string,
-  integer,
-  real,
-  list,
-
-};
-
-
-class List;
-
-
-union
-ValueData
-{
-  int        integer;
-  double        real;
-  String      string;
-  List*         list;
-
-   ValueData(){}
-  ~ValueData(){}
-
-};
+class list;
 
 
 class
-Value
+value
 {
-  ValueKind  kind=ValueKind::null;
-  ValueData  data;
+  enum class kind_type{
+    null,
+    string,
+    integer,
+    real,
+    list,
+
+  } kind;
+
+
+  union data_type{
+    int         i;
+    double      r;
+    string      s;
+    list*      ls;
+
+     data_type(){}
+    ~data_type(){}
+
+  } data;
 
 public:
-  Value() noexcept{}
-  Value(int        i) noexcept: kind(ValueKind::integer){data.integer = i;}
-  Value(double     r) noexcept: kind(ValueKind::real   ){data.real    = r;}
-  Value(String&&   s) noexcept: kind(ValueKind::string ){new(&data) String(std::move(s));}
-  Value(List*           ls) noexcept: kind(ValueKind::list){data.list = ls;}
-  Value(const Value&   rhs) noexcept{*this = rhs;}
-  Value(      Value&&  rhs) noexcept{*this = std::move(rhs);}
- ~Value(){clear();}
+  value() noexcept{}
+  value(int        i) noexcept: kind(kind_type::integer){data.i = i;}
+  value(double     r) noexcept: kind(kind_type::real   ){data.r = r;}
+  value(string&&   s) noexcept: kind(kind_type::string ){new(&data) string(std::move(s));}
+  value(list*           ls) noexcept: kind(kind_type::list){data.ls = ls;}
+  value(const value&   rhs) noexcept{*this = rhs;}
+  value(      value&&  rhs) noexcept{*this = std::move(rhs);}
+ ~value(){clear();}
 
-  Value&  operator=(const Value&   rhs) noexcept;
-  Value&  operator=(      Value&&  rhs) noexcept;
+  value&  operator=(const value&   rhs) noexcept;
+  value&  operator=(      value&&  rhs) noexcept;
 
-  operator bool() const noexcept{return kind != ValueKind::null;}
-
-  bool  operator==(ValueKind  k) const noexcept{return kind == k;}
-
-  Value&  neg() noexcept;
+  operator bool() const noexcept{return kind != kind_type::null;}
 
 
-  bool  is_integer() const noexcept{return(kind == ValueKind::integer);}
-  bool  is_real(   ) const noexcept{return(kind == ValueKind::real   );}
-  bool  is_string( ) const noexcept{return(kind == ValueKind::string );}
-  bool  is_list(   ) const noexcept{return(kind == ValueKind::list   );}
-
-  ValueKind  get_kind() const noexcept{return kind;}
+  bool  is_integer() const noexcept{return(kind == kind_type::integer);}
+  bool  is_real(   ) const noexcept{return(kind == kind_type::real   );}
+  bool  is_string( ) const noexcept{return(kind == kind_type::string );}
+  bool  is_list(   ) const noexcept{return(kind == kind_type::list   );}
 
   void  clear() noexcept;
 
-  int                  get_integer() const noexcept;
+  int               get_integer() const noexcept;
   double               get_real() const noexcept;
-  const String&      get_string() const noexcept;
-  const List&          get_list() const noexcept;
+  const string&      get_string() const noexcept;
+  const list&          get_list() const noexcept;
 
   void  print(int  indent=0) const noexcept;
 

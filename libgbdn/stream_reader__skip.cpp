@@ -1,14 +1,14 @@
-#include"gamn_StreamReader.hpp"
+#include"stream_reader.hpp"
 #include<cstring>
 
 
 
 
-namespace gamn{
+namespace gbdn{
 
 
 void
-StreamReader::
+stream_reader::
 skip_linestyle_comment()
 {
     for(;;)
@@ -39,7 +39,7 @@ skip_linestyle_comment()
 
 
 void
-StreamReader::
+stream_reader::
 skip_blockstyle_comment()
 {
     for(;;)
@@ -48,7 +48,7 @@ skip_blockstyle_comment()
 
         if(!c)
         {
-          throw StreamError(*this,"ブロック式コメントが閉じられていない");
+          throw stream_error(*this,"ブロック式コメントが閉じられていない");
         }
 
       else           
@@ -81,7 +81,7 @@ skip_blockstyle_comment()
 
 
 void
-StreamReader::
+stream_reader::
 skip_spaces() noexcept
 {
     for(;;)

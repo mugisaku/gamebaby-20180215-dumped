@@ -1,19 +1,19 @@
-#ifndef GAMN_String_HPP
-#define GAMN_String_HPP
+#ifndef LIBGBDN_string_HPP
+#define LIBGBDN_string_HPP
 
 
 #include<cstddef>
 #include<utility>
 
 
-namespace gamn{
+namespace gbdn{
 
 
-class Value;
+class value;
 
 
 class
-String
+string
 {
   static char  null;
 
@@ -21,17 +21,17 @@ String
 
   size_t  length=0;
 
-  Value*  value=nullptr;
+  value*  companion_value=nullptr;
 
 public:
-  String() noexcept{}
-  String(const char*  str, size_t  len, Value*  v=nullptr) noexcept{assign(str,len,v);}
-  String(const String&   rhs) noexcept{*this = rhs;}
-  String(      String&&  rhs) noexcept{*this = std::move(rhs);}
- ~String(){clear();}
+  string() noexcept{}
+  string(const char*  str, size_t  len, value*  v=nullptr) noexcept{assign(str,len,v);}
+  string(const string&   rhs) noexcept{*this = rhs;}
+  string(      string&&  rhs) noexcept{*this = std::move(rhs);}
+ ~string(){clear();}
 
-  String&  operator=(const String&   rhs) noexcept;
-  String&  operator=(      String&&  rhs) noexcept;
+  string&  operator=(const string&   rhs) noexcept;
+  string&  operator=(      string&&  rhs) noexcept;
 
   bool  operator==(const char*  s) const noexcept;
 
@@ -39,13 +39,13 @@ public:
 
   bool  compare(size_t  len, const char*  str) const noexcept;
 
-  void  assign(const char*  str, size_t  len, Value*  v=nullptr) noexcept;
+  void  assign(const char*  str, size_t  len, value*  v=nullptr) noexcept;
 
   const char*  get_data() const noexcept{return data;}
   size_t  get_length() const noexcept{return length;}
 
-  void          set_value(Value*  v) noexcept;
-  const Value*  get_value() const noexcept{return value;}
+  void          set_value(value*  v) noexcept;
+  const value*  get_value() const noexcept{return companion_value;}
 
   void  print(int  indent=0) const noexcept;
 
