@@ -129,7 +129,7 @@ void
 stream_reader::
 allocate_initial_buffer() noexcept
 {
-  constexpr size_t  initial_allocation_size = 1024;
+  constexpr size_t  initial_allocation_size = 512;
 
   buffer = new char[initial_allocation_size];
 

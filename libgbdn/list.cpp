@@ -15,13 +15,15 @@ operator=(const list&  rhs) noexcept
 {
   clear();
 
-  auto  current = rhs.first;
+  data = new value[rhs.size()];
 
-    while(current)
+  number_of_values = rhs.size();
+
+  auto  p = data;
+
+    for(auto&  v: rhs)
     {
-      push(value(current->content_value));
-
-      current = current->next;
+      *p++ = v;
     }
 
 
@@ -35,10 +37,9 @@ operator=(list&&  rhs) noexcept
 {
   clear();
 
-  std::swap(first,rhs.first);
-  std::swap( last,rhs.last );
+  std::swap(data,rhs.data);
 
-  number = rhs.number;
+  number_of_values = rhs.size();
 
   return *this;
 }
@@ -124,26 +125,56 @@ access(std::initializer_list<const char*>  ls) const noexcept
 
 
 
-void
-list::
-push(value&&  v) noexcept
+namespace{
+class
+buffer
 {
-  auto  nd = new list_node(std::move(v));
+  static constexpr size_t  initial_number = 256;
 
-    if(last)
-    {
-      last->next = nd;
-    }
+  value*  data;
 
-  else
-    {
-      first = nd;
-    }
+  uint32_t  number_of_allocated;
+  uint32_t  number_of_pushed=0;
+
+public:
+  buffer() noexcept: data(new value[initial_number]), number_of_allocated(initial_number){}
+ ~buffer(){delete[] data;}
+
+  uint32_t  get_number_of_pushed() const noexcept{return number_of_pushed;}
+
+  value*  release_pointer() noexcept
+  {
+    auto  p = data          ;
+              data = nullptr;
+
+    return p;
+  }
+
+  void  push(value&&  v) noexcept
+  {
+      if(number_of_pushed >= number_of_allocated)
+      {
+        constexpr int  rate = 2;
+
+        auto  new_data = new value[number_of_allocated*rate];
+
+          for(int  i = 0;  i < number_of_pushed;  ++i)
+          {
+            new_data[i] = std::move(data[i]);
+          }
 
 
-  last = nd;
+        delete[] data           ;
+                 data = new_data;
 
-  ++number;
+        number_of_allocated *= rate;
+      }
+
+
+    data[number_of_pushed++] = std::move(v);
+  }
+
+};
 }
 
 
@@ -154,6 +185,8 @@ assign(stream_reader&  reader, char  cl)
   clear();
 
   stream_context  ctx;
+
+  buffer  buf;
 
     for(;;)
     {
@@ -198,12 +231,14 @@ assign(stream_reader&  reader, char  cl)
             }
 
 
-          push(std::move(v));
+          buf.push(std::move(v));
         }
     }
 
 
-  push(value());
+  data = buf.release_pointer();
+
+  number_of_values = buf.get_number_of_pushed();
 }
 
 
@@ -254,7 +289,7 @@ open(const char*  filepath)
 
   else
     {
-      printf("[gamn list construct error] %sを開けない",filepath);
+      printf("[gbdn list construct error] %sを開けない",filepath);
     }
 }
 
@@ -263,21 +298,10 @@ void
 list::
 clear() noexcept
 {
-  auto  current = first;
+  delete[]  data          ;
+            data = nullptr;
 
-    while(current)
-    {
-      auto  next = current->next;
-
-      delete current       ;
-             current = next;
-    }
-
-
-  first = nullptr;
-   last = nullptr;
-
-  number = 0;
+  number_of_values = 0;
 }
 
 
