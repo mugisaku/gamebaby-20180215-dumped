@@ -16,9 +16,9 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 
-set(CMAKE_C_COMPILER  gcc)
+set(CMAKE_C_COMPILER  "/usr/local/bin/gcc")
 set(CMAKE_C_FLAGS   "-std=c14 -Werror")
-set(CMAKE_CXX_COMPILER  g++)
+set(CMAKE_CXX_COMPILER  "/usr/local/bin/g++")
 set(CMAKE_CXX_FLAGS "-std=c++14 -Werror")
 set(CMAKE_CXX_LINK_FLAGS  "-lstdc++ -lz -lpng -lSDL2 -lSDL2main")
 
@@ -81,16 +81,6 @@ set(GAME_SOURCES
 )
 
 
-set(GBDN_SOURCES
-  libgbdn/string.cpp
-  libgbdn/list.cpp
-  libgbdn/value.cpp
-  libgbdn/stream_reader.cpp
-  libgbdn/stream_reader__skip.cpp
-  libgbdn/stream_reader__read_number.cpp
-)
-
-
 set(TS_SOURCES
   TypeSystem/ts_Value.cpp
   TypeSystem/ts_Object.cpp
@@ -111,6 +101,7 @@ set(BATTLE_SOURCES
   Battle/Startup_NameMaking.cpp
   Battle/Battle.cpp
   Battle/BattlePlayer.cpp
+  Battle/BattlePlayerBase.cpp
   Battle/Battle_TemporaryData.cpp
   Battle/Battle_StreamText.cpp
   Battle/Battle_ActionChoosing.cpp
@@ -148,17 +139,19 @@ set(STANDARD_SOURCES
 
 
 
+add_subdirectory(libgbdn)
+
 include_directories(./)
-include_directories(./)
+include_directories(./libgbdn)
 include_directories(./Standard)
 include_directories(./TypeSystem)
 include_directories(/usr/include/SDL2)
 add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
-add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${GBDN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
-add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES} ${GBDN_SOURCES})
+add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
+add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
 add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
-add_executable("testGamn${EXECUTABLE_EXTENSION}" Gamn/testGamn.cpp ${GBDN_SOURCES})
-add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GBDN_SOURCES} ${STANDARD_SOURCES} ${GAME_SOURCES})
+add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
+target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "gbdn")
 
 
 if(EMSC)

@@ -42,8 +42,8 @@ step(const Controller&  ctrl) noexcept
 
         if(i == 0)
         {
-          action.actor       = &hero_player_table[0];
-          action.target      = &enemy_player_table[0];
+          action.actor       = &hero_side.players[0];
+          action.target      = &enemy_side.players[0];
           action.target_kind = TargetKind::one;
           action.kind        = ActionKind::attack;
         }
@@ -51,7 +51,7 @@ step(const Controller&  ctrl) noexcept
       else
         if(i == 1)
         {
-          action.actor       = &hero_player_table[0];
+          action.actor       = &hero_side.players[0];
           action.target      = nullptr;
           action.target_kind = TargetKind::null;
           action.kind        = ActionKind::guard;

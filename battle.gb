@@ -1,0 +1,83 @@
+
+
+enemy:{
+  "おばけがえる":{
+    body_strength:38
+    mind_strength:20
+          agility:12
+          defense:26
+        intellect:10
+               hp:300
+               mp:0
+  }
+}
+
+
+command:{
+  'はがねのつるぎ':{
+    strength:0
+      weight:0
+    target:one_of_enemy
+    effect:attack
+  }
+
+  "てつのゆみや":{
+    strength:0
+       weight:0
+	    target:one_of_enemy
+    effect:attack
+  }
+
+  "たんけん":{
+    strength:0
+      weight:0
+    target:one_of_enemy
+    effect:attack
+  }
+}
+
+
+class:{
+  "せんし":{
+           body_strength:38
+           mind_strength:20
+                 agility:12
+                 defense:26
+               intellect:10
+                      hp:300
+                      mp:0
+    command_table:{
+      "はがねのつるぎ"
+    }
+  }
+
+  "かりゅうど":{
+           body_strength:30
+           mind_strength:18
+                 agility:22
+                 defense:16
+               intellect:10
+                      hp:200
+                      mp:0
+    command_table:{
+      "てつのゆみや"
+    }
+  }
+
+  "とうぞく":{
+           body_strength:22
+           mind_strength:14
+                 agility:28
+                 defense:10
+               intellect:16
+                      hp:180
+                      mp:0
+    command_table:{
+      "たんけん"
+    }
+  }
+}
+
+
+
+

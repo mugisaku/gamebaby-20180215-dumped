@@ -20,7 +20,7 @@ render(Image&  dst, Point  point, int  index)
 {
   auto&  plb = ro::player_base_table[index];
 
-  dst.print(plb.name.data(),point,system_data::glset);
+  dst.print(plb.get_name().data(),point,system_data::glset);
 }
 
 
@@ -65,18 +65,18 @@ public:
 
     const auto&  pl = tmp::player;
 
-    dst.print(sbuf("たいりょく　　　%2d",pl.body_strength),offset           ,system_data::glset);
-//    dst.print(sbuf("せいしんりょく　%2d",pl.mind_strength),offset.move_y(16),system_data::glset);
-    dst.print(sbuf("すばやさ　　　　%2d",pl.agility      ),offset.move_y(16),system_data::glset);
-    dst.print(sbuf("しゅびりょく　　%2d",pl.defense      ),offset.move_y(16),system_data::glset);
-//    dst.print(sbuf("ちりょく　　　　%2d",pl.intellect    ),offset.move_y(16),system_data::glset);
+    dst.print(sbuf("たいりょく　　　%2d",pl.get_body_strength()),offset           ,system_data::glset);
+//    dst.print(sbuf("せいしんりょく　%2d",get_pl.mind_strength()),offset.move_y(16),system_data::glset);
+    dst.print(sbuf("すばやさ　　　　%2d",pl.get_agility()      ),offset.move_y(16),system_data::glset);
+    dst.print(sbuf("しゅびりょく　　%2d",pl.get_defense()      ),offset.move_y(16),system_data::glset);
+//    dst.print(sbuf("ちりょく　　　　%2d",pl.get_intellect()    ),offset.move_y(16),system_data::glset);
 
     offset.x +=   8*12;
     offset.y  = y_base;
 
-    dst.print(sbuf("こうげき　%3d…かいすう　%2d",pl.attack_strength,pl.number_of_attacks),offset           ,system_data::glset);
-    dst.print(sbuf("ぼうぎょ　%3d…かいすう　%2d",pl.guard_strength,pl.number_of_guards)  ,offset.move_y(16),system_data::glset);
-//    dst.print(sbuf("まほう　　%3d…かいすう　%2d",pl.magic_strength,pl.number_of_magics)  ,offset.move_y(16),system_data::glset);
+    dst.print(sbuf("こうげき　%3d…かいすう　%2d",pl.get_attack_strength(),pl.get_number_of_attacks()),offset           ,system_data::glset);
+    dst.print(sbuf("ぼうぎょ　%3d…かいすう　%2d",pl.get_guard_strength(),pl.get_number_of_guards())  ,offset.move_y(16),system_data::glset);
+//    dst.print(sbuf("まほう　　%3d…かいすう　%2d",pl.get_magic_strength(),pl.get_number_of_magics())  ,offset.move_y(16),system_data::glset);
   }
 
 } specs_window;
@@ -92,7 +92,7 @@ step(Controller const&  ctrl) noexcept
 
       static_cast<PlayerBase&>(tmp::hero) = ro::player_base_table[menu_window.get_item_index()];
 
-      tmp::player = Player(tmp::hero);
+      tmp::player.set_data(tmp::hero);
 
       tmp::player.update();
     }

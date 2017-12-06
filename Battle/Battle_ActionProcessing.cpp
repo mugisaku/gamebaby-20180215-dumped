@@ -38,7 +38,7 @@ get_result_of_attack() noexcept
   random_number::UniformDistribution  uni_dist;
   random_number::NormalDistribution  norm_dist;
 
-    for(int  n = 0;  n < action.actor->number_of_attacks;  ++n)
+    for(int  n = 0;  n < action.actor->get_number_of_attacks();  ++n)
     {
         if(uni_dist(0,99) < 70)
         {
@@ -46,11 +46,11 @@ get_result_of_attack() noexcept
 
           int  guard_point = 0;
 
-            for(int  nn = 0;  nn < action.target->number_of_guards;  ++nn)
+            for(int  nn = 0;  nn < action.target->get_number_of_guards();  ++nn)
             {
                 if(uni_dist(0,99) < 80)
                 {
-                  double  mean = action.target->guard_strength;
+                  double  mean = action.target->get_guard_strength();
                   auto  stddev = mean/10;
 
                   guard_point += norm_dist(mean,stddev);
@@ -58,7 +58,7 @@ get_result_of_attack() noexcept
             }
 
 
-          auto  damage_point = action.actor->attack_strength;
+          auto  damage_point = action.actor->get_attack_strength();
 
           res.damage_point += (damage_point > guard_point)? damage_point-guard_point:1;
         }
@@ -87,7 +87,7 @@ step_attack(const Controller&  ctrl) noexcept
     switch(phase_count)
     {
   case(1):
-      system_data::char_buffer.push(sbuf("%sは　%sに こうげき！",action.actor->name.data(),action.target->name.data()));
+      system_data::char_buffer.push(sbuf("%sは　%sに こうげき！",action.actor->get_name().data(),action.target->get_name().data()));
       start_stream_text(return_from_some_routine);
       break;
   case(0):
@@ -110,7 +110,7 @@ step_guard(const Controller&  ctrl) noexcept
     switch(phase_count)
     {
   case(0):
-      system_data::char_buffer.push(sbuf("%sは　ぼうぎょを　かためた",action.actor->name.data()));
+      system_data::char_buffer.push(sbuf("%sは　ぼうぎょを　かためた",action.actor->get_name().data()));
       start_stream_text(return_from_some_routine);
       break;
     }

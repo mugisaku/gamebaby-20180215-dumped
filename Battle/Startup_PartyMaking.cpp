@@ -34,7 +34,7 @@ return_from_character_making(int  retval) noexcept
 
   h = tmp::hero;
 
-  h.name = tmp::name_buffer.to_string();
+  h.set_name(tmp::name_buffer.to_string());
 
   sav::party.members[0] = &h;
 

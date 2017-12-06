@@ -37,13 +37,13 @@ public:
     StringBuffer  sbuf;
 
 
-    auto  ch = sav::party.members[index];
+    auto  pl = hero_side.players[index];
 
-      if(ch)
+      if(pl)
       {
-        dst.print(ch->name.data(),offset,system_data::glset);
-        dst.print(sbuf("HP %4d",ch->current_hp),offset.move_y(8),system_data::glset);
-        dst.print(sbuf("MP %4d",ch->current_mp),offset.move_y(8),system_data::glset);
+        dst.print(pl.get_name().data(),offset,system_data::glset);
+        dst.print(sbuf("HP %4d",pl.get_hp()),offset.move_y(8),system_data::glset);
+        dst.print(sbuf("MP %4d",pl.get_mp()),offset.move_y(8),system_data::glset);
       }
   }
 
@@ -139,16 +139,6 @@ start_battle(coreturn_t  ret) noexcept
   ret_hunger = ret;
 
   system_data::char_buffer.push("まものが　あらわれた");
-
-  auto&  ene = enemy_player_table[0];
-
-  ene.name = "おばけがえる";
-
-  ene.body_strength = 30;
-  ene.mind_strength =  0;
-  ene.agility       =  7;
-  ene.update();
-  ene.replenish_hp();
 
     for(auto&  w: status_windows)
     {
