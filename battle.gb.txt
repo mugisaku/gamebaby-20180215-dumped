@@ -1,5 +1,36 @@
 
 
+command:{
+  'たいあたり':{
+    strength:12
+      weight:4
+    target:one_of_opposite_side
+    effect:attack
+  }
+
+  'はがねのつるぎ':{
+    strength:36
+      weight:6
+    target:one_of_opposite_side
+    effect:attack
+  }
+
+  "てつのゆみや":{
+    strength:80
+       weight:14
+    target:one_of_opposite_side
+    effect:attack
+  }
+
+  "たんけん":{
+    strength:14
+      weight:1
+    target:one_of_opposite_side
+    effect:attack
+  }
+}
+
+
 enemy:{
   "おばけがえる":{
     body_strength:38
@@ -9,30 +40,9 @@ enemy:{
         intellect:10
                hp:300
                mp:0
-  }
-}
-
-
-command:{
-  'はがねのつるぎ':{
-    strength:0
-      weight:0
-    target:one_of_enemy
-    effect:attack
-  }
-
-  "てつのゆみや":{
-    strength:0
-       weight:0
-	    target:one_of_enemy
-    effect:attack
-  }
-
-  "たんけん":{
-    strength:0
-      weight:0
-    target:one_of_enemy
-    effect:attack
+    command_table:{
+      "たいあたり"
+    }
   }
 }
 

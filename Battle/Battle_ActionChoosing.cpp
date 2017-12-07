@@ -13,19 +13,12 @@ FixedString
 label("action choosing");
 
 
-const char*
-actions[] =
-{
-  "こうげき",
-  "ぼうぎょ",
-
-};
-
-
 void
 render(Image&  dst, Point  pt, int  index)
 {
-  dst.print(actions[index],pt,system_data::glset);
+  auto&  cmdtbl = current_player->get_command_table();
+
+  dst.print(cmdtbl.commands[index].name.data(),pt,system_data::glset);
 }
 
 

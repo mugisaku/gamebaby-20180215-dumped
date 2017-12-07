@@ -8,6 +8,7 @@
 #include"ReadOnlyData.hpp"
 #include"Battle_TemporaryData.hpp"
 #include"SavedData.hpp"
+#include"Pointer.hpp"
 
 
 namespace gmbb{

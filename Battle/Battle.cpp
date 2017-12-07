@@ -94,6 +94,8 @@ return_from_action_choosing(int  retval) noexcept
 
     if(retval == 0)
     {
+      current_player = make_rw(hero_side.players[0]);
+
       start_action_choosing(return_from_action_choosing,0);
     }
 
@@ -116,6 +118,8 @@ return_from_stream_text(int  retval) noexcept
 {
   clear_stream_text();
 
+  current_player = make_rw(hero_side.players[0]);
+
   start_action_choosing(return_from_action_choosing,0);
 }
 
@@ -136,6 +140,24 @@ terminate_battle() noexcept
 void
 start_battle(coreturn_t  ret) noexcept
 {
+  clear_player_all();
+
+  auto  pl = make_rw(hero_side.players[0]);
+
+    for(auto  m: sav::party.members)
+    {
+        if(m)
+        {
+          pl->set_data(*m);
+
+m->print();
+        }
+
+
+      ++pl;
+    }
+
+
   ret_hunger = ret;
 
   system_data::char_buffer.push("まものが　あらわれた");

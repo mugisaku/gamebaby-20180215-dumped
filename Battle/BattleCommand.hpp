@@ -53,9 +53,19 @@ BattleCommand
   EffectKind  effect_kind=EffectKind::null;
 
   BattleCommand() noexcept{}
-  BattleCommand(const char*  name_, const gbdn::list&  ls) noexcept{load(name_,ls);}
+  BattleCommand(const char*  name_, const gbdn::list&  ls){load(name_,ls);}
 
-  void  load(const char*  name_, const gbdn::list&  ls) noexcept;
+  void  load(const char*  name_, const gbdn::list&  ls);
+
+};
+
+
+struct
+CommandTable
+{
+  static constexpr int  number_of_commands = 4;
+
+  BattleCommand  commands[number_of_commands];
 
 };
 

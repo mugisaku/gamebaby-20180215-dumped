@@ -103,7 +103,7 @@ public:
 struct
 Side
 {
-  static constexpr int  number_of_players = 6;
+  static constexpr int  number_of_players = 4;
 
   Player  players[number_of_players];
 

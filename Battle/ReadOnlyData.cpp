@@ -21,6 +21,27 @@ std::vector<Enemy>
 enemy_table_entity;
 
 
+template<typename  T>
+void
+read(const gbdn::list&  ls, std::vector<T>&  tbl)
+{
+    for(auto&  v: ls)
+    {
+        if(v.is_string())
+        {
+          auto&  s = v.get_string();
+
+          auto  vv = s.get_value();
+
+            if(vv && vv->is_list())
+            {
+              tbl.emplace_back(s.get_data(),vv->get_list());
+            }
+        }
+    }
+}
+
+
 }
 
 
@@ -55,70 +76,40 @@ load() noexcept
     }
 
 
-    for(auto&  v: ls)
+    try
     {
-        if(v.is_string())
+        for(auto&  v: ls)
         {
-          auto&  s = v.get_string();
-
-          auto  subv = s.get_value();
-
-            if((s == gbdn::string_view("class")) && subv && subv->is_list())
+            if(v.is_string())
             {
-                for(auto&  vv: subv->get_list())
+              auto&  s = v.get_string();
+
+              auto  subv = s.get_value();
+
+                if((s == gbdn::string_view("class")) && subv && subv->is_list())
                 {
-                    if(vv.is_string())
-                    {
-                      auto&  ss = vv.get_string();
-
-                      auto  vvv = ss.get_value();
-
-                        if(vvv && vvv->is_list())
-                        {
-                          player_base_table_entity.emplace_back(ss.get_data(),vvv->get_list());
-                        }
-                    }
+                  read(subv->get_list(),player_base_table_entity);
                 }
-            }
 
-          else
-            if((s == gbdn::string_view("enemy")) && subv && subv->is_list())
-            {
-                for(auto&  vv: subv->get_list())
+              else
+                if((s == gbdn::string_view("enemy")) && subv && subv->is_list())
                 {
-                    if(vv.is_string())
-                    {
-                      auto&  ss = vv.get_string();
-
-                      auto  vvv = ss.get_value();
-
-                        if(vvv && vvv->is_list())
-                        {
-                          enemy_table_entity.emplace_back(ss.get_data(),vvv->get_list());
-                        }
-                    }
+                  read(subv->get_list(),enemy_table_entity);
                 }
-            }
 
-          else
-            if((s == gbdn::string_view("command")) && subv && subv->is_list())
-            {
-                for(auto&  vv: subv->get_list())
+              else
+                if((s == gbdn::string_view("command")) && subv && subv->is_list())
                 {
-                    if(vv.is_string())
-                    {
-                      auto&  ss = vv.get_string();
-
-                      auto  vvv = ss.get_value();
-
-                        if(vvv && vvv->is_list())
-                        {
-                          command_table_entity.emplace_back(ss.get_data(),vvv->get_list());
-                        }
-                    }
+                  read(subv->get_list(),command_table_entity);
                 }
             }
         }
+    }
+
+
+    catch(gbdn::value_was_not_found&  not_f)
+    {
+      printf("%s is not found.\n",not_f.name);
     }
 }
 

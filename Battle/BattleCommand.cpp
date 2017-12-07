@@ -35,7 +35,7 @@ to_target(const gbdn::string&  s) noexcept
 
 void
 BattleCommand::
-load(const char*  name_, const gbdn::list&  ls) noexcept
+load(const char*  name_, const gbdn::list&  ls)
 {
   name = name_;
   strength = ls.get_named_value("strength").get_integer();

@@ -12,6 +12,8 @@ namespace gmbb{
 extern Side    hero_side;
 extern Side   enemy_side;
 
+extern rw_ptr<Player>  current_player;
+
 extern Action  action;
 
 

@@ -90,14 +90,11 @@ protected:
   int  hp=0;
   int  mp=0;
 
-  BattleCommand  command_table[4];
+  CommandTable  command_table;
 
-//  Accessory  accessory_table[4];
-
-//  Ability  ability_table[8];
 public:
   PlayerBase() noexcept{}
-  PlayerBase(const char*  name_, const gbdn::list&  ls) noexcept{load(name_,ls);}
+  PlayerBase(const char*  name_, const gbdn::list&  ls){load(name_,ls);}
 
   void  set_name(std::string&&  new_name) noexcept{name = new_name;}
 
@@ -112,7 +109,11 @@ public:
   int  get_hp() const noexcept{return hp;}
   int  get_mp() const noexcept{return mp;}
 
-  void  load(const char*  name_, const gbdn::list&  ls) noexcept;
+  const CommandTable&  get_command_table() const noexcept{return command_table;}
+
+  void  load(const char*  name_, const gbdn::list&  ls);
+
+  void  print() const noexcept;
 
 };
 

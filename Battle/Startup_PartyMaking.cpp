@@ -24,11 +24,6 @@ return_from_character_making(int  retval) noexcept
 {
   terminate_character_making();
 
-    if(ret_hunger)
-    {
-      ret_hunger(retval);
-    }
-
 
   auto&  h = sav::hero_table[0];
 
@@ -36,9 +31,14 @@ return_from_character_making(int  retval) noexcept
 
   h.set_name(tmp::name_buffer.to_string());
 
-  sav::party.members[0] = &h;
+  sav::party.members[0] = make_rw(h);
 
   sav::party.number_of_members = 1;
+
+    if(ret_hunger)
+    {
+      ret_hunger(retval);
+    }
 }
 
 
