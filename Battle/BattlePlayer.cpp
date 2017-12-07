@@ -9,6 +9,15 @@ namespace gmbb{
 
 void
 Player::
+set_side(Side&  own_side_, Side&  opposite_side_) noexcept
+{
+  own_side      = &own_side_;
+  opposite_side = &opposite_side_;
+}
+
+
+void
+Player::
 set_data(const Enemy&  ene) noexcept
 {
   kind = PlayerKind::enemy;

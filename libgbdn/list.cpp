@@ -67,11 +67,11 @@ const value*
 list::
 find_named_value(const char*  name) const noexcept
 {
-  auto  len = std::strlen(name);
+  const string_view  name_view(name);
 
     for(auto&  v: *this)
     {
-        if(v.is_string() && v.get_string().compare(len,name))
+        if(v.is_string() && (v.get_string() == name_view))
         {
           return v.get_string().get_value();
         }

@@ -2,7 +2,7 @@
 #define BattleItem_HPP
 
 
-#include"BattlePlayerBase.hpp"
+#include"BattleCommand.hpp"
 
 
 namespace gmbb{
@@ -17,50 +17,6 @@ BattleItemKind
   special_ability,
   empty,
 
-};
-
-
-enum class
-TargetKind
-{
-  null,
-  self,
-  one,
-  all_of_heroes_side,
-  all_of_enemies_side,
-
-};
-
-
-enum class
-EffectKind
-{
-  null,
-  attack,
-  guard_up,
-
-};
-
-
-struct
-BattleCommand
-{
-  std::string  name;
-
-  int  strength;
-  int    weight;
-
-  TargetKind  target_kind=TargetKind::null;
-  EffectKind  effect_kind=EffectKind::null;
-
-};
-
-
-enum class
-AbilityKind
-{
-  null,
-  
 };
 
 

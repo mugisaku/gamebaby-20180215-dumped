@@ -44,7 +44,7 @@ step(const Controller&  ctrl) noexcept
         {
           action.actor       = &hero_side.players[0];
           action.target      = &enemy_side.players[0];
-          action.target_kind = TargetKind::one;
+          action.target_kind = TargetKind::one_of_opposite_side;
           action.kind        = ActionKind::attack;
         }
 

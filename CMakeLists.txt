@@ -102,6 +102,8 @@ set(BATTLE_SOURCES
   Battle/Battle.cpp
   Battle/BattlePlayer.cpp
   Battle/BattlePlayerBase.cpp
+  Battle/BattleEnemy.cpp
+  Battle/BattleCommand.cpp
   Battle/Battle_TemporaryData.cpp
   Battle/Battle_StreamText.cpp
   Battle/Battle_ActionChoosing.cpp

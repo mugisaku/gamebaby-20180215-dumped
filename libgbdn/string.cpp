@@ -46,14 +46,6 @@ operator=(string&&  rhs) noexcept
 }
 
 
-bool
-string::
-operator==(const char*  s) const noexcept
-{
-  return(std::strcmp(data,s) == 0);
-}
-
-
 
 
 void
@@ -71,14 +63,6 @@ clear() noexcept
 
   delete companion_value          ;
          companion_value = nullptr;
-}
-
-
-bool
-string::
-compare(size_t  len, const char*  str) const noexcept
-{
-  return(length == len) && (std::memcmp(data,str,len) == 0);
 }
 
 

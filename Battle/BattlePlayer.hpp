@@ -37,7 +37,8 @@ Player: public PlayerBase
   } data;
 
 
-  rw_ptr<Side>  side;
+  rw_ptr<Side>       own_side;
+  rw_ptr<Side>  opposite_side;
 
   int  hp_max;
   int  mp_max;
@@ -59,14 +60,15 @@ public:
   bool  is_enemy() const noexcept{return kind == PlayerKind::enemy;}
   bool  is_hero() const noexcept{return kind == PlayerKind::hero;}
 
-  void  set_side(Side&  side_) noexcept{side = &side_;}
+  void  set_side(Side&  own_side_, Side&  opposite_side_) noexcept;
 
   void  set_data(const Enemy&  ene) noexcept;
   void  set_data(       Hero&  hro) noexcept;
 
   void  unset_data() noexcept;
 
-  rw_ptr<Side>  get_side() const noexcept{return side;}
+  rw_ptr<Side>  get_own_side()      const noexcept{return      own_side;}
+  rw_ptr<Side>  get_opposite_side() const noexcept{return opposite_side;}
 
   int  get_hp_max() const noexcept{return hp_max;}
   int  get_hp() const noexcept{return hp;}
@@ -104,14 +106,6 @@ Side
   static constexpr int  number_of_players = 6;
 
   Player  players[number_of_players];
-
-  Side() noexcept
-  {
-      for(auto&  pl: players)
-      {
-        pl.set_side(*this);
-      }
-  }
 
 };
 

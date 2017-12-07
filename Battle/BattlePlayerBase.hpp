@@ -5,9 +5,9 @@
 #include<cstdint>
 #include<string>
 #include"Pointer.hpp"
-#include"BattleItem.hpp"
 #include"gmbb_unicode.hpp"
 #include"gbdn.hpp"
+#include"BattleCommand.hpp"
 
 
 namespace gmbb{
