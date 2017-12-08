@@ -20,6 +20,17 @@ PlayerKind
 
 
 class Side;
+class Player;
+
+
+struct
+BattleAction
+{
+  ro_ptr<BattleCommand>  command;
+
+  rw_ptr<Player>  target;
+
+};
 
 
 class
@@ -52,6 +63,8 @@ Player: public PlayerBase
   int  number_of_guards;
   int  number_of_magics;
 
+  BattleAction  action;
+
 public:
   Player() noexcept{}
 
@@ -59,6 +72,8 @@ public:
 
   bool  is_enemy() const noexcept{return kind == PlayerKind::enemy;}
   bool  is_hero() const noexcept{return kind == PlayerKind::hero;}
+
+  bool  is_actable() const noexcept{return hp;}
 
   void  set_side(Side&  own_side_, Side&  opposite_side_) noexcept;
 
@@ -69,6 +84,9 @@ public:
 
   rw_ptr<Side>  get_own_side()      const noexcept{return      own_side;}
   rw_ptr<Side>  get_opposite_side() const noexcept{return opposite_side;}
+
+  void  set_action(const BattleAction&  act) noexcept{action =act;}
+  const BattleAction&  get_action() const noexcept{return action;}
 
   int  get_hp_max() const noexcept{return hp_max;}
   int  get_hp() const noexcept{return hp;}

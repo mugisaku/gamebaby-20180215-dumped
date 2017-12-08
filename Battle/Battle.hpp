@@ -6,7 +6,7 @@
 #include"SystemData.hpp"
 #include"TemporaryData.hpp"
 #include"ReadOnlyData.hpp"
-#include"Battle_TemporaryData.hpp"
+#include"BattleTimeData.hpp"
 #include"SavedData.hpp"
 #include"Pointer.hpp"
 
@@ -23,8 +23,8 @@ void  start_stream_text(coreturn_t  ret) noexcept;
 
 void  start_battle(coreturn_t  ret) noexcept;
 
-void  terminate_action_choosing() noexcept;
-void  start_action_choosing(coreturn_t  ret, int  num) noexcept;
+void  terminate_action_making() noexcept;
+void  start_action_making(coreturn_t  ret) noexcept;
 
 void  start_action_processing(coreturn_t  ret) noexcept;
  

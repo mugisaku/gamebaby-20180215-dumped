@@ -59,21 +59,30 @@ coreturn_t
 ret_hunger;
 
 
-std::list<Action>
-action_list;
+std::list<rw_ptr<Player>>
+player_list;
 
 
-void  return_from_action_choosing(int  retval) noexcept;
+void  return_from_action_making(int  retval) noexcept;
+
+
+void
+prepare_to_start_action_processing() noexcept
+{
+  tmp::player_pointer = player_list.front();
+
+  tmp::action = tmp::player_pointer->get_action();
+
+  player_list.pop_front();
+}
 
 
 void
 return_from_action_processing(int  retval) noexcept
 {
-    if(action_list.size())
+    if(player_list.size())
     {
-      action = action_list.front();
-
-      action_list.pop_front();
+      prepare_to_start_action_processing();
 
       start_action_processing(return_from_action_processing);
     }
@@ -82,33 +91,60 @@ return_from_action_processing(int  retval) noexcept
     {
       clear_stream_text();
 
-      start_action_choosing(return_from_action_choosing,0);
+      tmp::player_pointer = make_rw(hero_side.players[0]);
+
+      start_action_making(return_from_action_making);
     }
 }
 
 
 void
-return_from_action_choosing(int  retval) noexcept
+return_from_action_making(int  retval) noexcept
 {
-  terminate_action_choosing();
+  terminate_action_making();
 
     if(retval == 0)
     {
-      current_player = make_rw(hero_side.players[0]);
+      auto  begin = &hero_side.players[0];
 
-      start_action_choosing(return_from_action_choosing,0);
+        if(tmp::player_pointer > begin)
+        {
+          --tmp::player_pointer;
+        }
+
+
+      start_action_making(return_from_action_making);
     }
 
   else
     if(retval == 1)
     {
-      action_list.emplace_back(action);
+      auto  end = &hero_side.players[Side::number_of_players];
 
-      action = action_list.front();
+      tmp::player_pointer->set_action(tmp::action);
 
-      action_list.pop_front();
+      player_list.emplace_back(tmp::player_pointer++);
 
-      start_action_processing(return_from_action_processing);
+REDO:
+        if(tmp::player_pointer >= end)
+        {
+          prepare_to_start_action_processing();
+
+          start_action_processing(return_from_action_processing);
+        }
+
+      else
+        if(tmp::player_pointer->is_actable())
+        {
+          start_action_making(return_from_action_making);
+        }
+
+      else
+        {
+          ++tmp::player_pointer;
+
+          goto REDO;
+        }
     }
 }
 
@@ -118,9 +154,9 @@ return_from_stream_text(int  retval) noexcept
 {
   clear_stream_text();
 
-  current_player = make_rw(hero_side.players[0]);
+  tmp::player_pointer = make_rw(hero_side.players[0]);
 
-  start_action_choosing(return_from_action_choosing,0);
+  start_action_making(return_from_action_making);
 }
 
 
@@ -149,8 +185,6 @@ start_battle(coreturn_t  ret) noexcept
         if(m)
         {
           pl->set_data(*m);
-
-m->print();
         }
 
 

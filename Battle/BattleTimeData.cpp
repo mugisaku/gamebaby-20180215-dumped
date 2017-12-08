@@ -1,4 +1,4 @@
-#include"Battle_TemporaryData.hpp"
+#include"BattleTimeData.hpp"
 
 
 namespace gmbb{
@@ -7,9 +7,10 @@ namespace gmbb{
 Side    hero_side;
 Side   enemy_side;
 
-rw_ptr<Player>  current_player;
-
-Action  action;
+namespace tmp{
+rw_ptr<Player>  player_pointer;
+BattleAction    action;
+}
 
 
 void

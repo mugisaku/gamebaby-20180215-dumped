@@ -1,9 +1,8 @@
-#ifndef Battle_TemporaryData_HPP
-#define Battle_TemporaryData_HPP
+#ifndef BattleTimeData_HPP
+#define BattleTimeData_HPP
 
 
 #include"BattlePlayer.hpp"
-#include"BattleAction.hpp"
 
 
 namespace gmbb{
@@ -12,9 +11,10 @@ namespace gmbb{
 extern Side    hero_side;
 extern Side   enemy_side;
 
-extern rw_ptr<Player>  current_player;
-
-extern Action  action;
+namespace tmp{
+extern rw_ptr<Player>  player_pointer;
+extern BattleAction    action        ;
+}
 
 
 void  clear_player_all() noexcept;
