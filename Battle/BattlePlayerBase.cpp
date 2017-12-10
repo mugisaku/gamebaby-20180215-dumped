@@ -1,4 +1,5 @@
 #include"BattlePlayerBase.hpp"
+#include"ReadOnlyData.hpp"
 
 
 namespace gmbb{
@@ -23,6 +24,28 @@ load(const char*  name_, const gbdn::list&  ls)
     for(auto&  v: ls.get_named_value("command_table").get_list())
     {
       cmd++->name = v.get_string().get_data();
+    }
+}
+
+
+void
+PlayerBase::
+refresh_command_table()
+{
+    for(auto&  dst: command_table.commands)
+    {
+        if(dst.name.size())
+        {
+            for(auto&  src: ro::command_table)
+            {
+                if(src.name == dst.name)
+                {
+                  dst = src;
+
+                  break;
+                }
+            }
+        }
     }
 }
 

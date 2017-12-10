@@ -2,7 +2,7 @@
 
 
 namespace gmbb{
-namespace system_data{
+namespace sys{
 
 
 GroupTask

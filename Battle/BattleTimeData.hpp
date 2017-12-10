@@ -2,18 +2,17 @@
 #define BattleTimeData_HPP
 
 
-#include"BattlePlayer.hpp"
+#include"BattleTeam.hpp"
 
 
 namespace gmbb{
 
 
-extern Side    hero_side;
-extern Side   enemy_side;
+extern BattleTeam    hero_team;
+extern BattleTeam   enemy_team;
 
 namespace tmp{
 extern rw_ptr<Player>  player_pointer;
-extern BattleAction    action        ;
 }
 
 

@@ -14,11 +14,11 @@ TargetKind
 {
   null,
   self,
-  one_of_own_side,
-  all_of_own_side,
-  one_of_opposite_side,
-  all_of_opposite_side,
-  all_of_both_side,
+  one_of_own_team,
+  all_of_own_team,
+  one_of_opposite_team,
+  all_of_opposite_team,
+  all_of_both_team,
 
 };
 

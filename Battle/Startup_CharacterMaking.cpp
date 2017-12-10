@@ -24,7 +24,7 @@ public:
   {
     offset += get_base_point();
 
-    dst.print("しゅじんこうの　クラスを　きめてください",offset,system_data::glset);
+    dst.print("しゅじんこうの　クラスを　きめてください",offset,sys::glset);
   }
 
 } message;

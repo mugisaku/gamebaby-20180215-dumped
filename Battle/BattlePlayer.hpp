@@ -19,18 +19,11 @@ PlayerKind
 };
 
 
-class Side;
+class BattleTeam;
 class Player;
 
 
-struct
-BattleAction
-{
-  ro_ptr<BattleCommand>  command;
-
-  rw_ptr<Player>  target;
-
-};
+constexpr uint32_t  alive_flag = 0x00001;
 
 
 class
@@ -48,8 +41,10 @@ Player: public PlayerBase
   } data;
 
 
-  rw_ptr<Side>       own_side;
-  rw_ptr<Side>  opposite_side;
+  rw_ptr<BattleTeam>       own_team;
+  rw_ptr<BattleTeam>  opposite_team;
+
+  uint32_t  state_flags=0;
 
   int  hp_max;
   int  mp_max;
@@ -63,7 +58,7 @@ Player: public PlayerBase
   int  number_of_guards;
   int  number_of_magics;
 
-  BattleAction  action;
+  int  current_command_index;
 
 public:
   Player() noexcept{}
@@ -75,18 +70,18 @@ public:
 
   bool  is_actable() const noexcept{return hp;}
 
-  void  set_side(Side&  own_side_, Side&  opposite_side_) noexcept;
+  void  set_team(BattleTeam&  own_team_, BattleTeam&  opposite_team_) noexcept;
 
   void  set_data(const Enemy&  ene) noexcept;
   void  set_data(       Hero&  hro) noexcept;
 
   void  unset_data() noexcept;
 
-  rw_ptr<Side>  get_own_side()      const noexcept{return      own_side;}
-  rw_ptr<Side>  get_opposite_side() const noexcept{return opposite_side;}
+  rw_ptr<BattleTeam>  get_own_team()      const noexcept{return      own_team;}
+  rw_ptr<BattleTeam>  get_opposite_team() const noexcept{return opposite_team;}
 
-  void  set_action(const BattleAction&  act) noexcept{action =act;}
-  const BattleAction&  get_action() const noexcept{return action;}
+  void  set_current_command(int  i) noexcept{current_command_index = i;}
+  const BattleCommand&  get_current_command() const noexcept{return command_table.commands[current_command_index];}
 
   int  get_hp_max() const noexcept{return hp_max;}
   int  get_hp() const noexcept{return hp;}
@@ -124,6 +119,8 @@ Side
   static constexpr int  number_of_players = 4;
 
   Player  players[number_of_players];
+
+  rw_ptr<Player>  get_alive_someone() noexcept;
 
 };
 

@@ -9,10 +9,10 @@ namespace gmbb{
 
 void
 Player::
-set_side(Side&  own_side_, Side&  opposite_side_) noexcept
+set_team(BattleTeam&  own_team_, BattleTeam&  opposite_team_) noexcept
 {
-  own_side      = &own_side_;
-  opposite_side = &opposite_side_;
+  own_team      = &own_team_;
+  opposite_team = &opposite_team_;
 }
 
 

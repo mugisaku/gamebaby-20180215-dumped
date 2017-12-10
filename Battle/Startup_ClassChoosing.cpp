@@ -20,7 +20,7 @@ render(Image&  dst, Point  point, int  index)
 {
   auto&  plb = ro::player_base_table[index];
 
-  dst.print(plb.get_name().data(),point,system_data::glset);
+  dst.print(plb.get_name().data(),point,sys::glset);
 }
 
 
@@ -38,7 +38,7 @@ public:
   {
     offset += get_base_point();
 
-    dst.print("しゅじんこうの　クラスを　きめてください",offset,system_data::glset);
+    dst.print("しゅじんこうの　クラスを　きめてください",offset,sys::glset);
   }
 
 } message;
@@ -65,18 +65,18 @@ public:
 
     const auto&  pl = tmp::player;
 
-    dst.print(sbuf("たいりょく　　　%2d",pl.get_body_strength()),offset           ,system_data::glset);
-//    dst.print(sbuf("せいしんりょく　%2d",get_pl.mind_strength()),offset.move_y(16),system_data::glset);
-    dst.print(sbuf("すばやさ　　　　%2d",pl.get_agility()      ),offset.move_y(16),system_data::glset);
-    dst.print(sbuf("しゅびりょく　　%2d",pl.get_defense()      ),offset.move_y(16),system_data::glset);
-//    dst.print(sbuf("ちりょく　　　　%2d",pl.get_intellect()    ),offset.move_y(16),system_data::glset);
+    dst.print(sbuf("たいりょく　　　%2d",pl.get_body_strength()),offset           ,sys::glset);
+//    dst.print(sbuf("せいしんりょく　%2d",get_pl.mind_strength()),offset.move_y(16),sys::glset);
+    dst.print(sbuf("すばやさ　　　　%2d",pl.get_agility()      ),offset.move_y(16),sys::glset);
+    dst.print(sbuf("しゅびりょく　　%2d",pl.get_defense()      ),offset.move_y(16),sys::glset);
+//    dst.print(sbuf("ちりょく　　　　%2d",pl.get_intellect()    ),offset.move_y(16),sys::glset);
 
     offset.x +=   8*12;
     offset.y  = y_base;
 
-    dst.print(sbuf("こうげき　%3d…かいすう　%2d",pl.get_attack_strength(),pl.get_number_of_attacks()),offset           ,system_data::glset);
-    dst.print(sbuf("ぼうぎょ　%3d…かいすう　%2d",pl.get_guard_strength(),pl.get_number_of_guards())  ,offset.move_y(16),system_data::glset);
-//    dst.print(sbuf("まほう　　%3d…かいすう　%2d",pl.get_magic_strength(),pl.get_number_of_magics())  ,offset.move_y(16),system_data::glset);
+    dst.print(sbuf("こうげき　%3d…かいすう　%2d",pl.get_attack_strength(),pl.get_number_of_attacks()),offset           ,sys::glset);
+    dst.print(sbuf("ぼうぎょ　%3d…かいすう　%2d",pl.get_guard_strength(),pl.get_number_of_guards())  ,offset.move_y(16),sys::glset);
+//    dst.print(sbuf("まほう　　%3d…かいすう　%2d",pl.get_magic_strength(),pl.get_number_of_magics())  ,offset.move_y(16),sys::glset);
   }
 
 } specs_window;
@@ -85,7 +85,7 @@ public:
 void
 step(Controller const&  ctrl) noexcept
 {
-    if(system_data::interval_timer.check(120,ctrl.get_time()))
+    if(sys::interval_timer.check(120,ctrl.get_time()))
     {
            if(ctrl.is_up_button_pressing()  ){menu_window.move_cursor_to_up()  ;}
       else if(ctrl.is_down_button_pressing()){menu_window.move_cursor_to_down();}
@@ -114,18 +114,18 @@ step(Controller const&  ctrl) noexcept
 void
 terminate_class_choosing() noexcept
 {
-  system_data::root_task.erase(message);
-  system_data::root_task.erase(menu_window);
-  system_data::root_task.erase(specs_window);
+  sys::root_task.erase(message);
+  sys::root_task.erase(menu_window);
+  sys::root_task.erase(specs_window);
 }
 
 
 void
 start_class_choosing(coreturn_t  ret) noexcept
 {
-  system_data::root_task.push(message);
-  system_data::root_task.push(menu_window);
-  system_data::root_task.push(specs_window);
+  sys::root_task.push(message);
+  sys::root_task.push(menu_window);
+  sys::root_task.push(specs_window);
 
   push_routine(label.pointer,step,ret);
 }

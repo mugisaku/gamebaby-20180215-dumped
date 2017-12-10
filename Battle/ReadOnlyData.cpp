@@ -111,6 +111,18 @@ load() noexcept
     {
       printf("%s is not found.\n",not_f.name);
     }
+
+
+    for(auto&  ene: enemy_table_entity)
+    {
+      ene.refresh_command_table();
+    }
+
+
+    for(auto&  plb: player_base_table_entity)
+    {
+      plb.refresh_command_table();
+    }
 }
 
 

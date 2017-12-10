@@ -100,6 +100,7 @@ set(BATTLE_SOURCES
   Battle/Startup_ClassChoosing.cpp
   Battle/Startup_NameMaking.cpp
   Battle/Battle.cpp
+  Battle/BattleTeam.cpp
   Battle/BattlePlayer.cpp
   Battle/BattlePlayerBase.cpp
   Battle/BattleEnemy.cpp

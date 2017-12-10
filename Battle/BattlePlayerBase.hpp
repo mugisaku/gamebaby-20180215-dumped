@@ -111,6 +111,8 @@ public:
 
   const CommandTable&  get_command_table() const noexcept{return command_table;}
 
+  void  refresh_command_table();
+
   void  load(const char*  name_, const gbdn::list&  ls);
 
   void  print() const noexcept;

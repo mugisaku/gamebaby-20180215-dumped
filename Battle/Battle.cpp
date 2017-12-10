@@ -37,13 +37,13 @@ public:
     StringBuffer  sbuf;
 
 
-    auto  pl = hero_side.players[index];
+    auto  pl = hero_team[index];
 
       if(pl)
       {
-        dst.print(pl.get_name().data(),offset,system_data::glset);
-        dst.print(sbuf("HP %4d",pl.get_hp()),offset.move_y(8),system_data::glset);
-        dst.print(sbuf("MP %4d",pl.get_mp()),offset.move_y(8),system_data::glset);
+        dst.print(pl.get_name().data(),offset,sys::glset);
+        dst.print(sbuf("HP %4d",pl.get_hp()),offset.move_y(8),sys::glset);
+        dst.print(sbuf("MP %4d",pl.get_mp()),offset.move_y(8),sys::glset);
       }
   }
 
@@ -71,8 +71,6 @@ prepare_to_start_action_processing() noexcept
 {
   tmp::player_pointer = player_list.front();
 
-  tmp::action = tmp::player_pointer->get_action();
-
   player_list.pop_front();
 }
 
@@ -91,7 +89,7 @@ return_from_action_processing(int  retval) noexcept
     {
       clear_stream_text();
 
-      tmp::player_pointer = make_rw(hero_side.players[0]);
+      tmp::player_pointer = make_rw(hero_team[0]);
 
       start_action_making(return_from_action_making);
     }
@@ -105,7 +103,7 @@ return_from_action_making(int  retval) noexcept
 
     if(retval == 0)
     {
-      auto  begin = &hero_side.players[0];
+      auto  begin = hero_team.begin();
 
         if(tmp::player_pointer > begin)
         {
@@ -119,9 +117,7 @@ return_from_action_making(int  retval) noexcept
   else
     if(retval == 1)
     {
-      auto  end = &hero_side.players[Side::number_of_players];
-
-      tmp::player_pointer->set_action(tmp::action);
+      auto  end = hero_team.end();
 
       player_list.emplace_back(tmp::player_pointer++);
 
@@ -154,7 +150,7 @@ return_from_stream_text(int  retval) noexcept
 {
   clear_stream_text();
 
-  tmp::player_pointer = make_rw(hero_side.players[0]);
+  tmp::player_pointer = make_rw(hero_team[0]);
 
   start_action_making(return_from_action_making);
 }
@@ -168,7 +164,7 @@ terminate_battle() noexcept
 {
     for(auto&  w: status_windows)
     {
-      system_data::root_task.erase(w);
+      sys::root_task.erase(w);
     }
 }
 
@@ -178,7 +174,7 @@ start_battle(coreturn_t  ret) noexcept
 {
   clear_player_all();
 
-  auto  pl = make_rw(hero_side.players[0]);
+  auto  pl = hero_team.begin();
 
     for(auto  m: sav::party.members)
     {
@@ -194,11 +190,11 @@ start_battle(coreturn_t  ret) noexcept
 
   ret_hunger = ret;
 
-  system_data::char_buffer.push("まものが　あらわれた");
+  sys::char_buffer.push("まものが　あらわれた");
 
     for(auto&  w: status_windows)
     {
-      system_data::root_task.push(w);
+      sys::root_task.push(w);
     }
 
 

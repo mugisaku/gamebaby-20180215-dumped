@@ -18,7 +18,7 @@ render(Image&  dst, Point  pt, int  index)
 {
   auto&  cmdtbl = tmp::player_pointer->get_command_table();
 
-  dst.print(cmdtbl.commands[index].name.data(),pt,system_data::glset);
+  dst.print(cmdtbl.commands[index].name.data(),pt,sys::glset);
 }
 
 
@@ -31,25 +31,14 @@ step(const Controller&  ctrl) noexcept
 {
     if(ctrl.is_p_button_pressing())
     {
-      auto&  table = tmp::player_pointer->get_command_table();
+      tmp::player_pointer->set_current_command(menu_window.get_item_index());
 
-      auto  i = menu_window.get_item_index();
+      auto&  cmd = tmp::player_pointer->get_current_command();
 
-      tmp::action.command = &table.commands[i];
-
-        if(i == 0)
+        if(cmd.effect_kind != EffectKind::null)
         {
-          tmp::action.target  = nullptr;
+          pop_routine(label.pointer,1);
         }
-
-      else
-        if(i == 1)
-        {
-          tmp::action.target  = nullptr;
-        }
-
-
-      pop_routine(label.pointer,1);
     }
 
   else
@@ -59,7 +48,7 @@ step(const Controller&  ctrl) noexcept
     }
 
   else
-    if(system_data::interval_timer.check(120,ctrl.get_time()))
+    if(sys::interval_timer.check(120,ctrl.get_time()))
     {
            if(ctrl.is_up_button_pressing()  ){menu_window.move_cursor_to_up();}
       else if(ctrl.is_down_button_pressing()){menu_window.move_cursor_to_down();}
@@ -73,17 +62,14 @@ step(const Controller&  ctrl) noexcept
 void
 terminate_action_making() noexcept
 {
-  system_data::root_task.erase(menu_window);
+  sys::root_task.erase(menu_window);
 }
 
 
 void
 start_action_making(coreturn_t  ret) noexcept
 {
-  tmp::action.command = nullptr;
-  tmp::action.target  = nullptr;
-
-  system_data::root_task.push(menu_window);
+  sys::root_task.push(menu_window);
 
   push_routine(label.pointer,step,ret);
 }

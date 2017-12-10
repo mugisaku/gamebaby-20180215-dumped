@@ -4,31 +4,40 @@
 namespace gmbb{
 
 
-Side    hero_side;
-Side   enemy_side;
+namespace{
+constexpr int  number_of_heroes  = 4;
+constexpr int  number_of_enemies = 6;
+
+Player
+players[number_of_heroes+number_of_enemies];
+}
+
+
+BattleTeam    hero_team(make_rw(players[               0]),number_of_heroes);
+BattleTeam   enemy_team(make_rw(players[number_of_heroes]),number_of_enemies);
+
 
 namespace tmp{
 rw_ptr<Player>  player_pointer;
-BattleAction    action;
 }
 
 
 void
 clear_player_all() noexcept
 {
-    for(auto&  pl: hero_side.players)
+    for(auto&  p: hero_team)
     {
-      pl.unset_data();
+      p.unset_data();
 
-      pl.set_side(hero_side,enemy_side);
+      p.set_team(hero_team,enemy_team);
     }
 
 
-    for(auto&  pl: enemy_side.players)
+    for(auto&  p: enemy_team)
     {
-      pl.unset_data();
+      p.unset_data();
 
-      pl.set_side(enemy_side,hero_side);
+      p.set_team(enemy_team,hero_team);
     }
 }
 

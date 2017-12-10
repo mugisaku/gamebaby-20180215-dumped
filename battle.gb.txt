@@ -4,28 +4,28 @@ command:{
   'たいあたり':{
     strength:12
       weight:4
-    target:one_of_opposite_side
+    target:one_of_opposite_team
     effect:attack
   }
 
   'はがねのつるぎ':{
     strength:36
       weight:6
-    target:one_of_opposite_side
+    target:one_of_opposite_team
     effect:attack
   }
 
   "てつのゆみや":{
     strength:80
        weight:14
-    target:one_of_opposite_side
+    target:one_of_opposite_team
     effect:attack
   }
 
   "たんけん":{
     strength:14
       weight:1
-    target:one_of_opposite_side
+    target:one_of_opposite_team
     effect:attack
   }
 }

@@ -41,7 +41,7 @@ public:
 
       for(auto  s: sc_buffer)
       {
-        dst.print(s,offset,system_data::glset);
+        dst.print(s,offset,sys::glset);
 
         offset.y += 16;
       }
@@ -55,7 +55,7 @@ step(const Controller&  ctrl) noexcept
 {
   auto  pressing = ctrl.is_p_button_pressing();
 
-    if(system_data::char_buffer.is_remaining())
+    if(sys::char_buffer.is_remaining())
     {
       auto  now = ctrl.get_time();
 
@@ -63,7 +63,7 @@ step(const Controller&  ctrl) noexcept
         {
           tmp::next_time = now+(pressing? 40:160);
 
-          auto  c = system_data::char_buffer.pop();
+          auto  c = sys::char_buffer.pop();
 
           sc_buffer.push(c);
         }
@@ -96,14 +96,14 @@ clear_stream_text() noexcept
 void
 terminate_stream_text() noexcept
 {
-  system_data::root_task.erase(comment_window);
+  sys::root_task.erase(comment_window);
 }
 
 
 void
 start_stream_text(coreturn_t  ret) noexcept
 {
-  system_data::root_task.push(comment_window);
+  sys::root_task.push(comment_window);
 
   push_routine(label.pointer,step,ret);
 }

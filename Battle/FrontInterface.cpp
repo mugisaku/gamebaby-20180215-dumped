@@ -12,7 +12,7 @@ namespace gmbb{
 const Image&
 update_screen() noexcept
 {
-  return screen::update(system_data::root_task);
+  return screen::update(sys::root_task);
 }
 
 
@@ -29,12 +29,12 @@ void
 initialize() noexcept
 {
 #ifdef EMSCRIPTEN
-        system_data::glset.load_from_file("small_font.gz");
-  system_data::large_glset.load_from_file("large_font.gz");
+        sys::glset.load_from_file("small_font.gz");
+  sys::large_glset.load_from_file("large_font.gz");
 
 #else
-        system_data::glset.load_from_file("/usr/local/share/gmbb/small_font.gz");
-  system_data::large_glset.load_from_file("/usr/local/share/gmbb/large_font.gz");
+        sys::glset.load_from_file("/usr/local/share/gmbb/small_font.gz");
+  sys::large_glset.load_from_file("/usr/local/share/gmbb/large_font.gz");
 #endif
 
 
@@ -52,7 +52,7 @@ step(Controller const&  ctrl)
 {
 //  process_event();
 
-  system_data::root_task.update();
+  sys::root_task.update();
 
   call_routine(ctrl);
 }
