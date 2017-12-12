@@ -13,6 +13,9 @@ namespace sav{
 extern Hero  hero_table[4];
 
 
+void  fullrecover_all_heroes() noexcept;
+
+
 struct
 Party
 {
@@ -21,6 +24,7 @@ Party
   rw_ptr<Hero>  members[max_number_of_members] = {0};
 
   int  number_of_members = 0;
+
 
 };
 

@@ -15,6 +15,13 @@ command:{
     effect:attack
   }
 
+  'かんしきがん':{
+    strength:0
+      weight:0
+    target:one_of_opposite_team
+    effect:appraise
+  }
+
   "てつのゆみや":{
     strength:80
        weight:14
@@ -33,16 +40,23 @@ command:{
 
 enemy:{
   "おばけがえる":{
-    body_strength:38
-    mind_strength:20
-          agility:12
-          defense:26
-        intellect:10
-               hp:300
+    body_strength:20
+    mind_strength:0
+          agility:8
+          defense:4
+        intellect:0
+               hp:80
                mp:0
     command_table:{
       "たいあたり"
     }
+  }
+}
+
+
+enemy_party:{
+  "test":{
+    "おばけがえる"
   }
 }
 
@@ -58,6 +72,7 @@ class:{
                       mp:0
     command_table:{
       "はがねのつるぎ"
+      "かんしきがん"
     }
   }
 

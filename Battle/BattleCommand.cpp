@@ -10,6 +10,7 @@ to_effect(const gbdn::string&  s) noexcept
 {
        if(s == gbdn::string_view("null"  )){return EffectKind::null;}
   else if(s == gbdn::string_view("attack")){return EffectKind::attack;}
+  else if(s == gbdn::string_view("appraise")){return EffectKind::appraise;}
 
   return EffectKind::null;
 }

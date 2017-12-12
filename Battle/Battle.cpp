@@ -76,6 +76,20 @@ prepare_to_start_action_processing() noexcept
 
 
 void
+return_from_text_stream_when_hero_defeated_enemy(int  retval) noexcept
+{
+  pop_routine(label.pointer);
+}
+
+
+void
+return_from_text_stream_when_hero_was_defeated_by_enemy(int  retval) noexcept
+{
+  pop_routine(label.pointer);
+}
+
+
+void
 return_from_action_processing(int  retval) noexcept
 {
     if(player_list.size())
@@ -87,11 +101,39 @@ return_from_action_processing(int  retval) noexcept
 
   else
     {
-      clear_stream_text();
+      int  n  =  hero_team.can_continue_to_battle()? 1:0;
+           n |= enemy_team.can_continue_to_battle()? 2:0;
 
-      tmp::player_pointer = make_rw(hero_team[0]);
+      constexpr int  battle_was_a_draw                    = 0;
+      constexpr int  hero_team_defeated_enemy_team        = 1;
+      constexpr int  hero_team_was_defeated_by_enemy_team = 2;
+      constexpr int  battle_is_continued                  = 3;
 
-      start_action_making(return_from_action_making);
+        switch(n)
+        {
+      case(hero_team_defeated_enemy_team):
+          clear_stream_text();
+
+          sys::char_buffer.push("てきを　しりぞけた");
+
+          start_stream_text(return_from_text_stream_when_hero_defeated_enemy);
+          break;
+      case(hero_team_was_defeated_by_enemy_team):
+      case(battle_was_a_draw):
+          clear_stream_text();
+
+          sys::char_buffer.push("てきに　やぶれた");
+
+          start_stream_text(return_from_text_stream_when_hero_was_defeated_by_enemy);
+          break;
+      case(battle_is_continued):
+          clear_stream_text();
+
+          tmp::player_pointer = make_rw(hero_team[0]);
+
+          start_action_making(return_from_action_making);
+          break;
+        }
     }
 }
 
@@ -170,7 +212,7 @@ terminate_battle() noexcept
 
 
 void
-start_battle(coreturn_t  ret) noexcept
+start_battle(coreturn_t  ret, const EnemyParty&  enep) noexcept
 {
   clear_player_all();
 
@@ -185,6 +227,14 @@ start_battle(coreturn_t  ret) noexcept
 
 
       ++pl;
+    }
+
+
+  auto  e = enemy_team.begin();
+
+    for(auto  ene: enep.enemies)
+    {
+      e++->set_data(*ene);
     }
 
 

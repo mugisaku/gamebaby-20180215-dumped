@@ -3,6 +3,7 @@
 
 
 #include"BattlePlayer.hpp"
+#include<vector>
 
 
 namespace gmbb{
@@ -22,9 +23,15 @@ public:
 
   Player&  operator[](int  i) const noexcept{return players[i];}
 
-  int  get_number_of_players() const noexcept{return number_of_players;}
+  using PlayerList = std::vector<rw_ptr<Player>>;
 
-  rw_ptr<Player>  get_alive_someone() noexcept;
+  bool  can_continue_to_battle() const noexcept;
+
+  int  get_number_of_alive_players() const noexcept;
+
+  int  collect_alive_players(PlayerList&  ls) const noexcept;
+
+  rw_ptr<Player>  pickup_target_player() const noexcept;
 
 
   rw_ptr<Player>  begin() const noexcept{return (players                  );}

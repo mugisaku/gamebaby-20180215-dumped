@@ -21,7 +21,9 @@ to_battle(int  retval) noexcept
 {
   terminate_party_making();
 
-  start_battle(nullptr);
+  sav::fullrecover_all_heroes();
+
+  start_battle(nullptr,ro::enemy_party_table[0]);
 }
 
 

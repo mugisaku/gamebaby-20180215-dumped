@@ -25,6 +25,9 @@ set_data(const Enemy&  ene) noexcept
   data.enemy = &ene;
 
   static_cast<PlayerBase&>(*this) = ene;
+
+  hp_max = hp;
+  mp_max = mp;
 }
 
 
@@ -37,6 +40,12 @@ set_data(Hero&  hro) noexcept
   data.hero = &hro;
 
   static_cast<PlayerBase&>(*this) = hro;
+
+  hp_max = hp                 ;
+           hp = hro.current_hp;
+
+  mp_max = mp                 ;
+           mp = hro.current_mp;
 }
 
 
@@ -128,6 +137,58 @@ update() noexcept
   number_of_attacks = calculate_number_of_attacks();
   number_of_guards = calculate_number_of_guards();
   number_of_magics = calculate_number_of_magics();
+}
+
+
+void
+Player::
+receive_hp_damage(int  v) noexcept
+{
+  hp -= v;
+
+    if(hp <= 0)
+    {
+      die();
+    }
+}
+
+
+void
+Player::
+receive_hp_recover(int  v) noexcept
+{
+  hp += v;
+
+    if(hp >= hp_max)
+    {
+      hp = hp_max;
+    }
+}
+
+
+void
+Player::
+receive_mp_damage(int  v) noexcept
+{
+  mp -= v;
+
+    if(mp < 0)
+    {
+      mp = 0;
+    }
+}
+
+
+void
+Player::
+receive_mp_recover(int  v) noexcept
+{
+  mp += v;
+
+    if(mp > mp_max)
+    {
+      mp = mp_max;
+    }
 }
 
 

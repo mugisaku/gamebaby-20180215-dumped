@@ -4,6 +4,7 @@
 
 #include"BattlePlayerBase.hpp"
 #include"BattleEnemy.hpp"
+#include"BattleEnemyParty.hpp"
 #include<vector>
 
 
@@ -17,6 +18,10 @@ player_base_table;
 
 extern const std::vector<Enemy>&
 enemy_table;
+
+
+extern const std::vector<EnemyParty>&
+enemy_party_table;
 
 
 extern const std::vector<BattleCommand>&

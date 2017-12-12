@@ -29,6 +29,8 @@ clear_player_all() noexcept
     {
       p.unset_data();
 
+      p.die();
+
       p.set_team(hero_team,enemy_team);
     }
 
@@ -36,6 +38,8 @@ clear_player_all() noexcept
     for(auto&  p: enemy_team)
     {
       p.unset_data();
+
+      p.die();
 
       p.set_team(enemy_team,hero_team);
     }

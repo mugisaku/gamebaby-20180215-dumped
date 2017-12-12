@@ -104,6 +104,7 @@ set(BATTLE_SOURCES
   Battle/BattlePlayer.cpp
   Battle/BattlePlayerBase.cpp
   Battle/BattleEnemy.cpp
+  Battle/BattleEnemyParty.cpp
   Battle/BattleCommand.cpp
   Battle/BattleTimeData.cpp
   Battle/Battle_StreamText.cpp
@@ -147,13 +148,13 @@ add_subdirectory(libgbdn)
 include_directories(./)
 include_directories(./libgbdn)
 include_directories(./Standard)
-include_directories(./TypeSystem)
+#include_directories(./TypeSystem)
 include_directories(/usr/include/SDL2)
-add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
-add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
+#add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
+#add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
 add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
-add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
-add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
+#add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
+#add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
 target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "gbdn")
 
 

@@ -69,6 +69,7 @@ public:
   bool  is_hero() const noexcept{return kind == PlayerKind::hero;}
 
   bool  is_actable() const noexcept{return hp;}
+  bool  is_alive() const noexcept{return hp;}
 
   void  set_team(BattleTeam&  own_team_, BattleTeam&  opposite_team_) noexcept;
 
@@ -109,6 +110,13 @@ public:
 
   void  replenish_hp() noexcept{hp = hp_max;}
   void  replenish_mp() noexcept{mp = mp_max;}
+
+  void  receive_hp_damage(int  v) noexcept;
+  void  receive_hp_recover(int  v) noexcept;
+  void  receive_mp_damage(int  v) noexcept;
+  void  receive_mp_recover(int  v) noexcept;
+
+  void  die() noexcept{hp = 0;}
 
 };
 

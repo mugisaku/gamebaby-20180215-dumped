@@ -21,6 +21,10 @@ std::vector<Enemy>
 enemy_table_entity;
 
 
+std::vector<EnemyParty>
+enemy_party_table_entity;
+
+
 template<typename  T>
 void
 read(const gbdn::list&  ls, std::vector<T>&  tbl)
@@ -51,6 +55,10 @@ player_base_table = player_base_table_entity;
 
 const std::vector<Enemy>&
 enemy_table = enemy_table_entity;
+
+
+const std::vector<EnemyParty>&
+enemy_party_table = enemy_party_table_entity;
 
 
 const std::vector<BattleCommand>&
@@ -95,6 +103,12 @@ load() noexcept
                 if((s == gbdn::string_view("enemy")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),enemy_table_entity);
+                }
+
+              else
+                if((s == gbdn::string_view("enemy_party")) && subv && subv->is_list())
+                {
+                  read(subv->get_list(),enemy_party_table_entity);
                 }
 
               else

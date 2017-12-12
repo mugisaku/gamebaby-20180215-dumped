@@ -29,6 +29,7 @@ EffectKind
   null,
   attack,
   guard_up,
+  appraise,
 
 };
 
