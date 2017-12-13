@@ -14,6 +14,10 @@ FixedString
 label("action processing");
 
 
+rw_ptr<Player>
+actor;
+
+
 struct
 ResultOfAttack
 {
@@ -31,7 +35,7 @@ get_result_of_attack(Player&  target) noexcept
   random_number::UniformDistribution  uni_dist;
   random_number::NormalDistribution  norm_dist;
 
-    for(int  n = 0;  n < tmp::player_pointer->get_number_of_attacks();  ++n)
+    for(int  n = 0;  n < actor->get_number_of_attacks();  ++n)
     {
         if(uni_dist(0,99) < 70)
         {
@@ -51,7 +55,7 @@ get_result_of_attack(Player&  target) noexcept
             }
 
 
-          auto  damage_point = tmp::player_pointer->get_attack_strength();
+          auto  damage_point = actor->get_attack_strength();
 
           res.damage_point += (damage_point > guard_point)? damage_point-guard_point:1;
         }
@@ -87,7 +91,7 @@ attack_process_list(
 {
 [](Player&  target)
 {
-  sys::char_buffer.push(sbuf("%sは　%sに こうげき！",tmp::player_pointer->get_name().data(),target.get_name().data()));
+  sys::char_buffer.push(sbuf("%sは　%sに こうげき！",actor->get_name().data(),target.get_name().data()));
   start_stream_text(nullptr);
 },
 [](Player&  target)
@@ -108,13 +112,18 @@ appraise_process_list(
 {
 [](Player&  target)
 {
-  sys::char_buffer.push(sbuf("%sは　%sを かんていした",tmp::player_pointer->get_name().data(),target.get_name().data()));
+  sys::char_buffer.push(sbuf("%sは　%sを かんていした",actor->get_name().data(),target.get_name().data()));
   start_stream_text(nullptr);
 },
 [](Player&  target)
 {
   sys::char_buffer.push(sbuf("HP %4d/%4d",target.get_hp(),target.get_hp_max()));
   sys::char_buffer.push(sbuf("MP %4d/%4d",target.get_mp(),target.get_mp_max()));
+  sys::char_buffer.push(sbuf("たいりょく %3d",target.get_body_strength()));
+  sys::char_buffer.push(sbuf("せいしんりょく %3d",target.get_mind_strength()));
+  sys::char_buffer.push(sbuf("すばやさ %3d",target.get_agility()));
+  sys::char_buffer.push(sbuf("ちせい %3d",target.get_intellect()));
+  sys::char_buffer.push(sbuf("しゅびりょく %3d",target.get_defense()));
   start_stream_text(nullptr);
 },
 });
@@ -135,7 +144,7 @@ step_guard_up(Player&  target) noexcept
      switch(phase_count)
     {
   case(0):
-      sys::char_buffer.push(sbuf("%sは　ぼうぎょを　かためた",tmp::player_pointer->get_name().data()));
+      sys::char_buffer.push(sbuf("%sは　ぼうぎょを　かためた",actor->get_name().data()));
       start_stream_text(return_from_some_routine);
       break;
     }
@@ -153,7 +162,7 @@ RESTART:
 
         if(target_it != target_it_end)
         {
-          process(**target_it);
+          process(*target_it);
         }
 
       else
@@ -183,11 +192,11 @@ QUIT:
 
 
 void
-start_action_processing(coreturn_t  ret) noexcept
+start_action_processing(coreturn_t  ret, Player&  actor_) noexcept
 {
-  auto&  curpl = *tmp::player_pointer;
+  actor = make_rw(actor_);
 
-  auto&  cmd = curpl.get_current_command();
+  auto&  cmd = actor->get_current_command();
 
   target_player_list.resize(0);
 
@@ -196,23 +205,23 @@ start_action_processing(coreturn_t  ret) noexcept
   case(TargetKind::null):
       break;
   case(TargetKind::self):
-      target_player_list.emplace_back(make_rw(curpl));
+      target_player_list.emplace_back(*actor);
       break;
   case(TargetKind::one_of_own_team):
-      target_player_list.emplace_back(curpl.get_own_team()->pickup_target_player());
+      target_player_list.emplace_back(*actor->get_own_team()->pickup_target_player());
       break;
   case(TargetKind::all_of_own_team):
-      curpl.get_own_team()->collect_alive_players(target_player_list);
+      actor->get_own_team()->collect_alive_players(target_player_list);
       break;
   case(TargetKind::one_of_opposite_team):
-      target_player_list.emplace_back(curpl.get_opposite_team()->pickup_target_player());
+      target_player_list.emplace_back(*actor->get_opposite_team()->pickup_target_player());
       break;
   case(TargetKind::all_of_opposite_team):
-      curpl.get_opposite_team()->collect_alive_players(target_player_list);
+      actor->get_opposite_team()->collect_alive_players(target_player_list);
       break;
   case(TargetKind::all_of_both_team):
-           curpl.get_own_team()->collect_alive_players(target_player_list);
-      curpl.get_opposite_team()->collect_alive_players(target_player_list);
+           actor->get_own_team()->collect_alive_players(target_player_list);
+      actor->get_opposite_team()->collect_alive_players(target_player_list);
       break;
     }
 

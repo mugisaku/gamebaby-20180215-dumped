@@ -7,6 +7,18 @@ namespace gmbb{
 
 
 
+Player&
+Player::
+get_default()
+{
+  static Player  dummy;
+
+  return dummy;
+}
+
+
+
+
 void
 Player::
 set_team(BattleTeam&  own_team_, BattleTeam&  opposite_team_) noexcept
@@ -28,6 +40,8 @@ set_data(const Enemy&  ene) noexcept
 
   hp_max = hp;
   mp_max = mp;
+
+  update();
 }
 
 
@@ -46,6 +60,8 @@ set_data(Hero&  hro) noexcept
 
   mp_max = mp                 ;
            mp = hro.current_mp;
+
+  update();
 }
 
 
@@ -57,22 +73,6 @@ unset_data() noexcept
 }
 
 
-
-
-int
-Player::
-calculate_hp_max() const noexcept
-{
-  return 20+(body_strength*2)+(expset.damage/16);
-}
-
-
-int
-Player::
-calculate_mp_max() const noexcept
-{
-  return(mind_strength*2)+(expset.magic/16);
-}
 
 
 int
@@ -127,9 +127,6 @@ void
 Player::
 update() noexcept
 {
-  hp_max = calculate_hp_max();
-  mp_max = calculate_mp_max();
-
   attack_strength = calculate_attack_strength();
   guard_strength = calculate_guard_strength();
   magic_strength = calculate_magic_strength();

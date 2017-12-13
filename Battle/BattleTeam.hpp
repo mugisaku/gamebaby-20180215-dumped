@@ -3,6 +3,7 @@
 
 
 #include"BattlePlayer.hpp"
+#include"ReferenceWrapper.hpp"
 #include<vector>
 
 
@@ -23,7 +24,7 @@ public:
 
   Player&  operator[](int  i) const noexcept{return players[i];}
 
-  using PlayerList = std::vector<rw_ptr<Player>>;
+  using PlayerList = std::vector<reference_wrapper<Player>>;
 
   bool  can_continue_to_battle() const noexcept;
 

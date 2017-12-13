@@ -21,6 +21,10 @@ SawtoothCharacterBuffer
 sc_buffer(cols,rows);
 
 
+bool
+stopping;
+
+
 class
 CommentaryWindow: public Window
 {
@@ -57,15 +61,36 @@ step(const Controller&  ctrl) noexcept
 
     if(sys::char_buffer.is_remaining())
     {
-      auto  now = ctrl.get_time();
-
-        if(now >= tmp::next_time)
+        if(stopping)
         {
-          tmp::next_time = now+(pressing? 40:160);
+            if(pressing)
+            {
+              sc_buffer.rotate();
 
-          auto  c = sys::char_buffer.pop();
+              stopping = false;
+            }
+        }
 
-          sc_buffer.push(c);
+      else
+        {
+          auto  now = ctrl.get_time();
+
+            if(now >= tmp::next_time)
+            {
+              tmp::next_time = now+40;
+
+                if(sc_buffer.is_full())
+                {
+                  stopping = true;
+                }
+
+              else
+                {
+                  auto  c = sys::char_buffer.pop();
+
+                  sc_buffer.push(c);
+                }
+            }
         }
     }
 

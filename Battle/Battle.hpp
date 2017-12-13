@@ -26,7 +26,7 @@ void  start_battle(coreturn_t  ret, const EnemyParty&  enep) noexcept;
 void  terminate_action_making() noexcept;
 void  start_action_making(coreturn_t  ret) noexcept;
 
-void  start_action_processing(coreturn_t  ret) noexcept;
+void  start_action_processing(coreturn_t  ret, Player&  actor_) noexcept;
  
 
 }

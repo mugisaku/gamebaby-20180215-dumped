@@ -44,7 +44,7 @@ collect_alive_players(PlayerList&  ls) const noexcept
     {
         if(pl.is_alive())
         {
-          ls.emplace_back(make_rw(pl));
+          ls.emplace_back(make_ref(pl));
 
           ++n;
         }

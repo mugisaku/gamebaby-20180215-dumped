@@ -16,7 +16,7 @@ label("action choosing");
 void
 render(Image&  dst, Point  pt, int  index)
 {
-  auto&  cmdtbl = tmp::player_pointer->get_command_table();
+  auto&  cmdtbl = get_current_player().get_command_table();
 
   dst.print(cmdtbl.commands[index].name.data(),pt,sys::glset);
 }
@@ -31,9 +31,9 @@ step(const Controller&  ctrl) noexcept
 {
     if(ctrl.is_p_button_pressing())
     {
-      tmp::player_pointer->set_current_command(menu_window.get_item_index());
+      get_current_player().set_current_command(menu_window.get_item_index());
 
-      auto&  cmd = tmp::player_pointer->get_current_command();
+      auto&  cmd = get_current_player().get_current_command();
 
         if(cmd.effect_kind != EffectKind::null)
         {

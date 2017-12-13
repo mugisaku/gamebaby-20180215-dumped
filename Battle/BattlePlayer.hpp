@@ -26,6 +26,16 @@ class Player;
 constexpr uint32_t  alive_flag = 0x00001;
 
 
+enum class
+OperationStyle
+{
+  manual,
+  automatic,
+//  semi_automatic,
+  
+};
+
+
 class
 Player: public PlayerBase
 {
@@ -46,6 +56,8 @@ Player: public PlayerBase
 
   uint32_t  state_flags=0;
 
+  OperationStyle  operation_style=OperationStyle::manual;
+
   int  hp_max;
   int  mp_max;
 
@@ -61,6 +73,8 @@ Player: public PlayerBase
   int  current_command_index;
 
 public:
+  static Player&  get_default();
+
   Player() noexcept{}
 
   operator bool() const noexcept{return kind != PlayerKind::null;}
@@ -84,6 +98,9 @@ public:
   void  set_current_command(int  i) noexcept{current_command_index = i;}
   const BattleCommand&  get_current_command() const noexcept{return command_table.commands[current_command_index];}
 
+  void  set_operation_style(OperationStyle  op) noexcept{operation_style = op;}
+  OperationStyle  get_operation_style() const noexcept{return operation_style;}
+
   int  get_hp_max() const noexcept{return hp_max;}
   int  get_hp() const noexcept{return hp;}
   int  get_mp_max() const noexcept{return mp_max;}
@@ -98,8 +115,6 @@ public:
   int  get_number_of_guards() const noexcept{return number_of_guards;}
   int  get_number_of_magics() const noexcept{return number_of_magics;}
 
-  int  calculate_hp_max() const noexcept;
-  int  calculate_mp_max() const noexcept;
   int  calculate_attack_strength() const noexcept;
   int  calculate_guard_strength() const noexcept;
   int  calculate_magic_strength() const noexcept;
