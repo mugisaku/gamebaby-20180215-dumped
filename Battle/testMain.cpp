@@ -23,10 +23,6 @@ Palette
 palette;
 
 
-Controller
-ctrl;
-
-
 template<typename  T>
 void
 write(uint8_t*&  ptr, int  pitch, uint32_t  v)
@@ -214,13 +210,13 @@ main_loop()
 
     if(now >= next)
     {
-      step(ctrl);
+      step();
 
       next += interval;
 
         while(now >= next)
         {
-          step(ctrl);
+          step();
 
           next += interval;
         }

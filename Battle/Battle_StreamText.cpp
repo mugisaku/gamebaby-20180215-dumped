@@ -9,10 +9,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("battle_starem_text");
-
-
 constexpr int  cols = 25;
 constexpr int  rows =  4;
 
@@ -55,7 +51,7 @@ public:
 
 
 void
-step(const Controller&  ctrl) noexcept
+step() noexcept
 {
   auto  pressing = ctrl.is_p_button_pressing();
 
@@ -98,9 +94,16 @@ step(const Controller&  ctrl) noexcept
     {
         if(pressing)
         {
-          pop_routine(label.pointer);
+          coprocesses::pop();
         }
     }
+}
+
+
+void
+initialize() noexcept
+{
+  sys::root_task.push(comment_window);
 }
 
 
@@ -125,13 +128,8 @@ terminate_stream_text() noexcept
 }
 
 
-void
-start_stream_text(coreturn_t  ret) noexcept
-{
-  sys::root_task.push(comment_window);
-
-  push_routine(label.pointer,step,ret);
-}
+const coprocess
+coprocess_of_stream_text("stream text",initialize,step);
 
 
 }

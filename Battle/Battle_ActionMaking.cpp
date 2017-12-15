@@ -9,10 +9,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("action choosing");
-
-
 void
 render(Image&  dst, Point  pt, int  index)
 {
@@ -27,7 +23,7 @@ menu_window(Menu(8*10,16,4,render),1,rect_of_versatile_window);
 
 
 void
-step(const Controller&  ctrl) noexcept
+step() noexcept
 {
     if(ctrl.is_p_button_pressing())
     {
@@ -37,14 +33,14 @@ step(const Controller&  ctrl) noexcept
 
         if(cmd.effect_kind != EffectKind::null)
         {
-          pop_routine(label.pointer,1);
+          coprocesses::pop(1);
         }
     }
 
   else
     if(ctrl.is_n_button_pressing())
     {
-      pop_routine(label.pointer,0);
+      coprocesses::pop(0);
     }
 
   else
@@ -52,6 +48,26 @@ step(const Controller&  ctrl) noexcept
     {
            if(ctrl.is_up_button_pressing()  ){menu_window.move_cursor_to_up();}
       else if(ctrl.is_down_button_pressing()){menu_window.move_cursor_to_down();}
+    }
+}
+
+
+void
+initialize() noexcept
+{
+  auto&  pl = get_current_player();
+
+    if(pl.is_manual())
+    {
+      sys::root_task.push(menu_window);
+    }
+
+  else
+    if(pl.is_automatic())
+    {
+      pl.set_current_command(0);
+
+      coprocesses::pop();
     }
 }
 
@@ -66,13 +82,8 @@ terminate_action_making() noexcept
 }
 
 
-void
-start_action_making(coreturn_t  ret) noexcept
-{
-  sys::root_task.push(menu_window);
-
-  push_routine(label.pointer,step,ret);
-}
+const coprocess
+coprocess_of_action_making("action making",initialize,step);
 
 
 }

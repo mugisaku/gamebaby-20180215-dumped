@@ -13,7 +13,7 @@ const Image&  update_screen() noexcept;
 
 void  initialize() noexcept;
 
-void  step(Controller const&  ctrl);
+void  step();
 
 
 }

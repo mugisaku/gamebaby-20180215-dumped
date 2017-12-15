@@ -82,9 +82,7 @@ set(GAME_SOURCES
 
 
 set(TS_SOURCES
-  TypeSystem/ts_Value.cpp
-  TypeSystem/ts_Object.cpp
-  TypeSystem/ts_i8_type.cpp
+  TypeSystem/Memory.cpp
 )
 
 
@@ -119,6 +117,7 @@ set(STANDARD_SOURCES
   Standard/gmbb_unicode.cpp
   Standard/gmbb_environment.cpp
   Standard/gmbb_RandomNumber.cpp
+  Standard/gmbb_Controller.cpp
   Standard/gmbb_LineMaker.cpp
   Standard/gmbb_Routine.cpp
   Standard/gmbb_Task.cpp
@@ -150,7 +149,7 @@ include_directories(./libgbdn)
 include_directories(./Standard)
 #include_directories(./TypeSystem)
 include_directories(/usr/include/SDL2)
-#add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
+add_executable("testTS${EXECUTABLE_EXTENSION}" TypeSystem/testTS.cpp ${TS_SOURCES})
 #add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
 add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
 #add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})

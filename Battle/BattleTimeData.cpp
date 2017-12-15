@@ -39,15 +39,36 @@ rewind_player_iterator() noexcept
 
 
 bool
+seek_first_actable_player() noexcept
+{
+  rewind_player_iterator();
+
+    if(get_current_player().is_actable())
+    {
+      return true;
+    }
+
+
+  return seek_next_actable_player();
+}
+
+
+bool
 seek_previous_actable_player() noexcept
 {
-    while(player_iterator != std::begin(players))
+    if(player_iterator != std::begin(players))
     {
       --player_iterator;
 
-        if(player_iterator->is_actable())
+        while(player_iterator != std::begin(players))
         {
-          return true;
+            if(player_iterator->is_actable())
+            {
+              return true;
+            }
+
+
+          --player_iterator;
         }
     }
 
@@ -59,15 +80,20 @@ seek_previous_actable_player() noexcept
 bool
 seek_next_actable_player() noexcept
 {
-    while(player_iterator != std::end(players))
+    if(player_iterator != std::end(players))
     {
-        if(player_iterator->is_actable())
-        {
-          return true;
-        }
-
-
       ++player_iterator;
+
+        while(player_iterator != std::end(players))
+        {
+            if(player_iterator->is_actable())
+            {
+              return true;
+            }
+
+
+          ++player_iterator;
+        }
     }
 
 
@@ -76,13 +102,13 @@ seek_next_actable_player() noexcept
 
 
 void
-collect_actable_player(std::vector<reference_wrapper<Player>>&  buf) noexcept
+collect_actable_player(std::vector<PlayerReference>&  buf) noexcept
 {
     for(auto&  pl: players)
     {
         if(pl.is_actable())
         {
-          buf.emplace_back(make_ref(pl));
+          buf.emplace_back(pl);
         }
     }
 }

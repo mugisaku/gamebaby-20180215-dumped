@@ -19,14 +19,16 @@ rect_of_versatile_window;
 
 
 void  clear_stream_text(               ) noexcept;
-void  start_stream_text(coreturn_t  ret) noexcept;
+extern const coprocess  coprocess_of_stream_text;
 
-void  start_battle(coreturn_t  ret, const EnemyParty&  enep) noexcept;
+extern const coprocess  coprocess_of_battle;
+
 
 void  terminate_action_making() noexcept;
-void  start_action_making(coreturn_t  ret) noexcept;
+extern const coprocess  coprocess_of_action_making;
 
-void  start_action_processing(coreturn_t  ret, Player&  actor_) noexcept;
+
+extern const coprocess  coprocess_of_action_processing;
  
 
 }

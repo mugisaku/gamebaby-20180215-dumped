@@ -73,8 +73,6 @@ Player: public PlayerBase
   int  current_command_index;
 
 public:
-  static Player&  get_default();
-
   Player() noexcept{}
 
   operator bool() const noexcept{return kind != PlayerKind::null;}
@@ -100,6 +98,9 @@ public:
 
   void  set_operation_style(OperationStyle  op) noexcept{operation_style = op;}
   OperationStyle  get_operation_style() const noexcept{return operation_style;}
+
+  bool  is_manual() const noexcept{return operation_style == OperationStyle::manual;}
+  bool  is_automatic() const noexcept{return operation_style == OperationStyle::automatic;}
 
   int  get_hp_max() const noexcept{return hp_max;}
   int  get_hp() const noexcept{return hp;}
@@ -136,14 +137,27 @@ public:
 };
 
 
-struct
-Side
+class
+PlayerReference
 {
-  static constexpr int  number_of_players = 4;
+  static Player  default_entity;
 
-  Player  players[number_of_players];
+  Player*  pointer;
 
-  rw_ptr<Player>  get_alive_someone() noexcept;
+public:
+  PlayerReference(           ) noexcept: pointer(&default_entity){}
+  PlayerReference(Player&  pl) noexcept: pointer(&pl){}
+
+  PlayerReference&  operator=(Player&  pl) noexcept
+  {
+    pointer = &pl;
+
+    return *this;
+  }
+
+  Player&  get() const noexcept{return *pointer;}
+
+  operator Player&() const noexcept{return *pointer;}
 
 };
 

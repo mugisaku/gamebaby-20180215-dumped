@@ -6,23 +6,39 @@
 
 
 namespace gmbb{
+namespace coprocesses{
 
 
 namespace{
 
 
-struct
-Routine
+class
+element
 {
-  const ro_ptr<char>  label;
+  const char*  m_label;
 
-    costep_t const    costep;
-  coreturn_t const  coreturn;
+  callback      m_step;
+  coreturn  m_coreturn;
 
-  constexpr Routine(ro_ptr<char>  label_, costep_t  st, coreturn_t  ret) noexcept:
-  label(label_),
-  costep(st),
-  coreturn(ret){}
+public:
+  element(const char*  label, callback  step) noexcept:
+  m_label(label),
+  m_coreturn(nullptr),
+  m_step(step){}
+
+  void  step() noexcept{m_step();}
+
+  const char*  get_label() const noexcept{return m_label;}
+
+  void  set_coreturn(coreturn  ret) noexcept{m_coreturn = ret;}
+
+  void  do_return(int  v) noexcept
+  {
+      if(m_coreturn)
+      {
+        m_coreturn(v);
+      }
+  }
 
 };
 
@@ -35,12 +51,16 @@ uint32_t
 flags;
 
 
+std::vector<element>
+stack({element("base",[](){})});
+
+
 int
 returned_value;
 
 
-std::vector<Routine>
-stack;
+bool
+need_to_pop;
 
 
 }
@@ -49,57 +69,55 @@ stack;
 
 
 void
-push_routine(ro_ptr<char>  label, costep_t  st, coreturn_t  ret) noexcept
+push(coreturn  ret, const coprocess&  proc) noexcept
 {
-  stack.emplace_back(label,st,ret);
-
-  wait_until_button_is_released();
-}
-
-
-void
-pop_routine(ro_ptr<char>  label) noexcept
-{
-  static FixedString  base("[pop_routine error]");
-
-
-    if(stack.size())
+    if(!need_to_pop)
     {
-      auto  r = stack.back();
+      stack.back().set_coreturn(ret);
 
-        if(r.label == label)
-        {
-          auto  ret = r.coreturn;
+      stack.emplace_back(proc.get_label(),proc.get_step());
 
-          stack.pop_back();
+      proc.initialize();
 
-          wait_until_button_is_released();
-
-            if(ret)
-            {
-              ret(returned_value);
-            }
-        }
-
-      else
-        {
-          printf("%s %s != %s",base.pointer,r.label,label);
-        }
+      wait_until_button_is_released();
     }
 
   else
     {
-      printf("%s has no stack in %s from %s\n",base.pointer,label);
+      printf("popが内部実行されるまで、pushできない\n");
     }
 }
 
 
 void
-pop_routine(ro_ptr<char>  label, int  v) noexcept
+pop() noexcept
 {
-  returned_value = v;
+    if(!need_to_pop)
+    {
+      need_to_pop = true;
+    }
 
-  pop_routine(label);
+  else
+    {
+      printf("連続でpopはできない\n");
+    }
+}
+
+
+void
+pop(int  v) noexcept
+{
+    if(!need_to_pop)
+    {
+      returned_value = v;
+
+      need_to_pop = true;
+    }
+
+  else
+    {
+      printf("連続でpopはできない\n");
+    }
 }
 
 
@@ -111,28 +129,38 @@ wait_until_button_is_released() noexcept
 
 
 void
-call_routine(Controller const&  ctrl) noexcept
+call() noexcept
 {
-  flags &= ctrl.get();
-
-    if(!(flags&key_flags))
+    if(need_to_pop)
     {
-        if(stack.size())
+        if(stack.size() <= 1)
         {
-          stack.back().costep(ctrl);
+          printf("これ以上のpopはできない\n");
         }
 
       else
         {
-          printf("[call_routine error] have no stack\n");
+          stack.pop_back();
+
+          need_to_pop = false;
+
+          stack.back().do_return(returned_value);
         }
+    }
+
+
+  flags &= ctrl.get();
+
+    if(!(flags&key_flags))
+    {
+      stack.back().step();
     }
 }
 
 
 
 
-}
+}}
 
 
 

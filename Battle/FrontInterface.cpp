@@ -23,7 +23,7 @@ to_battle(int  retval) noexcept
 
   sav::fullrecover_all_heroes();
 
-  start_battle(nullptr,ro::enemy_party_table[0]);
+  coprocesses::push(nullptr,coprocess_of_battle);
 }
 
 
@@ -45,18 +45,18 @@ initialize() noexcept
   screen::enable_render();
   screen::set_fill_color(black);
 
-  start_party_making(to_battle);
+  coprocesses::push(to_battle,coprocess_of_party_making);
 }
 
 
 void
-step(Controller const&  ctrl)
+step()
 {
 //  process_event();
 
   sys::root_task.update();
 
-  call_routine(ctrl);
+  coprocesses::call();
 }
 
 

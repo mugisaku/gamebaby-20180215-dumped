@@ -10,10 +10,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("character making");
-
-
 class
 Message: public Task
 {
@@ -30,19 +26,10 @@ public:
 } message;
 
 
-coreturn_t
-ret_hunger;
-
-
 void
 return_from_name_making(int  retval) noexcept
 {
   terminate_name_making();
-
-    if(ret_hunger)
-    {
-      ret_hunger(retval);
-    }
 }
 
 
@@ -51,7 +38,14 @@ return_from_class_choosing(int  retval) noexcept
 {
   terminate_class_choosing();
 
-  start_name_making(return_from_name_making);
+  coprocesses::push(return_from_name_making,coprocess_of_name_making);
+}
+
+
+void
+initialize() noexcept
+{
+  coprocesses::push(return_from_class_choosing,coprocess_of_class_choosing);
 }
 
 
@@ -65,13 +59,8 @@ terminate_character_making() noexcept
 }
 
 
-void
-start_character_making(coreturn_t  ret, int  number) noexcept
-{
-  ret_hunger = ret;
-
-  start_class_choosing(return_from_class_choosing);
-}
+const coprocess
+coprocess_of_character_making("character_making",initialize,nullptr);
 
 
 }

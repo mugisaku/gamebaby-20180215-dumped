@@ -70,6 +70,9 @@ public:
 };
 
 
+extern Controller  ctrl;
+
+
 }
 
 

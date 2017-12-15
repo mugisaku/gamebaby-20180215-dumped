@@ -11,10 +11,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("class choosing");
-
-
 void
 render(Image&  dst, Point  point, int  index)
 {
@@ -83,7 +79,7 @@ public:
 
 
 void
-step(Controller const&  ctrl) noexcept
+step() noexcept
 {
     if(sys::interval_timer.check(120,ctrl.get_time()))
     {
@@ -103,8 +99,17 @@ step(Controller const&  ctrl) noexcept
       tmp::player.replenish_hp();
       tmp::player.replenish_mp();
 
-      pop_routine(label.pointer);
+      coprocesses::pop();
     }
+}
+
+
+void
+initialize() noexcept
+{
+  sys::root_task.push(message);
+  sys::root_task.push(menu_window);
+  sys::root_task.push(specs_window);
 }
 
 
@@ -120,15 +125,8 @@ terminate_class_choosing() noexcept
 }
 
 
-void
-start_class_choosing(coreturn_t  ret) noexcept
-{
-  sys::root_task.push(message);
-  sys::root_task.push(menu_window);
-  sys::root_task.push(specs_window);
-
-  push_routine(label.pointer,step,ret);
-}
+const coprocess
+coprocess_of_class_choosing("class_making",initialize,step);
 
 
 }

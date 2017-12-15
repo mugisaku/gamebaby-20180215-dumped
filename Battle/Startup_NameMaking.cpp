@@ -10,10 +10,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("name making");
-
-
 const char16_t* const
 hiragana_table[] =
 {
@@ -144,7 +140,7 @@ get() noexcept
 
 
 void
-step(Controller const&  ctrl) noexcept
+step() noexcept
 {
   static bool  lock;
 
@@ -207,7 +203,7 @@ step(Controller const&  ctrl) noexcept
       else
         if(tmp::name_buffer.get_length() > 1)
         {
-          pop_routine(label.pointer);
+          coprocesses::pop();
         }
     }
 
@@ -215,6 +211,19 @@ step(Controller const&  ctrl) noexcept
     {
       lock = false;
     }
+}
+
+
+void
+initialize() noexcept
+{
+  cursor = Point(10,0);
+
+  message.too_short = false;
+
+  sys::root_task.push(character_window);
+  sys::root_task.push(     name_window);
+  sys::root_task.push(         message);
 }
 
 
@@ -230,19 +239,8 @@ terminate_name_making() noexcept
 }
 
 
-void
-start_name_making(coreturn_t  ret) noexcept
-{
-  cursor = Point(10,0);
-
-  message.too_short = false;
-
-  sys::root_task.push(character_window);
-  sys::root_task.push(     name_window);
-  sys::root_task.push(         message);
-
-  push_routine(label.pointer,step,ret);
-}
+const coprocess
+coprocess_of_name_making("name making",initialize,step);
 
 
 }

@@ -10,18 +10,55 @@
 namespace gmbb{
 
 
-using   costep_t = void  (*)(Controller const&  ctrl);
-using coreturn_t = void  (*)(int  value);
+namespace coprocesses{
 
 
-void  push_routine(ro_ptr<char>  label, costep_t  st, coreturn_t  ret=nullptr) noexcept;
+using coreturn = void  (*)(int  value);
+using callback = void  (*)();
 
-void   pop_routine(ro_ptr<char>  label        ) noexcept;
-void   pop_routine(ro_ptr<char>  label, int  v) noexcept;
+
+class
+coprocess
+{
+  const char*  m_label="";
+
+  callback  m_initialize=nullptr;
+  callback        m_step=nullptr;
+
+public:
+  coprocess(const char*  label, callback  init, callback  step) noexcept:
+  m_label(label),
+  m_initialize(init),
+  m_step(step){}
+
+  const char*  get_label() const noexcept{return m_label;}
+  callback      get_step() const noexcept{return m_step;}
+
+  void  initialize() const noexcept
+  {
+      if(m_initialize)
+      {
+        m_initialize();
+      }
+  }
+
+};
+
+
+void  push(coreturn  ret, const coprocess&  proc) noexcept;
+
+void   pop(      ) noexcept;
+void   pop(int  v) noexcept;
 
 void  wait_until_button_is_released() noexcept;
 
-void  call_routine(Controller const&  ctrl) noexcept;
+void  call() noexcept;
+
+
+}
+
+
+using coprocesses::coprocess;
 
 
 }

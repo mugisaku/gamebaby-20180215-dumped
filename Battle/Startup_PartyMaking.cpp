@@ -11,14 +11,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("party making");
-
-
-coreturn_t
-ret_hunger;
-
-
 void
 return_from_character_making(int  retval) noexcept
 {
@@ -34,11 +26,13 @@ return_from_character_making(int  retval) noexcept
   sav::party.members[0] = make_rw(h);
 
   sav::party.number_of_members = 1;
+}
 
-    if(ret_hunger)
-    {
-      ret_hunger(retval);
-    }
+
+void
+initialize() noexcept
+{
+  coprocesses::push(return_from_character_making,coprocess_of_character_making);
 }
 
 
@@ -51,13 +45,8 @@ terminate_party_making() noexcept
 }
 
 
-void
-start_party_making(coreturn_t  ret) noexcept
-{
-  ret_hunger = ret;
-
-  start_character_making(return_from_character_making,0);
-}
+const coprocess
+coprocess_of_party_making("party making",initialize,nullptr);
 
 
 }

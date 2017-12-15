@@ -7,14 +7,9 @@ namespace gmbb{
 
 
 
-Player&
-Player::
-get_default()
-{
-  static Player  dummy;
-
-  return dummy;
-}
+Player
+PlayerReference::
+default_entity;
 
 
 

@@ -10,10 +10,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("battle");
-
-
 constexpr int  status_window_h = (16*3);
 
 
@@ -55,11 +51,7 @@ public:
   };
 
 
-coreturn_t
-ret_hunger;
-
-
-using List = std::vector<reference_wrapper<Player>>;
+using List = std::vector<PlayerReference>;
 
 List  actable_player_list;
 
@@ -73,14 +65,14 @@ void  return_from_action_making(int  retval) noexcept;
 void
 return_from_text_stream_when_hero_defeated_enemy(int  retval) noexcept
 {
-  pop_routine(label.pointer);
+  coprocesses::pop();
 }
 
 
 void
 return_from_text_stream_when_hero_was_defeated_by_enemy(int  retval) noexcept
 {
-  pop_routine(label.pointer);
+  coprocesses::pop();
 }
 
 
@@ -102,7 +94,7 @@ return_from_action_processing(int  retval) noexcept
 
       sys::char_buffer.push("てきを　しりぞけた");
 
-      start_stream_text(return_from_text_stream_when_hero_defeated_enemy);
+      coprocesses::push(return_from_text_stream_when_hero_defeated_enemy,coprocess_of_stream_text);
       break;
   case(hero_team_was_defeated_by_enemy_team):
   case(battle_was_a_draw):
@@ -110,21 +102,22 @@ return_from_action_processing(int  retval) noexcept
 
       sys::char_buffer.push("てきに　やぶれた");
 
-      start_stream_text(return_from_text_stream_when_hero_was_defeated_by_enemy);
+      coprocesses::push(return_from_text_stream_when_hero_was_defeated_by_enemy,coprocess_of_stream_text);
       break;
   case(battle_is_continued):
         if(actable_player_it != actable_player_it_end)
         {
-          start_action_processing(return_from_action_processing,actable_player_it++->get());
+          coprocesses::push(return_from_action_processing,coprocess_of_action_processing);
+//          start_action_processing(return_from_action_processing,actable_player_it++->get());
         }
 
       else
         {
           clear_stream_text();
 
-          rewind_player_iterator();
+          seek_first_actable_player();
 
-          start_action_making(return_from_action_making);
+          coprocesses::push(return_from_action_making,coprocess_of_action_making);
         }
       break;
     }
@@ -138,9 +131,10 @@ return_from_action_making(int  retval) noexcept
 
     if(retval == 0)
     {
-        if(seek_previous_actable_player())
+        if(seek_previous_actable_player() ||
+              seek_first_actable_player())
         {
-          start_action_making(return_from_action_making);
+          coprocesses::push(return_from_action_making,coprocess_of_action_making);
         }
     }
 
@@ -149,7 +143,7 @@ return_from_action_making(int  retval) noexcept
     {
         if(seek_next_actable_player())
         {
-          start_action_making(return_from_action_making);
+          coprocesses::push(return_from_action_making,coprocess_of_action_making);
         }
 
       else
@@ -163,7 +157,8 @@ return_from_action_making(int  retval) noexcept
 
             if(actable_player_it != actable_player_it_end)
             {
-              start_action_processing(return_from_action_processing,actable_player_it++->get());
+//              start_action_processing(return_from_action_processing,actable_player_it++->get());
+              coprocesses::push(return_from_action_processing,coprocess_of_action_processing);
             }
 
           else
@@ -180,9 +175,9 @@ return_from_stream_text(int  retval) noexcept
 {
   clear_stream_text();
 
-    if(seek_next_actable_player())
+    if(seek_first_actable_player())
     {
-      start_action_making(return_from_action_making);
+      coprocesses::push(return_from_action_making,coprocess_of_action_making);
     }
 
   else
@@ -192,21 +187,8 @@ return_from_stream_text(int  retval) noexcept
 }
 
 
-}
-
-
 void
-terminate_battle() noexcept
-{
-    for(auto&  w: status_windows)
-    {
-      sys::root_task.erase(w);
-    }
-}
-
-
-void
-start_battle(coreturn_t  ret, const EnemyParty&  enep) noexcept
+initialize() noexcept
 {
   clear_player_all();
 
@@ -224,19 +206,20 @@ start_battle(coreturn_t  ret, const EnemyParty&  enep) noexcept
     }
 
 
+/*
   auto  e = enemy_team.begin();
+
+  StringBuffer  sbuf;
 
     for(auto  ene: enep.enemies)
     {
       e->set_operation_style(OperationStyle::automatic);
 
+      sys::char_buffer.push(sbuf("%sが　あらわれた",ene->get_name().data()));
+
       e++->set_data(*ene);
     }
-
-
-  ret_hunger = ret;
-
-  sys::char_buffer.push("まものが　あらわれた");
+*/
 
     for(auto&  w: status_windows)
     {
@@ -244,10 +227,25 @@ start_battle(coreturn_t  ret, const EnemyParty&  enep) noexcept
     }
 
 
-  rewind_player_iterator();
-
-  start_stream_text(return_from_stream_text);
+  coprocesses::push(return_from_stream_text,coprocess_of_stream_text);
 }
+
+
+}
+
+
+void
+terminate_battle() noexcept
+{
+    for(auto&  w: status_windows)
+    {
+      sys::root_task.erase(w);
+    }
+}
+
+
+const coprocess
+coprocess_of_battle("battle",initialize,nullptr);
 
 
 }
