@@ -79,13 +79,15 @@ public:
 
 
 void
-step(uint32_t  count) noexcept
+step(uint32_t&  pc) noexcept
 {
-    if(!count)
+    if(!pc)
     {
       sys::root_task.push(message);
       sys::root_task.push(menu_window);
       sys::root_task.push(specs_window);
+
+      ++pc;
     }
 
 

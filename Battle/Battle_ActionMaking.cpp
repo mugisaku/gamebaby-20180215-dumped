@@ -23,9 +23,9 @@ menu_window(Menu(8*10,16,4,render),1,rect_of_versatile_window);
 
 
 void
-step(uint32_t  count) noexcept
+step(uint32_t&  pc) noexcept
 {
-    if(!count)
+    if(!pc)
     {
       auto&  pl = get_current_player();
 
@@ -39,11 +39,11 @@ step(uint32_t  count) noexcept
         {
           pl.set_current_command(0);
 
-          coprocesses::pop();
+          coprocesses::pop(1);
         }
 
 
-      return;
+      ++pc;
     }
 
 

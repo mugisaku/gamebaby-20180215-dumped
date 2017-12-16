@@ -14,7 +14,7 @@ namespace coprocesses{
 
 
 using coreturn = void  (*)(int  value);
-using callback = void  (*)(uint32_t  count);
+using callback = void  (*)(uint32_t&  pc);
 
 
 class

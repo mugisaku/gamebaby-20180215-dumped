@@ -63,21 +63,7 @@ void  return_from_action_making(int  retval) noexcept;
 
 
 void
-return_from_text_stream_when_hero_defeated_enemy(int  retval) noexcept
-{
-  coprocesses::pop();
-}
-
-
-void
-return_from_text_stream_when_hero_was_defeated_by_enemy(int  retval) noexcept
-{
-  coprocesses::pop();
-}
-
-
-void
-return_from_action_processing(int  retval) noexcept
+judge(uint32_t&  pc) noexcept
 {
   int  n  =  hero_team.can_continue_to_battle()? 1:0;
        n |= enemy_team.can_continue_to_battle()? 2:0;
@@ -90,36 +76,26 @@ return_from_action_processing(int  retval) noexcept
     switch(n)
     {
   case(hero_team_defeated_enemy_team):
+      pc = 5;
+
       clear_stream_text();
 
       sys::char_buffer.push("てきを　しりぞけた");
 
-      coprocesses::push(return_from_text_stream_when_hero_defeated_enemy,coprocess_of_stream_text);
+      coprocesses::push(nullptr,coprocess_of_stream_text);
       break;
   case(hero_team_was_defeated_by_enemy_team):
   case(battle_was_a_draw):
+      pc = 5;
+
       clear_stream_text();
 
       sys::char_buffer.push("てきに　やぶれた");
 
-      coprocesses::push(return_from_text_stream_when_hero_was_defeated_by_enemy,coprocess_of_stream_text);
+      coprocesses::push(nullptr,coprocess_of_stream_text);
       break;
   case(battle_is_continued):
-        if(actable_player_it != actable_player_it_end)
-        {
-          set_actor_of_action_processing(actable_player_it++->get());
-
-          coprocesses::push(return_from_action_processing,coprocess_of_action_processing);
-        }
-
-      else
-        {
-          clear_stream_text();
-
-          seek_first_actable_player();
-
-          coprocesses::push(return_from_action_making,coprocess_of_action_making);
-        }
+      pc = 3;
       break;
     }
 }
@@ -151,11 +127,12 @@ return_from_action_making(int  retval) noexcept
 
 
 void
-step(uint32_t  count) noexcept
+step(uint32_t&  pc) noexcept
 {
-    switch(count)
+    switch(pc)
     {
   case(0):
+coprocesses::debug(true);
         for(auto&  w: status_windows)
         {
           sys::root_task.push(w);
@@ -163,6 +140,7 @@ step(uint32_t  count) noexcept
 
 
       coprocesses::push(nullptr,coprocess_of_stream_text);
+      ++pc;
       break;
   case(1):
       clear_stream_text();
@@ -171,6 +149,8 @@ step(uint32_t  count) noexcept
         {
           coprocesses::push(return_from_action_making,coprocess_of_action_making);
         }
+
+      ++pc;
       break;
   case(2):
       actable_player_list.resize(0);
@@ -180,14 +160,26 @@ step(uint32_t  count) noexcept
       actable_player_it     = actable_player_list.begin();
       actable_player_it_end = actable_player_list.end();
 
+      ++pc;
+  case(3):
         if(actable_player_it != actable_player_it_end)
         {
           set_actor_of_action_processing(actable_player_it++->get());
 
-          coprocesses::push(return_from_action_processing,coprocess_of_action_processing);
+          coprocesses::push(nullptr,coprocess_of_action_processing);
+
+          ++pc;
+        }
+
+      else
+        {
+          pc = 1;
         }
       break;
   case(4):
+      judge(pc);
+      break;
+  case(5):
   default:
       coprocesses::pop();
     }

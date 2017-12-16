@@ -10,10 +10,6 @@ namespace gmbb{
 namespace{
 
 
-FixedString
-label("action processing");
-
-
 PlayerReference
 actor;
 
@@ -210,46 +206,45 @@ initialize() noexcept
 
 
 void
-step(uint32_t  count) noexcept
+step(uint32_t&  pc) noexcept
 {
-    if(!count)
+    switch(pc)
     {
+  case(0):
       initialize();
+      ++pc;
+  case(1):
+        if(process_it != process_it_end)
+        {
+          auto&  process = *process_it++;
 
-      return;
-    }
+            if(target_it != target_it_end)
+            {
+              process(*target_it);
+            }
 
+          else
+            {
+              ++pc;
+            }
+         }
 
-RESTART:
-    if(process_it != process_it_end)
-    {
-      auto&  process = *process_it++;
-
+      else
         if(target_it != target_it_end)
         {
-          process(*target_it);
+          process_it     = process_list.get().cbegin();
+          process_it_end = process_list.get().cend();
+
+          ++target_it;
         }
 
       else
         {
-          goto QUIT;
+          ++pc;
         }
+  default:;
+      coprocesses::pop();
     }
-
-  else
-    if(target_it != target_it_end)
-    {
-      process_it     = process_list.get().cbegin();
-      process_it_end = process_list.get().cend();
-
-      ++target_it;
-
-      goto RESTART;
-    }
-
-
-QUIT:
-  coprocesses::pop();
 }
 
 

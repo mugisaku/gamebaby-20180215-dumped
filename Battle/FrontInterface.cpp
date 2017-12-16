@@ -13,12 +13,13 @@ namespace{
 
 
 const coprocess
-main_coproc("main",[](uint32_t  count)
+main_coproc("main",[](uint32_t&  pc)
 {
-    switch(count)
+    switch(pc)
     {
   case(0):
       coprocesses::push(nullptr,coprocess_of_party_making);
+      ++pc;
       break;
   case(1):
       terminate_party_making();
@@ -29,6 +30,7 @@ main_coproc("main",[](uint32_t  count)
       set_parties_of_battle(ro::enemy_party_table[0]);
 
       coprocesses::push(nullptr,coprocess_of_battle);
+      ++pc;
       break;
   case(2):
       break;

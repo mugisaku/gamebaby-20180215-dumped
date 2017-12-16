@@ -18,7 +18,7 @@ debug_flag;
 class
 element
 {
-  uint32_t  m_count;
+  uint32_t  m_pc;
 
   const char*  m_label;
 
@@ -28,7 +28,7 @@ element
 public:
   element() noexcept{}
   element(const char*  label, callback  step) noexcept:
-  m_count(0),
+  m_pc(0),
   m_label(label),
   m_coreturn(nullptr),
   m_step(step){}
@@ -37,16 +37,11 @@ public:
   {
       if(debug_flag)
       {
-        printf("[coprocess report] %s %8d\n",m_label,m_count);
+        printf("[coprocess report] %s %8d\n",m_label,m_pc);
       }
 
 
-    m_step(m_count);
-
-      if(m_count < 0xFFFFFFFF)
-      {
-        ++m_count;
-      }
+    m_step(m_pc);
   }
 
 

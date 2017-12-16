@@ -12,12 +12,13 @@ namespace{
 
 
 void
-step(uint32_t  count) noexcept
+step(uint32_t&  pc) noexcept
 {
-    switch(count)
+    switch(pc)
     {
   case(0):
       coprocesses::push(nullptr,coprocess_of_character_making);
+      ++pc;
       break;
   case(1):
       terminate_character_making();
@@ -33,6 +34,9 @@ step(uint32_t  count) noexcept
 
           sav::party.number_of_members = 1;
         }
+
+
+      ++pc;
   default:
       coprocesses::pop();
     }

@@ -140,9 +140,9 @@ get() noexcept
 
 
 void
-step(uint32_t  count) noexcept
+step(uint32_t&  pc) noexcept
 {
-    if(!count)
+    if(!pc)
     {
       cursor = Point(10,0);
 
@@ -151,6 +151,8 @@ step(uint32_t  count) noexcept
       sys::root_task.push(character_window);
       sys::root_task.push(     name_window);
       sys::root_task.push(         message);
+
+      ++pc;
     }
 
 
