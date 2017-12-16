@@ -1,6 +1,5 @@
 #include"gmbb_Routine.hpp"
-#include"Pointer.hpp"
-#include<vector>
+#include<new>
 
 
 
@@ -12,21 +11,44 @@ namespace coprocesses{
 namespace{
 
 
+bool
+debug_flag;
+
+
 class
 element
 {
+  uint32_t  m_count;
+
   const char*  m_label;
 
   callback      m_step;
   coreturn  m_coreturn;
 
 public:
+  element() noexcept{}
   element(const char*  label, callback  step) noexcept:
+  m_count(0),
   m_label(label),
   m_coreturn(nullptr),
   m_step(step){}
 
-  void  step() noexcept{m_step();}
+  void  step() noexcept
+  {
+      if(debug_flag)
+      {
+        printf("[coprocess report] %s %8d\n",m_label,m_count);
+      }
+
+
+    m_step(m_count);
+
+      if(m_count < 0xFFFFFFFF)
+      {
+        ++m_count;
+      }
+  }
+
 
   const char*  get_label() const noexcept{return m_label;}
 
@@ -51,8 +73,15 @@ uint32_t
 flags;
 
 
-std::vector<element>
-stack({element("base",[](){})});
+constexpr int  number_of_elements_max = 80;
+
+
+element
+stack[number_of_elements_max];
+
+
+int
+number_of_elements;
 
 
 int
@@ -63,21 +92,60 @@ bool
 need_to_pop;
 
 
+bool
+pushed;
+
+
 }
 
 
 
 
 void
+debug(bool  v) noexcept
+{
+  debug_flag = v;
+}
+
+
+void
 push(coreturn  ret, const coprocess&  proc) noexcept
 {
+    if(number_of_elements >= number_of_elements_max)
+    {
+      printf("これ以上pushできない\n");
+
+      return;
+    }
+
+
+    if(!proc.get_step())
+    {
+      printf("stepがない\n");
+
+      return;
+    }
+
+
+    if(pushed)
+    {
+      printf("連続でpushはできない\n");
+
+      return;
+    }
+
+
     if(!need_to_pop)
     {
-      stack.back().set_coreturn(ret);
+        if(ret && number_of_elements)
+        {
+          stack[number_of_elements-1].set_coreturn(ret);
+        }
 
-      stack.emplace_back(proc.get_label(),proc.get_step());
 
-      proc.initialize();
+      new(&stack[number_of_elements++]) element(proc.get_label(),proc.get_step());
+
+      pushed = true;
 
       wait_until_button_is_released();
     }
@@ -131,21 +199,11 @@ wait_until_button_is_released() noexcept
 void
 call() noexcept
 {
-    if(need_to_pop)
+    if(!number_of_elements_max)
     {
-        if(stack.size() <= 1)
-        {
-          printf("これ以上のpopはできない\n");
-        }
+      printf("スタックが空\n");
 
-      else
-        {
-          stack.pop_back();
-
-          need_to_pop = false;
-
-          stack.back().do_return(returned_value);
-        }
+      return;
     }
 
 
@@ -153,7 +211,21 @@ call() noexcept
 
     if(!(flags&key_flags))
     {
-      stack.back().step();
+      pushed = false;
+
+      stack[number_of_elements-1].step();
+
+        if(need_to_pop)
+        {
+          --number_of_elements;
+
+          need_to_pop = false;
+
+            if(number_of_elements)
+            {
+              stack[number_of_elements-1].do_return(returned_value);
+           }
+        }
     }
 }
 

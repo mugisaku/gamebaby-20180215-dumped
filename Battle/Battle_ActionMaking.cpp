@@ -23,8 +23,30 @@ menu_window(Menu(8*10,16,4,render),1,rect_of_versatile_window);
 
 
 void
-step() noexcept
+step(uint32_t  count) noexcept
 {
+    if(!count)
+    {
+      auto&  pl = get_current_player();
+
+        if(pl.is_manual())
+        {
+          sys::root_task.push(menu_window);
+        }
+
+      else
+        if(pl.is_automatic())
+        {
+          pl.set_current_command(0);
+
+          coprocesses::pop();
+        }
+
+
+      return;
+    }
+
+
     if(ctrl.is_p_button_pressing())
     {
       get_current_player().set_current_command(menu_window.get_item_index());
@@ -52,26 +74,6 @@ step() noexcept
 }
 
 
-void
-initialize() noexcept
-{
-  auto&  pl = get_current_player();
-
-    if(pl.is_manual())
-    {
-      sys::root_task.push(menu_window);
-    }
-
-  else
-    if(pl.is_automatic())
-    {
-      pl.set_current_command(0);
-
-      coprocesses::pop();
-    }
-}
-
-
 }
 
 
@@ -83,7 +85,7 @@ terminate_action_making() noexcept
 
 
 const coprocess
-coprocess_of_action_making("action making",initialize,step);
+coprocess_of_action_making("action making",step);
 
 
 }

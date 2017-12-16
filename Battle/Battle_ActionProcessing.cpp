@@ -153,46 +153,8 @@ step_guard_up(Player&  target) noexcept
 
 
 void
-step() noexcept
-{
-RESTART:
-    if(process_it != process_it_end)
-    {
-      auto&  process = *process_it++;
-
-        if(target_it != target_it_end)
-        {
-          process(*target_it);
-        }
-
-      else
-        {
-          goto QUIT;
-        }
-    }
-
-  else
-    if(target_it != target_it_end)
-    {
-      process_it     = process_list.get().cbegin();
-      process_it_end = process_list.get().cend();
-
-      ++target_it;
-
-      goto RESTART;
-    }
-
-
-QUIT:
-  coprocesses::pop();
-}
-
-
-void
 initialize() noexcept
 {
-//  actor = actor_;
-
   auto&  cmd = actor.get().get_current_command();
 
   target_player_list.resize(0);
@@ -247,11 +209,62 @@ initialize() noexcept
 }
 
 
+void
+step(uint32_t  count) noexcept
+{
+    if(!count)
+    {
+      initialize();
+
+      return;
+    }
+
+
+RESTART:
+    if(process_it != process_it_end)
+    {
+      auto&  process = *process_it++;
+
+        if(target_it != target_it_end)
+        {
+          process(*target_it);
+        }
+
+      else
+        {
+          goto QUIT;
+        }
+    }
+
+  else
+    if(target_it != target_it_end)
+    {
+      process_it     = process_list.get().cbegin();
+      process_it_end = process_list.get().cend();
+
+      ++target_it;
+
+      goto RESTART;
+    }
+
+
+QUIT:
+  coprocesses::pop();
+}
+
+
+}
+
+
+void
+set_actor_of_action_processing(Player&  actor_) noexcept
+{
+  actor = actor_;
 }
 
 
 const coprocess
-coprocess_of_action_processing("action processing",initialize,step);
+coprocess_of_action_processing("action processing",step);
 
 
 }

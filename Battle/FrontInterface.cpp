@@ -9,21 +9,41 @@
 namespace gmbb{
 
 
+namespace{
+
+
+const coprocess
+main_coproc("main",[](uint32_t  count)
+{
+    switch(count)
+    {
+  case(0):
+      coprocesses::push(nullptr,coprocess_of_party_making);
+      break;
+  case(1):
+      terminate_party_making();
+
+      sav::fullrecover_all_heroes();
+
+
+      set_parties_of_battle(ro::enemy_party_table[0]);
+
+      coprocesses::push(nullptr,coprocess_of_battle);
+      break;
+  case(2):
+      break;
+  default:;
+    }
+});
+
+
+}
+
+
 const Image&
 update_screen() noexcept
 {
   return screen::update(sys::root_task);
-}
-
-
-void
-to_battle(int  retval) noexcept
-{
-  terminate_party_making();
-
-  sav::fullrecover_all_heroes();
-
-  coprocesses::push(nullptr,coprocess_of_battle);
 }
 
 
@@ -45,7 +65,7 @@ initialize() noexcept
   screen::enable_render();
   screen::set_fill_color(black);
 
-  coprocesses::push(to_battle,coprocess_of_party_making);
+  coprocesses::push(nullptr,main_coproc);
 }
 
 

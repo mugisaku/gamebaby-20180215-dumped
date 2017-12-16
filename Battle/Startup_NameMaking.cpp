@@ -140,8 +140,20 @@ get() noexcept
 
 
 void
-step() noexcept
+step(uint32_t  count) noexcept
 {
+    if(!count)
+    {
+      cursor = Point(10,0);
+
+      message.too_short = false;
+
+      sys::root_task.push(character_window);
+      sys::root_task.push(     name_window);
+      sys::root_task.push(         message);
+    }
+
+
   static bool  lock;
 
     if(sys::interval_timer.check(120,ctrl.get_time()))
@@ -214,19 +226,6 @@ step() noexcept
 }
 
 
-void
-initialize() noexcept
-{
-  cursor = Point(10,0);
-
-  message.too_short = false;
-
-  sys::root_task.push(character_window);
-  sys::root_task.push(     name_window);
-  sys::root_task.push(         message);
-}
-
-
 }
 
 
@@ -240,7 +239,7 @@ terminate_name_making() noexcept
 
 
 const coprocess
-coprocess_of_name_making("name making",initialize,step);
+coprocess_of_name_making("name making",step);
 
 
 }

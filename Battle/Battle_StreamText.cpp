@@ -51,8 +51,14 @@ public:
 
 
 void
-step() noexcept
+step(uint32_t  count) noexcept
 {
+    if(!count)
+    {
+      sys::root_task.push(comment_window);
+    }
+
+
   auto  pressing = ctrl.is_p_button_pressing();
 
     if(sys::char_buffer.is_remaining())
@@ -100,13 +106,6 @@ step() noexcept
 }
 
 
-void
-initialize() noexcept
-{
-  sys::root_task.push(comment_window);
-}
-
-
 }
 
 
@@ -129,7 +128,7 @@ terminate_stream_text() noexcept
 
 
 const coprocess
-coprocess_of_stream_text("stream text",initialize,step);
+coprocess_of_stream_text("stream text",step);
 
 
 }

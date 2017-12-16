@@ -94,7 +94,9 @@ quit()
 
   SDL_Quit();
 
-  std::exit(0);
+  fflush(stdout);
+
+  std::_Exit(0);
 }
 
 

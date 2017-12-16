@@ -27,25 +27,23 @@ public:
 
 
 void
-return_from_name_making(int  retval) noexcept
+step(uint32_t  count) noexcept
 {
-  terminate_name_making();
-}
+    switch(count)
+    {
+  case(0):
+      coprocesses::push(nullptr,coprocess_of_class_choosing);
+      break;
+  case(1):
+      terminate_class_choosing();
 
-
-void
-return_from_class_choosing(int  retval) noexcept
-{
-  terminate_class_choosing();
-
-  coprocesses::push(return_from_name_making,coprocess_of_name_making);
-}
-
-
-void
-initialize() noexcept
-{
-  coprocesses::push(return_from_class_choosing,coprocess_of_class_choosing);
+      coprocesses::push(nullptr,coprocess_of_name_making);
+      break;
+  case(2):
+      terminate_name_making();
+  default:
+      coprocesses::pop();
+    }
 }
 
 
@@ -60,7 +58,7 @@ terminate_character_making() noexcept
 
 
 const coprocess
-coprocess_of_character_making("character_making",initialize,nullptr);
+coprocess_of_character_making("character_making",step);
 
 
 }

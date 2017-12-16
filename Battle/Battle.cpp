@@ -107,8 +107,9 @@ return_from_action_processing(int  retval) noexcept
   case(battle_is_continued):
         if(actable_player_it != actable_player_it_end)
         {
+          set_actor_of_action_processing(actable_player_it++->get());
+
           coprocesses::push(return_from_action_processing,coprocess_of_action_processing);
-//          start_action_processing(return_from_action_processing,actable_player_it++->get());
         }
 
       else
@@ -145,50 +146,69 @@ return_from_action_making(int  retval) noexcept
         {
           coprocesses::push(return_from_action_making,coprocess_of_action_making);
         }
-
-      else
-        {
-          actable_player_list.resize(0);
-
-          collect_actable_player(actable_player_list);
-
-          actable_player_it     = actable_player_list.begin();
-          actable_player_it_end = actable_player_list.end();
-
-            if(actable_player_it != actable_player_it_end)
-            {
-//              start_action_processing(return_from_action_processing,actable_player_it++->get());
-              coprocesses::push(return_from_action_processing,coprocess_of_action_processing);
-            }
-
-          else
-            {
-              return_from_action_processing(0);
-            }
-        }
     }
 }
 
 
 void
-return_from_stream_text(int  retval) noexcept
+step(uint32_t  count) noexcept
 {
-  clear_stream_text();
-
-    if(seek_first_actable_player())
+    switch(count)
     {
-      coprocesses::push(return_from_action_making,coprocess_of_action_making);
+  case(0):
+        for(auto&  w: status_windows)
+        {
+          sys::root_task.push(w);
+        }
+
+
+      coprocesses::push(nullptr,coprocess_of_stream_text);
+      break;
+  case(1):
+      clear_stream_text();
+
+        if(seek_first_actable_player())
+        {
+          coprocesses::push(return_from_action_making,coprocess_of_action_making);
+        }
+      break;
+  case(2):
+      actable_player_list.resize(0);
+
+      collect_actable_player(actable_player_list);
+
+      actable_player_it     = actable_player_list.begin();
+      actable_player_it_end = actable_player_list.end();
+
+        if(actable_player_it != actable_player_it_end)
+        {
+          set_actor_of_action_processing(actable_player_it++->get());
+
+          coprocesses::push(return_from_action_processing,coprocess_of_action_processing);
+        }
+      break;
+  case(4):
+  default:
+      coprocesses::pop();
     }
+}
 
-  else
+
+}
+
+
+void
+terminate_battle() noexcept
+{
+    for(auto&  w: status_windows)
     {
-      return_from_action_making(1);
+      sys::root_task.erase(w);
     }
 }
 
 
 void
-initialize() noexcept
+set_parties_of_battle(const EnemyParty&  enep) noexcept
 {
   clear_player_all();
 
@@ -206,7 +226,6 @@ initialize() noexcept
     }
 
 
-/*
   auto  e = enemy_team.begin();
 
   StringBuffer  sbuf;
@@ -219,33 +238,11 @@ initialize() noexcept
 
       e++->set_data(*ene);
     }
-*/
-
-    for(auto&  w: status_windows)
-    {
-      sys::root_task.push(w);
-    }
-
-
-  coprocesses::push(return_from_stream_text,coprocess_of_stream_text);
-}
-
-
-}
-
-
-void
-terminate_battle() noexcept
-{
-    for(auto&  w: status_windows)
-    {
-      sys::root_task.erase(w);
-    }
 }
 
 
 const coprocess
-coprocess_of_battle("battle",initialize,nullptr);
+coprocess_of_battle("battle",step);
 
 
 }

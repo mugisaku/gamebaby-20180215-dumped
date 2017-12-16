@@ -79,8 +79,16 @@ public:
 
 
 void
-step() noexcept
+step(uint32_t  count) noexcept
 {
+    if(!count)
+    {
+      sys::root_task.push(message);
+      sys::root_task.push(menu_window);
+      sys::root_task.push(specs_window);
+    }
+
+
     if(sys::interval_timer.check(120,ctrl.get_time()))
     {
            if(ctrl.is_up_button_pressing()  ){menu_window.move_cursor_to_up()  ;}
@@ -104,15 +112,6 @@ step() noexcept
 }
 
 
-void
-initialize() noexcept
-{
-  sys::root_task.push(message);
-  sys::root_task.push(menu_window);
-  sys::root_task.push(specs_window);
-}
-
-
 }
 
 
@@ -126,7 +125,7 @@ terminate_class_choosing() noexcept
 
 
 const coprocess
-coprocess_of_class_choosing("class_making",initialize,step);
+coprocess_of_class_choosing("class_making",step);
 
 
 }

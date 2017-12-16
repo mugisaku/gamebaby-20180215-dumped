@@ -14,7 +14,7 @@ namespace coprocesses{
 
 
 using coreturn = void  (*)(int  value);
-using callback = void  (*)();
+using callback = void  (*)(uint32_t  count);
 
 
 class
@@ -22,28 +22,20 @@ coprocess
 {
   const char*  m_label="";
 
-  callback  m_initialize=nullptr;
-  callback        m_step=nullptr;
+  callback  m_step=nullptr;
 
 public:
-  coprocess(const char*  label, callback  init, callback  step) noexcept:
+  coprocess(const char*  label, callback  step) noexcept:
   m_label(label),
-  m_initialize(init),
   m_step(step){}
 
   const char*  get_label() const noexcept{return m_label;}
   callback      get_step() const noexcept{return m_step;}
 
-  void  initialize() const noexcept
-  {
-      if(m_initialize)
-      {
-        m_initialize();
-      }
-  }
-
 };
 
+
+void  debug(bool  v) noexcept;
 
 void  push(coreturn  ret, const coprocess&  proc) noexcept;
 

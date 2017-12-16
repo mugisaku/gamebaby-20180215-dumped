@@ -12,27 +12,30 @@ namespace{
 
 
 void
-return_from_character_making(int  retval) noexcept
+step(uint32_t  count) noexcept
 {
-  terminate_character_making();
+    switch(count)
+    {
+  case(0):
+      coprocesses::push(nullptr,coprocess_of_character_making);
+      break;
+  case(1):
+      terminate_character_making();
 
+        {
+          auto&  h = sav::hero_table[0];
 
-  auto&  h = sav::hero_table[0];
+          h = tmp::hero;
 
-  h = tmp::hero;
+          h.set_name(tmp::name_buffer.to_string());
 
-  h.set_name(tmp::name_buffer.to_string());
+          sav::party.members[0] = make_rw(h);
 
-  sav::party.members[0] = make_rw(h);
-
-  sav::party.number_of_members = 1;
-}
-
-
-void
-initialize() noexcept
-{
-  coprocesses::push(return_from_character_making,coprocess_of_character_making);
+          sav::party.number_of_members = 1;
+        }
+  default:
+      coprocesses::pop();
+    }
 }
 
 
@@ -46,7 +49,7 @@ terminate_party_making() noexcept
 
 
 const coprocess
-coprocess_of_party_making("party making",initialize,nullptr);
+coprocess_of_party_making("party making",step);
 
 
 }
