@@ -12,22 +12,22 @@ namespace{
 class
 entry
 {
-  uint32_t  m_index;
-
   types::type*  m_type;
 
-  std::string  m_name;
-  std::string    m_id;
+  type_info  m_type_info;
 
 public:
   entry() noexcept{}
-  entry(uint32_t  index, types::type*  type, std::string_view  name, std::string_view  id) noexcept:
-  m_index(index),
-  m_type(type),
-  m_name(name.data(),name.size()),
-  m_id(id.data(),id.size()){}
 
-  bool  operator==(std::string_view  name) const noexcept{return m_name == name;}
+  entry(uint32_t  index, std::string_view  name, std::string_view  id, size_t  size, size_t  align) noexcept:
+  m_type(nullptr),
+  m_type_info(index,name,id,size,align){}
+
+  entry(uint32_t  index, types::type*  type, std::string_view  name, std::string_view  id, size_t  size, size_t  align) noexcept:
+  m_type(type),
+  m_type_info(index,name,id,size,align){}
+
+  bool  operator==(std::string_view  name) const noexcept{return m_type_info.get_name() == name;}
 
   const type&  get_type() const noexcept
   {
@@ -35,9 +35,9 @@ public:
   }
 
 
-  type_info  get_type_info() const noexcept
+  const type_info&  get_type_info() const noexcept
   {
-    return type_info(m_index,m_name,m_id,m_type->get_size(),m_type->get_align());
+    return m_type_info;
   }
 
   void  print(FILE*  f) const noexcept
@@ -52,16 +52,16 @@ public:
 
 std::vector<entry>
 table({
-  entry(0,new type(simple_type(                    8)), "int8_t","i8"),
-  entry(1,new type(simple_type(unsign_specifier(), 8)),"uint8_t","u8"),
-  entry(2,new type(simple_type(                   16)), "int8_t","i8"),
-  entry(3,new type(simple_type(unsign_specifier(),16)),"uint8_t","u8"),
-  entry(4,new type(simple_type(                   32)), "int8_t","i8"),
-  entry(5,new type(simple_type(unsign_specifier(),32)),"uint8_t","u8"),
+  entry(0, "int8_t","i8",1,1),
+  entry(1,"uint8_t","u8",1,1),
+  entry(2, "int8_t","i8",2,2),
+  entry(3,"uint8_t","u8",2,2),
+  entry(4, "int8_t","i8",4,4),
+  entry(5,"uint8_t","u8",4,4),
 
-  entry(6,new type(simple_type( 0)),"void","v"),
-  entry(7,new type(simple_type(32)),"nullptr_t","np"),
-  entry(8,new type(simple_type(32)),"geneptr_t","gp"),
+  entry(6,     "void", "v",0,0),
+  entry(7,"nullptr_t","np",4,4),
+  entry(8,"geneptr_t","gp",4,4),
 
 });
 
@@ -78,14 +78,14 @@ append_type(types::type*  type, std::string_view  name) noexcept
 
   std::string_view  id(buf);
 
-  table.emplace_back(table.size(),type,name,id);
+  table.emplace_back(table.size(),type,name,id,0,0);
 
   return type;
 }
 
 
 const type&
-get_type(std::string_view  name)
+get_type_by_name(std::string_view  name)
 {
     for(auto&  ent: table)
     {
@@ -100,8 +100,15 @@ get_type(std::string_view  name)
 }
 
 
-type_info
-find_type_info(std::string_view  name)
+const type&
+get_type_by_index(type_index  i)
+{
+  return table[i.get_value()].get_type();
+}
+
+
+const type_info&
+get_type_info_by_name(std::string_view  name)
 {
     for(auto&  ent: table)
     {
@@ -113,6 +120,13 @@ find_type_info(std::string_view  name)
 
 
   throw type_was_not_found();
+}
+
+
+const type_info&
+get_type_info_by_index(type_index  i)
+{
+  return table[i.get_value()].get_type_info();
 }
 
 

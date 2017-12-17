@@ -2,7 +2,6 @@
 #define type_HPP
 
 
-#include"simple_type.hpp"
 #include"cv_qualified_type.hpp"
 #include"type_info.hpp"
 
@@ -24,8 +23,6 @@ type_kind
 };
 
 
-
-
 class
 type
 {
@@ -41,7 +38,8 @@ type
   } m_data;
 
 public:
-  type(simple_type  s) noexcept: m_kind(type_kind::simple){m_data.simple_type = s;}
+  type() noexcept: m_kind(type_kind::simple){}
+//  type(cv_qualified_type  cvq) noexcept: m_kind(type_kind::cb_qualified){m_data.cvq_type = cvq;}
 
   bool  is_simple() const noexcept{return m_kind == type_kind::simple;}
   bool  is_cv_qualified() const noexcept{return m_kind == type_kind::cv_qualified;}

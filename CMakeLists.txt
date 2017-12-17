@@ -82,7 +82,6 @@ set(GAME_SOURCES
 
 
 set(TS_SOURCES
-  TypeSystem/Memory.cpp
   TypeSystem/cv_qualified_type.cpp
   TypeSystem/type.cpp
   TypeSystem/type_table.cpp
