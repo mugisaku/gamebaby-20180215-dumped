@@ -19,7 +19,7 @@ endif()
 set(CMAKE_C_COMPILER  "/usr/local/bin/gcc")
 set(CMAKE_C_FLAGS   "-std=c14 -Werror")
 set(CMAKE_CXX_COMPILER  "/usr/local/bin/g++")
-set(CMAKE_CXX_FLAGS "-std=c++14 -Werror")
+set(CMAKE_CXX_FLAGS "-std=c++1z -Werror")
 set(CMAKE_CXX_LINK_FLAGS  "-lstdc++ -lz -lpng -lSDL2 -lSDL2main")
 
 
@@ -83,6 +83,9 @@ set(GAME_SOURCES
 
 set(TS_SOURCES
   TypeSystem/Memory.cpp
+  TypeSystem/cv_qualified_type.cpp
+  TypeSystem/type.cpp
+  TypeSystem/type_table.cpp
 )
 
 

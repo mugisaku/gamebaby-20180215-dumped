@@ -85,12 +85,12 @@ null_process_list;
 std::vector<Process>
 attack_process_list(
 {
-[](Player&  target)
+[](Player&  target) noexcept
 {
   sys::char_buffer.push(sbuf("%sは　%sに こうげき！",actor.get().get_name().data(),target.get_name().data()));
   coprocesses::push(nullptr,coprocess_of_stream_text);
 },
-[](Player&  target)
+[](Player&  target) noexcept
 {
   auto  res = get_result_of_attack(target);
 
@@ -106,12 +106,12 @@ attack_process_list(
 std::vector<Process>
 appraise_process_list(
 {
-[](Player&  target)
+[](Player&  target) noexcept
 {
   sys::char_buffer.push(sbuf("%sは　%sを かんていした",actor.get().get_name().data(),target.get_name().data()));
   coprocesses::push(nullptr,coprocess_of_stream_text);
 },
-[](Player&  target)
+[](Player&  target) noexcept
 {
   sys::char_buffer.push(sbuf("HP %4d/%4d",target.get_hp(),target.get_hp_max()));
   sys::char_buffer.push(sbuf("MP %4d/%4d",target.get_mp(),target.get_mp_max()));
