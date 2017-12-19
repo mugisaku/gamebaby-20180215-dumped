@@ -85,8 +85,8 @@ const type_info       s32_ti("s32",  signed_integral_type_info(4));
 const type_info       u32_ti("u32",unsigned_integral_type_info(4));
 const type_info      bool_ti("b",boolean_type_info(1));
 const type_info      void_ti( "v",void_type_info());
-const type_info   nullptr_ti("np",pointer_type_info(pointer_kind::null));
-const type_info   geneptr_ti("gp",pointer_type_info(pointer_kind::generic));
+const type_info   nullptr_ti("np","",null_pointer_type_info());
+const type_info   geneptr_ti("gp","",generic_pointer_type_info());
 
 
 const type_info&

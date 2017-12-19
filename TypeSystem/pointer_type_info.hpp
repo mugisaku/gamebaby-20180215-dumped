@@ -16,12 +16,23 @@ namespace types{
 class type_info;
 
 
-enum class
-pointer_kind
+constexpr size_t  pointer_type_size = 4;
+
+
+class
+null_pointer_type_info
 {
-  null,
-  generic,
-  defined,
+public:
+  constexpr null_pointer_type_info() noexcept{}
+
+};
+
+
+class
+generic_pointer_type_info
+{
+public:
+  constexpr generic_pointer_type_info() noexcept{}
 
 };
 
@@ -29,26 +40,23 @@ pointer_kind
 class
 pointer_type_info
 {
-  pointer_kind  m_kind;
-
   const type_info*  m_target;
 
 public:
-  constexpr pointer_type_info(pointer_kind  kind) noexcept:
-  m_kind(kind),
-  m_target(nullptr){}
-
   constexpr pointer_type_info(const type_info&  target) noexcept:
-  m_kind(pointer_kind::defined),
   m_target(&target){}
-
-  constexpr bool  is_null() const noexcept{return m_kind == pointer_kind::null;}
-  constexpr bool  is_generic() const noexcept{return m_kind == pointer_kind::generic;}
-  constexpr bool  is_defined() const noexcept{return m_kind == pointer_kind::defined;}
 
   constexpr const type_info&   get_target() const noexcept{return *m_target;}
 
-  static constexpr size_t  get_size() noexcept{return 4;}
+};
+
+
+class
+reference_type_info: public pointer_type_info
+{
+public:
+  constexpr reference_type_info(const type_info&  target) noexcept:
+  pointer_type_info(target){}
 
 };
 
@@ -56,8 +64,11 @@ public:
 }
 
 
+using types::null_pointer_type_info;
+using types::generic_pointer_type_info;
 using types::pointer_type_info;
-using types::pointer_kind;
+using types::reference_type_info;
+using types::pointer_type_size;
 
 
 }
