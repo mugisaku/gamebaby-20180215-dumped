@@ -6,7 +6,11 @@
 int
 main(int  argc, char**  argv)
 {
-  ts::print_all_types();
+  using namespace ts;
+
+  name_type_info(s8_ti.add_pointer(),"s8*");
+
+  print_all_types();
 
   return 0;
 }
