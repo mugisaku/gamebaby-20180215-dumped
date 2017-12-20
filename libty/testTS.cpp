@@ -6,7 +6,7 @@
 int
 main(int  argc, char**  argv)
 {
-  using namespace ts;
+  using namespace ty;
 
   auto  a_ti = type_info::make_i8().make_array(104);
 

@@ -5,7 +5,7 @@
 #include"type_info.hpp"
 
 
-namespace ts{
+namespace ty{
 namespace types{
 
 

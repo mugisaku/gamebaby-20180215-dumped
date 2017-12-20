@@ -6,8 +6,8 @@
 
 
 
-namespace ts{
-namespace types{
+namespace ty{
+namespace declarations{
 
 
 class
@@ -41,7 +41,7 @@ public:
 }
 
 
-using types::declaration;
+using declarations::declaration;
 
 
 }

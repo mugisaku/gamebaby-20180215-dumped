@@ -10,7 +10,7 @@
 
 
 
-namespace ts{
+namespace ty{
 namespace types{
 
 
@@ -39,6 +39,10 @@ type_kind
 
 
 class type_info;
+class   enum_definition;
+class struct_definition;
+class  union_definition;
+class         signature;
 
 
 constexpr size_t  pointer_type_size = 4;

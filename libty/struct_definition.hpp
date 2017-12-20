@@ -1,5 +1,5 @@
-#ifndef struct_type_info_HPP
-#define struct_type_info_HPP
+#ifndef struct_definition_HPP
+#define struct_definition_HPP
 
 
 #include<cstddef>
@@ -11,8 +11,8 @@
 
 
 
-namespace ts{
-namespace types{
+namespace ty{
+namespace definitions{
 
 
 class type_info;
@@ -21,8 +21,6 @@ class type_info;
 class
 struct_definition
 {
-  uint32_t  m_index;
-
   std::vector<declaration>  declaration_list;
 
   size_t  m_size;
@@ -36,7 +34,7 @@ public:
 }
 
 
-using types::struct_definition;
+using definitions::struct_definition;
 
 
 }

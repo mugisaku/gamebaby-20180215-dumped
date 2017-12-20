@@ -1,5 +1,5 @@
-#ifndef enum_type_info_HPP
-#define enum_type_info_HPP
+#ifndef enum_definition_HPP
+#define enum_definition_HPP
 
 
 #include<cstddef>
@@ -10,8 +10,8 @@
 
 
 
-namespace ts{
-namespace types{
+namespace ty{
+namespace definitions{
 
 
 class
@@ -39,8 +39,8 @@ using enum_definition = std::vector<enumerator>;
 }
 
 
-using types::enumerator;
-using types::enum_definition;
+using definitions::enumerator;
+using definitions::enum_definition;
 
 
 }

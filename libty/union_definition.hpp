@@ -1,5 +1,5 @@
-#ifndef union_type_info_HPP
-#define union_type_info_HPP
+#ifndef union_definition_HPP
+#define union_definition_HPP
 
 
 #include<string>
@@ -10,18 +10,16 @@
 
 
 
-namespace ts{
-namespace types{
+namespace ty{
+namespace definitions{
 
 
 class type_info;
 
 
 class
-union_type_info
+union_definition
 {
-  uint32_t  m_index;
-
   std::vector<declaration>  declaration_list;
 
   size_t  m_size;
@@ -35,7 +33,7 @@ public:
 }
 
 
-using types::union_type_info;
+using definitions::union_definition;
 
 
 }
