@@ -19,7 +19,7 @@ class type_info;
 
 
 class
-struct_type_info
+struct_definition
 {
   uint32_t  m_index;
 
@@ -36,7 +36,7 @@ public:
 }
 
 
-using types::struct_type_info;
+using types::struct_definition;
 
 
 }

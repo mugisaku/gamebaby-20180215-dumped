@@ -18,11 +18,15 @@ add_const() const noexcept
   else
     if(is_volatile())
     {
-      return add_const_volatile();
+      return remove_volatile().add_const_volatile();
     }
 
 
-  return type_info(type_kind::const_qualified,std::string("C")+get_id(),*this);
+  std::string  new_id("C");
+
+  new_id += get_id();
+
+  return type_info(type_kind::const_qualified,new_id,*this,1);
 }
 
 
@@ -32,7 +36,7 @@ add_volatile() const noexcept
 {
     if(is_const())
     {
-      return add_const_volatile();
+      return remove_const().add_const_volatile();
     }
 
   else
@@ -46,7 +50,7 @@ add_volatile() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::volatile_qualified,new_id,*this);
+  return type_info(type_kind::volatile_qualified,new_id,*this,1);
 }
 
 
@@ -59,12 +63,24 @@ add_const_volatile() const noexcept
       return *this;
     }
 
+  else
+    if(is_const())
+    {
+      return remove_const().add_const_volatile();
+    }
+
+  else
+    if(is_volatile())
+    {
+      return remove_volatile().add_const_volatile();
+    }
+
 
   std::string  new_id("CV");
 
   new_id += get_id();
 
-  return type_info(type_kind::const_volatile_qualified,new_id,*this);
+  return type_info(type_kind::const_volatile_qualified,new_id,*this,1);
 }
 
 
@@ -76,7 +92,7 @@ add_pointer() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::pointer,new_id,*this);
+  return type_info(type_kind::pointer,new_id,*this,1);
 }
 
 
@@ -94,7 +110,7 @@ add_reference() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::reference,new_id,*this);
+  return type_info(type_kind::reference,new_id,*this,1);
 }
 
 

@@ -24,44 +24,20 @@ m_data(new data)
 
 
 type_info::
-type_info(type_kind  kind, std::string_view  id, const type_info&  source) noexcept:
-m_data(new data)
-{
-  m_data->reference_count = 1;
-
-  m_data->kind = kind;
-/*
-  m_data->id = id;
-  m_data->size = source.get_size();
-  m_data->align = align;
-  m_data->number_of_elements = number_of_elements;
-
-    if(source)
-    {
-      m_data->source = *source;
-    }
-*/
-}
-
-
-type_info::
 type_info(type_kind  kind, std::string_view  id, const type_info&  source, size_t  number_of_elements) noexcept:
 m_data(new data)
 {
   m_data->reference_count = 1;
 
   m_data->kind = kind;
-/*
   m_data->id = id;
-  m_data->size = source.get_size();
-  m_data->align = align;
+
+  m_data->size  = (kind == type_kind::pointer)? pointer_type_size:source.get_size();
+  m_data->align = (kind == type_kind::pointer)? pointer_type_size:source.get_align();
+
   m_data->number_of_elements = number_of_elements;
 
-    if(source)
-    {
-      m_data->source = *source;
-    }
-*/
+  m_data->source = source;
 }
 
 
@@ -119,6 +95,7 @@ size_t  type_info::get_number_of_elements() const noexcept{return m_data->number
 
 type_kind  type_info::get_kind() const noexcept{return m_data->kind;}
 
+const type_info&  type_info::get_source_type_info() const noexcept{return m_data->source;}
 
 
 
@@ -126,7 +103,12 @@ type_info
 type_info::
 make_array(size_t  n) const noexcept
 {
-  return type_info();
+  std::string  new_id(get_id());
+
+  new_id += "a";
+  new_id += std::to_string(n);
+
+  return type_info(type_kind::array,new_id,*this,n);
 }
 
 

@@ -54,7 +54,6 @@ type_info
   void  unrefer() noexcept;
 
   type_info(type_kind  kind, std::string_view  id, size_t  size, size_t  align) noexcept;
-  type_info(type_kind  kind, std::string_view  id, const type_info&  source) noexcept;
   type_info(type_kind  kind, std::string_view  id, const type_info&  source, size_t  number_of_elements) noexcept;
 
 public:
@@ -66,20 +65,24 @@ public:
   type_info&  operator=(const type_info&   rhs) noexcept;
   type_info&  operator=(      type_info&&  rhs) noexcept;
 
+  bool  operator==(const type_info&  rhs) const noexcept{return get_id() == rhs.get_id();}
+  bool  operator!=(const type_info&  rhs) const noexcept{return get_id() != rhs.get_id();}
+
   operator bool() const noexcept{return m_data;}
 
-  type_info  add_const() const noexcept;
-  type_info  add_volatile() const noexcept;
+  type_info           add_const() const noexcept;
+  type_info        add_volatile() const noexcept;
   type_info  add_const_volatile() const noexcept;
-  type_info  add_pointer() const noexcept;
-  type_info  add_reference() const noexcept;
+  type_info         add_pointer() const noexcept;
+  type_info       add_reference() const noexcept;
   type_info  make_array(size_t  n) const noexcept;
 
-  const type_info&  remove_const() const noexcept;
-  const type_info&  remove_volatile() const noexcept;
-  const type_info&  remove_const_volatile() const noexcept;
-  const type_info&  remove_pointer() const noexcept;
-  const type_info&  remove_reference() const noexcept;
+  type_info           remove_const() const noexcept;
+  type_info        remove_volatile() const noexcept;
+  type_info  remove_const_volatile() const noexcept;
+  type_info         remove_pointer() const noexcept;
+  type_info       remove_reference() const noexcept;
+  type_info          remove_extent() const noexcept;
 
 
   const std::string&  get_id() const noexcept;
@@ -90,18 +93,24 @@ public:
 
   type_kind  get_kind() const noexcept;
 
-  bool  is_const() const noexcept{return (get_kind() == type_kind::const_qualified) || is_const_volatile();}
-  bool  is_volatile() const noexcept{return (get_kind() == type_kind::volatile_qualified) || is_const_volatile();}
-  bool  is_const_volatile() const noexcept{return get_kind() == type_kind::const_volatile_qualified;}
-  bool  is_integral() const noexcept{return get_kind() == type_kind::integral;}
+  const type_info&  get_source_type_info() const noexcept;
+
+  bool              is_const() const noexcept{return get_kind() == type_kind::const_qualified;}
+  bool           is_volatile() const noexcept{return get_kind() == type_kind::volatile_qualified;}
+  bool     is_const_volatile() const noexcept{return get_kind() == type_kind::const_volatile_qualified;}
+  bool           is_integral() const noexcept{return get_kind() == type_kind::integral;}
   bool  is_unsigned_integral() const noexcept{return get_kind() == type_kind::unsigned_integral;}
-  bool  is_boolean() const noexcept{return get_kind() == type_kind::boolean;}
-  bool  is_void() const noexcept{return get_kind() == type_kind::void_;}
-  bool  is_array() const noexcept{return get_kind() == type_kind::array;}
-  bool  is_pointer() const noexcept{return get_kind() == type_kind::pointer;}
-  bool  is_null_pointer() const noexcept{return get_kind() == type_kind::null_pointer;}
-  bool  is_generic_pointer() const noexcept{return get_kind() == type_kind::generic_pointer;}
-  bool  is_reference() const noexcept{return get_kind() == type_kind::reference;}
+  bool            is_boolean() const noexcept{return get_kind() == type_kind::boolean;}
+  bool               is_void() const noexcept{return get_kind() == type_kind::void_;}
+  bool              is_array() const noexcept{return get_kind() == type_kind::array;}
+  bool            is_pointer() const noexcept{return get_kind() == type_kind::pointer;}
+  bool       is_null_pointer() const noexcept{return get_kind() == type_kind::null_pointer;}
+  bool    is_generic_pointer() const noexcept{return get_kind() == type_kind::generic_pointer;}
+  bool   is_function_pointer() const noexcept{return get_kind() == type_kind::function_pointer;}
+  bool          is_reference() const noexcept{return get_kind() == type_kind::reference;}
+  bool               is_enum() const noexcept{return get_kind() == type_kind::enum_;}
+  bool             is_struct() const noexcept{return get_kind() == type_kind::struct_;}
+  bool              is_union() const noexcept{return get_kind() == type_kind::union_;}
 
 
   static type_info  make_i8()  noexcept{return type_info(type_kind::integral         , "i8",1,1);}
@@ -116,12 +125,9 @@ public:
   static type_info  make_nullptr() noexcept{return type_info(type_kind::null_pointer,"np",pointer_type_size,pointer_type_size);}
   static type_info  make_geneptr() noexcept{return type_info(type_kind::generic_pointer,"gp",pointer_type_size,pointer_type_size);}
 
-  void  print(FILE*  f=stdout) const noexcept
-  {
-    fprintf(f,"   id %s\n",get_id().data());
-    fprintf(f," size %zu\n",get_size());
-    fprintf(f,"align %zu\n",get_align());
-  }
+  void  print(FILE*  f=stdout) const noexcept;
+
+  void  print_human_readable(FILE*  f=stdout) const noexcept;
 
 };
 

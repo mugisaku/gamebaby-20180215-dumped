@@ -85,6 +85,7 @@ set(TS_SOURCES
   TypeSystem/type_info.cpp
   TypeSystem/type_info__add.cpp
   TypeSystem/type_info__remove.cpp
+  TypeSystem/type_info__print.cpp
 )
 
 

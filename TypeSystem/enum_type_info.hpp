@@ -33,30 +33,14 @@ public:
 };
 
 
-class
-enum_type_info
-{
-  uint32_t  m_index;
-
-  std::vector<enumerator>  m_table;
-
-public:
-  enum_type_info(uint32_t  i, std::vector<enumerator>&&  table) noexcept:
-  m_index(i),
-  m_table(std::move(table)){}
-
-  uint32_t  get_index() const noexcept{return m_index;}
-
-  const std::vector<enumerators>&  get_table() const noexcept{return m_table;}
-
-};
+using enum_definition = std::vector<enumerator>;
 
 
 }
 
 
 using types::enumerator;
-using types::enum_type_info;
+using types::enum_definition;
 
 
 }
