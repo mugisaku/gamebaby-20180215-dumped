@@ -83,7 +83,8 @@ set(GAME_SOURCES
 
 set(TS_SOURCES
   TypeSystem/type_info.cpp
-  TypeSystem/type_table.cpp
+  TypeSystem/type_info__add.cpp
+  TypeSystem/type_info__remove.cpp
 )
 
 

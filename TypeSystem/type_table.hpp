@@ -2,7 +2,7 @@
 #define type_table_HPP
 
 
-#include"type_info.hpp"
+#include"declaration.hpp"
 
 
 
@@ -10,49 +10,62 @@ namespace ts{
 namespace types{
 
 
-struct type_was_not_found{};
+template<typename  T>
+inline void
+add(declaration&&  new_decl, T&  container) noexcept
+{
+    for(auto&  decl: container)
+    {
+        if(decl.get_name() == new_decl.get_name())
+        {
+          return;
+        }
+    }
 
 
-extern const type_info        s8_ti;
-extern const type_info        u8_ti;
-extern const type_info       s16_ti;
-extern const type_info       u16_ti;
-extern const type_info       s32_ti;
-extern const type_info       u32_ti;
-extern const type_info      bool_ti;
-extern const type_info      void_ti;
-extern const type_info   nullptr_ti;
-extern const type_info   geneptr_ti;
+  container.emplace_back(std::move(new_decl));
+}
 
 
-const type_info&  append_type_info(type_info&&  type_info) noexcept;
+template<typename  T>
+inline const declaration*
+find_by_name(const T&  container, std::string_view  name) noexcept
+{
+    for(auto&  decl: container)
+    {
+        if(decl.get_name() == name)
+        {
+          return &decl;
+        }
+    }
 
-void  name_type_info(const type_info&  type_info, std::string_view  name) noexcept;
 
-const type_info&  get_type_info_by_name(std::string_view  name);
-const type_info&  get_type_info_by_id(std::string_view  id);
+  return nullptr;
+}
 
-void  print_all_types(FILE*  f=stdout) noexcept;
+
+template<typename  T>
+inline void
+print_all_types(const T&  container, FILE*  f) noexcept
+{
+  fprintf(f,"{\n");
+
+    for(auto&  decl: container)
+    {
+      decl.print(f);
+
+      fprintf(f,"\n");
+    }
+
+
+  fprintf(f,"}\n\n");
+}
 
 
 }
 
-
-using types::s8_ti;
-using types::u8_ti;
-using types::s16_ti;
-using types::u16_ti;
-using types::s32_ti;
-using types::u32_ti;
-using types::bool_ti;
-using types::void_ti;
-using types::nullptr_ti;
-using types::geneptr_ti;
-
-using types::append_type_info;
-using types::name_type_info;
-using types::get_type_info_by_name;
-using types::get_type_info_by_id;
+using types::add;
+using types::find_by_name;
 using types::print_all_types;
 
 

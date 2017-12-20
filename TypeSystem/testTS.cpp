@@ -8,10 +8,9 @@ main(int  argc, char**  argv)
 {
   using namespace ts;
 
-  name_type_info(s8_ti.add_pointer(),"s8*");
-  s8_ti.make_array(256);
+  auto  ti = type_info::make_i8();
 
-  print_all_types();
+  ti.add_pointer().print();
 
   return 0;
 }
