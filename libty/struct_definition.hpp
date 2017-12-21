@@ -28,9 +28,16 @@ struct_member: public variable_declaration
 public:
   struct_member(const type_info&  type_info, std::string_view  name, size_t  offset) noexcept:
   variable_declaration(type_info,name),
-  m_offset(){}
+  m_offset(offset){}
 
   size_t  get_offset() const noexcept{return m_offset;};
+
+  void  print(FILE*  f) const noexcept
+  {
+    variable_declaration::print(f);
+
+    fprintf(f,"(offset %zu)",m_offset);
+  }
 
 };
 
@@ -44,10 +51,16 @@ struct_definition
   size_t  m_align=0;
 
 public:
+  struct_definition() noexcept{}
+
+  void  append(const type_info&  ti, std::string  name) noexcept;
+
+  void  finalize() noexcept;
+
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
 
-  void  print(FILE*  f) const noexcept{}
+  void  print(FILE*  f) const noexcept;
 
 };
 

@@ -8,20 +8,29 @@ main(int  argc, char**  argv)
 {
   using namespace ty;
 
-  union_declaration  decl("test");
+  struct_declaration  decl("test");
 
-  auto  def = std::make_unique<union_definition>();
+  auto  def = std::make_unique<struct_definition>();
 
+  def->append(type_info::make_i8(),"test");
+  def->append(type_info::make_i16(),"test");
+  def->append(type_info::make_i8(),"test");
   def->append(type_info::make_i8(),"test");
   def->append(type_info::make_i8(),"test");
   def->append(type_info::make_i32(),"test");
+  def->append(type_info::make_i8(),"test");
   def->append(type_info::make_i16(),"test");
+  def->append(type_info::make_i8(),"test");
+  def->append(type_info::make_i8(),"test");
+  def->append(type_info::make_i8(),"test");
   def->append(type_info::make_i16(),"test");
   def->append(type_info::make_i8(),"test");
 
+  def->finalize();
+
   decl.set_definition(std::move(def));
 
-  auto  a_ti = type_info::make_union(decl);
+  auto  a_ti = type_info::make_struct(decl);
 
   auto  b_ti = a_ti.remove_extent();
 
