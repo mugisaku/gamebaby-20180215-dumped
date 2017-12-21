@@ -7,24 +7,20 @@
 
 
 namespace ty{
-namespace definitiions{
+namespace ty_types{
 
 
-class
+struct
 signature
 {
-  type_info  m_result;
+  type_info  result_type_info;
 
-  std::vector<type_info>  m_parameter_list;
+  std::vector<type_info>  parameter_list;
 
-public:
-  signature(const type_info&  result, std::vector<type_info>&&  ls) noexcept:
-  m_result(result),
-  m_parameter_list(std::move(ls)){}
-
-  const type_info&  get_result_type_info() const noexcept{return m_result;}
-
-  const std::vector<type_info>&  get_parameter_list() const noexcept{return m_parameter_list;}
+  void  print(FILE*  f) const noexcept
+  {
+    
+  }
 
 };
 
@@ -32,7 +28,7 @@ public:
 }
 
 
-using definitions::signature;
+using ty_types::signature;
 
 
 }

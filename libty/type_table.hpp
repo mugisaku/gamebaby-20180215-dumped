@@ -2,17 +2,17 @@
 #define type_table_HPP
 
 
-#include"declaration.hpp"
+#include"variable_declaration.hpp"
 
 
 
 namespace ty{
-namespace types{
+namespace ty_types{
 
 
 template<typename  T>
 inline void
-add(declaration&&  new_decl, T&  container) noexcept
+add(variable_declaration&&  new_decl, T&  container) noexcept
 {
     for(auto&  decl: container)
     {
@@ -28,7 +28,7 @@ add(declaration&&  new_decl, T&  container) noexcept
 
 
 template<typename  T>
-inline const declaration*
+inline const variable_declaration*
 find_by_name(const T&  container, std::string_view  name) noexcept
 {
     for(auto&  decl: container)
@@ -64,9 +64,9 @@ print_all_types(const T&  container, FILE*  f) noexcept
 
 }
 
-using types::add;
-using types::find_by_name;
-using types::print_all_types;
+using ty_types::add;
+using ty_types::find_by_name;
+using ty_types::print_all_types;
 
 
 }

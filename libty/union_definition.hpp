@@ -6,34 +6,47 @@
 #include<string_view>
 #include<cstdint>
 #include<vector>
+#include<memory>
+#include"variable_declaration.hpp"
 #include"declaration.hpp"
 
 
 
 namespace ty{
-namespace definitions{
+namespace ty_types{
 
 
 class type_info;
 
 
-class
+struct
 union_definition
 {
-  std::vector<declaration>  declaration_list;
+  std::vector<variable_declaration>  declaration_list;
 
   size_t  m_size;
   size_t  m_align;
 
 public:
+  size_t  get_size() const noexcept{return m_size;}
+  size_t  get_align() const noexcept{return m_align;}
 
+  void  print(FILE*  f) const noexcept{}
+
+};
+
+
+class
+union_declaration: public declaration<union_definition>
+{
 };
 
 
 }
 
 
-using definitions::union_definition;
+using ty_types::union_definition;
+using ty_types::union_declaration;
 
 
 }

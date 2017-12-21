@@ -3,7 +3,7 @@
 
 
 namespace ty{
-namespace types{
+namespace ty_types{
 
 
 type_info

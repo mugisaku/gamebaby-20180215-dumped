@@ -7,11 +7,13 @@
 #include<cstdio>
 #include<string>
 #include<string_view>
+#include<vector>
+#include"declaration.hpp"
 
 
 
 namespace ty{
-namespace definitions{
+namespace ty_types{
 
 
 class
@@ -33,14 +35,31 @@ public:
 };
 
 
-using enum_definition = std::vector<enumerator>;
+struct
+enum_definition
+{
+  std::vector<enumerator>  enumerator_list;
+
+  size_t  get_size() const noexcept{return 4;}
+
+  void  print(FILE*  f) const noexcept{}
+
+};
+
+
+class
+enum_declaration: public declaration<enum_definition>
+{
+};
 
 
 }
 
 
-using definitions::enumerator;
-using definitions::enum_definition;
+using ty_types::enumerator;
+using ty_types::enum_definition;
+using ty_types::enum_declaration;
+
 
 
 }
