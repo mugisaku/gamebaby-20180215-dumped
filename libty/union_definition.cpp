@@ -20,6 +20,14 @@ append(const type_info&  ti, std::string  name) noexcept
 
 void
 union_definition::
+finalize() noexcept
+{
+  m_size = get_aligned_offset(m_size,m_align);
+}
+
+
+void
+union_definition::
 print(FILE*  f) const noexcept
 {
     for(auto&  decl: m_declaration_list)

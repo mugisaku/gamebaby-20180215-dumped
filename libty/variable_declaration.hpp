@@ -11,6 +11,20 @@ namespace ty{
 namespace ty_types{
 
 
+constexpr
+size_t
+get_aligned_offset(size_t  offset, size_t  align) noexcept
+{
+    if(align)
+    {
+      offset = (offset+(align-1))/align*align;
+    }
+
+
+  return offset;
+}
+
+
 class
 variable_declaration
 {

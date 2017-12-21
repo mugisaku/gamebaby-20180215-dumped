@@ -1,16 +1,15 @@
 #include"ty.hpp"
 
 
+using namespace ty;
 
 
 int
 main(int  argc, char**  argv)
 {
-  using namespace ty;
+  union_declaration  decl("test");
 
-  struct_declaration  decl("test");
-
-  auto  def = std::make_unique<struct_definition>();
+  auto  def = std::make_unique<decltype(decl)::definition_type>();
 
   def->append(type_info::make_i8(),"test");
   def->append(type_info::make_i16(),"test");
@@ -30,7 +29,7 @@ main(int  argc, char**  argv)
 
   decl.set_definition(std::move(def));
 
-  auto  a_ti = type_info::make_struct(decl);
+  auto  a_ti = type_info::make_union(decl);
 
   auto  b_ti = a_ti.remove_extent();
 

@@ -59,6 +59,7 @@ class
 enum_declaration: public declaration<enum_definition>
 {
   using declaration::declaration;
+
 };
 
 

@@ -14,16 +14,7 @@ append(const type_info&  ti, std::string  name) noexcept
 
   const auto  sz = ti.get_size();
 
-    if(sz)
-    {
-      auto  a = ti.get_align();
-
-        if(a)
-        {
-          offset = (offset+(sz-1))/a*a;
-        }
-    }
-
+  offset = get_aligned_offset(offset,ti.get_align());
 
   m_member_list.emplace_back(ti,name,offset);
 
@@ -36,10 +27,7 @@ void
 struct_definition::
 finalize() noexcept
 {
-    if(m_size && m_align)
-    {
-      m_size = (m_size+(m_align-1))/m_align*m_align;
-    }
+  m_size = get_aligned_offset(m_size,m_align);
 }
 
 

@@ -18,6 +18,7 @@ class
 declaration
 {
 public:
+  using definition_type = T;
   using pointer = std::unique_ptr<T>;
 
 private:
