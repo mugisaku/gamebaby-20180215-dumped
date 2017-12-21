@@ -29,9 +29,9 @@ public:
 
   void  print(FILE*  f) const noexcept
   {
-    fprintf(f,"%s  ",m_name.data());
+    m_type_info.print_human_readable(f);
 
-    m_type_info.print(f);
+    fprintf(f,"  %s",m_name.data());
   }
 
 };

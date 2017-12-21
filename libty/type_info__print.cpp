@@ -72,55 +72,27 @@ print_human_readable(FILE*  f) const noexcept
       fprintf(f,"uint%d",8*m_data->definition.size);
       break;
   case(type_kind::struct_):
-      fprintf(f,"struct{\n");
+      fprintf(f,"struct ");
 
-        if(m_data->definition.st)
-        {
-          m_data->definition.st->print(f);
-        }
-
-      else
-        {
-          fprintf(f,"**have no definition**");
-        }
-
-      fprintf(f,"\n}\n");
+      m_data->definition.st->print(f);
       break;
   case(type_kind::enum_):
-      fprintf(f,"enum{\n");
-
-        if(m_data->definition.en)
-        {
-          m_data->definition.en->print(f);
-        }
-
-      else
-        {
-          fprintf(f,"**have no definition**");
-        }
-
-
-      fprintf(f,"\n}\n");
+      fprintf(f,"enum ");
+      m_data->definition.en->print(f);
       break;
   case(type_kind::union_):
-      fprintf(f,"union{\n");
-
-        if(m_data->definition.un)
-        {
-          m_data->definition.un->print(f);
-        }
-
-      else
-        {
-          fprintf(f,"**have no definition**");
-        }
-
-
-      fprintf(f,"\n}\n");
+      fprintf(f,"union ");
+      m_data->definition.un->print(f);
       break;
   case(type_kind::function_pointer):
       m_data->definition.sig.print(f);
       break;
+    }
+
+
+    if(is_complete())
+    {
+      fprintf(f,"(size %zu, align %zu)",get_size(),get_align());
     }
 }
 

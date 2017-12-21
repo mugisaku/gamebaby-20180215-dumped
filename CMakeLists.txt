@@ -86,6 +86,9 @@ set(LIBTY_SOURCES
   libty/type_info__add.cpp
   libty/type_info__remove.cpp
   libty/type_info__print.cpp
+  libty/enum_definition.cpp
+  libty/struct_definition.cpp
+  libty/union_definition.cpp
 )
 
 

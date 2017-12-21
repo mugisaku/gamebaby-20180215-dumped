@@ -32,17 +32,25 @@ public:
 
   int  get_value() const noexcept{return m_value;}
 
+  void  print(FILE*  f) const noexcept{fprintf(f,"%s = %d",m_name.data(),m_value);}
+
 };
 
 
-struct
+class
 enum_definition
 {
-  std::vector<enumerator>  enumerator_list;
+  std::vector<enumerator>  m_enumerator_list;
 
-  size_t  get_size() const noexcept{return 4;}
+  int  m_last_value=0;
 
-  void  print(FILE*  f) const noexcept{}
+public:
+  enum_definition() noexcept{}
+
+  void  append(std::string_view  name            ) noexcept;
+  void  append(std::string_view  name, int  value) noexcept;
+
+  void  print(FILE*  f) const noexcept;
 
 };
 
@@ -50,6 +58,7 @@ enum_definition
 class
 enum_declaration: public declaration<enum_definition>
 {
+  using declaration::declaration;
 };
 
 

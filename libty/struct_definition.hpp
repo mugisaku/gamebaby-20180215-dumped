@@ -38,13 +38,13 @@ public:
 struct
 struct_definition
 {
-  std::vector<struct_member>  member_list;
+  std::vector<struct_member>  m_member_list;
 
-  size_t  m_size;
-  size_t  m_align;
+  size_t  m_size =0;
+  size_t  m_align=0;
 
 public:
-  size_t  get_size() const noexcept{return m_size;}
+  size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
 
   void  print(FILE*  f) const noexcept{}
@@ -55,6 +55,7 @@ public:
 class
 struct_declaration: public declaration<struct_definition>
 {
+  using declaration::declaration;
 };
 
 
