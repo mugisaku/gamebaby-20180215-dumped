@@ -30,6 +30,7 @@ type_kind
   generic_pointer,
   pointer,
   reference,
+  rvalue_reference,
   function_pointer,
   user_defined,
 
@@ -71,18 +72,19 @@ public:
 
   operator bool() const noexcept{return m_data;}
 
-  type_info           add_const() const noexcept;
-  type_info        add_volatile() const noexcept;
-  type_info  add_const_volatile() const noexcept;
-  type_info         add_pointer() const noexcept;
-  type_info       add_reference() const noexcept;
-  type_info  make_array(size_t  n) const noexcept;
+  type_info             add_const() const noexcept;
+  type_info          add_volatile() const noexcept;
+  type_info    add_const_volatile() const noexcept;
+  type_info           add_pointer() const noexcept;
+  type_info         add_reference() const noexcept;
+  type_info  add_rvalue_reference() const noexcept;
 
-  type_info           remove_const() const noexcept;
-  type_info        remove_volatile() const noexcept;
-  type_info  remove_const_volatile() const noexcept;
-  type_info         remove_pointer() const noexcept;
-  type_info       remove_reference() const noexcept;
+  type_info             remove_const() const noexcept;
+  type_info          remove_volatile() const noexcept;
+  type_info    remove_const_volatile() const noexcept;
+  type_info           remove_pointer() const noexcept;
+  type_info         remove_reference() const noexcept;
+  type_info  remove_rvalue_reference() const noexcept;
 
 
   const std::string&  get_id() const noexcept;
@@ -108,6 +110,7 @@ public:
   bool    is_generic_pointer() const noexcept{return get_kind() == type_kind::generic_pointer;}
   bool   is_function_pointer() const noexcept{return get_kind() == type_kind::function_pointer;}
   bool          is_reference() const noexcept{return get_kind() == type_kind::reference;}
+  bool   is_rvalue_reference() const noexcept{return get_kind() == type_kind::rvalue_reference;}
   bool       is_user_defined() const noexcept{return get_kind() == type_kind::user_defined;}
 
 

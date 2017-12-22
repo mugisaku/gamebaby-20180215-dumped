@@ -115,6 +115,7 @@ get_size() const noexcept
       break;
   case(type_kind::pointer):
   case(type_kind::reference):
+  case(type_kind::rvalue_reference):
   case(type_kind::null_pointer):
   case(type_kind::generic_pointer):
   case(type_kind::function_pointer):
@@ -148,6 +149,7 @@ get_align() const noexcept
       break;
   case(type_kind::pointer):
   case(type_kind::reference):
+  case(type_kind::rvalue_reference):
   case(type_kind::null_pointer):
   case(type_kind::generic_pointer):
   case(type_kind::function_pointer):
@@ -200,6 +202,7 @@ test_align(size_t  offset_base) const noexcept
   case(type_kind::const_volatile_qualified):
   case(type_kind::pointer):
   case(type_kind::reference):
+  case(type_kind::rvalue_reference):
   case(type_kind::null_pointer):
   case(type_kind::generic_pointer):
   case(type_kind::function_pointer):

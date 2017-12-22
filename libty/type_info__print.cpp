@@ -53,6 +53,11 @@ print(FILE*  f) const noexcept
 
       fprintf(f,"&");
       break;
+  case(type_kind::rvalue_reference):
+      m_data->definition.ti.print(f);
+
+      fprintf(f,"&&");
+      break;
   case(type_kind::boolean):
       fprintf(f,"bool");
       break;

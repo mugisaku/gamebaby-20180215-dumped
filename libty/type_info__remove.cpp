@@ -38,8 +38,15 @@ remove_const_volatile() const noexcept
 }
 
 
-type_info  type_info::remove_pointer()   const noexcept{return   is_pointer()? m_data->definition.ti:*this;}
-type_info  type_info::remove_reference() const noexcept{return is_reference()? m_data->definition.ti:*this;}
+type_info  type_info::remove_pointer() const noexcept{return is_pointer()? m_data->definition.ti:*this;}
+
+
+type_info
+type_info::
+remove_reference() const noexcept
+{
+  return (is_reference() || is_rvalue_reference())? m_data->definition.ti:*this;
+}
 
 
 

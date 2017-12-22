@@ -114,6 +114,24 @@ add_reference() const noexcept
 }
 
 
+type_info
+type_info::
+add_rvalue_reference() const noexcept
+{
+    if(is_reference() || is_rvalue_reference())
+    {
+      return *this;
+    }
+
+
+  std::string  new_id("rr");
+
+  new_id += get_id();
+
+  return type_info(type_kind::rvalue_reference,new_id,*this);
+}
+
+
 }}
 
 
