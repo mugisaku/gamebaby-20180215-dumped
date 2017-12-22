@@ -7,6 +7,7 @@
 #include<cstdio>
 #include<string>
 #include<string_view>
+#include"print.hpp"
 
 
 
@@ -124,9 +125,11 @@ public:
 
   static type_info  make_user_defined(udef_type_info&&  uti){return type_info(std::move(uti));}
 
-  void  print(FILE*  f=stdout) const noexcept;
+  void  print_id(FILE*  f=stdout) const noexcept;
 
-  void  print_human_readable(FILE*  f=stdout, size_t  offset_base=0) const noexcept;
+  void  print_size_and_align(FILE*  f=stdout) const noexcept;
+
+  void  print(FILE*  f=stdout) const noexcept;
 
 };
 

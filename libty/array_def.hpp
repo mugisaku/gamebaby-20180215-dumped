@@ -33,7 +33,7 @@ public:
   size_t   get_size() const noexcept{return m_element_type_info.get_size()*m_number_of_elements;}
   size_t  get_align() const noexcept{return m_element_type_info.get_align();}
 
-  void  print(FILE*  f, size_t  offset_base) const noexcept;
+  void  print(FILE*  f=stdout) const noexcept;
 
 };
 

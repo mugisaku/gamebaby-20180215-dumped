@@ -11,22 +11,22 @@ namespace ty_types{
 
 udef_type_info::
 udef_type_info(array_def&&  arr) noexcept:
-m_kind(user_defined_type_kind::array){new(&m_set) array_def(std::move(arr));}
+m_kind(udef_type_kind::array){new(&m_set) array_def(std::move(arr));}
 
 
 udef_type_info::
 udef_type_info(struct_def&&  st) noexcept:
-m_kind(user_defined_type_kind::struct_){new(&m_set) struct_def(std::move(st));}
+m_kind(udef_type_kind::struct_){new(&m_set) struct_def(std::move(st));}
 
 
 udef_type_info::
 udef_type_info(enum_def&&  en) noexcept:
-m_kind(user_defined_type_kind::enum_){new(&m_set) enum_def(std::move(en));}
+m_kind(udef_type_kind::enum_){new(&m_set) enum_def(std::move(en));}
 
 
 udef_type_info::
 udef_type_info(union_def&&  un) noexcept:
-m_kind(user_defined_type_kind::union_){new(&m_set) union_def(std::move(un));}
+m_kind(udef_type_kind::union_){new(&m_set) union_def(std::move(un));}
 
 
 
@@ -41,16 +41,16 @@ operator=(const udef_type_info&  rhs) noexcept
 
     switch(m_kind)
     {
-  case(user_defined_type_kind::array):
+  case(udef_type_kind::array):
       new(&m_set) array_def(rhs.m_set.arr);
       break;
-  case(user_defined_type_kind::struct_):
+  case(udef_type_kind::struct_):
       new(&m_set) struct_def(rhs.m_set.st);
       break;
-  case(user_defined_type_kind::enum_):
+  case(udef_type_kind::enum_):
       new(&m_set) enum_def(rhs.m_set.en);
       break;
-  case(user_defined_type_kind::union_):
+  case(udef_type_kind::union_):
       new(&m_set) union_def(rhs.m_set.un);
       break;
     }
@@ -70,16 +70,16 @@ operator=(udef_type_info&&  rhs) noexcept
 
     switch(m_kind)
     {
-  case(user_defined_type_kind::array):
+  case(udef_type_kind::array):
       new(&m_set) array_def(std::move(rhs.m_set.arr));
       break;
-  case(user_defined_type_kind::struct_):
+  case(udef_type_kind::struct_):
       new(&m_set) struct_def(std::move(rhs.m_set.st));
       break;
-  case(user_defined_type_kind::enum_):
+  case(udef_type_kind::enum_):
       new(&m_set) enum_def(std::move(rhs.m_set.en));
       break;
-  case(user_defined_type_kind::union_):
+  case(udef_type_kind::union_):
       new(&m_set) union_def(std::move(rhs.m_set.un));
       break;
     }
@@ -97,22 +97,22 @@ clear() noexcept
 {
     switch(m_kind)
     {
-  case(user_defined_type_kind::array):
+  case(udef_type_kind::array):
       m_set.arr.~array_def();
       break;
-  case(user_defined_type_kind::struct_):
+  case(udef_type_kind::struct_):
       m_set.st.~struct_def();
       break;
-  case(user_defined_type_kind::enum_):
+  case(udef_type_kind::enum_):
       m_set.en.~enum_def();
       break;
-  case(user_defined_type_kind::union_):
+  case(udef_type_kind::union_):
       m_set.un.~union_def();
       break;
     }
 
 
-  m_kind = user_defined_type_kind::null;
+  m_kind = udef_type_kind::null;
 }
 
 
@@ -127,10 +127,10 @@ get_id() const noexcept
 
     switch(m_kind)
     {
-  case(user_defined_type_kind::array  ): return arr_s;break;
-  case(user_defined_type_kind::struct_): return st_s;break;
-  case(user_defined_type_kind::enum_  ): return en_s;break;
-  case(user_defined_type_kind::union_ ): return un_s;break;
+  case(udef_type_kind::array  ): return arr_s;break;
+  case(udef_type_kind::struct_): return st_s;break;
+  case(udef_type_kind::enum_  ): return en_s;break;
+  case(udef_type_kind::union_ ): return un_s;break;
     }
 }
 
@@ -143,10 +143,10 @@ get_size() const noexcept
 
     switch(m_kind)
     {
-  case(user_defined_type_kind::array  ): sz = m_set.arr.get_size();break;
-  case(user_defined_type_kind::struct_): sz = m_set.st.get_size();break;
-  case(user_defined_type_kind::enum_  ): sz = m_set.en.get_size();break;
-  case(user_defined_type_kind::union_ ): sz = m_set.un.get_size();break;
+  case(udef_type_kind::array  ): sz = m_set.arr.get_size();break;
+  case(udef_type_kind::struct_): sz = m_set.st.get_size();break;
+  case(udef_type_kind::enum_  ): sz = m_set.en.get_size();break;
+  case(udef_type_kind::union_ ): sz = m_set.un.get_size();break;
     }
 
 
@@ -160,10 +160,10 @@ get_align() const noexcept
 {
     switch(m_kind)
     {
-  case(user_defined_type_kind::array  ): return m_set.arr.get_align();
-  case(user_defined_type_kind::struct_): return m_set.st.get_align();
-  case(user_defined_type_kind::enum_  ): return m_set.en.get_align();
-  case(user_defined_type_kind::union_ ): return m_set.un.get_align();
+  case(udef_type_kind::array  ): return m_set.arr.get_align();
+  case(udef_type_kind::struct_): return m_set.st.get_align();
+  case(udef_type_kind::enum_  ): return m_set.en.get_align();
+  case(udef_type_kind::union_ ): return m_set.un.get_align();
     }
 
 
@@ -173,33 +173,21 @@ get_align() const noexcept
 
 void
 udef_type_info::
-print(FILE*  f, size_t  offset_base) const noexcept
+print(FILE*  f) const noexcept
 {
     switch(m_kind)
     {
-  case(user_defined_type_kind::array):
-      {
-        auto&  arr = m_set.arr;
-
-        arr.get_element_type_info().print_human_readable(f,offset_base);
-
-        fprintf(f,"[%zu]",arr.get_number_of_elements());
-      }
+  case(udef_type_kind::array):
+      m_set.arr.print(f);
       break;
-  case(user_defined_type_kind::struct_):
-      fprintf(f,"struct{\n");
-      m_set.st.print(f,offset_base);
-      fprintf(f,"\n}\n");
+  case(udef_type_kind::struct_):
+      fprintf(f,"struct");
      break;
-  case(user_defined_type_kind::enum_):
-      fprintf(f,"enum{\n");
-      m_set.en.print(f);
-      fprintf(f,"\n}\n");
+  case(udef_type_kind::enum_):
+      fprintf(f,"enum");
      break;
-  case(user_defined_type_kind::union_):
-      fprintf(f,"union{\n");
-      m_set.un.print(f);
-      fprintf(f,"\n}\n");
+  case(udef_type_kind::union_):
+      fprintf(f,"union");
       break;
     }
 }

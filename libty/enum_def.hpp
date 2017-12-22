@@ -8,6 +8,7 @@
 #include<string>
 #include<string_view>
 #include<vector>
+#include"print.hpp"
 
 
 
@@ -52,7 +53,7 @@ public:
   size_t   get_size() const noexcept{return 4;}
   size_t  get_align() const noexcept{return 4;}
 
-  void  print(FILE*  f) const noexcept;
+  void  print(FILE*  f=stdout) const noexcept;
 
 };
 

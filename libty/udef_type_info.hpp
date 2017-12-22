@@ -15,7 +15,7 @@ namespace ty_types{
 
 
 enum class
-user_defined_type_kind
+udef_type_kind
 {
   null,
   function,
@@ -30,7 +30,7 @@ user_defined_type_kind
 class
 udef_type_info
 {
-  user_defined_type_kind  m_kind=user_defined_type_kind::null;
+  udef_type_kind  m_kind=udef_type_kind::null;
 
   union set_t{
      array_def  arr;
@@ -61,6 +61,16 @@ public:
   bool  operator!=(const udef_type_info&  rhs) const noexcept{return get_id() != rhs.get_id();}
 
 
+  bool  is_struct() const noexcept{return m_kind == udef_type_kind::struct_;}
+  bool    is_enum() const noexcept{return m_kind == udef_type_kind::enum_;}
+  bool   is_union() const noexcept{return m_kind == udef_type_kind::union_;}
+  bool   is_array() const noexcept{return m_kind == udef_type_kind::array;}
+
+  const struct_def&  get_struct_def() const noexcept{return m_set.st;}
+  const   enum_def&    get_enum_def() const noexcept{return m_set.en;}
+  const  union_def&   get_union_def() const noexcept{return m_set.un;}
+  const  array_def&   get_array_def() const noexcept{return m_set.arr;}
+
   void  clear() noexcept;
 
   const std::string&  get_id() const noexcept;
@@ -68,9 +78,9 @@ public:
   size_t   get_size() const noexcept;
   size_t  get_align() const noexcept;
 
-  user_defined_type_kind  get_kind() const noexcept{return m_kind;}
+  udef_type_kind  get_kind() const noexcept{return m_kind;}
 
-  void  print(FILE*  f=stdout, size_t  offset_base=0) const noexcept;
+  void  print(FILE*  f=stdout) const noexcept;
 
 };
 
@@ -79,7 +89,7 @@ public:
 
 
 using ty_types::udef_type_info;
-using ty_types::user_defined_type_kind;
+using ty_types::udef_type_kind;
 
 
 }

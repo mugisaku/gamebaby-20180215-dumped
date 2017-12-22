@@ -30,6 +30,8 @@ print(FILE*  f) const noexcept
 {
     for(auto&  en: m_enumerator_list)
     {
+      print_indent(f);
+
       en.print(f);
 
       fprintf(f,"\n");

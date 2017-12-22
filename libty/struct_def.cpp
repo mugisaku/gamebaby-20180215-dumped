@@ -25,11 +25,13 @@ append(const type_info&  ti, std::string  name) noexcept
 
 void
 struct_def::
-print(FILE*  f, size_t  offset_base) const noexcept
+print(FILE*  f) const noexcept
 {
     for(auto&  decl: m_member_list)
     {
-      decl.print(f,offset_base);
+      print_indent(f);
+
+      decl.print(f);
 
       fprintf(f,"\n");
     }

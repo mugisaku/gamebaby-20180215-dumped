@@ -30,14 +30,14 @@ public:
 
   size_t  get_offset() const noexcept{return m_offset;};
 
-  void  print(FILE*  f, size_t  offset_base) const noexcept
+  void  print(FILE*  f=stdout, size_t  offset_base=0) const noexcept
   {
     const size_t  offset = offset_base+m_offset;
     const size_t   align = get_type_info().get_align();
 
-    member_decl::print(f,offset);
+    member_decl::print(f);
 
-    fprintf(f,"(offset %zu) %s",offset,(align && (offset%align))? "ng":"ok");
+    fprintf(f,"(offset %zu) %s",offset,(align && (offset%align))? "wrong":"right");
   }
 
 };
@@ -61,7 +61,7 @@ public:
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
 
-  void  print(FILE*  f, size_t  offset_base) const noexcept;
+  void  print(FILE*  f=stdout) const noexcept;
 
 };
 

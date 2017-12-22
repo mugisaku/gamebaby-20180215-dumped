@@ -3,6 +3,7 @@
 
 
 #include"type_info.hpp"
+#include"print.hpp"
 #include<vector>
 
 
@@ -41,9 +42,9 @@ public:
 
   const std::string&  get_name() const noexcept{return m_name;}
 
-  void  print(FILE*  f, size_t  offset_base) const noexcept
+  void  print(FILE*  f) const noexcept
   {
-    m_type_info.print_human_readable(f,offset_base);
+    m_type_info.print(f);
 
     fprintf(f,"  %s",m_name.data());
   }

@@ -33,7 +33,7 @@ public:
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
 
-  void  print(FILE*  f) const noexcept;
+  void  print(FILE*  f=stdout) const noexcept;
 
 };
 

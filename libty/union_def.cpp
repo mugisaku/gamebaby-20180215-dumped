@@ -24,7 +24,9 @@ print(FILE*  f) const noexcept
 {
     for(auto&  decl: m_decl_list)
     {
-      decl.print(f,0);
+      print_indent(f);
+
+      decl.print(f);
 
       fprintf(f,"\n");
     }

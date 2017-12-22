@@ -8,42 +8,48 @@ namespace ty_types{
 
 void
 type_info::
-print(FILE*  f) const noexcept
+print_id(FILE*  f) const noexcept
 {
-  fprintf(f,"   id %s\n",get_id().data());
-  fprintf(f," size %zu\n",get_size());
-  fprintf(f,"align %zu\n",get_align());
+  fprintf(f,"%s",get_id().data());
 }
 
 
 void
 type_info::
-print_human_readable(FILE*  f, size_t  offset_base) const noexcept
+print_size_and_align(FILE*  f) const noexcept
+{
+  fprintf(f,"(size %zu, align %zu)",get_size(),get_align());
+}
+
+
+void
+type_info::
+print(FILE*  f) const noexcept
 {
     switch(m_data->kind)
     {
   case(type_kind::const_qualified):
       fprintf(f,"const ");
 
-      m_data->definition.ti.print_human_readable(f);
+      m_data->definition.ti.print(f);
       break;
   case(type_kind::volatile_qualified):
       fprintf(f,"volatile ");
 
-      m_data->definition.ti.print_human_readable(f);
+      m_data->definition.ti.print(f);
       break;
   case(type_kind::const_volatile_qualified):
       fprintf(f,"const volatile ");
 
-      m_data->definition.ti.print_human_readable(f);
+      m_data->definition.ti.print(f);
       break;
   case(type_kind::pointer):
-      m_data->definition.ti.print_human_readable(f);
+      m_data->definition.ti.print(f);
 
       fprintf(f,"*");
       break;
   case(type_kind::reference):
-      m_data->definition.ti.print_human_readable(f);
+      m_data->definition.ti.print(f);
 
       fprintf(f,"&");
       break;
@@ -63,15 +69,12 @@ print_human_readable(FILE*  f, size_t  offset_base) const noexcept
       fprintf(f,"uint%d",8*m_data->definition.size);
       break;
   case(type_kind::user_defined):
-      m_data->definition.uti.print(f,offset_base);
+      m_data->definition.uti.print(f);
       break;
   case(type_kind::function_pointer):
       m_data->definition.sig.print(f);
       break;
     }
-
-
-  fprintf(f,"(size %zu, align %zu)",get_size(),get_align());
 }
 
 
