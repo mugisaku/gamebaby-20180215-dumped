@@ -80,6 +80,8 @@ public:
 
   udef_type_kind  get_kind() const noexcept{return m_kind;}
 
+  bool  test_align(size_t  offset_base) const noexcept;
+
   void  print(FILE*  f=stdout) const noexcept;
 
 };

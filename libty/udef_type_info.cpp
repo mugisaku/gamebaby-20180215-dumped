@@ -171,6 +171,28 @@ get_align() const noexcept
 }
 
 
+bool
+udef_type_info::
+test_align(size_t  offset_base) const noexcept
+{
+    switch(m_kind)
+    {
+  case(udef_type_kind::array):
+      break;
+  case(udef_type_kind::struct_):
+      break;
+  case(udef_type_kind::enum_):
+      return m_set.st.test_align(offset_base);
+      break;
+  case(udef_type_kind::union_):
+      break;
+    }
+
+
+  return true;
+}
+
+
 void
 udef_type_info::
 print(FILE*  f) const noexcept
@@ -182,10 +204,10 @@ print(FILE*  f) const noexcept
       break;
   case(udef_type_kind::struct_):
       fprintf(f,"struct");
-     break;
+      break;
   case(udef_type_kind::enum_):
       fprintf(f,"enum");
-     break;
+      break;
   case(udef_type_kind::union_):
       fprintf(f,"union");
       break;

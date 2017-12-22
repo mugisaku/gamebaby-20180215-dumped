@@ -125,6 +125,8 @@ public:
 
   static type_info  make_user_defined(udef_type_info&&  uti){return type_info(std::move(uti));}
 
+  bool  test_align(size_t  offset_base=0) const noexcept;
+
   void  print_id(FILE*  f=stdout) const noexcept;
 
   void  print_size_and_align(FILE*  f=stdout) const noexcept;

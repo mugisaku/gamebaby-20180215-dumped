@@ -181,6 +181,43 @@ get_udef_type_info() const noexcept
 }
 
 
+bool
+type_info::
+test_align(size_t  offset_base) const noexcept
+{
+  auto  a = get_align();
+
+    if(!a || (offset_base%a))
+    {
+      return false;
+    }
+
+
+    switch(m_data->kind)
+    {
+  case(type_kind::const_qualified):
+  case(type_kind::volatile_qualified):
+  case(type_kind::const_volatile_qualified):
+  case(type_kind::pointer):
+  case(type_kind::reference):
+  case(type_kind::null_pointer):
+  case(type_kind::generic_pointer):
+  case(type_kind::function_pointer):
+  case(type_kind::boolean):
+  case(type_kind::integral):
+  case(type_kind::unsigned_integral):
+      return true;
+      break;
+  case(type_kind::user_defined):
+      return m_data->definition.uti.test_align(offset_base);
+      break;
+    }
+
+
+  return false;
+}
+
+
 }}
 
 

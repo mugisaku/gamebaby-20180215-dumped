@@ -23,6 +23,25 @@ append(const type_info&  ti, std::string  name) noexcept
 }
 
 
+bool
+struct_def::
+test_align(size_t  offset_base) const noexcept
+{
+    for(auto&  decl: m_member_list)
+    {
+        if(!decl.test_align(offset_base))
+        {
+          printf("[test align failed] %s\n",decl.get_name().data());
+
+          return false;
+        }
+    }
+
+
+  return true;
+}
+
+
 void
 struct_def::
 print(FILE*  f) const noexcept
