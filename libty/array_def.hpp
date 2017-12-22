@@ -1,13 +1,8 @@
-#ifndef array_definition_HPP
-#define array_definition_HPP
+#ifndef array_def_HPP
+#define array_def_HPP
 
 
-#include<cstddef>
-#include<cstdint>
-#include<cstdio>
-#include<string>
-#include<string_view>
-#include"variable_declaration.hpp"
+#include"type_info.hpp"
 
 
 
@@ -19,15 +14,15 @@ class type_info;
 
 
 struct
-array_definition
+array_def
 {
   type_info  m_element_type_info;
 
   size_t  m_number_of_elements;
 
 public:
-  array_definition() noexcept{}
-  array_definition(const type_info&  ti, size_t  n) noexcept{set(ti,n);}
+  array_def() noexcept{}
+  array_def(const type_info&  ti, size_t  n) noexcept{set(ti,n);}
 
   void  set(const type_info&  ti, size_t  n) noexcept;
 
@@ -46,7 +41,7 @@ public:
 }
 
 
-using ty_types::array_definition;
+using ty_types::array_def;
 
 
 }

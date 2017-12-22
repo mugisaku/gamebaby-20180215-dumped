@@ -1,5 +1,5 @@
-#ifndef enum_definition_HPP
-#define enum_definition_HPP
+#ifndef enum_def_HPP
+#define enum_def_HPP
 
 
 #include<cstddef>
@@ -37,14 +37,14 @@ public:
 
 
 class
-enum_definition
+enum_def
 {
   std::vector<enumerator>  m_enumerator_list;
 
   int  m_last_value=0;
 
 public:
-  enum_definition() noexcept{}
+  enum_def() noexcept{}
 
   void  append(std::string_view  name            ) noexcept;
   void  append(std::string_view  name, int  value) noexcept;
@@ -61,7 +61,7 @@ public:
 
 
 using ty_types::enumerator;
-using ty_types::enum_definition;
+using ty_types::enum_def;
 
 
 

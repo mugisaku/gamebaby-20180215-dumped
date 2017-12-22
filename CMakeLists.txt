@@ -86,11 +86,11 @@ set(LIBTY_SOURCES
   libty/type_info__add.cpp
   libty/type_info__remove.cpp
   libty/type_info__print.cpp
-  libty/user_defined_type_declaration.cpp
-  libty/array_definition.cpp
-  libty/enum_definition.cpp
-  libty/struct_definition.cpp
-  libty/union_definition.cpp
+  libty/udef_type_info.cpp
+  libty/array_def.cpp
+  libty/enum_def.cpp
+  libty/struct_def.cpp
+  libty/union_def.cpp
 )
 
 

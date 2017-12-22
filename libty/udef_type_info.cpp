@@ -1,4 +1,4 @@
-#include"user_defined_type_declaration.hpp"
+#include"udef_type_info.hpp"
 #include<new>
 
 
@@ -9,31 +9,31 @@ namespace ty_types{
 
 
 
-user_defined_type_declaration::
-user_defined_type_declaration(array_definition&&  arr) noexcept:
-m_kind(user_defined_type_kind::array){new(&m_set) array_definition(std::move(arr));}
+udef_type_info::
+udef_type_info(array_def&&  arr) noexcept:
+m_kind(user_defined_type_kind::array){new(&m_set) array_def(std::move(arr));}
 
 
-user_defined_type_declaration::
-user_defined_type_declaration(struct_definition&&  st) noexcept:
-m_kind(user_defined_type_kind::struct_){new(&m_set) struct_definition(std::move(st));}
+udef_type_info::
+udef_type_info(struct_def&&  st) noexcept:
+m_kind(user_defined_type_kind::struct_){new(&m_set) struct_def(std::move(st));}
 
 
-user_defined_type_declaration::
-user_defined_type_declaration(enum_definition&&  en) noexcept:
-m_kind(user_defined_type_kind::enum_){new(&m_set) enum_definition(std::move(en));}
+udef_type_info::
+udef_type_info(enum_def&&  en) noexcept:
+m_kind(user_defined_type_kind::enum_){new(&m_set) enum_def(std::move(en));}
 
 
-user_defined_type_declaration::
-user_defined_type_declaration(union_definition&&  un) noexcept:
-m_kind(user_defined_type_kind::union_){new(&m_set) union_definition(std::move(un));}
+udef_type_info::
+udef_type_info(union_def&&  un) noexcept:
+m_kind(user_defined_type_kind::union_){new(&m_set) union_def(std::move(un));}
 
 
 
 
-user_defined_type_declaration&
-user_defined_type_declaration::
-operator=(const user_defined_type_declaration&  rhs) noexcept
+udef_type_info&
+udef_type_info::
+operator=(const udef_type_info&  rhs) noexcept
 {
   clear();
 
@@ -42,16 +42,16 @@ operator=(const user_defined_type_declaration&  rhs) noexcept
     switch(m_kind)
     {
   case(user_defined_type_kind::array):
-      new(&m_set) array_definition(rhs.m_set.arr);
+      new(&m_set) array_def(rhs.m_set.arr);
       break;
   case(user_defined_type_kind::struct_):
-      new(&m_set) struct_definition(rhs.m_set.st);
+      new(&m_set) struct_def(rhs.m_set.st);
       break;
   case(user_defined_type_kind::enum_):
-      new(&m_set) enum_definition(rhs.m_set.en);
+      new(&m_set) enum_def(rhs.m_set.en);
       break;
   case(user_defined_type_kind::union_):
-      new(&m_set) union_definition(rhs.m_set.un);
+      new(&m_set) union_def(rhs.m_set.un);
       break;
     }
 
@@ -60,9 +60,9 @@ operator=(const user_defined_type_declaration&  rhs) noexcept
 }
 
 
-user_defined_type_declaration&
-user_defined_type_declaration::
-operator=(user_defined_type_declaration&&  rhs) noexcept
+udef_type_info&
+udef_type_info::
+operator=(udef_type_info&&  rhs) noexcept
 {
   clear();
 
@@ -71,16 +71,16 @@ operator=(user_defined_type_declaration&&  rhs) noexcept
     switch(m_kind)
     {
   case(user_defined_type_kind::array):
-      new(&m_set) array_definition(std::move(rhs.m_set.arr));
+      new(&m_set) array_def(std::move(rhs.m_set.arr));
       break;
   case(user_defined_type_kind::struct_):
-      new(&m_set) struct_definition(std::move(rhs.m_set.st));
+      new(&m_set) struct_def(std::move(rhs.m_set.st));
       break;
   case(user_defined_type_kind::enum_):
-      new(&m_set) enum_definition(std::move(rhs.m_set.en));
+      new(&m_set) enum_def(std::move(rhs.m_set.en));
       break;
   case(user_defined_type_kind::union_):
-      new(&m_set) union_definition(std::move(rhs.m_set.un));
+      new(&m_set) union_def(std::move(rhs.m_set.un));
       break;
     }
 
@@ -92,22 +92,22 @@ operator=(user_defined_type_declaration&&  rhs) noexcept
 
 
 void
-user_defined_type_declaration::
+udef_type_info::
 clear() noexcept
 {
     switch(m_kind)
     {
   case(user_defined_type_kind::array):
-      m_set.arr.~array_definition();
+      m_set.arr.~array_def();
       break;
   case(user_defined_type_kind::struct_):
-      m_set.st.~struct_definition();
+      m_set.st.~struct_def();
       break;
   case(user_defined_type_kind::enum_):
-      m_set.en.~enum_definition();
+      m_set.en.~enum_def();
       break;
   case(user_defined_type_kind::union_):
-      m_set.un.~union_definition();
+      m_set.un.~union_def();
       break;
     }
 
@@ -117,7 +117,7 @@ clear() noexcept
 
 
 const std::string&
-user_defined_type_declaration::
+udef_type_info::
 get_id() const noexcept
 {
   static const std::string  arr_s("arr");
@@ -136,7 +136,7 @@ get_id() const noexcept
 
 
 size_t
-user_defined_type_declaration::
+udef_type_info::
 get_size() const noexcept
 {
   size_t  sz = 0;
@@ -155,7 +155,7 @@ get_size() const noexcept
 
 
 size_t
-user_defined_type_declaration::
+udef_type_info::
 get_align() const noexcept
 {
     switch(m_kind)
@@ -172,7 +172,7 @@ get_align() const noexcept
 
 
 void
-user_defined_type_declaration::
+udef_type_info::
 print(FILE*  f, size_t  offset_base) const noexcept
 {
     switch(m_kind)
@@ -187,17 +187,19 @@ print(FILE*  f, size_t  offset_base) const noexcept
       }
       break;
   case(user_defined_type_kind::struct_):
-      fprintf(f,"struct ");
-
+      fprintf(f,"struct{\n");
       m_set.st.print(f,offset_base);
-      break;
+      fprintf(f,"\n}\n");
+     break;
   case(user_defined_type_kind::enum_):
-      fprintf(f,"enum ");
+      fprintf(f,"enum{\n");
       m_set.en.print(f);
-      break;
+      fprintf(f,"\n}\n");
+     break;
   case(user_defined_type_kind::union_):
-      fprintf(f,"union ");
+      fprintf(f,"union{\n");
       m_set.un.print(f);
+      fprintf(f,"\n}\n");
       break;
     }
 }

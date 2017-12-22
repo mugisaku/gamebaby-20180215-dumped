@@ -1,4 +1,4 @@
-#include"union_definition.hpp"
+#include"union_def.hpp"
 #include<algorithm>
 
 
@@ -8,10 +8,10 @@ namespace ty_types{
 
 
 void
-union_definition::
+union_def::
 append(const type_info&  ti, std::string  name) noexcept
 {
-  m_declaration_list.emplace_back(ti,name);
+  m_decl_list.emplace_back(ti,name);
 
   m_size  = std::max(m_size ,ti.get_size() );
   m_align = std::max(m_align,ti.get_align());
@@ -19,10 +19,10 @@ append(const type_info&  ti, std::string  name) noexcept
 
 
 void
-union_definition::
+union_def::
 print(FILE*  f) const noexcept
 {
-    for(auto&  decl: m_declaration_list)
+    for(auto&  decl: m_decl_list)
     {
       decl.print(f,0);
 

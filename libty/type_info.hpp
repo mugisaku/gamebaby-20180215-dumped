@@ -35,8 +35,8 @@ type_kind
 };
 
 
-class type_info;
-class user_defined_type_declaration;
+class      type_info;
+class udef_type_info;
 
 
 constexpr size_t  pointer_type_size = 4;
@@ -54,7 +54,7 @@ type_info
 
   type_info(type_kind  kind, std::string_view  id, size_t  size) noexcept;
   type_info(type_kind  kind, std::string_view  id, const type_info&  source) noexcept;
-  type_info(user_defined_type_declaration&&  decl) noexcept;
+  type_info(udef_type_info&&  uti) noexcept;
 
 public:
   type_info(                      ) noexcept{}
@@ -93,7 +93,7 @@ public:
 
 
   const type_info&  get_source_type_info() const noexcept;
-  const user_defined_type_declaration&  get_user_defined_type_declaration() const noexcept;
+  const udef_type_info&  get_udef_type_info() const noexcept;
 
   bool              is_const() const noexcept{return get_kind() == type_kind::const_qualified;}
   bool           is_volatile() const noexcept{return get_kind() == type_kind::volatile_qualified;}
@@ -122,7 +122,7 @@ public:
   static type_info  make_nullptr() noexcept{return type_info(type_kind::null_pointer,"np",pointer_type_size);}
   static type_info  make_geneptr() noexcept{return type_info(type_kind::generic_pointer,"gp",pointer_type_size);}
 
-  static type_info  make_user_defined(user_defined_type_declaration&&  decl){return type_info(std::move(decl));}
+  static type_info  make_user_defined(udef_type_info&&  uti){return type_info(std::move(uti));}
 
   void  print(FILE*  f=stdout) const noexcept;
 

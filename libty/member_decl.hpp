@@ -1,5 +1,5 @@
-#ifndef variable_declaration_HPP
-#define variable_declaration_HPP
+#ifndef member_decl_HPP
+#define member_decl_HPP
 
 
 #include"type_info.hpp"
@@ -26,14 +26,14 @@ get_aligned_offset(size_t  offset, size_t  align) noexcept
 
 
 class
-variable_declaration
+member_decl
 {
   type_info  m_type_info;
 
   std::string  m_name;
 
 public:
-  variable_declaration(const type_info&  type_info, std::string_view  name) noexcept:
+  member_decl(const type_info&  type_info, std::string_view  name) noexcept:
   m_type_info(type_info),
   m_name(name){}
 
@@ -56,7 +56,7 @@ public:
 }
 
 
-using ty_types::variable_declaration;
+using ty_types::member_decl;
 
 
 }

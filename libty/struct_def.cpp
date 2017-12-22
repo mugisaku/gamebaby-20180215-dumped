@@ -1,4 +1,4 @@
-#include"struct_definition.hpp"
+#include"struct_def.hpp"
 
 
 
@@ -7,7 +7,7 @@ namespace ty_types{
 
 
 void
-struct_definition::
+struct_def::
 append(const type_info&  ti, std::string  name) noexcept
 {
   size_t  offset = m_size;
@@ -24,7 +24,7 @@ append(const type_info&  ti, std::string  name) noexcept
 
 
 void
-struct_definition::
+struct_def::
 print(FILE*  f, size_t  offset_base) const noexcept
 {
     for(auto&  decl: m_member_list)

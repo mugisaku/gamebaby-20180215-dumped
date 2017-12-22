@@ -63,7 +63,7 @@ print_human_readable(FILE*  f, size_t  offset_base) const noexcept
       fprintf(f,"uint%d",8*m_data->definition.size);
       break;
   case(type_kind::user_defined):
-      m_data->definition.decl.print(f,offset_base);
+      m_data->definition.uti.print(f,offset_base);
       break;
   case(type_kind::function_pointer):
       m_data->definition.sig.print(f);

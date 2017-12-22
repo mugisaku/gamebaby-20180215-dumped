@@ -1,5 +1,5 @@
-#ifndef struct_definition_HPP
-#define struct_definition_HPP
+#ifndef struct_def_HPP
+#define struct_def_HPP
 
 
 #include<cstddef>
@@ -7,7 +7,7 @@
 #include<cstdio>
 #include<string>
 #include<string_view>
-#include"variable_declaration.hpp"
+#include"member_decl.hpp"
 
 
 
@@ -19,29 +19,32 @@ class type_info;
 
 
 class
-struct_member: public variable_declaration
+struct_member: public member_decl
 {
   size_t  m_offset;
 
 public:
   struct_member(const type_info&  type_info, std::string_view  name, size_t  offset) noexcept:
-  variable_declaration(type_info,name),
+  member_decl(type_info,name),
   m_offset(offset){}
 
   size_t  get_offset() const noexcept{return m_offset;};
 
   void  print(FILE*  f, size_t  offset_base) const noexcept
   {
-    variable_declaration::print(f,offset_base+m_offset);
+    const size_t  offset = offset_base+m_offset;
+    const size_t   align = get_type_info().get_align();
 
-    fprintf(f,"(offset %zu)",offset_base+m_offset);
+    member_decl::print(f,offset);
+
+    fprintf(f,"(offset %zu) %s",offset,(align && (offset%align))? "ng":"ok");
   }
 
 };
 
 
 struct
-struct_definition
+struct_def
 {
   std::vector<struct_member>  m_member_list;
 
@@ -49,7 +52,7 @@ struct_definition
   size_t  m_align=0;
 
 public:
-  struct_definition() noexcept{}
+  struct_def() noexcept{}
 
   void  append(const type_info&  ti, std::string  name) noexcept;
 
@@ -66,7 +69,7 @@ public:
 }
 
 
-using ty_types::struct_definition;
+using ty_types::struct_def;
 
 
 }

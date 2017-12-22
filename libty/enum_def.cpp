@@ -1,4 +1,4 @@
-#include"enum_definition.hpp"
+#include"enum_def.hpp"
 
 
 
@@ -7,7 +7,7 @@ namespace ty_types{
 
 
 void
-enum_definition::
+enum_def::
 append(std::string_view  name) noexcept
 {
   m_enumerator_list.emplace_back(name,m_last_value++);
@@ -15,7 +15,7 @@ append(std::string_view  name) noexcept
 
 
 void
-enum_definition::
+enum_def::
 append(std::string_view  name, int  value) noexcept
 {
   m_last_value = value;
@@ -25,7 +25,7 @@ append(std::string_view  name, int  value) noexcept
 
 
 void
-enum_definition::
+enum_def::
 print(FILE*  f) const noexcept
 {
     for(auto&  en: m_enumerator_list)

@@ -1,12 +1,12 @@
-#ifndef union_definition_HPP
-#define union_definition_HPP
+#ifndef union_def_HPP
+#define union_def_HPP
 
 
 #include<string>
 #include<string_view>
 #include<cstdint>
 #include<vector>
-#include"variable_declaration.hpp"
+#include"member_decl.hpp"
 
 
 
@@ -18,15 +18,15 @@ class type_info;
 
 
 struct
-union_definition
+union_def
 {
-  std::vector<variable_declaration>  m_declaration_list;
+  std::vector<member_decl>  m_decl_list;
 
   size_t  m_size =0;
   size_t  m_align=0;
 
 public:
-  union_definition() noexcept{}
+  union_def() noexcept{}
 
   void  append(const type_info&  ti, std::string  name) noexcept;
 
@@ -41,7 +41,7 @@ public:
 }
 
 
-using ty_types::union_definition;
+using ty_types::union_def;
 
 
 }

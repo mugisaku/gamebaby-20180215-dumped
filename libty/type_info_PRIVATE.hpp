@@ -3,7 +3,7 @@
 
 
 #include"type_info.hpp"
-#include"user_defined_type_declaration.hpp"
+#include"udef_type_info.hpp"
 #include"signature.hpp"
 
 
@@ -26,7 +26,7 @@ data
 
     type_info  ti;
 
-    user_defined_type_declaration  decl;
+    udef_type_info  uti;
 
     signature  sig;
 
@@ -57,7 +57,7 @@ data
         definition.sig.~signature();
         break;
     case(type_kind::user_defined):
-        definition.decl.~user_defined_type_declaration();
+        definition.uti.~udef_type_info();
         break;
       }
   }

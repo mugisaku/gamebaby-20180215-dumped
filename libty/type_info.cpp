@@ -32,13 +32,13 @@ m_data(new data)
 
 
 type_info::
-type_info(user_defined_type_declaration&&  decl) noexcept:
+type_info(udef_type_info&&  uti) noexcept:
 m_data(new data)
 {
   m_data->kind = type_kind::user_defined;
-  m_data->id   =           decl.get_id();
+  m_data->id   =           uti.get_id();
 
-  new(&m_data->definition.decl) user_defined_type_declaration(std::move(decl));
+  new(&m_data->definition.uti) udef_type_info(std::move(uti));
 }
 
 
@@ -126,7 +126,7 @@ get_size() const noexcept
       return m_data->definition.size;
       break;
   case(type_kind::user_defined):
-      return m_data->definition.decl.get_size();
+      return m_data->definition.uti.get_size();
       break;
     }
 
@@ -159,7 +159,7 @@ get_align() const noexcept
       return m_data->definition.size;
       break;
   case(type_kind::user_defined):
-      return m_data->definition.decl.get_align();
+      return m_data->definition.uti.get_align();
       break;
     }
 
@@ -173,11 +173,11 @@ type_kind  type_info::get_kind() const noexcept{return m_data->kind;}
 const type_info&  type_info::get_source_type_info() const noexcept{return m_data->definition.ti;}
 
 
-const user_defined_type_declaration&
+const udef_type_info&
 type_info::
-get_user_defined_type_declaration() const noexcept
+get_udef_type_info() const noexcept
 {
-  return m_data->definition.decl;
+  return m_data->definition.uti;
 }
 
 

@@ -7,7 +7,7 @@ using namespace ty;
 int
 main(int  argc, char**  argv)
 {
-  struct_definition  def;
+  struct_def  def;
 
   def.append(type_info::make_i8(),"test");
 
@@ -25,7 +25,7 @@ main(int  argc, char**  argv)
   def.append(type_info::make_i8(),"test");
 
 
-  auto  a_ti = type_info::make_user_defined(user_defined_type_declaration(std::move(def)));
+  auto  a_ti = type_info::make_user_defined(udef_type_info(std::move(def)));
 
   auto  b_ti = a_ti.add_const();
 
