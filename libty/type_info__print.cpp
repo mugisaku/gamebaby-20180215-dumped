@@ -11,18 +11,14 @@ type_info::
 print(FILE*  f) const noexcept
 {
   fprintf(f,"   id %s\n",get_id().data());
-
-    if(is_complete())
-    {
-      fprintf(f," size %zu\n",get_size());
-      fprintf(f,"align %zu\n",get_align());
-    }
+  fprintf(f," size %zu\n",get_size());
+  fprintf(f,"align %zu\n",get_align());
 }
 
 
 void
 type_info::
-print_human_readable(FILE*  f) const noexcept
+print_human_readable(FILE*  f, size_t  offset_base) const noexcept
 {
     switch(m_data->kind)
     {
@@ -51,11 +47,6 @@ print_human_readable(FILE*  f) const noexcept
 
       fprintf(f,"&");
       break;
-  case(type_kind::array):
-      m_data->definition.ti.print_human_readable(f);
-
-      fprintf(f,"[%zu]",m_data->number_of_elements);
-      break;
   case(type_kind::boolean):
       fprintf(f,"bool");
       break;
@@ -71,18 +62,8 @@ print_human_readable(FILE*  f) const noexcept
   case(type_kind::unsigned_integral):
       fprintf(f,"uint%d",8*m_data->definition.size);
       break;
-  case(type_kind::struct_):
-      fprintf(f,"struct ");
-
-      m_data->definition.st->print(f);
-      break;
-  case(type_kind::enum_):
-      fprintf(f,"enum ");
-      m_data->definition.en->print(f);
-      break;
-  case(type_kind::union_):
-      fprintf(f,"union ");
-      m_data->definition.un->print(f);
+  case(type_kind::user_defined):
+      m_data->definition.decl.print(f,offset_base);
       break;
   case(type_kind::function_pointer):
       m_data->definition.sig.print(f);
@@ -90,10 +71,7 @@ print_human_readable(FILE*  f) const noexcept
     }
 
 
-    if(is_complete())
-    {
-      fprintf(f,"(size %zu, align %zu)",get_size(),get_align());
-    }
+  fprintf(f,"(size %zu, align %zu)",get_size(),get_align());
 }
 
 

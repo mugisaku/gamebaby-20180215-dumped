@@ -3,9 +3,7 @@
 
 
 #include"type_info.hpp"
-#include"struct_definition.hpp"
-#include"enum_definition.hpp"
-#include"union_definition.hpp"
+#include"user_defined_type_declaration.hpp"
 
 
 #endif

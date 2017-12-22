@@ -26,7 +26,7 @@ add_const() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::const_qualified,new_id,*this,1);
+  return type_info(type_kind::const_qualified,new_id,*this);
 }
 
 
@@ -50,7 +50,7 @@ add_volatile() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::volatile_qualified,new_id,*this,1);
+  return type_info(type_kind::volatile_qualified,new_id,*this);
 }
 
 
@@ -80,7 +80,7 @@ add_const_volatile() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::const_volatile_qualified,new_id,*this,1);
+  return type_info(type_kind::const_volatile_qualified,new_id,*this);
 }
 
 
@@ -92,7 +92,7 @@ add_pointer() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::pointer,new_id,*this,1);
+  return type_info(type_kind::pointer,new_id,*this);
 }
 
 
@@ -110,7 +110,7 @@ add_reference() const noexcept
 
   new_id += get_id();
 
-  return type_info(type_kind::reference,new_id,*this,1);
+  return type_info(type_kind::reference,new_id,*this);
 }
 
 

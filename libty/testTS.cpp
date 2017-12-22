@@ -7,31 +7,27 @@ using namespace ty;
 int
 main(int  argc, char**  argv)
 {
-  union_declaration  decl("test");
+  struct_definition  def;
 
-  auto  def = std::make_unique<decltype(decl)::definition_type>();
+  def.append(type_info::make_i8(),"test");
 
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i16(),"test");
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i32(),"test");
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i16(),"test");
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i8(),"test");
-  def->append(type_info::make_i16(),"test");
-  def->append(type_info::make_i8(),"test");
+  def.append(type_info::make_i16(),"test");
+  def.append(type_info::make_i8(),"test");
+  def.append(type_info::make_i8(),"test");
+  def.append(type_info::make_i8(),"test");
+  def.append(type_info::make_i32(),"test");
+  def.append(type_info::make_i8(),"test");
+  def.append(type_info::make_i16(),"test");
+  def.append(type_info::make_i8(),"test");
+  def.append(type_info::make_i8(),"test");
+  def.append(type_info::make_i8(),"test");
+  def.append(type_info::make_i16(),"test");
+  def.append(type_info::make_i8(),"test");
 
-  def->finalize();
 
-  decl.set_definition(std::move(def));
+  auto  a_ti = type_info::make_user_defined(user_defined_type_declaration(std::move(def)));
 
-  auto  a_ti = type_info::make_union(decl);
-
-  auto  b_ti = a_ti.remove_extent();
+  auto  b_ti = a_ti.add_const();
 
   a_ti.print_human_readable();
 
@@ -42,7 +38,6 @@ main(int  argc, char**  argv)
   printf("\n");
 
   printf("a and b is %ssame\n",(a_ti == b_ti)? "":"not ");
-
 
   return 0;
 }

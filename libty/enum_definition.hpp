@@ -8,7 +8,6 @@
 #include<string>
 #include<string_view>
 #include<vector>
-#include"declaration.hpp"
 
 
 
@@ -50,15 +49,10 @@ public:
   void  append(std::string_view  name            ) noexcept;
   void  append(std::string_view  name, int  value) noexcept;
 
+  size_t   get_size() const noexcept{return 4;}
+  size_t  get_align() const noexcept{return 4;}
+
   void  print(FILE*  f) const noexcept;
-
-};
-
-
-class
-enum_declaration: public declaration<enum_definition>
-{
-  using declaration::declaration;
 
 };
 
@@ -68,7 +62,6 @@ enum_declaration: public declaration<enum_definition>
 
 using ty_types::enumerator;
 using ty_types::enum_definition;
-using ty_types::enum_declaration;
 
 
 

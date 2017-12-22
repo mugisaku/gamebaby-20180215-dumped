@@ -41,9 +41,9 @@ public:
 
   const std::string&  get_name() const noexcept{return m_name;}
 
-  void  print(FILE*  f) const noexcept
+  void  print(FILE*  f, size_t  offset_base) const noexcept
   {
-    m_type_info.print_human_readable(f);
+    m_type_info.print_human_readable(f,offset_base);
 
     fprintf(f,"  %s",m_name.data());
   }

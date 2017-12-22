@@ -7,9 +7,7 @@
 #include<cstdio>
 #include<string>
 #include<string_view>
-#include<memory>
 #include"variable_declaration.hpp"
-#include"declaration.hpp"
 
 
 
@@ -32,11 +30,11 @@ public:
 
   size_t  get_offset() const noexcept{return m_offset;};
 
-  void  print(FILE*  f) const noexcept
+  void  print(FILE*  f, size_t  offset_base) const noexcept
   {
-    variable_declaration::print(f);
+    variable_declaration::print(f,offset_base+m_offset);
 
-    fprintf(f,"(offset %zu)",m_offset);
+    fprintf(f,"(offset %zu)",offset_base+m_offset);
   }
 
 };
@@ -60,15 +58,8 @@ public:
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
 
-  void  print(FILE*  f) const noexcept;
+  void  print(FILE*  f, size_t  offset_base) const noexcept;
 
-};
-
-
-class
-struct_declaration: public declaration<struct_definition>
-{
-  using declaration::declaration;
 };
 
 
@@ -76,7 +67,6 @@ struct_declaration: public declaration<struct_definition>
 
 
 using ty_types::struct_definition;
-using ty_types::struct_declaration;
 
 
 }

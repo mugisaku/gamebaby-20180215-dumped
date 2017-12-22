@@ -40,7 +40,6 @@ remove_const_volatile() const noexcept
 
 type_info  type_info::remove_pointer()   const noexcept{return   is_pointer()? m_data->definition.ti:*this;}
 type_info  type_info::remove_reference() const noexcept{return is_reference()? m_data->definition.ti:*this;}
-type_info  type_info::remove_extent()    const noexcept{return     is_array()? m_data->definition.ti:*this;}
 
 
 

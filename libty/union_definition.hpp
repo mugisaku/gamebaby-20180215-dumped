@@ -6,9 +6,7 @@
 #include<string_view>
 #include<cstdint>
 #include<vector>
-#include<memory>
 #include"variable_declaration.hpp"
-#include"declaration.hpp"
 
 
 
@@ -32,8 +30,6 @@ public:
 
   void  append(const type_info&  ti, std::string  name) noexcept;
 
-  void  finalize() noexcept;
-
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
 
@@ -42,18 +38,10 @@ public:
 };
 
 
-class
-union_declaration: public declaration<union_definition>
-{
-  using declaration::declaration;
-};
-
-
 }
 
 
 using ty_types::union_definition;
-using ty_types::union_declaration;
 
 
 }
