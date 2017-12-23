@@ -32,13 +32,20 @@ type_kind
   reference,
   rvalue_reference,
   function_pointer,
-  user_defined,
+
+  enum_,
+  array,
+  union_,
+  struct_,
 
 };
 
 
-class      type_info;
-class udef_type_info;
+class type_info;
+class  array_def;
+class   enum_def;
+class  union_def;
+class struct_def;
 
 
 constexpr size_t  pointer_type_size = 4;
@@ -56,7 +63,10 @@ type_info
 
   type_info(type_kind  kind, std::string_view  id, size_t  size) noexcept;
   type_info(type_kind  kind, std::string_view  id, const type_info&  source) noexcept;
-  type_info(udef_type_info&&  uti) noexcept;
+  type_info(array_def&&  def) noexcept;
+  type_info(enum_def&&  def) noexcept;
+  type_info(union_def&&  def) noexcept;
+  type_info(struct_def&&  def) noexcept;
 
 public:
   type_info(                      ) noexcept{}
@@ -95,9 +105,6 @@ public:
   type_kind  get_kind() const noexcept;
 
 
-  const type_info&  get_source_type_info() const noexcept;
-  const udef_type_info&  get_udef_type_info() const noexcept;
-
   bool              is_const() const noexcept{return get_kind() == type_kind::const_qualified;}
   bool           is_volatile() const noexcept{return get_kind() == type_kind::volatile_qualified;}
   bool     is_const_volatile() const noexcept{return get_kind() == type_kind::const_volatile_qualified;}
@@ -111,7 +118,19 @@ public:
   bool   is_function_pointer() const noexcept{return get_kind() == type_kind::function_pointer;}
   bool          is_reference() const noexcept{return get_kind() == type_kind::reference;}
   bool   is_rvalue_reference() const noexcept{return get_kind() == type_kind::rvalue_reference;}
-  bool       is_user_defined() const noexcept{return get_kind() == type_kind::user_defined;}
+  bool             is_struct() const noexcept{return get_kind() == type_kind::struct_;}
+  bool               is_enum() const noexcept{return get_kind() == type_kind::enum_;}
+  bool              is_union() const noexcept{return get_kind() == type_kind::union_;}
+  bool              is_array() const noexcept{return get_kind() == type_kind::array;}
+
+
+  const  type_info&  get_source_type_info() const noexcept;
+  const  array_def&   get_array_def() const noexcept;
+
+  struct_def&  get_struct_def() const noexcept;
+    enum_def&    get_enum_def() const noexcept;
+   union_def&   get_union_def() const noexcept;
+
 
 
   static type_info  make_i8()  noexcept{return type_info(type_kind::integral         , "i8",1);}
@@ -121,12 +140,15 @@ public:
   static type_info  make_i32() noexcept{return type_info(type_kind::integral         ,"i32",4);}
   static type_info  make_u32() noexcept{return type_info(type_kind::unsigned_integral,"u32",4);}
 
-  static type_info  make_bool() noexcept{return type_info(type_kind::boolean,"b",1);}
-  static type_info  make_void() noexcept{return type_info(type_kind::void_,"v",0);}
-  static type_info  make_nullptr() noexcept{return type_info(type_kind::null_pointer,"np",pointer_type_size);}
-  static type_info  make_geneptr() noexcept{return type_info(type_kind::generic_pointer,"gp",pointer_type_size);}
+  static type_info  make_boolean()         noexcept{return type_info(type_kind::boolean,"b",1);}
+  static type_info  make_void()            noexcept{return type_info(type_kind::void_,"v",0);}
+  static type_info  make_null_pointer()    noexcept{return type_info(type_kind::null_pointer,"np",pointer_type_size);}
+  static type_info  make_generic_pointer() noexcept{return type_info(type_kind::generic_pointer,"gp",pointer_type_size);}
 
-  static type_info  make_user_defined(udef_type_info&&  uti){return type_info(std::move(uti));}
+  static type_info  make_array(const type_info&  ti, size_t  n) noexcept;
+  static type_info  make_empty_enum()   noexcept;
+  static type_info  make_empty_struct() noexcept;
+  static type_info  make_empty_union()  noexcept;
 
   bool  test_align(size_t  offset_base=0) const noexcept;
 

@@ -58,8 +58,6 @@ public:
 
   void  append(const type_info&  ti, std::string  name) noexcept;
 
-  void  finalize() noexcept;
-
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
 

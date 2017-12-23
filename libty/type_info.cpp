@@ -9,41 +9,6 @@ namespace ty_types{
 
 
 
-type_info::
-type_info(type_kind  kind, std::string_view  id, size_t  size) noexcept:
-m_data(new data)
-{
-  m_data->kind = kind;
-  m_data->id   =   id;
-
-  m_data->definition.size = size;
-}
-
-
-type_info::
-type_info(type_kind  kind, std::string_view  id, const type_info&  source) noexcept:
-m_data(new data)
-{
-  m_data->kind = kind;
-  m_data->id   =   id;
-
-  new(&m_data->definition) type_info(source);
-}
-
-
-type_info::
-type_info(udef_type_info&&  uti) noexcept:
-m_data(new data)
-{
-  m_data->kind = type_kind::user_defined;
-  m_data->id   =           uti.get_id();
-
-  new(&m_data->definition.uti) udef_type_info(std::move(uti));
-}
-
-
-
-
 type_info&
 type_info::
 operator=(const type_info&  rhs) noexcept
@@ -102,6 +67,14 @@ unrefer() noexcept
 const std::string&  type_info::get_id() const noexcept{return m_data->id;}
 
 
+template<typename  T>
+size_t
+get_aligned_size(const T&  t) noexcept
+{
+  return get_aligned_offset(t.get_size(),t.get_align());
+}
+
+
 size_t
 type_info::
 get_size() const noexcept
@@ -126,9 +99,10 @@ get_size() const noexcept
   case(type_kind::unsigned_integral):
       return m_data->definition.size;
       break;
-  case(type_kind::user_defined):
-      return m_data->definition.uti.get_size();
-      break;
+  case(type_kind::array  ): return get_aligned_size(m_data->definition.arr);break;
+  case(type_kind::struct_): return get_aligned_size(m_data->definition.st );break;
+  case(type_kind::enum_  ): return get_aligned_size(m_data->definition.en );break;
+  case(type_kind::union_ ): return get_aligned_size(m_data->definition.un );break;
     }
 
 
@@ -160,26 +134,14 @@ get_align() const noexcept
   case(type_kind::unsigned_integral):
       return m_data->definition.size;
       break;
-  case(type_kind::user_defined):
-      return m_data->definition.uti.get_align();
-      break;
+  case(type_kind::array  ): return m_data->definition.arr.get_align();
+  case(type_kind::struct_): return m_data->definition.st.get_align();
+  case(type_kind::enum_  ): return m_data->definition.en.get_align();
+  case(type_kind::union_ ): return m_data->definition.un.get_align();
     }
 
 
   return 0;
-}
-
-
-type_kind  type_info::get_kind() const noexcept{return m_data->kind;}
-
-const type_info&  type_info::get_source_type_info() const noexcept{return m_data->definition.ti;}
-
-
-const udef_type_info&
-type_info::
-get_udef_type_info() const noexcept
-{
-  return m_data->definition.uti;
 }
 
 
@@ -209,16 +171,39 @@ test_align(size_t  offset_base) const noexcept
   case(type_kind::boolean):
   case(type_kind::integral):
   case(type_kind::unsigned_integral):
+  case(type_kind::array):
+  case(type_kind::enum_):
+  case(type_kind::union_):
       return true;
       break;
-  case(type_kind::user_defined):
-      return m_data->definition.uti.test_align(offset_base);
+  case(type_kind::struct_):
+      return m_data->definition.st.test_align(offset_base);
       break;
     }
 
 
   return false;
 }
+
+
+
+
+type_kind  type_info::get_kind() const noexcept{return m_data->kind;}
+
+const type_info&  type_info::get_source_type_info() const noexcept{return m_data->definition.ti;}
+const  array_def&   type_info::get_array_def() const noexcept{return m_data->definition.arr;}
+
+struct_def&  type_info::get_struct_def() const noexcept{return m_data->definition.st;}
+  enum_def&    type_info::get_enum_def() const noexcept{return m_data->definition.en;}
+ union_def&   type_info::get_union_def() const noexcept{return m_data->definition.un;}
+
+
+type_info  type_info::make_array(const type_info&  ti, size_t  n)  noexcept{return type_info(array_def(ti,n));}
+type_info  type_info::make_empty_enum()   noexcept{return type_info(  enum_def());}
+type_info  type_info::make_empty_struct() noexcept{return type_info(struct_def());}
+type_info  type_info::make_empty_union()  noexcept{return type_info( union_def());}
+
+
 
 
 }}

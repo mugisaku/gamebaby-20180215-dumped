@@ -46,6 +46,8 @@ public:
   {
     m_type_info.print(f);
 
+    m_type_info.print_size_and_align(f);
+
     fprintf(f,"  %s",m_name.data());
   }
 

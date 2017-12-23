@@ -3,7 +3,10 @@
 
 
 #include"type_info.hpp"
-#include"udef_type_info.hpp"
+#include"array_def.hpp"
+#include"enum_def.hpp"
+#include"struct_def.hpp"
+#include"union_def.hpp"
 #include"signature.hpp"
 
 
@@ -26,7 +29,10 @@ data
 
     type_info  ti;
 
-    udef_type_info  uti;
+     array_def  arr;
+      enum_def   en;
+    struct_def   st;
+     union_def   un;
 
     signature  sig;
 
@@ -53,14 +59,14 @@ data
     case(type_kind::integral):
     case(type_kind::unsigned_integral):
         break;
-    case(type_kind::function_pointer):
-        definition.sig.~signature();
-        break;
-    case(type_kind::user_defined):
-        definition.uti.~udef_type_info();
-        break;
-      }
+    case(type_kind::function_pointer): definition.sig.~signature();break;
+    case(type_kind::array           ): definition.arr.~array_def();break;
+    case(type_kind::struct_         ): definition.st.~struct_def();break;
+    case(type_kind::enum_           ): definition.en.~enum_def();break;
+    case(type_kind::union_          ): definition.un.~union_def();break;
+        }
   }
+
 
 };
 

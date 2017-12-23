@@ -7,18 +7,42 @@ using namespace ty;
 int
 main(int  argc, char**  argv)
 {
-  auto  a_ti = type_info::make_u8();
-  auto  b_ti = a_ti.add_rvalue_reference().remove_reference();
+  auto  a_ti = type_info::make_empty_struct();
+  auto  b_ti = type_info::make_empty_struct();
 
-  a_ti.print();
+  auto&  a_stdef = a_ti.get_struct_def();
+
+  a_stdef.append(type_info::make_i8(),"test");
+  a_stdef.append(type_info::make_i16(),"test");
+  a_stdef.append(type_info::make_i8(),"test");
+  a_stdef.append(type_info::make_i8(),"test");
+  a_stdef.append(type_info::make_i32(),"test");
+  a_stdef.append(type_info::make_i8(),"test");
+  a_stdef.append(type_info::make_i16(),"test");
+  a_stdef.append(type_info::make_i8(),"test");
+
+  a_stdef.test_align(0);
+
+  a_stdef.print();
 
   printf("\n");
 
-  b_ti.print();
+
+  auto&  b_stdef = b_ti.get_struct_def();
+
+  b_stdef.append(type_info::make_i8(),"test");
+  b_stdef.append(a_ti,"test");
+  b_stdef.append(a_ti,"test");
+  b_stdef.append(type_info::make_i8(),"test");
+  b_stdef.append(a_ti,"test");
+  b_stdef.append(a_ti,"test");
+
+  b_stdef.test_align(0);
+
+  b_stdef.print();
 
   printf("\n");
 
-  printf("a and b is %ssame\n",(a_ti == b_ti)? "":"not ");
 
   return 0;
 }

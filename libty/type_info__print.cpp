@@ -73,11 +73,20 @@ print(FILE*  f) const noexcept
   case(type_kind::unsigned_integral):
       fprintf(f,"uint%d",8*m_data->definition.size);
       break;
-  case(type_kind::user_defined):
-      m_data->definition.uti.print(f);
-      break;
   case(type_kind::function_pointer):
       m_data->definition.sig.print(f);
+      break;
+  case(type_kind::array):
+      m_data->definition.arr.print(f);
+      break;
+  case(type_kind::struct_):
+      fprintf(f,"struct");
+      break;
+  case(type_kind::enum_):
+      fprintf(f,"enum");
+      break;
+  case(type_kind::union_):
+      fprintf(f,"union");
       break;
     }
 }
