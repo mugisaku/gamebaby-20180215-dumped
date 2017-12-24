@@ -44,6 +44,11 @@ main(int  argc, char**  argv)
   printf("\n");
 
 
+  type_info::make_i8().add_const().remove_const().add_pointer().add_const().remove_const().add_pointer().print();
+  printf("\n");
+  type_info::make_i8().add_pointer().add_const().remove_const().add_pointer().add_const().remove_const().print();
+  printf("\n");
+
   return 0;
 }
 

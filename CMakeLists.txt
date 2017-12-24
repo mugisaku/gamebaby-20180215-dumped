@@ -84,6 +84,8 @@ set(GAME_SOURCES
 set(LIBTY_SOURCES
   libty/type_info.cpp
   libty/type_info__constructor.cpp
+  libty/type_info__is.cpp
+  libty/type_info__make.cpp
   libty/type_info__add.cpp
   libty/type_info__remove.cpp
   libty/type_info__print.cpp

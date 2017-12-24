@@ -26,37 +26,40 @@ void
 type_info::
 print(FILE*  f) const noexcept
 {
-    switch(m_data->kind)
+    if(is_const())
     {
-  case(type_kind::const_qualified):
       fprintf(f,"const ");
+    }
 
-      m_data->definition.ti.print(f);
-      break;
-  case(type_kind::volatile_qualified):
+
+    if(is_volatile())
+    {
       fprintf(f,"volatile ");
+    }
 
-      m_data->definition.ti.print(f);
-      break;
-  case(type_kind::const_volatile_qualified):
-      fprintf(f,"const volatile ");
 
-      m_data->definition.ti.print(f);
-      break;
+    switch(m_data->m_kind)
+    {
   case(type_kind::pointer):
-      m_data->definition.ti.print(f);
+      fprintf(f,"pointer<");
 
-      fprintf(f,"*");
+      m_data->m_set.ti.print(f);
+
+      fprintf(f,">");
       break;
   case(type_kind::reference):
-      m_data->definition.ti.print(f);
+      fprintf(f,"reference<");
 
-      fprintf(f,"&");
+      m_data->m_set.ti.print(f);
+
+      fprintf(f,">");
       break;
   case(type_kind::rvalue_reference):
-      m_data->definition.ti.print(f);
+      fprintf(f,"rvalue_reference<");
 
-      fprintf(f,"&&");
+      m_data->m_set.ti.print(f);
+
+      fprintf(f,">>");
       break;
   case(type_kind::boolean):
       fprintf(f,"bool");
@@ -68,16 +71,16 @@ print(FILE*  f) const noexcept
       fprintf(f,"generic_pointer");
       break;
   case(type_kind::integral):
-      fprintf(f,"int%d",8*m_data->definition.size);
+      fprintf(f,"int%d",8*m_data->m_set.size);
       break;
   case(type_kind::unsigned_integral):
-      fprintf(f,"uint%d",8*m_data->definition.size);
+      fprintf(f,"uint%d",8*m_data->m_set.size);
       break;
   case(type_kind::function_pointer):
-      m_data->definition.sig.print(f);
+      m_data->m_set.sig.print(f);
       break;
   case(type_kind::array):
-      m_data->definition.arr.print(f);
+      m_data->m_set.arr.print(f);
       break;
   case(type_kind::struct_):
       fprintf(f,"struct");

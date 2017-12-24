@@ -21,7 +21,7 @@ operator=(const type_info&  rhs) noexcept
 
         if(m_data)
         {
-          ++m_data->reference_count;
+          ++m_data->m_reference_count;
         }
     }
 
@@ -47,6 +47,10 @@ operator=(type_info&&  rhs) noexcept
 }
 
 
+bool  type_info::operator==(const type_info&  rhs) const noexcept{return *m_data == *rhs.m_data;}
+bool  type_info::operator!=(const type_info&  rhs) const noexcept{return !(*this == rhs);}
+
+
 
 
 void
@@ -55,7 +59,7 @@ unrefer() noexcept
 {
     if(m_data)
     {
-        if(!--m_data->reference_count)
+        if(!--m_data->m_reference_count)
         {
           delete m_data          ;
                  m_data = nullptr;
@@ -64,7 +68,7 @@ unrefer() noexcept
 }
 
 
-const std::string&  type_info::get_id() const noexcept{return m_data->id;}
+const std::string&  type_info::get_id() const noexcept{return m_data->m_id;}
 
 
 template<typename  T>
@@ -79,13 +83,8 @@ size_t
 type_info::
 get_size() const noexcept
 {
-    switch(m_data->kind)
+    switch(m_data->m_kind)
     {
-  case(type_kind::const_qualified):
-  case(type_kind::volatile_qualified):
-  case(type_kind::const_volatile_qualified):
-      return m_data->definition.ti.get_size();
-      break;
   case(type_kind::pointer):
   case(type_kind::reference):
   case(type_kind::rvalue_reference):
@@ -97,12 +96,12 @@ get_size() const noexcept
   case(type_kind::boolean):
   case(type_kind::integral):
   case(type_kind::unsigned_integral):
-      return m_data->definition.size;
+      return m_data->m_set.size;
       break;
-  case(type_kind::array  ): return get_aligned_size(m_data->definition.arr);break;
-  case(type_kind::struct_): return get_aligned_size(m_data->definition.st );break;
-  case(type_kind::enum_  ): return get_aligned_size(m_data->definition.en );break;
-  case(type_kind::union_ ): return get_aligned_size(m_data->definition.un );break;
+  case(type_kind::array  ): return get_aligned_size(m_data->m_set.arr);break;
+  case(type_kind::struct_): return get_aligned_size(m_data->m_set.st );break;
+  case(type_kind::enum_  ): return get_aligned_size(m_data->m_set.en );break;
+  case(type_kind::union_ ): return get_aligned_size(m_data->m_set.un );break;
     }
 
 
@@ -114,13 +113,8 @@ size_t
 type_info::
 get_align() const noexcept
 {
-    switch(m_data->kind)
+    switch(m_data->m_kind)
     {
-  case(type_kind::const_qualified):
-  case(type_kind::volatile_qualified):
-  case(type_kind::const_volatile_qualified):
-      return m_data->definition.ti.get_align();
-      break;
   case(type_kind::pointer):
   case(type_kind::reference):
   case(type_kind::rvalue_reference):
@@ -132,12 +126,12 @@ get_align() const noexcept
   case(type_kind::boolean):
   case(type_kind::integral):
   case(type_kind::unsigned_integral):
-      return m_data->definition.size;
+      return m_data->m_set.size;
       break;
-  case(type_kind::array  ): return m_data->definition.arr.get_align();
-  case(type_kind::struct_): return m_data->definition.st.get_align();
-  case(type_kind::enum_  ): return m_data->definition.en.get_align();
-  case(type_kind::union_ ): return m_data->definition.un.get_align();
+  case(type_kind::array  ): return m_data->m_set.arr.get_align();
+  case(type_kind::struct_): return m_data->m_set.st.get_align();
+  case(type_kind::enum_  ): return m_data->m_set.en.get_align();
+  case(type_kind::union_ ): return m_data->m_set.un.get_align();
     }
 
 
@@ -157,11 +151,8 @@ test_align(size_t  offset_base) const noexcept
     }
 
 
-    switch(m_data->kind)
+    switch(m_data->m_kind)
     {
-  case(type_kind::const_qualified):
-  case(type_kind::volatile_qualified):
-  case(type_kind::const_volatile_qualified):
   case(type_kind::pointer):
   case(type_kind::reference):
   case(type_kind::rvalue_reference):
@@ -177,7 +168,7 @@ test_align(size_t  offset_base) const noexcept
       return true;
       break;
   case(type_kind::struct_):
-      return m_data->definition.st.test_align(offset_base);
+      return m_data->m_set.st.test_align(offset_base);
       break;
     }
 
@@ -188,20 +179,19 @@ test_align(size_t  offset_base) const noexcept
 
 
 
-type_kind  type_info::get_kind() const noexcept{return m_data->kind;}
-
-const type_info&  type_info::get_source_type_info() const noexcept{return m_data->definition.ti;}
-const  array_def&   type_info::get_array_def() const noexcept{return m_data->definition.arr;}
-
-struct_def&  type_info::get_struct_def() const noexcept{return m_data->definition.st;}
-  enum_def&    type_info::get_enum_def() const noexcept{return m_data->definition.en;}
- union_def&   type_info::get_union_def() const noexcept{return m_data->definition.un;}
+const type_info&
+type_info::
+get_source_type_info() const noexcept
+{
+  return m_data->m_set.ti;
+}
 
 
-type_info  type_info::make_array(const type_info&  ti, size_t  n)  noexcept{return type_info(array_def(ti,n));}
-type_info  type_info::make_empty_enum()   noexcept{return type_info(  enum_def());}
-type_info  type_info::make_empty_struct() noexcept{return type_info(struct_def());}
-type_info  type_info::make_empty_union()  noexcept{return type_info( union_def());}
+const  array_def&   type_info::get_array_def() const noexcept{return m_data->m_set.arr;}
+
+struct_def&  type_info::get_struct_def() const noexcept{return m_data->m_set.st;}
+  enum_def&    type_info::get_enum_def() const noexcept{return m_data->m_set.en;}
+ union_def&   type_info::get_union_def() const noexcept{return m_data->m_set.un;}
 
 
 
