@@ -7,7 +7,7 @@
 #include<cstdio>
 #include<string>
 #include<string_view>
-#include"member_decl.hpp"
+#include"var_decl.hpp"
 
 
 
@@ -19,25 +19,25 @@ class type_info;
 
 
 class
-struct_member: public member_decl
+struct_member: public var_decl
 {
   size_t  m_offset;
 
 public:
-  struct_member(const type_info&  type_info, std::string_view  name, size_t  offset) noexcept:
-  member_decl(type_info,name),
+  struct_member(const type_decl&  type_decl, std::string_view  name, size_t  offset) noexcept:
+  var_decl(type_decl,name),
   m_offset(offset){}
 
   size_t  get_offset() const noexcept{return m_offset;};
 
   bool  test_align(size_t  offset_base) const noexcept
   {
-    return get_type_info().test_align(offset_base+m_offset);
+    return get_type_decl().get_info().test_align(offset_base+m_offset);
   }
 
   void  print(FILE*  f=stdout, size_t  offset_base=0) const noexcept
   {
-    member_decl::print(f);
+    var_decl::print(f);
 
     fprintf(f,"(offset %zu) align is %s",offset_base+m_offset,test_align(offset_base)? "right":"wrong");
   }
@@ -56,7 +56,7 @@ struct_def
 public:
   struct_def() noexcept{}
 
-  void  append(const type_info&  ti, std::string  name) noexcept;
+  void  append(const type_decl&  td, std::string  name) noexcept;
 
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}

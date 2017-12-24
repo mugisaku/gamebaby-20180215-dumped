@@ -9,12 +9,12 @@ namespace ty_types{
 
 void
 union_def::
-append(const type_info&  ti, std::string  name) noexcept
+append(const type_decl&  td, std::string  name) noexcept
 {
-  m_decl_list.emplace_back(ti,name);
+  m_decl_list.emplace_back(td,name);
 
-  m_size  = std::max(m_size ,ti.get_size() );
-  m_align = std::max(m_align,ti.get_align());
+  m_size  = std::max(m_size ,td.get_info().get_size() );
+  m_align = std::max(m_align,td.get_info().get_align());
 }
 
 

@@ -8,18 +8,19 @@ namespace ty_types{
 
 void
 struct_def::
-append(const type_info&  ti, std::string  name) noexcept
+append(const type_decl&  td, std::string  name) noexcept
 {
   size_t  offset = m_size;
 
-  const auto  sz = ti.get_size();
+  const auto     sz = td.get_info().get_size();
+  const auto  align = td.get_info().get_align();
 
-  offset = get_aligned_offset(offset,ti.get_align());
+  offset = get_aligned_offset(offset,align);
 
-  m_member_list.emplace_back(ti,name,offset);
+  m_member_list.emplace_back(td,name,offset);
 
   m_size  = offset+sz;
-  m_align = std::max(m_align,ti.get_align());
+  m_align = std::max(m_align,align);
 }
 
 

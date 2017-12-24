@@ -6,7 +6,7 @@
 #include<string_view>
 #include<cstdint>
 #include<vector>
-#include"member_decl.hpp"
+#include"var_decl.hpp"
 
 
 
@@ -20,7 +20,7 @@ class type_info;
 struct
 union_def
 {
-  std::vector<member_decl>  m_decl_list;
+  std::vector<var_decl>  m_decl_list;
 
   size_t  m_size =0;
   size_t  m_align=0;
@@ -28,7 +28,7 @@ union_def
 public:
   union_def() noexcept{}
 
-  void  append(const type_info&  ti, std::string  name) noexcept;
+  void  append(const type_decl&  td, std::string  name) noexcept;
 
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}
