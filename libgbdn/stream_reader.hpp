@@ -13,35 +13,35 @@ namespace gbdn{
 class
 stream_context
 {
-  const char*  header;
+  const char*  m_header;
 
-  int  line_number=1;
+  int  m_line_number=1;
 
 protected:
-  const char*  pointer;
+  const char*  m_pointer;
 
 public:
-  stream_context(char const*  p=nullptr) noexcept: header(p), pointer(p){}
+  stream_context(const char*  p=nullptr) noexcept: m_header(p), m_pointer(p){}
 
-  int  get_line_number() const noexcept{return line_number;}
-  char const*  get_pointer() const noexcept{return pointer;}
+  int  get_line_number() const noexcept{return m_line_number;}
+  const char*  get_pointer() const noexcept{return m_pointer;}
 
   void  newline() noexcept
   {
-    header = pointer;
+    m_header = m_pointer;
 
-    ++line_number;
+    ++m_line_number;
   }
 
   void  print() const noexcept
   {
-    printf("[エラー: %4d行目] ",line_number);
+    printf("[エラー: %4d行目] ",m_line_number);
 
-    char const*  p = header;
+    const char*  p = m_header;
 
       if(p)
       {
-          while(p < pointer)
+          while(p < m_pointer)
           {
             fputc(*p++,stdout);
           }
@@ -54,7 +54,7 @@ public:
 class
 stream_error: public stream_context
 {
-  char  buf[256];
+  char  m_buf[256];
 
 public:
   stream_error(const stream_context&  ctx, const char*  fmt, ...):
@@ -63,7 +63,7 @@ public:
     va_list  ap;
     va_start(ap,fmt);
 
-    vsnprintf(buf,sizeof(buf),fmt,ap);
+    vsnprintf(m_buf,sizeof(m_buf),fmt,ap);
 
     va_end(ap);
   }
@@ -72,7 +72,7 @@ public:
   {
     stream_context::print();
 
-    printf("\n: %s\n",buf);
+    printf("\n: %s\n",m_buf);
   }
 
 };
@@ -85,10 +85,10 @@ class list;
 class
 stream_reader: public stream_context
 {
-  char*  buffer=nullptr;
+  char*  m_buffer=nullptr;
 
-  size_t            length=0;
-  size_t  allocated_length=0;
+  size_t            m_length=0;
+  size_t  m_allocated_length=0;
 
   string  read_identifier() noexcept;
   string  read_string(char  close_char) noexcept;
@@ -122,14 +122,14 @@ stream_reader: public stream_context
 
 public:
   stream_reader() noexcept{allocate_initial_buffer();}
-  stream_reader(char const*  p) noexcept: stream_context(p){allocate_initial_buffer();}
- ~stream_reader(){delete[] buffer;}
+  stream_reader(const char*  p) noexcept: stream_context(p){allocate_initial_buffer();}
+ ~stream_reader(){delete[] m_buffer;}
 
   void  skip_spaces() noexcept;
 
-  void  advance(int  n) noexcept{pointer += n;}
+  void  advance(int  n) noexcept{m_pointer += n;}
 
-  char  get_char() const noexcept{return *pointer;}
+  char  get_char() const noexcept{return *m_pointer;}
 
   value  read_value();
 

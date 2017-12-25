@@ -25,7 +25,7 @@ operator=(const string&   rhs) noexcept
 {
   clear();
 
-  assign(rhs.data,rhs.length,rhs.companion_value? new value(*rhs.companion_value):nullptr);
+  assign(rhs.m_data,rhs.m_length,rhs.m_value? new value(*rhs.m_value):nullptr);
 
   return *this;
 }
@@ -37,10 +37,10 @@ operator=(string&&  rhs) noexcept
 {
   clear();
 
-  length = rhs.length;
+  m_length = rhs.m_length;
 
-  std::swap(           data,rhs.data           );
-  std::swap(companion_value,rhs.companion_value);
+  std::swap( m_data,rhs.m_data );
+  std::swap(m_value,rhs.m_value);
 
   return *this;
 }
@@ -52,17 +52,17 @@ void
 string::
 clear() noexcept
 {
-    if(data != &null)
+    if(m_data != &null)
     {
-      delete[] data        ;
-               data = &null;
+      delete[] m_data        ;
+               m_data = &null;
     }
 
 
-  length = 0;
+  m_length = 0;
 
-  delete companion_value          ;
-         companion_value = nullptr;
+  delete m_value          ;
+         m_value = nullptr;
 }
 
 
@@ -72,15 +72,15 @@ assign(const char*  str, size_t  len, value*  v) noexcept
 {
   clear();
 
-  length = len;
+  m_length = len;
 
-  data = new char[length+1];
+  m_data = new char[m_length+1];
 
-  std::memcpy(data,str,length);
+  std::memcpy(m_data,str,m_length);
 
-  data[length] = 0;
+  m_data[m_length] = 0;
 
-  companion_value = v;
+  m_value = v;
 }
 
 
@@ -88,8 +88,8 @@ void
 string::
 set_value(value*  v) noexcept
 {
-  delete companion_value    ;
-         companion_value = v;
+  delete m_value    ;
+         m_value = v;
 }
 
 
@@ -97,13 +97,13 @@ void
 string::
 print(int  indent) const noexcept
 {
-  printf("\"%s\"",data);
+  printf("\"%s\"",m_data);
 
-    if(companion_value)
+    if(m_value)
     {
       printf(":");
 
-      companion_value->print(indent);
+      m_value->print(indent);
     }
 }
 

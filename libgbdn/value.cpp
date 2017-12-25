@@ -17,23 +17,23 @@ operator=(value&&  rhs) noexcept
 {
   clear();
 
-  std::swap(kind,rhs.kind);
+  std::swap(m_kind,rhs.m_kind);
 
-    switch(kind)
+    switch(m_kind)
     {
   case(kind_type::null):
       break;
   case(kind_type::string):
-      new(&data) string(std::move(rhs.data.s));
+      new(&m_data) string(std::move(rhs.m_data.s));
       break;
   case(kind_type::integer):
-      data.i = rhs.data.i;
+      m_data.i = rhs.m_data.i;
       break;
   case(kind_type::real):
-      data.r = rhs.data.r;
+      m_data.r = rhs.m_data.r;
       break;
   case(kind_type::list):
-      data.ls = rhs.data.ls;
+      m_data.ls = rhs.m_data.ls;
       break;
     }
 
@@ -48,23 +48,23 @@ operator=(const value&  rhs) noexcept
 {
   clear();
 
-  kind = rhs.kind;
+  m_kind = rhs.m_kind;
 
-    switch(kind)
+    switch(m_kind)
     {
   case(kind_type::null):
       break;
   case(kind_type::string):
-      new(&data) string(rhs.data.s);
+      new(&m_data) string(rhs.m_data.s);
       break;
   case(kind_type::integer):
-      data.i = rhs.data.i;
+      m_data.i = rhs.m_data.i;
       break;
   case(kind_type::real):
-      data.r = rhs.data.r;
+      m_data.r = rhs.m_data.r;
       break;
   case(kind_type::list):
-      data.ls = new list(*rhs.data.ls);
+      m_data.ls = new list(*rhs.m_data.ls);
       break;
     }
 
@@ -79,33 +79,33 @@ void
 value::
 clear() noexcept
 {
-    switch(kind)
+    switch(m_kind)
     {
   case(kind_type::null):
       break;
   case(kind_type::string):
-      data.s.~string();
+      m_data.s.~string();
       break;
   case(kind_type::integer):
   case(kind_type::real):
       break;
   case(kind_type::list):
-      delete data.ls;
+      delete m_data.ls;
       break;
     }
 
 
-  kind = kind_type::null;
+  m_kind = kind_type::null;
 }
 
 
 
 
 
-int            value::get_integer() const noexcept{return data.i;}
-double            value::get_real() const noexcept{return data.r;}
-const string&   value::get_string() const noexcept{return data.s;}
-const list&       value::get_list() const noexcept{return *data.ls;}
+int            value::get_integer() const noexcept{return m_data.i;}
+double            value::get_real() const noexcept{return m_data.r;}
+const string&   value::get_string() const noexcept{return m_data.s;}
+const list&       value::get_list() const noexcept{return *m_data.ls;}
 
 
 
@@ -114,22 +114,22 @@ void
 value::
 print(int  indent) const noexcept
 {
-    switch(kind)
+    switch(m_kind)
     {
   case(kind_type::null):
       printf("(null)");
       break;
   case(kind_type::string):
-      data.s.print(indent);
+      m_data.s.print(indent);
       break;
   case(kind_type::integer):
-      printf("%d",data.i);
+      printf("%d",m_data.i);
       break;
   case(kind_type::real):
-      printf("%f",data.r);
+      printf("%f",m_data.r);
       break;
   case(kind_type::list):
-      data.ls->print(indent);
+      m_data.ls->print(indent);
       break;
     }
 }

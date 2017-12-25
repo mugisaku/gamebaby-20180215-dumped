@@ -15,11 +15,11 @@ operator=(const list&  rhs) noexcept
 {
   clear();
 
-  data = new value[rhs.size()];
+  m_data = new value[rhs.size()];
 
-  number_of_values = rhs.size();
+  m_number_of_values = rhs.size();
 
-  auto  p = data;
+  auto  p = m_data;
 
     for(auto&  v: rhs)
     {
@@ -37,9 +37,9 @@ operator=(list&&  rhs) noexcept
 {
   clear();
 
-  std::swap(data,rhs.data);
+  std::swap(m_data,rhs.m_data);
 
-  number_of_values = rhs.size();
+  m_number_of_values = rhs.size();
 
   return *this;
 }
@@ -236,9 +236,9 @@ assign(stream_reader&  reader, char  cl)
     }
 
 
-  data = buf.release_pointer();
+  m_data = buf.release_pointer();
 
-  number_of_values = buf.get_number_of_pushed();
+  m_number_of_values = buf.get_number_of_pushed();
 }
 
 
@@ -298,10 +298,10 @@ void
 list::
 clear() noexcept
 {
-  delete[]  data          ;
-            data = nullptr;
+  delete[] m_data          ;
+           m_data = nullptr;
 
-  number_of_values = 0;
+  m_number_of_values = 0;
 }
 
 

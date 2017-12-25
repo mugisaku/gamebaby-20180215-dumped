@@ -22,7 +22,7 @@ value
     real,
     list,
 
-  } kind;
+  } m_kind;
 
 
   union data_type{
@@ -34,14 +34,14 @@ value
      data_type(){}
     ~data_type(){}
 
-  } data;
+  } m_data;
 
 public:
   value() noexcept{}
-  value(int        i) noexcept: kind(kind_type::integer){data.i = i;}
-  value(double     r) noexcept: kind(kind_type::real   ){data.r = r;}
-  value(string&&   s) noexcept: kind(kind_type::string ){new(&data) string(std::move(s));}
-  value(list*           ls) noexcept: kind(kind_type::list){data.ls = ls;}
+  value(int        i) noexcept: m_kind(kind_type::integer){m_data.i = i;}
+  value(double     r) noexcept: m_kind(kind_type::real   ){m_data.r = r;}
+  value(string&&   s) noexcept: m_kind(kind_type::string ){new(&m_data) string(std::move(s));}
+  value(list*           ls) noexcept: m_kind(kind_type::list){m_data.ls = ls;}
   value(const value&   rhs) noexcept{*this = rhs;}
   value(      value&&  rhs) noexcept{*this = std::move(rhs);}
  ~value(){clear();}
@@ -49,13 +49,13 @@ public:
   value&  operator=(const value&   rhs) noexcept;
   value&  operator=(      value&&  rhs) noexcept;
 
-  operator bool() const noexcept{return kind != kind_type::null;}
+  operator bool() const noexcept{return m_kind != kind_type::null;}
 
 
-  bool  is_integer() const noexcept{return(kind == kind_type::integer);}
-  bool  is_real(   ) const noexcept{return(kind == kind_type::real   );}
-  bool  is_string( ) const noexcept{return(kind == kind_type::string );}
-  bool  is_list(   ) const noexcept{return(kind == kind_type::list   );}
+  bool  is_integer() const noexcept{return(m_kind == kind_type::integer);}
+  bool  is_real(   ) const noexcept{return(m_kind == kind_type::real   );}
+  bool  is_string( ) const noexcept{return(m_kind == kind_type::string );}
+  bool  is_list(   ) const noexcept{return(m_kind == kind_type::list   );}
 
   void  clear() noexcept;
 

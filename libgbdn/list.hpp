@@ -24,9 +24,9 @@ value_was_not_found
 class
 list
 {
-  value*  data=nullptr;
+  value*  m_data=nullptr;
 
-  uint32_t  number_of_values=0;
+  uint32_t  m_number_of_values=0;
 
 public:
   list() noexcept{}
@@ -42,7 +42,7 @@ public:
 
   void  clear() noexcept;
 
-  uint32_t  size() const noexcept{return number_of_values;}
+  uint32_t  size() const noexcept{return m_number_of_values;}
 
   void  open(const char*  filepath);
   void  assign(stream_reader&  reader, char  cl=0);
@@ -53,8 +53,8 @@ public:
 
   void  print(int  indent=0) const noexcept;
 
-  const value*  begin() const noexcept{return data;}
-  const value*    end() const noexcept{return data+number_of_values;}
+  const value*  begin() const noexcept{return m_data;}
+  const value*    end() const noexcept{return m_data+m_number_of_values;}
 
 };
 

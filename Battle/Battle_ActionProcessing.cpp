@@ -242,6 +242,7 @@ step(uint32_t&  pc) noexcept
         {
           ++pc;
         }
+      break;
   default:;
       coprocesses::pop();
     }

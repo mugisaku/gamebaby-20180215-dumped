@@ -13,7 +13,7 @@ skip_linestyle_comment()
 {
     for(;;)
     {
-      auto  c = *pointer;
+      auto  c = *m_pointer;
 
         if(!c)
         {
@@ -23,7 +23,7 @@ skip_linestyle_comment()
       else           
         if(c == '\n')
         {
-          ++pointer;
+          ++m_pointer;
 
           newline();
 
@@ -32,7 +32,7 @@ skip_linestyle_comment()
 
       else
         {
-          ++pointer;
+          ++m_pointer;
         }           
     }
 }
@@ -44,7 +44,7 @@ skip_blockstyle_comment()
 {
     for(;;)
     {
-      auto  c = *pointer;
+      auto  c = *m_pointer;
 
         if(!c)
         {
@@ -54,11 +54,11 @@ skip_blockstyle_comment()
       else           
         if(c == '*')
         {
-          ++pointer;
+          ++m_pointer;
 
-            if(*pointer == '/')
+            if(*m_pointer == '/')
             {
-              ++pointer;
+              ++m_pointer;
 
               break;
             }
@@ -67,14 +67,14 @@ skip_blockstyle_comment()
       else           
         if(c == '\n')
         {
-          ++pointer;
+          ++m_pointer;
 
           newline();
         }
 
       else
         {
-          ++pointer;
+          ++m_pointer;
         }           
     }
 }
@@ -86,20 +86,20 @@ skip_spaces() noexcept
 {
     for(;;)
     {
-      auto  c = *pointer;
+      auto  c = *m_pointer;
 
         if((c ==  ' ') ||
            (c == '\t') ||
            (c == '\r') ||
            (c == '\v'))
         {
-          ++pointer;
+          ++m_pointer;
         }
 
       else           
         if(c == '\n')
         {
-          ++pointer;
+          ++m_pointer;
 
           newline();
         }
@@ -107,11 +107,11 @@ skip_spaces() noexcept
       else           
         if(c == '/')
         {
-          c = *(pointer+1);
+          c = *(m_pointer+1);
 
             if(c == '*')
             {
-              pointer += 2;
+              m_pointer += 2;
 
               skip_blockstyle_comment();
             }
@@ -119,7 +119,7 @@ skip_spaces() noexcept
           else
             if(c == '/')
             {
-              pointer += 2;
+              m_pointer += 2;
 
               skip_linestyle_comment();
             }

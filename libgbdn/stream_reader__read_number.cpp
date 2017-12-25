@@ -13,9 +13,9 @@ read_binary_number() noexcept
 {
   auto  i = read_binary_integer();
 
-    if(*pointer == '.')
+    if(*m_pointer == '.')
     {
-      ++pointer;
+      ++m_pointer;
 
       return value(i+read_binary_fraction());
     }
@@ -31,9 +31,9 @@ read_octal_number() noexcept
 {
   auto  i = read_octal_integer();
 
-    if(*pointer == '.')
+    if(*m_pointer == '.')
     {
-      ++pointer;
+      ++m_pointer;
 
       return value(i+read_octal_fraction());
     }
@@ -49,9 +49,9 @@ read_decimal_number() noexcept
 {
   auto  i = read_decimal_integer();
 
-    if(*pointer == '.')
+    if(*m_pointer == '.')
     {
-      ++pointer;
+      ++m_pointer;
 
       return value(i+read_decimal_fraction());
     }
@@ -67,9 +67,9 @@ read_hexadecimal_number() noexcept
 {
   auto  i = read_hexadecimal_integer();
 
-    if(*pointer == '.')
+    if(*m_pointer == '.')
     {
-      ++pointer;
+      ++m_pointer;
 
       return value(i+read_hexadecimal_fraction());
     }
@@ -89,20 +89,20 @@ read_binary_integer() noexcept
 
     for(;;)
     {
-      auto  c = *pointer;
+      auto  c = *m_pointer;
 
         if((c == '0') ||
            (c == '1'))
         {
           i <<= 1;
 
-            if(*pointer == '1')
+            if(*m_pointer == '1')
             {
               i |= 1;
             }
 
 
-          ++pointer;
+          ++m_pointer;
         }
 
       else
@@ -125,20 +125,20 @@ read_binary_fraction() noexcept
 
     for(;;)
     {
-      auto  c = *pointer;
+      auto  c = *m_pointer;
 
         if((c == '0') ||
            (c == '1'))
         {
           f /= 2;
 
-            if(*pointer == '1')
+            if(*m_pointer == '1')
             {
               d += f;
             }
 
 
-          ++pointer;
+          ++m_pointer;
         }
 
       else
@@ -159,12 +159,12 @@ read_octal_integer() noexcept
 {
   int  i = 0;
 
-    while((*pointer >= '0') &&
-          (*pointer <= '7'))
+    while((*m_pointer >= '0') &&
+          (*m_pointer <= '7'))
     {
       i <<= 3;
 
-      i |= (*pointer++)-'0';
+      i |= (*m_pointer++)-'0';
     }
 
 
@@ -179,12 +179,12 @@ read_octal_fraction() noexcept
   double  d = 0.0;
   double  f = 1.0;
 
-    while((*pointer >= '0') &&
-          (*pointer <= '7'))
+    while((*m_pointer >= '0') &&
+          (*m_pointer <= '7'))
     {
       d /= 8;
 
-      d += f*((*pointer++)-'0');
+      d += f*((*m_pointer++)-'0');
     }
 
 
@@ -198,12 +198,12 @@ read_decimal_integer() noexcept
 {
   int  i = 0;
 
-    while((*pointer >= '0') &&
-          (*pointer <= '9'))
+    while((*m_pointer >= '0') &&
+          (*m_pointer <= '9'))
     {
       i *= 10;
 
-      i += (*pointer++)-'0';
+      i += (*m_pointer++)-'0';
     }
 
 
@@ -218,12 +218,12 @@ read_decimal_fraction() noexcept
   double  d = 0.0;
   double  f = 1.0;
 
-    while((*pointer >= '0') &&
-          (*pointer <= '9'))
+    while((*m_pointer >= '0') &&
+          (*m_pointer <= '9'))
     {
       f /= 10;
 
-      d += f*((*pointer++)-'0');
+      d += f*((*m_pointer++)-'0');
     }
 
 
@@ -239,7 +239,7 @@ read_hexadecimal_integer() noexcept
 
     for(;;)
     {
-      auto  c = *pointer;
+      auto  c = *m_pointer;
 
         if((c >= '0') &&
            (c <= '9'))
@@ -248,7 +248,7 @@ read_hexadecimal_integer() noexcept
 
           i += c-'0';
 
-          ++pointer;
+          ++m_pointer;
         }
 
       else
@@ -274,7 +274,7 @@ read_hexadecimal_integer() noexcept
             }
 
 
-          ++pointer;
+          ++m_pointer;
         }
 
       else
@@ -297,7 +297,7 @@ read_hexadecimal_fraction() noexcept
 
     for(;;)
     {
-      auto  c = *pointer;
+      auto  c = *m_pointer;
 
         if((c >= '0') &&
            (c <= '9'))
@@ -306,7 +306,7 @@ read_hexadecimal_fraction() noexcept
 
           d += f*(c-'0');
 
-          ++pointer;
+          ++m_pointer;
         }
 
       else
@@ -332,7 +332,7 @@ read_hexadecimal_fraction() noexcept
             }
 
 
-          ++pointer;
+          ++m_pointer;
         }
 
       else
@@ -350,7 +350,7 @@ value
 stream_reader::
 read_number_that_begins_by_zero() noexcept
 {
-  auto  c = *pointer++;
+  auto  c = *m_pointer++;
 
   return ((c == 'b') || (c == 'B'))? read_binary_number()
         :((c == 'o') || (c == 'O'))? read_octal_number()

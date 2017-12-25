@@ -2,7 +2,7 @@
 #define signature_HPP
 
 
-#include"type_info.hpp"
+#include"type_decl.hpp"
 
 
 
@@ -13,38 +13,37 @@ namespace ty_types{
 class
 signature
 {
-  type_info  m_result_type_info;
+  type_decl  m_result_type_decl;
 
-  std::vector<type_info>  m_type_info_list;
+  std::vector<type_decl>  m_type_decl_list;
 
   bool  m_varargs_flag=false;
 
 public:
-  signature(                           ) noexcept{}
-  signature(const type_info&  result_ti, std::initializer_list<type_info>  ls={}, bool  varargs_flag=false) noexcept:
-  m_result_type_info(result_ti),
-  m_type_info_list(ls),
+  signature(const type_decl&  result_td, std::initializer_list<type_decl>  ls={}, bool  varargs_flag=false) noexcept:
+  m_result_type_decl(result_td),
+  m_type_decl_list(ls),
   m_varargs_flag(varargs_flag){}
 
 
-  void  append(const type_info&  ti) noexcept{m_type_info_list.emplace_back(ti);}
+  void  append(const type_decl&  td) noexcept{m_type_decl_list.emplace_back(td);}
 
-  void              set_result_type_info(const type_info&  ti)       noexcept{m_result_type_info = ti;}
-  const type_info&  get_result_type_info(                    ) const noexcept{return m_result_type_info;}
+  void              set_result_type_decl(const type_decl&  td)       noexcept{m_result_type_decl = td;}
+  const type_decl&  get_result_type_decl(                    ) const noexcept{return m_result_type_decl;}
 
-  const std::vector<type_info>&  get_type_info_list() const noexcept{return m_type_info_list;}
+  const std::vector<type_decl>&  get_type_decl_list() const noexcept{return m_type_decl_list;}
 
   bool  test_varargs_flag() const noexcept{return m_varargs_flag;}
 
   void  print(FILE*  f) const noexcept
   {
-    m_result_type_info.print(f);
+    m_result_type_decl.print(f);
 
     fprintf(f,"(*)(");
 
-      for(auto&  ti: m_type_info_list)
+      for(auto&  td: m_type_decl_list)
       {
-        ti.print(f);
+        td.print(f);
 
         fprintf(f,", ");
       }

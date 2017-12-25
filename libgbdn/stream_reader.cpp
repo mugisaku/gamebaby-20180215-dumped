@@ -56,13 +56,13 @@ read_identifier() noexcept
 
   clear_buffer();
 
-    while(isidentn(*pointer))
+    while(isidentn(*m_pointer))
     {
-      push(*pointer++);
+      push(*m_pointer++);
     }
 
 
-  s.assign(buffer,length);
+  s.assign(m_buffer,m_length);
 
   return std::move(s);
 }
@@ -76,9 +76,9 @@ read_string(char  close_char) noexcept
 
   clear_buffer();
 
-    while(*pointer)
+    while(*m_pointer)
     {
-      auto  c = *pointer++;
+      auto  c = *m_pointer++;
 
         if(c == close_char)
         {
@@ -98,7 +98,7 @@ read_string(char  close_char) noexcept
     }
 
 
-  s.assign(buffer,length);
+  s.assign(m_buffer,m_length);
 
   return std::move(s);
 }
@@ -108,20 +108,20 @@ void
 stream_reader::
 push(char  c) noexcept
 {
-    if(length >= allocated_length)
+    if(m_length >= m_allocated_length)
     {
-      auto  new_buffer = new char[allocated_length*2];
+      auto  new_buffer = new char[m_allocated_length*2];
 
-      std::memcpy(new_buffer,buffer,allocated_length);
+      std::memcpy(new_buffer,m_buffer,m_allocated_length);
 
-      delete[] buffer             ;
-               buffer = new_buffer;
+      delete[] m_buffer             ;
+               m_buffer = new_buffer;
 
-      allocated_length *= 2;
+      m_allocated_length *= 2;
     }
 
 
-  buffer[length++] = c;
+  m_buffer[m_length++] = c;
 }
 
 
@@ -131,9 +131,9 @@ allocate_initial_buffer() noexcept
 {
   constexpr size_t  initial_allocation_size = 512;
 
-  buffer = new char[initial_allocation_size];
+  m_buffer = new char[initial_allocation_size];
 
-  allocated_length = initial_allocation_size;
+  m_allocated_length = initial_allocation_size;
 }
 
 
@@ -141,7 +141,7 @@ void
 stream_reader::
 clear_buffer() noexcept
 {
-  length = 0;
+  m_length = 0;
 }
 
 
@@ -149,7 +149,7 @@ value
 stream_reader::
 read_value()
 {
-  auto  first_c = *pointer;
+  auto  first_c = *m_pointer;
 
     if(first_c)
     {
@@ -157,9 +157,9 @@ read_value()
 
         if(first_c == '-')
         {
-          ++pointer;
+          ++m_pointer;
 
-          first_c = *pointer;
+          first_c = *m_pointer;
 
           neg = true;
         }
@@ -167,7 +167,7 @@ read_value()
 
         if(first_c == '{')
         {
-          ++pointer;
+          ++m_pointer;
 
           return value(new list(*this,'}'));
         }
@@ -176,15 +176,15 @@ read_value()
         if((first_c == '\"') ||
            (first_c == '\''))
         {
-          ++pointer;
+          ++m_pointer;
 
           auto  s = read_string(first_c);
 
           skip_spaces();
 
-            if(*pointer == ':')
+            if(*m_pointer == ':')
             {
-              ++pointer;
+              ++m_pointer;
 
               skip_spaces();
 
@@ -202,9 +202,9 @@ read_value()
 
           skip_spaces();
 
-            if(*pointer == ':')
+            if(*m_pointer == ':')
             {
-              ++pointer;
+              ++m_pointer;
 
               skip_spaces();
 
@@ -218,7 +218,7 @@ read_value()
       else
         if(first_c == '0')
         {
-          ++pointer;
+          ++m_pointer;
 
           auto  v = read_number_that_begins_by_zero();
 

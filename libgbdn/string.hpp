@@ -28,37 +28,37 @@ string_view
   }
 
 
-  const char*  pointer;
+  const char*  m_pointer;
 
-  size_t  length;
+  size_t  m_length;
 
 public:
   constexpr string_view(const char*  p=nullptr) noexcept:
-  pointer(p),
-  length(p? get_length(p,0):0){}
+  m_pointer(p),
+  m_length(p? get_length(p,0):0){}
 
   constexpr string_view(const char*  p, size_t  l) noexcept:
-  pointer(p),
-  length(l){}
+  m_pointer(p),
+  m_length(l){}
 
 
-  constexpr operator bool() const noexcept{return pointer;}
+  constexpr operator bool() const noexcept{return m_pointer;}
 
-  constexpr bool  operator==(const char*  s) const noexcept{return compare(pointer,s,length);}
+  constexpr bool  operator==(const char*  s) const noexcept{return compare(m_pointer,s,m_length);}
 
   constexpr bool  operator==(const string_view&  rhs) const noexcept
   {
-    return(length == rhs.length) && compare(pointer,rhs.pointer,length);
+    return(m_length == rhs.m_length) && compare(m_pointer,rhs.m_pointer,m_length);
   }
 
-  constexpr const char&  operator[](int  i) const noexcept{return pointer[i];}
+  constexpr const char&  operator[](int  i) const noexcept{return m_pointer[i];}
 
-  constexpr const char*  get_data() const noexcept{return pointer;}
+  constexpr const char*  get_data() const noexcept{return m_pointer;}
 
-  constexpr size_t  get_length() const noexcept{return length;}
+  constexpr size_t  get_length() const noexcept{return m_length;}
 
-  constexpr const char*  begin() const noexcept{return pointer       ;}
-  constexpr const char*    end() const noexcept{return pointer+length;}
+  constexpr const char*  begin() const noexcept{return m_pointer       ;}
+  constexpr const char*    end() const noexcept{return m_pointer+m_length;}
 
 };
 
@@ -68,11 +68,11 @@ string
 {
   static char  null;
 
-  char*  data=&null;
+  char*  m_data=&null;
 
-  size_t  length=0;
+  size_t  m_length=0;
 
-  value*  companion_value=nullptr;
+  value*  m_value=nullptr;
 
 public:
   string() noexcept{}
@@ -92,16 +92,16 @@ public:
 
   void  assign(const char*  str, size_t  len, value*  v=nullptr) noexcept;
 
-  const char*  get_data() const noexcept{return data;}
-  size_t  get_length() const noexcept{return length;}
+  const char*  get_data() const noexcept{return m_data;}
+  size_t  get_length() const noexcept{return m_length;}
 
-  string_view  get_view() const noexcept{return string_view(data,length);}
+  string_view  get_view() const noexcept{return string_view(m_data,m_length);}
 
-  const char*  begin() const noexcept{return data       ;}
-  const char*    end() const noexcept{return data+length;}
+  const char*  begin() const noexcept{return m_data       ;}
+  const char*    end() const noexcept{return m_data+m_length;}
 
   void          set_value(value*  v) noexcept;
-  const value*  get_value() const noexcept{return companion_value;}
+  const value*  get_value() const noexcept{return m_value;}
 
   void  print(int  indent=0) const noexcept;
 

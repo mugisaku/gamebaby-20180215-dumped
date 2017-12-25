@@ -118,6 +118,7 @@ public:
   static type_info  make_void()            noexcept;
   static type_info  make_null_pointer()    noexcept;
   static type_info  make_generic_pointer() noexcept;
+  static type_info  make_function_pointer() noexcept;
 
   static type_info  make_array(const type_info&  ti, size_t  n) noexcept;
   static type_info  make_empty_enum()   noexcept;

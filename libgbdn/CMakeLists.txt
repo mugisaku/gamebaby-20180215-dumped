@@ -14,8 +14,8 @@ set(SOURCES
 
 include_directories(./)
 add_library("gbdn" ${SOURCES})
-add_executable("testlib" testlib.cpp)
-target_link_libraries("testlib" "gbdn")
+add_executable("testGBDN" testGBDN.cpp)
+target_link_libraries("testGBDN" "gbdn")
 
 
 

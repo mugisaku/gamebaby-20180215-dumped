@@ -81,22 +81,6 @@ set(GAME_SOURCES
 )
 
 
-set(LIBTY_SOURCES
-  libty/type_decl.cpp
-  libty/type_info.cpp
-  libty/type_info__constructor.cpp
-  libty/type_info__is.cpp
-  libty/type_info__make.cpp
-  libty/type_info__add.cpp
-  libty/type_info__remove.cpp
-  libty/type_info__print.cpp
-  libty/array_def.cpp
-  libty/enum_def.cpp
-  libty/struct_def.cpp
-  libty/union_def.cpp
-)
-
-
 set(BATTLE_SOURCES
   Battle/TemporaryData.cpp
   Battle/SystemData.cpp
@@ -154,14 +138,13 @@ set(STANDARD_SOURCES
 
 
 add_subdirectory(libgbdn)
+add_subdirectory(libty)
 
 include_directories(./)
 include_directories(./libgbdn)
 include_directories(./Standard)
 #include_directories(./TypeSystem)
 include_directories(/usr/include/SDL2)
-add_executable("testTS${EXECUTABLE_EXTENSION}" libty/testTS.cpp ${LIBTY_SOURCES})
-#add_executable("testMain${EXECUTABLE_EXTENSION}" Game/testMain.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
 add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
 #add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
 #add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})

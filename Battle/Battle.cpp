@@ -132,7 +132,7 @@ step(uint32_t&  pc) noexcept
     switch(pc)
     {
   case(0):
-coprocesses::debug(true);
+//coprocesses::debug(true);
         for(auto&  w: status_windows)
         {
           sys::root_task.push(w);
