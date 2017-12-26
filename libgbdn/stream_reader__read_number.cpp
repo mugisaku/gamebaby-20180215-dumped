@@ -5,6 +5,7 @@
 
 
 namespace gbdn{
+namespace gbdn_types{
 
 
 value
@@ -362,7 +363,7 @@ read_number_that_begins_by_zero() noexcept
 
 
 
-}
+}}
 
 
 

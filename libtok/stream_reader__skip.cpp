@@ -4,8 +4,8 @@
 
 
 
-namespace gbdn{
-namespace gbdn_types{
+namespace tok{
+namespace tok_types{
 
 
 void
@@ -16,7 +16,7 @@ skip_linestyle_comment()
     {
       auto  c = *m_pointer;
 
-        if(!c)
+        if(is_reached_end())
         {
           break;
         }
@@ -47,9 +47,11 @@ skip_blockstyle_comment()
     {
       auto  c = *m_pointer;
 
-        if(!c)
+        if(is_reached_end())
         {
-          throw stream_error(*this,"ブロック式コメントが閉じられていない");
+          printf("ブロック式コメントが閉じられていない\n");
+
+          throw token_info(m_line_start,m_pointer,m_line_number);
         }
 
       else           

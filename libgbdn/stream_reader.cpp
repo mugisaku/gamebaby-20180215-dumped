@@ -6,6 +6,7 @@
 
 
 namespace gbdn{
+namespace gbdn_types{
 
 
 namespace{
@@ -245,7 +246,7 @@ read_value()
 }
 
 
-}
+}}
 
 
 

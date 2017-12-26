@@ -8,6 +8,7 @@
 
 
 namespace gbdn{
+namespace gbdn_types{
 
 
 class
@@ -134,6 +135,14 @@ public:
   value  read_value();
 
 };
+
+
+}
+
+
+using gbdn_types::stream_context;
+using gbdn_types::stream_error;
+using gbdn_types::stream_reader;
 
 
 }

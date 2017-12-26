@@ -7,6 +7,7 @@
 
 
 namespace gbdn{
+namespace gbdn_types{
 
 
 class value;
@@ -106,6 +107,13 @@ public:
   void  print(int  indent=0) const noexcept;
 
 };
+
+
+}
+
+
+using string = gbdn_types::string;
+using string_view = gbdn_types::string_view;
 
 
 }

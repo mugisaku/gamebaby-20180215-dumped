@@ -7,6 +7,7 @@
 
 
 namespace gbdn{
+namespace gbdn_types{
 
 
 class list;
@@ -67,6 +68,12 @@ public:
   void  print(int  indent=0) const noexcept;
 
 };
+
+
+}
+
+
+using value = gbdn_types::value;
 
 
 }

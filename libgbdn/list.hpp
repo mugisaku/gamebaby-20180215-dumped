@@ -7,6 +7,7 @@
 
 
 namespace gbdn{
+namespace gbdn_types{
 
 
 class stream_reader;
@@ -57,6 +58,13 @@ public:
   const value*    end() const noexcept{return m_data+m_number_of_values;}
 
 };
+
+
+}
+
+
+using list = gbdn_types::list;
+using value_was_not_found = gbdn_types::value_was_not_found;
 
 
 }

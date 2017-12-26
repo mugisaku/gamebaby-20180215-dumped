@@ -8,6 +8,7 @@
 
 
 namespace gbdn{
+namespace gbdn_types{
 
 
 
@@ -108,7 +109,7 @@ print(int  indent) const noexcept
 }
 
 
-}
+}}
 
 
 
