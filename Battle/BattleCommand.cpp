@@ -8,9 +8,9 @@ namespace{
 EffectKind
 to_effect(const gbdn::string&  s) noexcept
 {
-       if(s == gbdn::string_view("null"  )){return EffectKind::null;}
-  else if(s == gbdn::string_view("attack")){return EffectKind::attack;}
-  else if(s == gbdn::string_view("appraise")){return EffectKind::appraise;}
+       if(s == std::string_view("null"  )){return EffectKind::null;}
+  else if(s == std::string_view("attack")){return EffectKind::attack;}
+  else if(s == std::string_view("appraise")){return EffectKind::appraise;}
 
   return EffectKind::null;
 }
@@ -19,13 +19,13 @@ to_effect(const gbdn::string&  s) noexcept
 TargetKind
 to_target(const gbdn::string&  s) noexcept
 {
-       if(s == gbdn::string_view("null"                )){return TargetKind::null;}
-  else if(s == gbdn::string_view("self"                )){return TargetKind::self;}
-  else if(s == gbdn::string_view("one_of_own_team"     )){return TargetKind::one_of_own_team;}
-  else if(s == gbdn::string_view("all_of_own_team"     )){return TargetKind::all_of_own_team;}
-  else if(s == gbdn::string_view("one_of_opposite_team")){return TargetKind::one_of_opposite_team;}
-  else if(s == gbdn::string_view("all_of_opposite_team")){return TargetKind::all_of_opposite_team;}
-  else if(s == gbdn::string_view("all_of_both_team"    )){return TargetKind::all_of_both_team;}
+       if(s == std::string_view("null"                )){return TargetKind::null;}
+  else if(s == std::string_view("self"                )){return TargetKind::self;}
+  else if(s == std::string_view("one_of_own_team"     )){return TargetKind::one_of_own_team;}
+  else if(s == std::string_view("all_of_own_team"     )){return TargetKind::all_of_own_team;}
+  else if(s == std::string_view("one_of_opposite_team")){return TargetKind::one_of_opposite_team;}
+  else if(s == std::string_view("all_of_opposite_team")){return TargetKind::all_of_opposite_team;}
+  else if(s == std::string_view("all_of_both_team"    )){return TargetKind::all_of_both_team;}
 
   return TargetKind::null;
 }

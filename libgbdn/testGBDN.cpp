@@ -21,18 +21,11 @@ main(int  argc, char**  argv)
     }
 
 
-    catch(const stream_error&  err)
+    catch(const tok::stream_context&  ctx)
     {
-      err.print();
+      ctx.print();
 
       printf("\n");
-
-      return -1;
-    }
-
-    catch(...)
-    {
-      printf("...\n");
 
       return -1;
     }

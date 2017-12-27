@@ -3,14 +3,12 @@
 
 
 #include"string.hpp"
+#include"list.hpp"
 #include<new>
 
 
 namespace gbdn{
 namespace gbdn_types{
-
-
-class list;
 
 
 class
@@ -30,7 +28,7 @@ value
     int         i;
     double      r;
     string      s;
-    list*      ls;
+    list       ls;
 
      data_type(){}
     ~data_type(){}
@@ -42,7 +40,7 @@ public:
   value(int        i) noexcept: m_kind(kind_type::integer){m_data.i = i;}
   value(double     r) noexcept: m_kind(kind_type::real   ){m_data.r = r;}
   value(string&&   s) noexcept: m_kind(kind_type::string ){new(&m_data) string(std::move(s));}
-  value(list*           ls) noexcept: m_kind(kind_type::list){m_data.ls = ls;}
+  value(list&&    ls) noexcept: m_kind(kind_type::list){new(&m_data) list(std::move(ls));}
   value(const value&   rhs) noexcept{*this = rhs;}
   value(      value&&  rhs) noexcept{*this = std::move(rhs);}
  ~value(){clear();}
@@ -73,7 +71,7 @@ public:
 }
 
 
-using value = gbdn_types::value;
+using gbdn_types::value;
 
 
 }

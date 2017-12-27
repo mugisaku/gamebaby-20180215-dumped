@@ -76,9 +76,9 @@ load() noexcept
     }
 
 
-    catch(const gbdn::stream_error&  e)
+    catch(const tok::stream_context&  ctx)
     {
-      e.print();
+      ctx.print();
 
       return;
     }
@@ -94,25 +94,25 @@ load() noexcept
 
               auto  subv = s.get_value();
 
-                if((s == gbdn::string_view("class")) && subv && subv->is_list())
+                if((s == std::string_view("class")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),player_base_table_entity);
                 }
 
               else
-                if((s == gbdn::string_view("enemy")) && subv && subv->is_list())
+                if((s == std::string_view("enemy")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),enemy_table_entity);
                 }
 
               else
-                if((s == gbdn::string_view("enemy_party")) && subv && subv->is_list())
+                if((s == std::string_view("enemy_party")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),enemy_party_table_entity);
                 }
 
               else
-                if((s == gbdn::string_view("command")) && subv && subv->is_list())
+                if((s == std::string_view("command")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),command_table_entity);
                 }

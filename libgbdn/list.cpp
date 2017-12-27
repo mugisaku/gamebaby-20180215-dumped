@@ -1,13 +1,184 @@
 #include"list.hpp"
 #include"value.hpp"
-#include"stream_reader.hpp"
 #include<cstring>
+#include<vector>
 
 
 
 
 namespace gbdn{
 namespace gbdn_types{
+
+
+value
+list::
+read_number(tok::stream_reader&  r)
+{
+  bool  neg = false;
+
+    if(r.get_char() == '-')
+    {
+      neg = true;
+
+      r.advance();
+
+      r.skip_spaces();
+
+        if(!r.is_pointing_number())
+        {
+          printf("-の後ろに数列がない\n");
+
+          throw r.get_context();
+        }
+    }
+
+
+  auto  n = static_cast<int>(r.read_number());
+
+  return value(neg? -n:n);
+}
+
+
+value*
+list::
+read_value_of_pair(tok::stream_reader&  r, char  cl)
+{
+  r.skip_spaces();
+
+    if(r.get_char() == ':')
+    {
+      r.advance();
+
+      r.skip_spaces();
+
+      auto  v = read_value(r,cl);
+
+        if(!v)
+        {
+          printf(":の後ろに値がない\n");
+
+          throw r.get_context();
+        }
+
+
+      return new value(std::move(v));
+    }
+
+
+  return nullptr;
+}
+
+
+value
+list::
+read_value(tok::stream_reader&  r, char  cl)
+{
+RESTART:
+  r.skip_spaces();
+
+  auto  c = r.get_char();
+
+    if(c == cl)
+    {
+      r.advance();
+
+      return value();
+    }
+
+  else
+    if(c == ',')
+    {
+      r.advance();
+
+      goto RESTART;
+    }
+
+
+    if(c == '{')
+    {
+      r.advance();
+
+      return value(list(r,'}'));
+    }
+
+  else
+    if((c == '\'') ||
+       (c == '\"'))
+    {
+      r.advance();
+
+      string  s(r.read_quoted_string(c));
+
+      s.set_value(read_value_of_pair(r,cl));
+
+      return value(std::move(s));
+    }
+
+  else
+    if(r.is_pointing_identifier())
+    {
+      string  s(r.read_identifier());
+
+      s.set_value(read_value_of_pair(r,cl));
+
+      return value(std::move(s));
+    }
+
+  else
+    if(r.is_pointing_number() || (c == '-'))
+    {
+      return read_number(r);
+    }
+
+  else
+    {
+      printf("%c(%d)は処理できない\n",c,c);
+
+      throw r.get_context();
+    }
+
+
+  return value();
+}
+
+
+
+
+void
+list::
+assign(tok::stream_reader&  reader, char  cl)
+{
+  clear();
+
+  std::vector<value>  ls;
+
+    for(;;)
+    {
+      auto  v = read_value(reader,cl);
+
+        if(!v)
+        {
+          break;
+        }
+
+
+      ls.emplace_back(std::move(v));
+    }
+
+
+  m_data = new value[ls.size()];
+
+  m_number_of_values = ls.size();
+
+  auto  dst = m_data;
+
+    for(auto&&  v: ls)
+    {
+      *dst++ = std::move(v);
+    }
+}
+
+
 
 
 list&
@@ -50,7 +221,7 @@ operator=(list&&  rhs) noexcept
 
 const value&
 list::
-get_named_value(const char*  name) const
+get_named_value(std::string_view  name) const
 {
   auto  v = find_named_value(name);
 
@@ -66,13 +237,11 @@ get_named_value(const char*  name) const
 
 const value*
 list::
-find_named_value(const char*  name) const noexcept
+find_named_value(std::string_view  name) const noexcept
 {
-  const string_view  name_view(name);
-
     for(auto&  v: *this)
     {
-        if(v.is_string() && (v.get_string() == name_view))
+        if(v.is_string() && (v.get_string() == name))
         {
           return v.get_string().get_value();
         }
@@ -126,123 +295,6 @@ access(std::initializer_list<const char*>  ls) const noexcept
 
 
 
-namespace{
-class
-buffer
-{
-  static constexpr size_t  initial_number = 256;
-
-  value*  data;
-
-  uint32_t  number_of_allocated;
-  uint32_t  number_of_pushed=0;
-
-public:
-  buffer() noexcept: data(new value[initial_number]), number_of_allocated(initial_number){}
- ~buffer(){delete[] data;}
-
-  uint32_t  get_number_of_pushed() const noexcept{return number_of_pushed;}
-
-  value*  release_pointer() noexcept
-  {
-    auto  p = data          ;
-              data = nullptr;
-
-    return p;
-  }
-
-  void  push(value&&  v) noexcept
-  {
-      if(number_of_pushed >= number_of_allocated)
-      {
-        constexpr int  rate = 2;
-
-        auto  new_data = new value[number_of_allocated*rate];
-
-          for(int  i = 0;  i < number_of_pushed;  ++i)
-          {
-            new_data[i] = std::move(data[i]);
-          }
-
-
-        delete[] data           ;
-                 data = new_data;
-
-        number_of_allocated *= rate;
-      }
-
-
-    data[number_of_pushed++] = std::move(v);
-  }
-
-};
-}
-
-
-void
-list::
-assign(stream_reader&  reader, char  cl)
-{
-  clear();
-
-  stream_context  ctx;
-
-  buffer  buf;
-
-    for(;;)
-    {
-      reader.skip_spaces();
-
-      auto  c = reader.get_char();
-
-        if(c == cl)
-        {
-          reader.advance(1);
-
-          break;
-        }
-
-      else
-        if(!c)
-        {
-          throw stream_error(reader,"}で閉じられていない");
-        }
-
-      else
-        if(c == '}')
-        {
-          throw stream_error(reader,"余分な}");
-        }
-
-      else
-        if(c == ',')
-        {
-          reader.advance(1);
-        }
-
-      else
-        {
-          ctx = reader;
-
-          auto  v = reader.read_value();
-
-            if(!v)
-            {
-              break;
-            }
-
-
-          buf.push(std::move(v));
-        }
-    }
-
-
-  m_data = buf.release_pointer();
-
-  m_number_of_values = buf.get_number_of_pushed();
-}
-
-
 void
 list::
 open(const char*  filepath)
@@ -251,46 +303,33 @@ open(const char*  filepath)
 
     if(f)
     {
-      size_t  len = 0;
+      std::string  s;
 
         for(;;)
         {
-          fgetc(f);
+          auto  c = fgetc(f);
 
-            if(feof(f))
+            if(feof(f) || ferror(f))
             {
               break;
             }
 
 
-          ++len;
+          s.push_back(c);
         }
 
 
-      auto  buf = new char[len+1];
-
-      auto  p = buf;
-
-      rewind(f);
-
-        while(len--)
-        {
-          *p++ = fgetc(f);
-        }
+      fclose(f);
 
 
-      *p = 0;
+      tok::stream_reader  r(s);
 
-      stream_reader  sr(buf);
-
-      assign(sr);
-
-      delete[] buf;
+      assign(r,0);
     }
 
   else
     {
-      printf("[gbdn list construct error] %sを開けない",filepath);
+      printf("%sを開けない\n",filepath);
     }
 }
 
@@ -304,6 +343,10 @@ clear() noexcept
 
   m_number_of_values = 0;
 }
+
+
+const value*  list::begin() const noexcept{return m_data;}
+const value*    list::end() const noexcept{return m_data+m_number_of_values;}
 
 
 void

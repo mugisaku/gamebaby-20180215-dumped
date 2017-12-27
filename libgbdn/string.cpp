@@ -26,7 +26,7 @@ operator=(const string&   rhs) noexcept
 {
   clear();
 
-  assign(rhs.m_data,rhs.m_length,rhs.m_value? new value(*rhs.m_value):nullptr);
+  assign(rhs.get_view(),rhs.m_value? new value(*rhs.m_value):nullptr);
 
   return *this;
 }
@@ -44,6 +44,16 @@ operator=(string&&  rhs) noexcept
   std::swap(m_value,rhs.m_value);
 
   return *this;
+}
+
+
+
+
+bool
+string::
+operator==(std::string_view  sv) const noexcept
+{
+  return (m_length == sv.size()) && (std::strncmp(m_data,sv.data(),m_length) == 0);
 }
 
 
@@ -69,15 +79,15 @@ clear() noexcept
 
 void
 string::
-assign(const char*  str, size_t  len, value*  v) noexcept
+assign(std::string_view  sv, value*  v) noexcept
 {
   clear();
 
-  m_length = len;
+  m_length = sv.size();
 
   m_data = new char[m_length+1];
 
-  std::memcpy(m_data,str,m_length);
+  std::memcpy(m_data,sv.data(),m_length);
 
   m_data[m_length] = 0;
 

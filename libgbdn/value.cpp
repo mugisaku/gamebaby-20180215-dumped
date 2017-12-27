@@ -34,7 +34,7 @@ operator=(value&&  rhs) noexcept
       m_data.r = rhs.m_data.r;
       break;
   case(kind_type::list):
-      m_data.ls = rhs.m_data.ls;
+      new(&m_data) list(std::move(rhs.m_data.ls));
       break;
     }
 
@@ -65,7 +65,7 @@ operator=(const value&  rhs) noexcept
       m_data.r = rhs.m_data.r;
       break;
   case(kind_type::list):
-      m_data.ls = new list(*rhs.m_data.ls);
+      new(&m_data) list(rhs.m_data.ls);
       break;
     }
 
@@ -91,7 +91,7 @@ clear() noexcept
   case(kind_type::real):
       break;
   case(kind_type::list):
-      delete m_data.ls;
+      m_data.ls.~list();
       break;
     }
 
@@ -106,7 +106,7 @@ clear() noexcept
 int            value::get_integer() const noexcept{return m_data.i;}
 double            value::get_real() const noexcept{return m_data.r;}
 const string&   value::get_string() const noexcept{return m_data.s;}
-const list&       value::get_list() const noexcept{return *m_data.ls;}
+const list&       value::get_list() const noexcept{return m_data.ls;}
 
 
 
@@ -130,7 +130,7 @@ print(int  indent) const noexcept
       printf("%f",m_data.r);
       break;
   case(kind_type::list):
-      m_data.ls->print(indent);
+      m_data.ls.print(indent);
       break;
     }
 }

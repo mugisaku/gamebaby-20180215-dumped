@@ -148,7 +148,7 @@ include_directories(/usr/include/SDL2)
 add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
 #add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
 #add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
-target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "gbdn")
+target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "gbdn" "tok")
 
 
 if(EMSC)

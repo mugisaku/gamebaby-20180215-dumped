@@ -19,7 +19,7 @@ load(const char*  name_, const gbdn::list&  ls)
             {
               auto&  name = ene.get_name();
 
-              gbdn::string_view  sv(name.data(),name.size());
+              std::string_view  sv(name.data(),name.size());
 
                 if(v.get_string() == sv)
                 {

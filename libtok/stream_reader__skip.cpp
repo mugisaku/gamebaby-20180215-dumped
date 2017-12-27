@@ -10,7 +10,7 @@ namespace tok_types{
 
 void
 stream_reader::
-skip_linestyle_comment()
+skip_linestyle_comment() noexcept
 {
     for(;;)
     {
@@ -51,7 +51,7 @@ skip_blockstyle_comment()
         {
           printf("ブロック式コメントが閉じられていない\n");
 
-          throw token_info(m_line_start,m_pointer,m_line_number);
+          throw get_context();
         }
 
       else           
@@ -85,7 +85,7 @@ skip_blockstyle_comment()
 
 void
 stream_reader::
-skip_spaces() noexcept
+skip_spaces()
 {
     for(;;)
     {

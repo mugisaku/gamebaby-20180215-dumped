@@ -7,11 +7,11 @@ namespace tok{
 namespace tok_types{
 
 
-unsigned int
+uint64_t
 stream_reader::
 read_binary_number() noexcept
 {
-  unsigned int  i = 0;
+  uint64_t  i = 0;
 
     for(;;)
     {
@@ -43,11 +43,11 @@ read_binary_number() noexcept
 
 
 
-unsigned int
+uint64_t
 stream_reader::
 read_octal_number() noexcept
 {
-  unsigned int  i = 0;
+  uint64_t  i = 0;
 
     while((*m_pointer >= '0') &&
           (*m_pointer <= '7'))
@@ -62,11 +62,11 @@ read_octal_number() noexcept
 }
 
 
-unsigned int
+uint64_t
 stream_reader::
 read_decimal_number() noexcept
 {
-  unsigned int  i = 0;
+  uint64_t  i = 0;
 
     while((*m_pointer >= '0') &&
           (*m_pointer <= '9'))
@@ -81,11 +81,11 @@ read_decimal_number() noexcept
 }
 
 
-unsigned int
+uint64_t
 stream_reader::
 read_hexadecimal_number() noexcept
 {
-  unsigned int  i = 0;
+  uint64_t  i = 0;
 
     for(;;)
     {
@@ -138,7 +138,7 @@ read_hexadecimal_number() noexcept
 }
 
 
-unsigned int
+uint64_t
 stream_reader::
 read_number_that_begins_by_zero() noexcept
 {
@@ -151,6 +151,12 @@ read_number_that_begins_by_zero() noexcept
 }
 
 
+uint64_t
+stream_reader::
+read_number() noexcept
+{
+  return (*m_pointer == '0')? read_number_that_begins_by_zero(): read_decimal_number();
+}
 
 
 }}

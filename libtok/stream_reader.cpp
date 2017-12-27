@@ -43,40 +43,25 @@ isidentn(char  c) noexcept
 {
   return isalnum(c) || (c == '_');
 }
+}
+
+
 
 
 bool
-ispunct(char  c) noexcept
+stream_reader::
+is_pointing_identifier() const noexcept
 {
-  return((c == '!') ||
-         (c == '?') ||
-         (c == '+') ||
-         (c == '-') ||
-         (c == '*') ||
-         (c == '/') ||
-         (c == '%') ||
-         (c == '|') ||
-         (c == '&') ||
-         (c == '=') ||
-         (c == '<') ||
-         (c == '>') ||
-         (c == '(') ||
-         (c == ')') ||
-         (c == '{') ||
-         (c == '}') ||
-         (c == '[') ||
-         (c == ']') ||
-         (c == ':') ||
-         (c == ';') ||
-         (c == ',') ||
-         (c == '.') ||
-         (c == '~') ||
-         (c == '^') ||
-         (c == '#'));
-}
+  return isident0(*m_pointer);
 }
 
 
+bool
+stream_reader::
+is_pointing_number() const noexcept
+{
+  return isdigit(*m_pointer);
+}
 
 
 void
@@ -89,43 +74,27 @@ newline() noexcept
 }
 
 
-identifier
+const std::string&
 stream_reader::
 read_identifier() noexcept
 {
-  std::string  s;
+  m_string_buffer.resize(0,0);
 
     while(isidentn(*m_pointer))
     {
-      s.push_back(*m_pointer++);
+      m_string_buffer.push_back(*m_pointer++);
     }
 
 
-  return identifier(std::move(s));
+  return m_string_buffer;
 }
 
 
-punctuation_string
-stream_reader::
-read_punctuation_string() noexcept
-{
-  std::string  s;
-
-    while(ispunct(*m_pointer))
-    {
-      s.push_back(*m_pointer++);
-    }
-
-
-  return punctuation_string(std::move(s));
-}
-
-
-quoted_string
+const std::string&
 stream_reader::
 read_quoted_string(char  close_char) noexcept
 {
-  std::string  s;
+  m_string_buffer.resize(0,0);
 
     while(*m_pointer)
     {
@@ -144,72 +113,12 @@ read_quoted_string(char  close_char) noexcept
 
       else
         {
-          s.push_back(c);
+          m_string_buffer.push_back(c);
         }
     }
 
 
-  return quoted_string(std::move(s));
-}
-
-
-token
-stream_reader::
-read_token()
-{
-  auto  first_c = *m_pointer;
-
-  token_info ti(m_line_start,m_pointer,m_line_number);
-
-    if((first_c == '\"') ||
-       (first_c == '\''))
-    {
-      ++m_pointer;
-
-      return token(ti,read_quoted_string(first_c));
-    }
-
-  else
-    if(isident0(first_c))
-    {
-      return token(ti,read_identifier());
-    }
-
-  else
-    if(first_c == '0')
-    {
-      ++m_pointer;
-
-      return token(ti,read_number_that_begins_by_zero());
-    }
-
-  else
-    if((first_c >= '1') &&
-       (first_c <= '9'))
-    {
-      return token(ti,read_decimal_number());
-    }
-
-  else
-    if((first_c >= '1') &&
-       (first_c <= '9'))
-    {
-      return token(ti,read_decimal_number());
-    }
-
-  else
-    if(ispunct(first_c))
-    {
-      return token(ti,read_punctuation_string());
-    }
-
-  else
-    {
-      printf("%c(%d)は処理できない ",first_c,first_c);
-    }
-
-
-  throw ti;
+  return m_string_buffer;
 }
 
 
