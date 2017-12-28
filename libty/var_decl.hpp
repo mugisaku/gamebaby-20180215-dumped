@@ -44,7 +44,7 @@ public:
 }
 
 
-using ty_types::type_decl;
+using ty_types::var_decl;
 
 
 }

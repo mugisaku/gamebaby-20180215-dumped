@@ -8,6 +8,8 @@
 #include"struct_def.hpp"
 #include"union_def.hpp"
 #include"signature.hpp"
+#include"type_decl.hpp"
+#include"var_decl.hpp"
 
 
 #endif

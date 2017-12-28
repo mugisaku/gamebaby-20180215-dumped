@@ -140,6 +140,7 @@ set(STANDARD_SOURCES
 add_subdirectory(libgbdn)
 add_subdirectory(libty)
 add_subdirectory(libtok)
+add_subdirectory(libipre)
 
 include_directories(./)
 include_directories(./libgbdn)

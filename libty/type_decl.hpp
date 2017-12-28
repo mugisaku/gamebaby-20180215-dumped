@@ -35,6 +35,7 @@ type_decl
   void  unrefer() noexcept;
 
 public:
+  type_decl() noexcept{}
   type_decl(const type_info&  type_info, std::string_view  name) noexcept;
   type_decl(const type_decl&   rhs) noexcept{*this = rhs;}
   type_decl(      type_decl&&  rhs) noexcept{*this = std::move(rhs);}
@@ -42,6 +43,11 @@ public:
 
   type_decl&  operator=(const type_decl&   rhs) noexcept;
   type_decl&  operator=(      type_decl&&  rhs) noexcept;
+
+  bool  operator==(const type_decl&  rhs) noexcept{return m_data == rhs.m_data;}
+  bool  operator!=(const type_decl&  rhs) noexcept{return m_data != rhs.m_data;}
+
+  operator bool() const noexcept{return m_data;}
 
   const type_info&  get_info() const noexcept;
 
