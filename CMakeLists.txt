@@ -81,37 +81,6 @@ set(GAME_SOURCES
 )
 
 
-set(STANDARD_SOURCES
-  Standard/gmbb_SawtoothCharacterBuffer.cpp
-  Standard/gmbb_LinearCharacterBuffer.cpp
-  Standard/gmbb_unicode.cpp
-  Standard/gmbb_environment.cpp
-  Standard/gmbb_RandomNumber.cpp
-  Standard/gmbb_Controller.cpp
-  Standard/gmbb_LineMaker.cpp
-  Standard/gmbb_Routine.cpp
-  Standard/gmbb_Task.cpp
-  Standard/gmbb_GroupTask.cpp
-  Standard/gmbb_Window.cpp
-  Standard/gmbb_Window__draw_frame.cpp
-  Standard/gmbb_Menu.cpp
-  Standard/gmbb_ScrollStyleMenuWindow.cpp
-  Standard/gmbb_ColumnStyleMenuWindow.cpp
-  Standard/gmbb_StringBuffer.cpp
-  Standard/gmbb_Stream.cpp
-  Standard/gmbb_StreamReader.cpp
-  Standard/gmbb_StreamWriter.cpp
-  Standard/gmbb_Image.cpp
-  Standard/gmbb_Image__png.cpp
-  Standard/gmbb_Image__draw.cpp
-  Standard/gmbb_Image__transfer.cpp
-  Standard/gmbb_Image__print.cpp
-  Standard/gmbb_GlyphSet.cpp
-)
-
-
-
-
 add_subdirectory(libgbdn)
 add_subdirectory(libty)
 add_subdirectory(libtok)
