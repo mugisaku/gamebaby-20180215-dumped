@@ -76,6 +76,16 @@ constexpr int   zombie_flag = 0x4000;
 
 
 class
+Compoint
+{
+  int  base_value;
+  int  add0_value;
+  int  add1_value;
+
+};
+
+
+class
 PlayerBase
 {
 protected:

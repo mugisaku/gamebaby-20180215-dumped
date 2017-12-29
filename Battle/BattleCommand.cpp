@@ -10,7 +10,7 @@ to_effect(const gbdn::string&  s) noexcept
 {
        if(s == std::string_view("null"  )){return EffectKind::null;}
   else if(s == std::string_view("attack")){return EffectKind::attack;}
-  else if(s == std::string_view("appraise")){return EffectKind::appraise;}
+  else if(s == std::string_view("hp_recover")){return EffectKind::hp_recover;}
 
   return EffectKind::null;
 }

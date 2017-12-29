@@ -80,7 +80,7 @@ judge(uint32_t&  pc) noexcept
 
       clear_stream_text();
 
-      sys::char_buffer.push("てきを　しりぞけた");
+      sys::char_buffer.push("すべてのてきを　たおした");
 
       coprocesses::push(nullptr,coprocess_of_stream_text);
       break;
@@ -90,7 +90,7 @@ judge(uint32_t&  pc) noexcept
 
       clear_stream_text();
 
-      sys::char_buffer.push("てきに　やぶれた");
+      sys::char_buffer.push("ぜんめつした");
 
       coprocesses::push(nullptr,coprocess_of_stream_text);
       break;

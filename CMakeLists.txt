@@ -81,31 +81,6 @@ set(GAME_SOURCES
 )
 
 
-set(BATTLE_SOURCES
-  Battle/TemporaryData.cpp
-  Battle/SystemData.cpp
-  Battle/SavedData.cpp
-  Battle/ReadOnlyData.cpp
-  Battle/FrontInterface.cpp
-  Battle/Screen.cpp
-  Battle/Startup_PartyMaking.cpp
-  Battle/Startup_CharacterMaking.cpp
-  Battle/Startup_ClassChoosing.cpp
-  Battle/Startup_NameMaking.cpp
-  Battle/Battle.cpp
-  Battle/BattleTeam.cpp
-  Battle/BattlePlayer.cpp
-  Battle/BattlePlayerBase.cpp
-  Battle/BattleEnemy.cpp
-  Battle/BattleEnemyParty.cpp
-  Battle/BattleCommand.cpp
-  Battle/BattleTimeData.cpp
-  Battle/Battle_StreamText.cpp
-  Battle/Battle_ActionMaking.cpp
-  Battle/Battle_ActionProcessing.cpp
-)
-
-
 set(STANDARD_SOURCES
   Standard/gmbb_SawtoothCharacterBuffer.cpp
   Standard/gmbb_LinearCharacterBuffer.cpp
@@ -141,15 +116,16 @@ add_subdirectory(libgbdn)
 add_subdirectory(libty)
 add_subdirectory(libtok)
 add_subdirectory(libipre)
+add_subdirectory(Battle)
 
 include_directories(./)
 include_directories(./libgbdn)
 include_directories(./Standard)
 include_directories(/usr/include/SDL2)
-add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES} ${BATTLE_SOURCES})
+add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES})
 #add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
 #add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
-target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "gbdn" "tok")
+target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "process_list_collection" "battle" "gbdn" "tok")
 
 
 if(EMSC)

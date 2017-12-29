@@ -28,8 +28,7 @@ EffectKind
 {
   null,
   attack,
-  guard_up,
-  appraise,
+  hp_recover,
 
 };
 
@@ -55,6 +54,8 @@ BattleCommand
 
   BattleCommand() noexcept{}
   BattleCommand(const char*  name_, const gbdn::list&  ls){load(name_,ls);}
+
+  const std::string&  get_name() const noexcept{return name;}
 
   void  load(const char*  name_, const gbdn::list&  ls);
 

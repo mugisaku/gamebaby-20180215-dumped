@@ -81,7 +81,7 @@ step(uint32_t&  pc) noexcept
 
             if(now >= tmp::next_time)
             {
-              tmp::next_time = now+40;
+              tmp::next_time = now+20;
 
                 if(sc_buffer.is_full())
                 {

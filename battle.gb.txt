@@ -15,11 +15,11 @@ command:{
     effect:attack
   }
 
-  'かんしきがん':{
-    strength:0
+  'いやしのみず':{
+    strength:80
       weight:0
-    target:one_of_opposite_team
-    effect:appraise
+    target:self
+    effect:hp_revover
   }
 
   "てつのゆみや":{
@@ -40,12 +40,12 @@ command:{
 
 enemy:{
   "おばけがえる":{
-    body_strength:20
+    body_strength:40
     mind_strength:0
-          agility:8
+          agility:12
           defense:4
         intellect:0
-               hp:800
+               hp:130
                mp:0
     command_table:{
       "たいあたり"
@@ -72,7 +72,7 @@ class:{
                       mp:0
     command_table:{
       "はがねのつるぎ"
-      "かんしきがん"
+      "いやしのみず"
     }
   }
 
