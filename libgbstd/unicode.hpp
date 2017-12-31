@@ -14,10 +14,11 @@ namespace unicodes{
 class
 utf8_decoder
 {
-  const char*  m_pointer;
-  const char*  m_end;
+  const char*  m_pointer=nullptr;
+  const char*  m_end=nullptr;
 
 public:
+  utf8_decoder(                    ) noexcept{}
   utf8_decoder(std::string_view  sv) noexcept{*this = sv;}
 
   utf8_decoder&  operator=(std::string_view  sv) noexcept

@@ -10,10 +10,10 @@ set(SOURCES
   playwork.cpp
   task.cpp
   group_task.cpp
-  text_z_buffer.cpp
-  text_i_buffer.cpp
-  unicode.cpp
   text.cpp
+  text_buffer.cpp
+  text_roll.cpp
+  unicode.cpp
   environment.cpp
   random_number.cpp
   controller.cpp

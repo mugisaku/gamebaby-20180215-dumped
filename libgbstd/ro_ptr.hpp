@@ -2,7 +2,7 @@
 #define ro_ptr_TEMPLATE
 
 
-#include"rw_ptr.hpp"
+#include"libgbstd/rw_ptr.hpp"
 
 
 #ifndef report

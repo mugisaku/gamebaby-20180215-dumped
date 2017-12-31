@@ -1,4 +1,4 @@
-#include"line_maker.hpp"
+#include"libgbstd/line_maker.hpp"
 #include<algorithm>
 
 
@@ -7,14 +7,14 @@ namespace gbstd{
 
 
 line_maker::
-line_maker(Line  ln) noexcept
+line_maker(line  ln) noexcept
 {
   constexpr int  base = (1<<shift_amount)/2;
 
   auto  const x_min = std::min(ln.a_point.x,ln.b_point.x);
   auto  const x_max = std::max(ln.a_point.x,ln.b_point.x);
-  auto  const y_min = std::min(ln.a.y_point,ln.b_point.y);
-  auto  const y_max = std::max(ln.a.y_point,ln.b_point.y);
+  auto  const y_min = std::min(ln.a_point.y,ln.b_point.y);
+  auto  const y_max = std::max(ln.a_point.y,ln.b_point.y);
 
   int  x_distance = x_max-x_min;
   int  y_distance = y_max-y_min;

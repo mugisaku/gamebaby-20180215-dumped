@@ -37,18 +37,18 @@ color_index
 };
 
 
-namespace predefined{
-constexpr color_index        null(00000);
-constexpr color_index       white(01777);
-constexpr color_index       black(01000);
-constexpr color_index        gray(01333);
-constexpr color_index  light_gray(01555);
-constexpr color_index   dark_gray(01111);
-constexpr color_index         red(01700);
-constexpr color_index       green(01070);
-constexpr color_index        blue(01007);
-constexpr color_index      yellow(01770);
-}
+struct predefined{
+static constexpr color_index        null = color_index(00000);
+static constexpr color_index       white = color_index(01777);
+static constexpr color_index       black = color_index(01000);
+static constexpr color_index        gray = color_index(01333);
+static constexpr color_index  light_gray = color_index(01555);
+static constexpr color_index   dark_gray = color_index(01111);
+static constexpr color_index         red = color_index(01700);
+static constexpr color_index       green = color_index(01070);
+static constexpr color_index        blue = color_index(01007);
+static constexpr color_index      yellow = color_index(01770);
+};
 
 
 class
@@ -143,16 +143,7 @@ public:
 
 using images::color_index;
 using images::palette;
-using images::predefined::null;
-using images::predefined::white;
-using images::predefined::black;
-using images::predefined::red;
-using images::predefined::green;
-using images::predefined::blue;
-using images::predefined::yellow;
-using images::predefined::gray;
-using images::predefined::light_gray;
-using images::predefined::dark_gray;
+using images::predefined;
 
 using images::image;
 using images::pixel;

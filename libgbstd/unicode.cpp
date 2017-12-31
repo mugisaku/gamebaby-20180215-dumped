@@ -79,27 +79,27 @@ operator()() noexcept
 
     switch(n)
     {
-  case(1): c = ((utf8[0]        )    )                                  ;break;
-  case(2): c = ((utf8[0]&0b11111)<< 6)|decode(utf8[1])                  ;break;
-  case(3): c = ((utf8[0]&0b01111)<<12)|decode(utf8[1],6)|decode(utf8[2]);break;
+  case(1): c = ((m_pointer[0]        )    )                                            ;break;
+  case(2): c = ((m_pointer[0]&0b11111)<< 6)|decode(m_pointer[1])                       ;break;
+  case(3): c = ((m_pointer[0]&0b01111)<<12)|decode(m_pointer[1],6)|decode(m_pointer[2]);break;
 
   case(4):
-    c = ((utf8[0]&0b111)<<18)|decode(utf8[1],12)|
-                              decode(utf8[2], 6)|
-                              decode(utf8[3]   );
+    c = ((m_pointer[0]&0b111)<<18)|decode(m_pointer[1],12)|
+                                   decode(m_pointer[2], 6)|
+                                   decode(m_pointer[3]   );
     break;
   case(5):
-    c = ((utf8[0]&0b11)<<24)|decode(utf8[1],18)|
-                             decode(utf8[2],12)|
-                             decode(utf8[3], 6)|
-                             decode(utf8[4]   );
+    c = ((m_pointer[0]&0b11)<<24)|decode(m_pointer[1],18)|
+                                  decode(m_pointer[2],12)|
+                                  decode(m_pointer[3], 6)|
+                                  decode(m_pointer[4]   );
     break;
   case(6):
-    c = ((utf8[0]&0b1)<<30)|decode(utf8[1],24)|
-                            decode(utf8[2],18)|
-                            decode(utf8[3],12)|
-                            decode(utf8[4], 6)|
-                            decode(utf8[5]   );
+    c = ((m_pointer[0]&0b1)<<30)|decode(m_pointer[1],24)|
+                                 decode(m_pointer[2],18)|
+                                 decode(m_pointer[3],12)|
+                                 decode(m_pointer[4], 6)|
+                                 decode(m_pointer[5]   );
     break;
   default:
       printf("不正なUTF8のバイト数です(%d)\n",n);
@@ -116,13 +116,13 @@ operator()() noexcept
 
 
 std::string
-to_string(std::u16string_view  u16sv)
+to_string(std::u16string_view  u16sv) noexcept
 {
   std::string  s;
 
     for(auto  c: u16sv)
     {
-      s += utf8(c).codes;
+      s += utf8_encoder(c).codes;
     }
 
 
@@ -131,7 +131,7 @@ to_string(std::u16string_view  u16sv)
 
 
 std::u16string
-to_u16string(std::string_view  sv)
+to_u16string(std::string_view  sv) noexcept
 {
   std::u16string  u16s;
 
@@ -213,8 +213,6 @@ operator=(char32_t  c) noexcept
   else
     {
       printf("%dはユニコードではありません\n",c);
-
-      throw not_utf32();
     }
 
 

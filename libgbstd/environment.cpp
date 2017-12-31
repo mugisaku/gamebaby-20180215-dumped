@@ -17,7 +17,7 @@ count_of_report;
 namespace{
 
 
-std::unordered_map<std::string,std::string>
+std::unordered_map<std::string_view,std::string>
 variables;
 
 
@@ -31,7 +31,7 @@ fn_keystate;
 void
 set_value(std::string_view  name, std::string_view  value) noexcept
 {
-  variables[name] = value;
+  variables[name] = std::string(value);
 }
 
 

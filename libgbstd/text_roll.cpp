@@ -1,4 +1,4 @@
-#include"text_z_buffer.hpp"
+#include"libgbstd/text.hpp"
 
 
 
@@ -17,7 +17,7 @@ get_buffer_length(int  col_n, int  row_n) noexcept
 
 
 void
-z_buffer::
+text_roll::
 clear() noexcept
 {
   delete[] m_data_source          ;
@@ -28,7 +28,7 @@ clear() noexcept
 
 
 void
-z_buffer::
+text_roll::
 reset() noexcept
 {
   m_current_length = 0;
@@ -50,7 +50,7 @@ reset() noexcept
 
 
 void
-z_buffer::
+text_roll::
 resize(int  col_n, int  row_n) noexcept
 {
     if(row_n <= 1)
@@ -72,7 +72,7 @@ resize(int  col_n, int  row_n) noexcept
   m_line_source = new     line[                         row_n];
 
   rw_ptr<char16_t>  data_p = m_data_source;
-  rw_ptr<Line>      line_p = m_line_source;
+  rw_ptr<line>      line_p = m_line_source;
 
     if(row_n > 0)
     {
@@ -107,7 +107,7 @@ resize(int  col_n, int  row_n) noexcept
 
 
 void
-z_buffer::
+text_roll::
 rotate() noexcept
 {
   auto  old_first = m_first;
@@ -130,7 +130,7 @@ rotate() noexcept
 
 
 void
-z_buffer::
+text_roll::
 push(char16_t  c) noexcept
 {
     if(!is_full())
@@ -161,7 +161,7 @@ push(char16_t  c) noexcept
 
 
 bool
-z_buffer::
+text_roll::
 is_full() const noexcept
 {
   return !m_current;

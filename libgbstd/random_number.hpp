@@ -44,7 +44,7 @@ seed
 
 template<typename  T>
 void
-fill(T  begin, T  end, gbstd::random_numbner::seed  seed=seed()) noexcept
+fill(T  begin, T  end, gbstd::random_number::seed  seed=seed()) noexcept
 {
     while(begin != end)
     {

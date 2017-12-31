@@ -2,14 +2,15 @@
 #define GMBB_WINDOW_HPP
 
 
-#include"gmbb_Task.hpp"
+#include"libgbstd/task.hpp"
 
 
-namespace gmbb{
+namespace gbstd{
+namespace windows{
 
 
 enum class
-WindowState
+window_state
 {
   hidden,
 
@@ -24,46 +25,53 @@ WindowState
 
 
 class
-Window: public Task
+window: public task
 {
 protected:
-  WindowState  state=WindowState::full_opened;
+  window_state  m_state=window_state::full_opened;
 
-  Pixel  pixels[4] = {Pixel(predefined_color_index::null),
-                      Pixel(predefined_color_index::blue      ,30000),
-                      Pixel(predefined_color_index::white     ,30000),
-                      Pixel(predefined_color_index::light_gray,30000)};
+  pixel  m_pixels[4] = {pixel(predefined::null),
+                        pixel(predefined::blue      ,30000),
+                        pixel(predefined::white     ,30000),
+                        pixel(predefined::light_gray,30000)};
 
-  int   width    =0;
-  int   width_max=0;
-  int  height    =0;
-  int  height_max=0;
+  int   m_width    =0;
+  int   m_width_max=0;
+  int  m_height    =0;
+  int  m_height_max=0;
 
-  void  draw_frame(Image&  dst, Point  offset) const noexcept;
+  void  draw_frame(image&  dst, point  offset) const noexcept;
 
 public:
-  Window(              ) noexcept{}
-  Window(int  w, int  h, Point  pt) noexcept: Task(pt){resize(w,h);}
-  Window(Rectangle  rect) noexcept: Task(rect){resize(rect.w,rect.h);}
+  window(              ) noexcept{}
+  window(int  w, int  h, point  pt) noexcept: task(pt){resize(w,h);}
+  window(rectangle  rect) noexcept: task(rect){resize(rect.w,rect.h);}
 
   void  resize(int  w, int  h) noexcept;
 
-  bool  operator==(WindowState  st) const noexcept{return state == st;}
-  bool  operator!=(WindowState  st) const noexcept{return state != st;}
+  bool  operator==(window_state  st) const noexcept{return m_state == st;}
+  bool  operator!=(window_state  st) const noexcept{return m_state != st;}
 
-  WindowState  get_state() const noexcept{return state;}
-  void  set_state(WindowState  st) noexcept;
+  window_state  get_state(                ) const noexcept{return m_state;}
+  void          set_state(window_state  st) noexcept;
 
-  void  change_border0_color(ColorIndex  ci) noexcept;
-  void  change_border1_color(ColorIndex  ci) noexcept;
-  void  change_surface_color(ColorIndex  ci) noexcept;
+  void  change_border0_color(color_index  ci) noexcept;
+  void  change_border1_color(color_index  ci) noexcept;
+  void  change_surface_color(color_index  ci) noexcept;
 
   void  animate() noexcept;
 
-  void  render(Image&  dst, Point  offset) const noexcept override;
+  void  render(image&  dst, point  offset) const noexcept override;
 
 };
 
+
+
+}
+
+
+using windows::window;
+using windows::window_state;
 
 
 }

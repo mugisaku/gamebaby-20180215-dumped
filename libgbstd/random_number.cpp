@@ -1,4 +1,4 @@
-#include"gmbb_RandomNumber.hpp"
+#include"libgbstd/random_number.hpp"
 #include<random>
 
 

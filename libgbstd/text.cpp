@@ -1,4 +1,4 @@
-#include"text_format.hpp"
+#include"libgbstd/text.hpp"
 
 
 
@@ -19,7 +19,7 @@ char  buffer[buffer_size];
 
 
 std::string_view
-format(const char*  fmt, ...) noexcept
+make_text(const char*  fmt, ...) noexcept
 {
   va_list  ap;
   va_start(ap,fmt);

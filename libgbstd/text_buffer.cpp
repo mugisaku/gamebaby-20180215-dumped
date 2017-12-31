@@ -1,6 +1,6 @@
-#include"text_i_buffer.hpp"
-#include"io_environment.hpp"
-#include"text_unicode.hpp"
+#include"libgbstd/text.hpp"
+#include"libgbstd/environment.hpp"
+#include"libgbstd/unicode.hpp"
 #include<cctype>
 
 
@@ -27,7 +27,7 @@ bool  isidentn(char  c) noexcept{return(isalnum(c) || (c == '_'));}
 
 
 void
-i_buffer::
+text_buffer::
 clear() noexcept
 {
   delete[] m_data_source          ;
@@ -38,7 +38,7 @@ clear() noexcept
 
 
 void
-i_buffer::
+text_buffer::
 reset() noexcept
 {
   m_input_pointer = m_data_source;
@@ -50,7 +50,7 @@ reset() noexcept
 
 
 void
-i_buffer::
+text_buffer::
 resize(size_t  length) noexcept
 {
   clear();
@@ -91,10 +91,10 @@ scan(rw_ptr<char>  dst, ro_ptr<char>&  src, size_t  n) noexcept
 
 
 void
-i_buffer::
+text_buffer::
 push(ro_ptr<char>  s, bool  with_newline)
 {
-    while(*s && (m_input_pointer < m_data_tail))
+    while(*s && (m_input_pointer < m_decoder.get_end()))
     {
         if(*s == '$')
         {
@@ -130,7 +130,7 @@ push(ro_ptr<char>  s, bool  with_newline)
 
     if(with_newline)
     {
-        if(m_input_pointer < data_tail)
+        if(m_input_pointer < m_decoder.get_end())
         {
           *m_input_pointer++ = '\n';
         }
@@ -142,7 +142,7 @@ push(ro_ptr<char>  s, bool  with_newline)
 
 
 void
-i_buffer::
+text_buffer::
 push(std::initializer_list<ro_ptr<char>>  ls)
 {
     for(auto  s: ls)
@@ -153,7 +153,7 @@ push(std::initializer_list<ro_ptr<char>>  ls)
 
 
 char16_t
-i_buffer::
+text_buffer::
 pop() noexcept
 {
     if(m_decoder)

@@ -1,48 +1,49 @@
-#include"gmbb_Window.hpp"
+#include"libgbstd/window.hpp"
 #include<cstdlib>
 
 
 
 
-namespace gmbb{
+namespace gbstd{
+namespace windows{
 
 
 
 
 void
-Window::
+window::
 resize(int  w, int  h) noexcept
 {
-  width_max  = w;
-  height_max = h;
+  m_width_max  = w;
+  m_height_max = h;
 
-  set_state(WindowState::full_opened);
+  set_state(window_state::full_opened);
 }
 
 
 void
-Window::
-set_state(WindowState  st) noexcept
+window::
+set_state(window_state  st) noexcept
 {
-  state = st;
+  m_state = st;
 
-    switch(state)
+    switch(m_state)
     {
-  case(WindowState::hidden):
+  case(window_state::hidden):
       break;
-  case(WindowState::open_to_down):
-      width  = width_max;
-      height =        16;
+  case(window_state::open_to_down):
+      m_width  = m_width_max;
+      m_height =          16;
       break;
-  case(WindowState::close_to_left):
-  case(WindowState::close_to_up):
-  case(WindowState::full_opened):
-      width  = width_max;
-      height = height_max;
+  case(window_state::close_to_left):
+  case(window_state::close_to_up):
+  case(window_state::full_opened):
+      m_width  = m_width_max;
+      m_height = m_height_max;
       break;
-  case(WindowState::open_to_right):
-      width  =         16;
-      height = height_max;
+  case(window_state::open_to_right):
+      m_width  =           16;
+      m_height = m_height_max;
       break;
     }
 }
@@ -51,91 +52,91 @@ set_state(WindowState  st) noexcept
 
 
 void
-Window::
-change_border0_color(ColorIndex  ci) noexcept
+window::
+change_border0_color(color_index  ci) noexcept
 {
-  pixels[2] = ci;
+  m_pixels[2] = ci;
 }
 
 
 void
-Window::
-change_border1_color(ColorIndex  ci) noexcept
+window::
+change_border1_color(color_index  ci) noexcept
 {
-  pixels[2] = ci;
+  m_pixels[2] = ci;
 }
 
 
 void
-Window::
-change_surface_color(ColorIndex  ci) noexcept
+window::
+change_surface_color(color_index  ci) noexcept
 {
-  pixels[1] = ci;
+  m_pixels[1] = ci;
 }
 
 
 
 
 void
-Window::
+window::
 animate() noexcept
 {
   constexpr int  step = 8;
 
-    switch(state)
+    switch(m_state)
     {
-  case(WindowState::hidden):
-  case(WindowState::full_opened):
+  case(window_state::hidden):
+  case(window_state::full_opened):
       break;
-  case(WindowState::open_to_right):
-        if(width < width_max)
+  case(window_state::open_to_right):
+        if(m_width < m_width_max)
         {
-          width += step;
+          m_width += step;
 
-            if(width >= width_max)
+            if(m_width >= m_width_max)
             {
-              width = width_max;
+              m_width = m_width_max;
 
-              state = WindowState::full_opened;
+              m_state = window_state::full_opened;
             }
         }
       break;
-  case(WindowState::close_to_left):
-        if(width > 16)
+  case(window_state::close_to_left):
+        if(m_width > 16)
         {
-          width -= step;
+          m_width -= step;
 
-            if(width <= 16)
+            if(m_width <= 16)
             {
-              width = 16;
+              m_width = 16;
 
-              state = WindowState::hidden;
+              m_state = window_state::hidden;
             }
         }
       break;
-  case(WindowState::open_to_down):
-        if(height < height_max)
+  case(window_state::open_to_down):
+        if(m_height < m_height_max)
         {
-          height += step;
+          m_height += step;
 
-            if(height >= height_max)
+            if(m_height >= m_height_max)
             {
-              height = height_max;
+              m_height = m_height_max;
 
-              state = WindowState::full_opened;
+              m_state = window_state::full_opened;
             }
         }
       break;
-  case(WindowState::close_to_up):
-        if(height > 16)
+  case(window_state::close_to_up):
+        if(m_height > 16)
         {
-          height -= step;
+          m_height -= step;
 
-            if(height <= 16)
+            if(m_height <= 16)
             {
-              height = 16;
+              m_height = 16;
 
-              state = WindowState::hidden;
+              m_state = window_state::hidden;
             }
         }
       break;
@@ -144,10 +145,10 @@ animate() noexcept
 
 
 void
-Window::
-render(Image&  dst, Point  offset) const noexcept
+window::
+render(image&  dst, point  offset) const noexcept
 {
-    if(state != WindowState::hidden)
+    if(m_state != window_state::hidden)
     {
       draw_frame(dst,offset);
     }
@@ -156,7 +157,7 @@ render(Image&  dst, Point  offset) const noexcept
 
 
 
-}
+}}
 
 
 

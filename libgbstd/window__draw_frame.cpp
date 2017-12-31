@@ -1,10 +1,11 @@
-#include"gmbb_Window.hpp"
+#include"libgbstd/window.hpp"
 #include<cstring>
 
 
 
 
-namespace gmbb{
+namespace gbstd{
+namespace windows{
 
 
 namespace{
@@ -40,7 +41,7 @@ bottom_piece[8][8] =
 
 
 void
-draw_frame_top(Image&  dst, int  x, int  y, int  w, Pixel const*  pixels) noexcept
+draw_frame_top(image&  dst, int  x, int  y, int  w, pixel const*  pixels) noexcept
 {
     for(int  yy = 0;  yy < 8;  yy += 1){
     for(int  xx = 0;  xx < 8;  xx += 1){
@@ -48,8 +49,8 @@ draw_frame_top(Image&  dst, int  x, int  y, int  w, Pixel const*  pixels) noexce
 
         if(v)
         {
-          dst.draw_dot(Point(x+xx    ,y+yy),pixels[v]);
-          dst.draw_dot(Point(x+w-1-xx,y+yy),pixels[v]);
+          dst.draw_dot(point(x+xx    ,y+yy),pixels[v]);
+          dst.draw_dot(point(x+w-1-xx,y+yy),pixels[v]);
         }
     }}
 
@@ -57,38 +58,38 @@ draw_frame_top(Image&  dst, int  x, int  y, int  w, Pixel const*  pixels) noexce
   x +=  8;
   w -= 16;
 
-  dst.draw_hline(Point(x,y++),w,pixels[3]);
-  dst.draw_hline(Point(x,y++),w,pixels[2]);
-  dst.draw_hline(Point(x,y++),w,pixels[3]);
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y  ),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[3]);
+  dst.draw_hline(point(x,y++),w,pixels[2]);
+  dst.draw_hline(point(x,y++),w,pixels[3]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y  ),w,pixels[1]);
 }
 
 
 void
-draw_frame_body(Image&  dst, int  x, int  y, int  w, int  h, Pixel const*  pixels) noexcept
+draw_frame_body(image&  dst, int  x, int  y, int  w, int  h, pixel const*  pixels) noexcept
 {
-  dst.draw_vline(Point(x+0,y),h,pixels[3]);
-  dst.draw_vline(Point(x+1,y),h,pixels[2]);
-  dst.draw_vline(Point(x+2,y),h,pixels[3]);
+  dst.draw_vline(point(x+0,y),h,pixels[3]);
+  dst.draw_vline(point(x+1,y),h,pixels[2]);
+  dst.draw_vline(point(x+2,y),h,pixels[3]);
 
-  dst.draw_vline(Point(x+w-1-0,y),h,pixels[3]);
-  dst.draw_vline(Point(x+w-1-1,y),h,pixels[2]);
-  dst.draw_vline(Point(x+w-1-2,y),h,pixels[3]);
+  dst.draw_vline(point(x+w-1-0,y),h,pixels[3]);
+  dst.draw_vline(point(x+w-1-1,y),h,pixels[2]);
+  dst.draw_vline(point(x+w-1-2,y),h,pixels[3]);
 
 
     while(h--)
     {
-      dst.draw_hline(Point(x+3,y++),w-6,pixels[1]);
+      dst.draw_hline(point(x+3,y++),w-6,pixels[1]);
     }
 }
 
 
 void
-draw_frame_bottom(Image&  dst, int  x, int  y, int  w, Pixel const*  pixels) noexcept
+draw_frame_bottom(image&  dst, int  x, int  y, int  w, pixel const*  pixels) noexcept
 {
     for(int  yy = 0;  yy < 8;  yy += 1){
     for(int  xx = 0;  xx < 8;  xx += 1){
@@ -96,8 +97,8 @@ draw_frame_bottom(Image&  dst, int  x, int  y, int  w, Pixel const*  pixels) noe
 
         if(v)
         {
-          dst.draw_dot(Point(x+xx    ,y+yy),pixels[v]);
-          dst.draw_dot(Point(x+w-1-xx,y+yy),pixels[v]);
+          dst.draw_dot(point(x+xx    ,y+yy),pixels[v]);
+          dst.draw_dot(point(x+w-1-xx,y+yy),pixels[v]);
         }
     }}
 
@@ -105,14 +106,14 @@ draw_frame_bottom(Image&  dst, int  x, int  y, int  w, Pixel const*  pixels) noe
   x +=  8;
   w -= 16;
 
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y++),w,pixels[1]);
-  dst.draw_hline(Point(x,y++),w,pixels[3]);
-  dst.draw_hline(Point(x,y++),w,pixels[2]);
-  dst.draw_hline(Point(x,y++),w,pixels[2]);
-  dst.draw_hline(Point(x,y  ),w,pixels[3]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[1]);
+  dst.draw_hline(point(x,y++),w,pixels[3]);
+  dst.draw_hline(point(x,y++),w,pixels[2]);
+  dst.draw_hline(point(x,y++),w,pixels[2]);
+  dst.draw_hline(point(x,y  ),w,pixels[3]);
 }
 
 
@@ -120,23 +121,23 @@ draw_frame_bottom(Image&  dst, int  x, int  y, int  w, Pixel const*  pixels) noe
 
 
 void
-Window::
-draw_frame(Image&  dst, Point  offset) const noexcept
+window::
+draw_frame(image&  dst, point  offset) const noexcept
 {
   int  x = get_base_point().x+offset.x;
   int  y = get_base_point().y+offset.y;
-  int  w = width;
-  int  h = height;
+  int  w = m_width;
+  int  h = m_height;
 
-  draw_frame_top(   dst,x,y    ,w     ,pixels);
-  draw_frame_body(  dst,x,y  +8,w,h-16,pixels);
-  draw_frame_bottom(dst,x,y+h-8,w     ,pixels);
+  draw_frame_top(   dst,x,y    ,w     ,m_pixels);
+  draw_frame_body(  dst,x,y  +8,w,h-16,m_pixels);
+  draw_frame_bottom(dst,x,y+h-8,w     ,m_pixels);
 }
 
 
 
 
-}
+}}
 
 
 
