@@ -1,4 +1,4 @@
-#include"gmbb_environment.hpp"
+#include"environment.hpp"
 #include<unordered_map>
 
 
@@ -6,7 +6,7 @@
 
 
 
-namespace gmbb{
+namespace gbstd{
 namespace environment{
 
 
@@ -29,14 +29,14 @@ fn_keystate;
 
 
 void
-set_value(char const*  name, char const*  value) noexcept
+set_value(std::string_view  name, std::string_view  value) noexcept
 {
   variables[name] = value;
 }
 
 
-std::string const&
-get_value(char const*  name) noexcept
+const std::string&
+get_value(std::string_view  name) noexcept
 {
   return variables[name];
 }

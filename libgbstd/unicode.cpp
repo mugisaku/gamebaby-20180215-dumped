@@ -1,30 +1,15 @@
-#include"gmbb_unicode.hpp"
+#include"unicode.hpp"
 
 
 
 
-namespace gmbb{
+namespace gbstd{
+namespace unicodes{
 
 
+namespace{
 size_t
-u8slen(ro_ptr<char>  s) noexcept
-{
-  size_t  len = 0;
-
-    while(*s)
-    {
-      s += utf8_byte_number(*s);
-
-      ++len;
-    }
-
-
-  return len;
-}
-
-
-size_t
-utf8_byte_number(unsigned char  c)
+utf8_byte_number(unsigned char  c) noexcept
 {
        if(!(c>>7)             ){return 1;}
   else if( (c>>1) == 0b1111110){return 6;}
@@ -36,7 +21,27 @@ utf8_byte_number(unsigned char  c)
 
   printf("%dはUTF8の先頭ではありません\n",c);
 
-  throw not_utf8();
+  return 0;
+}
+}
+
+
+size_t
+u8slen(std::string_view  sv) noexcept
+{
+  size_t  len = 0;
+
+  utf8_decoder  dec(sv);
+
+    while(dec)
+    {
+      dec();
+
+      ++len;
+    }
+
+
+  return len;
 }
 
 
@@ -55,11 +60,24 @@ encode(int  c, int  shift_amount=0) noexcept
 
 
 char32_t
-to_char32(ro_ptr<char>  utf8, size_t  byte_number)
+utf8_decoder::
+operator()() noexcept
 {
   char32_t  c = 0;
 
-    switch(byte_number)
+  const auto  n = utf8_byte_number(*m_pointer);
+
+    if((m_pointer+n) > m_end)
+    {
+      printf("終点を越える\n");
+
+      m_pointer = m_end;
+
+      return 0;
+    }
+
+
+    switch(n)
     {
   case(1): c = ((utf8[0]        )    )                                  ;break;
   case(2): c = ((utf8[0]&0b11111)<< 6)|decode(utf8[1])                  ;break;
@@ -84,11 +102,12 @@ to_char32(ro_ptr<char>  utf8, size_t  byte_number)
                             decode(utf8[5]   );
     break;
   default:
-      printf("不正なUTF8のバイト数です(%d)\n",byte_number);
-
-      throw invalid_utf8_byte_number();
+      printf("不正なUTF8のバイト数です(%d)\n",n);
+      return 0;
     }
 
+
+  m_pointer += n;
 
   return c;
 }
@@ -97,13 +116,13 @@ to_char32(ro_ptr<char>  utf8, size_t  byte_number)
 
 
 std::string
-to_string(ro_ptr<char16_t>  u16s)
+to_string(std::u16string_view  u16sv)
 {
   std::string  s;
 
-    while(*u16s)
+    for(auto  c: u16sv)
     {
-      s += UTF8Chunk(*u16s++).codes;
+      s += utf8(c).codes;
     }
 
 
@@ -112,17 +131,15 @@ to_string(ro_ptr<char16_t>  u16s)
 
 
 std::u16string
-to_u16string(ro_ptr<char>  s)
+to_u16string(std::string_view  sv)
 {
   std::u16string  u16s;
 
-    while(*s)
+  utf8_decoder  dec(sv);
+
+    while(dec)
     {
-      auto  byte_number = utf8_byte_number(*s);
-
-      u16s += to_char32(s,byte_number);
-
-      s += byte_number;
+      u16s += dec();
     }
 
 
@@ -132,18 +149,11 @@ to_u16string(ro_ptr<char>  s)
 
 
 
-UTF8Chunk::
-UTF8Chunk(char32_t  c)
+utf8_encoder&
+utf8_encoder::
+operator=(char32_t  c) noexcept
 {
-  *this = c;
-}
-
-
-UTF8Chunk&
-UTF8Chunk::
-operator=(char32_t  c)
-{
-  rw_ptr<char>  p = codes;
+  char*  p = codes;
 
     if(c <= 0x7F)
     {
@@ -214,7 +224,7 @@ operator=(char32_t  c)
 }
 
 
-}
+}}
 
 
 

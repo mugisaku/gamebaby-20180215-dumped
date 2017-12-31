@@ -1,41 +1,38 @@
 
 
 set(SOURCES
-  SawtoothCharacterBuffer.cpp
-  LinearCharacterBuffer.cpp
+  image.cpp
+  image__png.cpp
+  image__draw.cpp
+  image__transfer.cpp
+  image__print.cpp
+  font.cpp
+  playwork.cpp
+  task.cpp
+  group_task.cpp
+  text_z_buffer.cpp
+  text_i_buffer.cpp
   unicode.cpp
+  text.cpp
   environment.cpp
-  RandomNumber.cpp
-  Controller.cpp
-  LineMaker.cpp
-  Routine.cpp
-  Task.cpp
-  GroupTask.cpp
-  Window.cpp
-  Window__draw_frame.cpp
-  Menu.cpp
+  random_number.cpp
+  controller.cpp
+  line_maker.cpp
+  window.cpp
+  window__draw_frame.cpp
+  menu.cpp
   ScrollStyleMenuWindow.cpp
   ColumnStyleMenuWindow.cpp
-  StringBuffer.cpp
-  Stream.cpp
-  StreamReader.cpp
-  StreamWriter.cpp
-  Image.cpp
-  Image__png.cpp
-  Image__draw.cpp
-  Image__transfer.cpp
-  Image__print.cpp
-  GlyphSet.cpp
+  binary_stream.cpp
+  binary_stream_reader.cpp
+  binary_stream_writer.cpp
 )
-
-
 
 
 include_directories(./)
 include_directories(../)
-add_library("gbdn" ${SOURCES})
-add_executable("testGBDN" testGBDN.cpp)
-target_link_libraries("testGBDN" "gbdn" "tok")
+add_library("gbstd" ${SOURCES})
+target_link_libraries("gbstd")
 
 
 

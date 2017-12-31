@@ -5,40 +5,65 @@
 #include<string>
 #include<cstdint>
 #include<cstddef>
-#include<cstdarg>
-#include"Pointer.hpp"
 
 
-namespace gmbb{
+namespace gbstd{
+namespace unicodes{
 
 
-struct not_utf8{};
-struct not_utf32{};
-struct invalid_utf8_byte_number{};
+class
+utf8_decoder
+{
+  const char*  m_pointer;
+  const char*  m_end;
+
+public:
+  utf8_decoder(std::string_view  sv) noexcept{*this = sv;}
+
+  utf8_decoder&  operator=(std::string_view  sv) noexcept
+  {
+    m_pointer = sv.data();
+    m_end     = sv.data()+sv.size();
+
+    return *this;
+  }
+
+  operator bool() const noexcept{return m_pointer < m_end;}
+
+  char32_t  operator()() noexcept;
+
+  const char*  get_pointer() const noexcept{return m_pointer;}
+  const char*  get_end() const noexcept{return m_end;}
+
+};
 
 
-size_t  utf8_byte_number(unsigned char  c);
+size_t  u8slen(std::string_view  sv) noexcept;
 
-
-size_t  u8slen(ro_ptr<char>  s) noexcept;
-
-
-char32_t  to_char32(ro_ptr<char>  utf8, size_t  byte_number);
-
-std::u16string  to_u16string(ro_ptr<char>  s);
-std::string     to_string(ro_ptr<char16_t>  u16s);
+std::u16string  to_u16string(std::string_view     sv) noexcept;
+std::string     to_string(std::u16string_view  u16sv) noexcept;
 
 
 struct
-UTF8Chunk
+utf8_encoder
 {
   char  codes[8];
 
-  UTF8Chunk(char32_t  c=0);
+  utf8_encoder(char32_t  c=0) noexcept{*this = c;}
 
-  UTF8Chunk&  operator=(char32_t  c);
+  utf8_encoder&  operator=(char32_t  c) noexcept;
 
 };
+
+
+}
+
+
+using unicodes::utf8_decoder;
+using unicodes::utf8_encoder;
+using unicodes::u8slen;
+using unicodes::to_u16string;
+using unicodes::to_string;
 
 
 }

@@ -7,7 +7,7 @@
 
 
 
-namespace gmbb{
+namespace gbstd{
 namespace environment{
 
 
@@ -23,8 +23,8 @@ constexpr int  fn8_flag = 0x01;
 extern uint8_t  fn_keystate;
 
 
-void                set_value(char const*  name, char const*  value) noexcept;
-std::string const&  get_value(char const*  name                    ) noexcept;
+void                set_value(std::string_view  name, std::string_view  value) noexcept;
+const std::string&  get_value(std::string_view  name                         ) noexcept;
 
 
 }}
