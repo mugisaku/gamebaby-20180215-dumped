@@ -1,11 +1,13 @@
-#include"libhgbstd/image.hpp"
-#include"libhgbstd/task_group.hpp"
-#include"libhgbstd/controller.hpp"
-#include"libhgbstd/unicode.hpp"
-#include"libhgbstd/environment.hpp"
-#include"libhgbstd/binary_stream.hpp"
-#include"libhgbstd/random_number.hpp"
-#include"libhgbstd/playwork.hpp"
+#include"libgbstd/image.hpp"
+#include"libgbstd/task.hpp"
+#include"libgbstd/controller.hpp"
+#include"libgbstd/unicode.hpp"
+#include"libgbstd/environment.hpp"
+#include"libgbstd/binary_stream.hpp"
+#include"libgbstd/random_number.hpp"
+#include"libgbstd/playwork.hpp"
+#include"libgbstd/menu.hpp"
+#include"libgbstd/text.hpp"
 
 
 

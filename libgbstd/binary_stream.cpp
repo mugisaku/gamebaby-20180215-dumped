@@ -1,4 +1,5 @@
-#include"binary_stream.hpp"
+#include"libgbstd/binary_stream.hpp"
+#include"libgbstd/text.hpp"
 #include<cstdio>
 #include<zlib.h>
 
@@ -17,7 +18,9 @@ set_content_from_file(std::string_view  path) noexcept
 {
   m_content.clear();
 
-  auto  gz = gzopen(std::ensure_z(path),"rb");
+  auto  s = get_string(path);
+
+  auto  gz = gzopen(s,"rb");
 
     if(gz)
     {
@@ -42,7 +45,7 @@ set_content_from_file(std::string_view  path) noexcept
 
   else
     {
-      auto  f = fopen(path,"rb");
+      auto  f = fopen(s,"rb");
 
         if(f)
         {
@@ -77,9 +80,11 @@ void
 binary_stream::
 output_content_to_file(std::string_view  path, bool  use_zlib) const noexcept
 {
+  auto  s = get_string(path);
+
     if(use_zlib)
     {
-      auto  gz = gzopen(path,"wb");
+      auto  gz = gzopen(s,"wb");
 
         if(gz)
         {
@@ -95,7 +100,7 @@ output_content_to_file(std::string_view  path, bool  use_zlib) const noexcept
 
   else
     {
-      auto  f = fopen(path,"wb");
+      auto  f = fopen(s,"wb");
 
         if(f)
         {

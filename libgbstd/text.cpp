@@ -38,6 +38,23 @@ make_text(const char*  fmt, ...) noexcept
 }
 
 
+const char*
+get_string(std::string_view  sv) noexcept
+{
+    if(*(sv.data()+sv.size()))
+    {
+      static std::string  s;
+
+      s = sv;
+
+      return s.data();
+    }
+
+  else
+    {
+      return sv.data();
+    }
+}
 
 
 }}

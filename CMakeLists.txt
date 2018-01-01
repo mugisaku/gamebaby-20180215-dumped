@@ -90,7 +90,6 @@ add_subdirectory(Battle)
 
 include_directories(./)
 include_directories(./libgbdn)
-include_directories(./libgbstd)
 include_directories(/usr/include/SDL2)
 add_executable("testGBSTD${EXECUTABLE_EXTENSION}" testGBSTD.cpp)
 #add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES})

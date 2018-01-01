@@ -16,6 +16,8 @@ namespace texts{
 
 std::string_view  make_text(const char*  fmt, ...) noexcept;
 
+const char*  get_string(std::string_view  sv) noexcept;
+
 
 class
 text_buffer
@@ -127,6 +129,9 @@ public:
 
 
 using texts::make_text;
+using texts::get_string;
+using texts::text_buffer;
+using texts::text_roll;
 
 
 }

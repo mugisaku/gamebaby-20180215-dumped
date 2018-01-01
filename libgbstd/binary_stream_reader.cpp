@@ -1,4 +1,4 @@
-#include"binary_stream_reader.hpp"
+#include"libgbstd/binary_stream.hpp"
 #include<cstdio>
 
 

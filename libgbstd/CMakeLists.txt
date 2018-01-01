@@ -20,9 +20,9 @@ set(SOURCES
   line_maker.cpp
   window.cpp
   window__draw_frame.cpp
-  menu.cpp
-  ScrollStyleMenuWindow.cpp
-  ColumnStyleMenuWindow.cpp
+  menu_base.cpp
+  roll_menu.cpp
+  column_menu.cpp
   binary_stream.cpp
   binary_stream_reader.cpp
   binary_stream_writer.cpp
