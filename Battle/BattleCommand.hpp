@@ -2,11 +2,8 @@
 #define BattleCommand_HPP
 
 
-#include"gbdn.hpp"
+#include"libgbdn/gbdn.hpp"
 #include<string>
-
-
-namespace gmbb{
 
 
 enum class
@@ -70,9 +67,6 @@ CommandTable
   BattleCommand  commands[number_of_commands];
 
 };
-
-
-}
 
 
 

@@ -1,16 +1,15 @@
 #include"Screen.hpp"
 
 
-namespace gmbb{
 namespace screen{
 
 
 namespace{
-Image
+gbstd::image
 image(width,height);
 
 
-Point
+gbstd::point
 offset;
 
 
@@ -22,7 +21,7 @@ int  add_r;
 int  add_g;
 int  add_b;
 
-ColorIndex
+gbstd::color_index
 fill_color;
 
 Subtitle*  first;
@@ -32,8 +31,8 @@ Subtitle*   last;
 }
 
 
-void        set_fill_color(ColorIndex  i) noexcept{fill_color = i;}
-ColorIndex  get_fill_color(             ) noexcept{return fill_color;}
+void                set_fill_color(gbstd::color_index  i) noexcept{fill_color = i;}
+gbstd::color_index  get_fill_color(                     ) noexcept{return fill_color;}
 
 
 void   enable_reverse_color() noexcept{reverse =  true;}
@@ -54,15 +53,15 @@ int  get_add_g() noexcept{return add_g;}
 int  get_add_b() noexcept{return add_b;}
 
 
-Image&  get_image() noexcept{return image;}
+gbstd::image&  get_image() noexcept{return image;}
 
 
-const Image&
-update(const Task&  root_task) noexcept
+const gbstd::image&
+update(const gbstd::task&  root_task) noexcept
 {
     if(fill_color)
     {
-      Pixel  pix;
+      gbstd::pixel  pix;
 
       pix.index = fill_color;
       pix.z     =          0;
@@ -95,7 +94,7 @@ update(const Task&  root_task) noexcept
 
     while(cur)
     {
-      image.print(cur->string,cur->point,*cur->glyphset);
+      image.print(cur->string,cur->point,*cur->font);
 
       cur = cur->next;
     }
@@ -123,7 +122,7 @@ insert_subtitle(Subtitle&  subt) noexcept
 }
 
 
-}}
+}
 
 
 

@@ -22,20 +22,15 @@ set(SOURCES
   Battle_StreamText.cpp
   Battle_ActionMaking.cpp
   Battle_ActionProcessing.cpp
+  process_lists/attack.cpp
 )
 
 
 
 
-add_subdirectory(process_list_collection)
-
 include_directories(./)
 include_directories(../)
-include_directories(../Standard)
-include_directories(../libgbdn)
-include_directories(../libtok)
 add_library("battle" ${SOURCES})
-target_link_libraries("battle" "process_list_collection")
 
 
 

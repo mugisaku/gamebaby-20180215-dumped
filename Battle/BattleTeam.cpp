@@ -2,9 +2,6 @@
 #include<functional>
 
 
-namespace gmbb{
-
-
 
 
 bool
@@ -55,7 +52,7 @@ collect_alive_players(PlayerList&  ls) const noexcept
 }
 
 
-rw_ptr<Player>
+gbstd::rw_ptr<Player>
 BattleTeam::
 pickup_target_player() const noexcept
 {
@@ -63,15 +60,12 @@ pickup_target_player() const noexcept
     {
         if(pl.is_alive())
         {
-          return make_rw(pl);
+          return gbstd::make_rw(pl);
         }
     }
 
 
   return nullptr;
-}
-
-
 }
 
 

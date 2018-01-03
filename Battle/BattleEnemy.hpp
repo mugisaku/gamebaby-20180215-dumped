@@ -5,9 +5,6 @@
 #include"BattlePlayerBase.hpp"
 
 
-namespace gmbb{
-
-
 struct
 Enemy: public PlayerBase
 {
@@ -17,9 +14,6 @@ Enemy: public PlayerBase
   void  load(const char*  name_, const gbdn::list&  ls);
 
 };
-
-
-}
 
 
 

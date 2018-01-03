@@ -6,19 +6,16 @@
 
 
 
-namespace gmbb{
-
-
 namespace{
 
 
-const coprocess
+const gbstd::playwork
 main_coproc("main",[](uint32_t&  pc)
 {
     switch(pc)
     {
   case(0):
-      coprocesses::push(nullptr,coprocess_of_party_making);
+      gbstd::playworks::push(nullptr,playwork_of_party_making);
       ++pc;
       break;
   case(1):
@@ -29,7 +26,7 @@ main_coproc("main",[](uint32_t&  pc)
 
       set_parties_of_battle(ro::enemy_party_table[0]);
 
-      coprocesses::push(nullptr,coprocess_of_battle);
+      gbstd::playworks::push(nullptr,playwork_of_battle);
       ++pc;
       break;
   case(2):
@@ -42,7 +39,7 @@ main_coproc("main",[](uint32_t&  pc)
 }
 
 
-const Image&
+const gbstd::image&
 update_screen() noexcept
 {
   return screen::update(sys::root_task);
@@ -53,21 +50,21 @@ void
 initialize() noexcept
 {
 #ifdef EMSCRIPTEN
-        sys::glset.load_from_file("small_font.gz");
-  sys::large_glset.load_from_file("large_font.gz");
+        sys::font.load_from_file("small_font.gz");
+  sys::large_font.load_from_file("large_font.gz");
 
 #else
-        sys::glset.load_from_file("/usr/local/share/gmbb/small_font.gz");
-  sys::large_glset.load_from_file("/usr/local/share/gmbb/large_font.gz");
+        sys::font.load_from_file("/usr/local/share/gmbb/small_font.gz");
+  sys::large_font.load_from_file("/usr/local/share/gmbb/large_font.gz");
 #endif
 
 
   ro::load();
 
   screen::enable_render();
-  screen::set_fill_color(black);
+  screen::set_fill_color(gbstd::predefined::black);
 
-  coprocesses::push(nullptr,main_coproc);
+  gbstd::playworks::push(nullptr,main_coproc);
 }
 
 
@@ -78,10 +75,7 @@ step()
 
   sys::root_task.update();
 
-  coprocesses::call();
-}
-
-
+  gbstd::playworks::call();
 }
 
 

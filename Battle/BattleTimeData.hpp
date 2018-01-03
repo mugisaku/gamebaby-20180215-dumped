@@ -5,9 +5,6 @@
 #include"BattleTeam.hpp"
 
 
-namespace gmbb{
-
-
 extern BattleTeam    hero_team;
 extern BattleTeam   enemy_team;
 
@@ -24,9 +21,6 @@ void  collect_actable_player(std::vector<PlayerReference>&  buf) noexcept;
 
 void   clear_player_all() noexcept;
 void  update_player_all() noexcept;
-
-
-}
 
 
 

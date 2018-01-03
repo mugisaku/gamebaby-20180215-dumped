@@ -65,9 +65,10 @@ resize(size_t  length) noexcept
 
 namespace{
 void
-scan(rw_ptr<char>  dst, ro_ptr<char>&  src, size_t  n) noexcept
+scan(std::string_view::const_iterator&  src,
+     std::string_view::const_iterator   src_end, char*  dst, size_t  n) noexcept
 {
-    while(n > 1)
+    while((n > 1) && (src != src_end))
     {
       auto  c = *src++;
 
@@ -92,38 +93,41 @@ scan(rw_ptr<char>  dst, ro_ptr<char>&  src, size_t  n) noexcept
 
 void
 text_buffer::
-push(ro_ptr<char>  s, bool  with_newline)
+push(std::string_view  sv, bool  with_newline)
 {
-    while(*s && (m_input_pointer < m_decoder.get_end()))
+  auto   it = sv.cbegin();
+  auto  end = sv.cend();
+    
+    while((it != end) && (m_input_pointer < m_decoder.get_end()))
     {
-        if(*s == '$')
+        if(*it == '$')
         {
-          ++s;
+          ++it;
 
-            if(*s == '$')
+            if(*it == '$')
             {
-              *m_input_pointer++ = *s++;
+              *m_input_pointer++ = *it++;
             }
 
           else
-            if(*s == '(')
+            if(*it == '(')
             {
               char  buf[256];
 
-              scan(buf,++s,sizeof(buf));
+              scan(++it,end,buf,sizeof(buf));
 
               push(environment::get_value(buf).data(),false);
             }
 
           else
             {
-              *m_input_pointer++ = *s++;
+              printf("$の後に$か(が続いていない\n",*it++);
             }
         }
 
       else
         {
-          *m_input_pointer++ = *s++;
+          *m_input_pointer++ = *it++;
         }
     }
 
@@ -138,17 +142,6 @@ push(ro_ptr<char>  s, bool  with_newline)
 
 
   *m_input_pointer = 0;
-}
-
-
-void
-text_buffer::
-push(std::initializer_list<ro_ptr<char>>  ls)
-{
-    for(auto  s: ls)
-    {
-      push(s);
-    }
 }
 
 

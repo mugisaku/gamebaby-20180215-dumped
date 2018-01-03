@@ -4,9 +4,6 @@
 
 
 
-namespace gmbb{
-
-
 extern std::initializer_list<Process>  attack_process_list;
 
 
@@ -16,10 +13,6 @@ namespace{
 PlayerReference
 actor;
 
-
-
-StringBuffer
-sbuf;
 
 
 BattleTeam::PlayerList
@@ -144,7 +137,7 @@ step(uint32_t&  pc) noexcept
         }
       break;
   default:;
-      coprocesses::pop();
+      gbstd::playworks::pop();
     }
 }
 
@@ -159,11 +152,8 @@ set_actor_of_action_processing(Player&  actor_) noexcept
 }
 
 
-const coprocess
-coprocess_of_action_processing("action processing",step);
-
-
-}
+const gbstd::playwork
+playwork_of_action_processing("action processing",step);
 
 
 

@@ -1,8 +1,4 @@
 #include"BattlePlayer.hpp"
-#include"gmbb_unicode.hpp"
-
-
-namespace gmbb{
 
 
 
@@ -18,8 +14,8 @@ void
 Player::
 set_team(BattleTeam&  own_team_, BattleTeam&  opposite_team_) noexcept
 {
-  own_team      = &own_team_;
-  opposite_team = &opposite_team_;
+  m_own_team      = &own_team_;
+  m_opposite_team = &opposite_team_;
 }
 
 
@@ -27,14 +23,14 @@ void
 Player::
 set_data(const Enemy&  ene) noexcept
 {
-  kind = PlayerKind::enemy;
+  m_kind = PlayerKind::enemy;
 
-  data.enemy = &ene;
+  m_data.enemy = &ene;
 
   static_cast<PlayerBase&>(*this) = ene;
 
-  hp_max = hp;
-  mp_max = mp;
+  m_hp_max = m_hp;
+  m_mp_max = m_mp;
 
   update();
 }
@@ -44,17 +40,17 @@ void
 Player::
 set_data(Hero&  hro) noexcept
 {
-  kind = PlayerKind::hero;
+  m_kind = PlayerKind::hero;
 
-  data.hero = &hro;
+  m_data.hero = &hro;
 
   static_cast<PlayerBase&>(*this) = hro;
 
-  hp_max = hp                 ;
-           hp = hro.current_hp;
+  m_hp_max = m_hp                 ;
+             m_hp = hro.current_hp;
 
-  mp_max = mp                 ;
-           mp = hro.current_mp;
+  m_mp_max = m_mp                 ;
+             m_mp = hro.current_mp;
 
   update();
 }
@@ -64,7 +60,7 @@ void
 Player::
 unset_data() noexcept
 {
-  kind = PlayerKind::null;
+  m_kind = PlayerKind::null;
 }
 
 
@@ -74,7 +70,7 @@ int
 Player::
 calculate_attack_strength() const noexcept
 {
-  return(body_strength*2)+(expset.attack/16);
+  return(m_body_strength*2)+(m_expset.attack/16);
 }
 
 
@@ -82,7 +78,7 @@ int
 Player::
 calculate_guard_strength() const noexcept
 {
-  return defense+(body_strength/2)+(expset.guard/16);
+  return m_defense+(m_body_strength/2)+(m_expset.guard/16);
 }
 
 
@@ -90,7 +86,7 @@ int
 Player::
 calculate_magic_strength() const noexcept
 {
-  return(mind_strength*2)+(expset.magic/16);
+  return(m_mind_strength*2)+(m_expset.magic/16);
 }
 
 
@@ -98,7 +94,7 @@ int
 Player::
 calculate_number_of_attacks() const noexcept
 {
-  return 1+(agility/16)+(expset.attack/32);
+  return 1+(m_agility/16)+(m_expset.attack/32);
 }
 
 
@@ -106,7 +102,7 @@ int
 Player::
 calculate_number_of_guards() const noexcept
 {
-  return 1+(agility/24)+(expset.guard/16)+(expset.damage/16);
+  return 1+(m_agility/24)+(m_expset.guard/16)+(m_expset.damage/16);
 }
 
 
@@ -114,7 +110,7 @@ int
 Player::
 calculate_number_of_magics() const noexcept
 {
-  return 1+(agility/16)+(expset.magic/16);
+  return 1+(m_agility/16)+(m_expset.magic/16);
 }
 
 
@@ -122,13 +118,13 @@ void
 Player::
 update() noexcept
 {
-  attack_strength = calculate_attack_strength();
-  guard_strength = calculate_guard_strength();
-  magic_strength = calculate_magic_strength();
+  m_attack_strength = calculate_attack_strength();
+  m_guard_strength = calculate_guard_strength();
+  m_magic_strength = calculate_magic_strength();
 
-  number_of_attacks = calculate_number_of_attacks();
-  number_of_guards = calculate_number_of_guards();
-  number_of_magics = calculate_number_of_magics();
+  m_number_of_attacks = calculate_number_of_attacks();
+  m_number_of_guards = calculate_number_of_guards();
+  m_number_of_magics = calculate_number_of_magics();
 }
 
 
@@ -136,9 +132,9 @@ void
 Player::
 receive_hp_damage(int  v) noexcept
 {
-  hp -= v;
+  m_hp -= v;
 
-    if(hp <= 0)
+    if(m_hp <= 0)
     {
       die();
     }
@@ -149,11 +145,11 @@ void
 Player::
 receive_hp_recover(int  v) noexcept
 {
-  hp += v;
+  m_hp += v;
 
-    if(hp >= hp_max)
+    if(m_hp >= m_hp_max)
     {
-      hp = hp_max;
+      m_hp = m_hp_max;
     }
 }
 
@@ -162,11 +158,11 @@ void
 Player::
 receive_mp_damage(int  v) noexcept
 {
-  mp -= v;
+  m_mp -= v;
 
-    if(mp < 0)
+    if(m_mp < 0)
     {
-      mp = 0;
+      m_mp = 0;
     }
 }
 
@@ -175,17 +171,12 @@ void
 Player::
 receive_mp_recover(int  v) noexcept
 {
-  mp += v;
+  m_mp += v;
 
-    if(mp > mp_max)
+    if(m_mp > m_mp_max)
     {
-      mp = mp_max;
+      m_mp = m_mp_max;
     }
-}
-
-
-
-
 }
 
 

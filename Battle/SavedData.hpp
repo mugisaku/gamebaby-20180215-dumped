@@ -3,10 +3,8 @@
 
 
 #include"BattleHero.hpp"
-#include"Pointer.hpp"
 
 
-namespace gmbb{
 namespace sav{
 
 
@@ -21,7 +19,7 @@ Party
 {
   static constexpr int  max_number_of_members = 4;
 
-  rw_ptr<Hero>  members[max_number_of_members] = {0};
+  gbstd::rw_ptr<Hero>  members[max_number_of_members] = {0};
 
   int  number_of_members = 0;
 
@@ -32,7 +30,7 @@ Party
 extern Party  party;
 
 
-}}
+}
 
 
 

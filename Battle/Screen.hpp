@@ -2,10 +2,11 @@
 #define game_Screen_HPP
 
 
-#include"gmbb_Standard.hpp"
+#include"libgbstd/image.hpp"
+#include"libgbstd/task.hpp"
+#include"libgbstd/ro_ptr.hpp"
 
 
-namespace gmbb{
 namespace screen{
 
 
@@ -13,8 +14,8 @@ constexpr int   width = 288;
 constexpr int  height = 240;
 
 
-void        set_fill_color(ColorIndex  i) noexcept;
-ColorIndex  get_fill_color(             ) noexcept;
+void                set_fill_color(gbstd::color_index  i) noexcept;
+gbstd::color_index  get_fill_color(                     ) noexcept;
 
 void   enable_add_color() noexcept;
 void  disable_add_color() noexcept;
@@ -34,18 +35,18 @@ int  get_add_g() noexcept;
 int  get_add_b() noexcept;
 
 
-Image&  get_image() noexcept;
+gbstd::image&  get_image() noexcept;
 
-const Image&  update(const Task&  root_task) noexcept;
+const gbstd::image&  update(const gbstd::task&  root_task) noexcept;
 
 struct
 Subtitle
 {
-  ro_ptr<char>  string;
+  gbstd::ro_ptr<char>  string;
 
-  Point  point;
+  gbstd::point  point;
 
-  ro_ptr<GlyphSet>  glyphset;
+  gbstd::ro_ptr<gbstd::font>  font;
 
   Subtitle*  previous=nullptr;
   Subtitle*      next=nullptr;
@@ -56,7 +57,7 @@ Subtitle
 void  insert_subtitle(Subtitle&  subt) noexcept;
 
 
-}}
+}
 
 
 

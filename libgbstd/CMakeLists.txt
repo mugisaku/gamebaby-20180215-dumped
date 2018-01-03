@@ -13,6 +13,7 @@ set(SOURCES
   text.cpp
   text_buffer.cpp
   text_roll.cpp
+  text_roll_iterator.cpp
   unicode.cpp
   environment.cpp
   random_number.cpp

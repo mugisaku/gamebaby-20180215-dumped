@@ -89,14 +89,13 @@ add_subdirectory(libipre)
 add_subdirectory(Battle)
 
 include_directories(./)
-include_directories(./libgbdn)
 include_directories(/usr/include/SDL2)
 add_executable("testGBSTD${EXECUTABLE_EXTENSION}" testGBSTD.cpp)
-#add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp ${STANDARD_SOURCES})
-#add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp ${STANDARD_SOURCES})
-#add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${STANDARD_SOURCES} ${GAME_SOURCES})
+add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp)
+#add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp)
+#add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAME_SOURCES})
 target_link_libraries("testGBSTD${EXECUTABLE_EXTENSION}" "gbstd")
-#target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "process_list_collection" "battle" "gbdn" "tok" "gbstd")
+target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "battle" "gbdn" "tok" "gbstd")
 
 
 if(EMSC)

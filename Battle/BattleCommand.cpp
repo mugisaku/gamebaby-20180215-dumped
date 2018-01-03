@@ -1,7 +1,6 @@
 #include"BattleCommand.hpp"
 
 
-namespace gmbb{
 
 
 namespace{
@@ -45,9 +44,6 @@ load(const char*  name_, const gbdn::list&  ls)
 
   effect_kind = to_effect(ls.get_named_value("effect").get_string());
   target_kind = to_target(ls.get_named_value("target").get_string());
-}
-
-
 }
 
 

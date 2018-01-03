@@ -4,8 +4,6 @@
 
 #include<string>
 #include<cstdarg>
-#include"libgbstd/ro_ptr.hpp"
-#include"libgbstd/rw_ptr.hpp"
 #include"libgbstd/unicode.hpp"
 #include<initializer_list>
 
@@ -42,8 +40,7 @@ public:
 
   bool  is_remaining() const noexcept{return(m_decoder.get_pointer() < m_input_pointer);}
 
-  void  push(ro_ptr<char>  s, bool  with_newline=true);
-  void  push(std::initializer_list<ro_ptr<char>>  ls);
+  void  push(std::string_view  sv, bool  with_newline=true);
 
   char16_t  pop() noexcept;
 
@@ -55,32 +52,25 @@ text_roll
 {
 public:
   struct line{
-    rw_ptr<char16_t>  data;
+    char16_t*    begin;
+    char16_t*  current;
+    char16_t*      end;
 
-    rw_ptr<line>  next;
+    line*  next;
   };
 
 
   class iterator{
-    ro_ptr<line>  m_ptr;
+    const line*  m_line;
 
   public:
-    iterator(ro_ptr<line>  p=nullptr) noexcept: m_ptr(p){}
+    iterator(const line*  ln=nullptr) noexcept: m_line(ln){}
 
-    ro_ptr<char16_t>  operator*() const noexcept{return m_ptr->data.get_ro();}
+    std::u16string_view  operator*() const noexcept;
 
-    bool  operator!=(const iterator&  rhs) const noexcept
-    {
-      return m_ptr != rhs.m_ptr;
-    }
+    bool  operator!=(const iterator&  rhs) const noexcept;
 
-
-    iterator&  operator++() noexcept
-    {
-      m_ptr = m_ptr->next.get_ro();
-
-      return *this;
-    }
+    iterator&  operator++() noexcept;
 
   };
 
@@ -88,16 +78,15 @@ private:
   int  m_number_of_columns=0;
   int  m_number_of_rows=0;
 
-  int  m_current_length=0;
-
   char16_t  m_last_char=0;
 
   char16_t*  m_data_source=nullptr;
+  char16_t*  m_data_source_end;
   line*      m_line_source=nullptr;
 
-  rw_ptr<line>    m_first;
-  rw_ptr<line>  m_current;
-  rw_ptr<line>     m_last;
+  line*    m_first;
+  line*  m_current;
+  line*     m_last;
 
 public:
   text_roll(                      ) noexcept{}
@@ -119,8 +108,8 @@ public:
 
   bool  is_full() const noexcept;
 
-  iterator  begin() const noexcept{return iterator(m_first.get_ro());}
-  iterator    end() const noexcept{return iterator(                );}
+  iterator  begin() const noexcept{return iterator(m_first);}
+  iterator    end() const noexcept{return iterator(       );}
 
 };
 

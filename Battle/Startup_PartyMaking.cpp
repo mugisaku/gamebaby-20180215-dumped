@@ -5,9 +5,6 @@
 
 
 
-namespace gmbb{
-
-
 namespace{
 
 
@@ -17,7 +14,7 @@ step(uint32_t&  pc) noexcept
     switch(pc)
     {
   case(0):
-      coprocesses::push(nullptr,coprocess_of_character_making);
+      gbstd::playworks::push(nullptr,playwork_of_character_making);
       ++pc;
       break;
   case(1):
@@ -30,7 +27,7 @@ step(uint32_t&  pc) noexcept
 
           h.set_name(tmp::name_buffer.to_string());
 
-          sav::party.members[0] = make_rw(h);
+          sav::party.members[0] = gbstd::make_rw(h);
 
           sav::party.number_of_members = 1;
         }
@@ -38,7 +35,7 @@ step(uint32_t&  pc) noexcept
 
       ++pc;
   default:
-      coprocesses::pop();
+      gbstd::playworks::pop();
     }
 }
 
@@ -52,11 +49,8 @@ terminate_party_making() noexcept
 }
 
 
-const coprocess
-coprocess_of_party_making("party making",step);
-
-
-}
+const gbstd::playwork
+playwork_of_party_making("party making",step);
 
 
 

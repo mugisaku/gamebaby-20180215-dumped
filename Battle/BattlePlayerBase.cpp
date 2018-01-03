@@ -2,24 +2,23 @@
 #include"ReadOnlyData.hpp"
 
 
-namespace gmbb{
 
 
 void
 PlayerBase::
-load(const char*  name_, const gbdn::list&  ls)
+load(std::string_view  name, const gbdn::list&  ls)
 {
-  name = name_;
-  body_strength = ls.get_named_value("body_strength").get_integer();
-  mind_strength = ls.get_named_value("mind_strength").get_integer();
-  agility       = ls.get_named_value("agility").get_integer();
-  defense       = ls.get_named_value("defense").get_integer();
-  intellect     = ls.get_named_value("intellect").get_integer();
-  hp            = ls.get_named_value("hp").get_integer();
-  mp            = ls.get_named_value("mp").get_integer();
+  m_name = name;
+  m_body_strength = ls.get_named_value("body_strength").get_integer();
+  m_mind_strength = ls.get_named_value("mind_strength").get_integer();
+  m_agility       = ls.get_named_value("agility").get_integer();
+  m_defense       = ls.get_named_value("defense").get_integer();
+  m_intellect     = ls.get_named_value("intellect").get_integer();
+  m_hp            = ls.get_named_value("hp").get_integer();
+  m_mp            = ls.get_named_value("mp").get_integer();
 
 
- auto  cmd = make_rw(command_table.commands[0]);
+ auto  cmd = gbstd::make_rw(m_command_table.commands[0]);
 
     for(auto&  v: ls.get_named_value("command_table").get_list())
     {
@@ -32,7 +31,7 @@ void
 PlayerBase::
 refresh_command_table()
 {
-    for(auto&  dst: command_table.commands)
+    for(auto&  dst: m_command_table.commands)
     {
         if(dst.name.size())
         {
@@ -54,17 +53,14 @@ void
 PlayerBase::
 print() const noexcept
 {
-  printf("%s:{\n",name.data());
-  printf("body_strngth:%d\n",body_strength);
-  printf("mind_strngth:%d\n",mind_strength);
-  printf("agility:%d\n",agility);
-  printf("defense:%d\n",defense);
-  printf("intellect:%d\n",intellect);
-  printf("hp:%d\n",hp);
-  printf("mp:%d\n",mp);
-}
-
-
+  printf("%s:{\n",m_name.data());
+  printf("body_strngth:%d\n",m_body_strength);
+  printf("mind_strngth:%d\n",m_mind_strength);
+  printf("agility:%d\n",m_agility);
+  printf("defense:%d\n",m_defense);
+  printf("intellect:%d\n",m_intellect);
+  printf("hp:%d\n",m_hp);
+  printf("mp:%d\n",m_mp);
 }
 
 

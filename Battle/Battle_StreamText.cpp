@@ -3,9 +3,6 @@
 
 
 
-namespace gmbb{
-
-
 namespace{
 
 
@@ -13,8 +10,8 @@ constexpr int  cols = 25;
 constexpr int  rows =  4;
 
 
-SawtoothCharacterBuffer
-sc_buffer(cols,rows);
+gbstd::text_roll
+text_roll(cols,rows);
 
 
 bool
@@ -22,26 +19,26 @@ stopping;
 
 
 class
-CommentaryWindow: public Window
+CommentaryWindow: public gbstd::window
 {
 public:
-  CommentaryWindow(): Window(rect_of_versatile_window)
+  CommentaryWindow(): window(rect_of_versatile_window)
   {
   }
 
 
-  void  render(Image&  dst, Point  offset) const noexcept override
+  void  render(gbstd::image&  dst, gbstd::point  offset) const noexcept override
   {
-    Window::render(dst,offset);
+    window::render(dst,offset);
 
     offset += get_base_point();
 
     offset.x += 8;
     offset.y += 8;
 
-      for(auto  s: sc_buffer)
+      for(auto  s: text_roll)
       {
-        dst.print(s,offset,sys::glset);
+        dst.print(s,offset,sys::font);
 
         offset.y += 16;
       }
@@ -61,15 +58,15 @@ step(uint32_t&  pc) noexcept
     }
 
 
-  auto  pressing = ctrl.is_p_button_pressing();
+  auto  pressing = gbstd::ctrl.is_p_button_pressing();
 
-    if(sys::char_buffer.is_remaining())
+    if(sys::text_buffer.is_remaining())
     {
         if(stopping)
         {
             if(pressing)
             {
-              sc_buffer.rotate();
+              text_roll.rotate();
 
               stopping = false;
             }
@@ -77,22 +74,22 @@ step(uint32_t&  pc) noexcept
 
       else
         {
-          auto  now = ctrl.get_time();
+          auto  now = gbstd::ctrl.get_time();
 
             if(now >= tmp::next_time)
             {
               tmp::next_time = now+20;
 
-                if(sc_buffer.is_full())
+                if(text_roll.is_full())
                 {
                   stopping = true;
                 }
 
               else
                 {
-                  auto  c = sys::char_buffer.pop();
+                  auto  c = sys::text_buffer.pop();
 
-                  sc_buffer.push(c);
+                  text_roll.push(c);
                 }
             }
         }
@@ -102,7 +99,7 @@ step(uint32_t&  pc) noexcept
     {
         if(pressing)
         {
-          coprocesses::pop();
+          gbstd::playworks::pop();
         }
     }
 }
@@ -111,14 +108,14 @@ step(uint32_t&  pc) noexcept
 }
 
 
-const Rectangle
+const gbstd::rectangle
 rect_of_versatile_window(0,160,8*(cols+2),16*(rows+1));
 
 
 void
 clear_stream_text() noexcept
 {
-  sc_buffer.reset();
+  text_roll.reset();
 }
 
 
@@ -129,11 +126,8 @@ terminate_stream_text() noexcept
 }
 
 
-const coprocess
-coprocess_of_stream_text("stream text",step);
-
-
-}
+const gbstd::playwork
+playwork_of_stream_text("stream text",step);
 
 
 

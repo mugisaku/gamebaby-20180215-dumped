@@ -1,8 +1,7 @@
 #include"ReadOnlyData.hpp"
-#include"gbdn.hpp"
+#include"libgbdn/gbdn.hpp"
 
 
-namespace gmbb{
 namespace ro{
 
 
@@ -140,7 +139,7 @@ load() noexcept
 }
 
 
-}}
+}
 
 
 

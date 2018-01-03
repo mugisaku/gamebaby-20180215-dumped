@@ -8,7 +8,6 @@
 #include<vector>
 
 
-namespace gmbb{
 namespace ro{
 
 
@@ -31,7 +30,7 @@ command_table;
 void  load() noexcept;
 
 
-}}
+}
 
 
 

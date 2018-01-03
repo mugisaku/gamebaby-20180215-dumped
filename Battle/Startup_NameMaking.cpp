@@ -4,9 +4,6 @@
 
 
 
-namespace gmbb{
-
-
 namespace{
 
 
@@ -41,19 +38,19 @@ current = hiragana_table;
 constexpr int  length_max = 6;
 
 
-Point
+gbstd::point
 cursor;
 
 
 class
-KanaWindow: public  Window
+KanaWindow: public  gbstd::window
 {
 public:
-  KanaWindow(): Window(16+(8*23),16*6,Point(32,120)){};
+  KanaWindow(): window(16+(8*23),16*6,gbstd::point(32,120)){};
 
-  void  render(Image&  dst, Point  offset) const noexcept override
+  void  render(gbstd::image&  dst, gbstd::point  offset) const noexcept override
   {
-    Window::render(dst,offset);
+    window::render(dst,offset);
 
     offset += get_base_point();
 
@@ -62,11 +59,11 @@ public:
 
     auto  p = current;
 
-    Point  pt;
+    gbstd::point  pt;
 
       for(int  n = 0;  n < 5;  ++n)
       {
-        dst.print(*p++,offset+pt,sys::glset);
+        dst.print(*p++,offset+pt,sys::font);
 
         pt.y += 16;
       }
@@ -75,34 +72,34 @@ public:
     offset.x +=  8*cursor.x;
     offset.y += 16*cursor.y+4;
 
-    dst.print(u'_',offset,sys::glset);
+    dst.print(u'_',offset,sys::font);
   }
 
 } character_window;
 
 
 class
-NameWindow: public  Window
+NameWindow: public  gbstd::window
 {
 public:
-  NameWindow(): Window(16+(8*length_max),16*2,Point(120,80)){};
+  NameWindow(): window(16+(8*length_max),16*2,gbstd::point(120,80)){};
 
-  void  render(Image&  dst, Point  offset) const noexcept override
+  void  render(gbstd::image&  dst, gbstd::point  offset) const noexcept override
   {
-    Window::render(dst,offset);
+    window::render(dst,offset);
 
     offset += get_base_point();
 
     offset.x += 8;
     offset.y += 8;
 
-    dst.print(tmp::name_buffer.get_data(),offset,sys::glset);
+    dst.print(tmp::name_buffer.get_data(),offset,sys::font);
 
       if(tmp::name_buffer.get_length() < length_max)
       {
         offset.x += 8*tmp::name_buffer.get_length();
 
-        dst.print(u'■',offset,sys::glset);
+        dst.print(u'■',offset,sys::font);
       }
   }
 
@@ -110,22 +107,22 @@ public:
 
 
 class
-Message: public Task
+Message: public gbstd::task
 {
 public:
   bool  too_short=false;
 
-  Message(): Task(Point(64,16)){}
+  Message(): task(gbstd::point(64,16)){}
 
-  void  render(Image&  dst, Point  offset) const noexcept override
+  void  render(gbstd::image&  dst, gbstd::point  offset) const noexcept override
   {
     offset += get_base_point();
 
-    dst.print("しゅじんこうの　なまえを　きめてください",offset,sys::glset);
+    dst.print("しゅじんこうの　なまえを　きめてください",offset,sys::font);
 
       if(too_short)
       {
-        dst.print("なまえが　みじかすぎます",offset.move_x(16).move_y(16),sys::glset);
+        dst.print("なまえが　みじかすぎます",offset.move_x(16).move_y(16),sys::font);
       }
   }
 
@@ -144,7 +141,7 @@ step(uint32_t&  pc) noexcept
 {
     if(!pc)
     {
-      cursor = Point(10,0);
+      cursor = gbstd::point(10,0);
 
       message.too_short = false;
 
@@ -158,17 +155,17 @@ step(uint32_t&  pc) noexcept
 
   static bool  lock;
 
-    if(sys::interval_timer.check(120,ctrl.get_time()))
+    if(sys::interval_timer.check(120,gbstd::ctrl.get_time()))
     {
-           if(ctrl.is_up_button_pressing()   && (cursor.y    )){--cursor.y;}
-      else if(ctrl.is_down_button_pressing() && (cursor.y < 4)){++cursor.y;}
+           if(gbstd::ctrl.is_up_button_pressing()   && (cursor.y    )){--cursor.y;}
+      else if(gbstd::ctrl.is_down_button_pressing() && (cursor.y < 4)){++cursor.y;}
 
-           if(ctrl.is_left_button_pressing()  && (cursor.x     )){--cursor.x;}
-      else if(ctrl.is_right_button_pressing() && (cursor.x < 23)){++cursor.x;}
+           if(gbstd::ctrl.is_left_button_pressing()  && (cursor.x     )){--cursor.x;}
+      else if(gbstd::ctrl.is_right_button_pressing() && (cursor.x < 23)){++cursor.x;}
     }
 
 
-    if(ctrl.is_p_button_pressing())
+    if(gbstd::ctrl.is_p_button_pressing())
     {
       message.too_short = false;
 
@@ -182,7 +179,7 @@ step(uint32_t&  pc) noexcept
     }
 
   else
-    if(ctrl.is_n_button_pressing())
+    if(gbstd::ctrl.is_n_button_pressing())
     {
         if(!lock && tmp::name_buffer.get_length())
         {
@@ -194,7 +191,7 @@ step(uint32_t&  pc) noexcept
     }
 
   else
-    if(ctrl.is_shift_button_pressing())
+    if(gbstd::ctrl.is_shift_button_pressing())
     {
         if(!lock)
         {
@@ -207,7 +204,7 @@ step(uint32_t&  pc) noexcept
     }
 
   else
-    if(ctrl.is_start_button_pressing())
+    if(gbstd::ctrl.is_start_button_pressing())
     {
         if(tmp::name_buffer.get_length() <= 1)
         {
@@ -217,7 +214,7 @@ step(uint32_t&  pc) noexcept
       else
         if(tmp::name_buffer.get_length() > 1)
         {
-          coprocesses::pop();
+          gbstd::playworks::pop();
         }
     }
 
@@ -240,11 +237,8 @@ terminate_name_making() noexcept
 }
 
 
-const coprocess
-coprocess_of_name_making("name making",step);
-
-
-}
+const gbstd::playwork
+playwork_of_name_making("name making",step);
 
 
 

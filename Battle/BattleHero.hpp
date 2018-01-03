@@ -5,8 +5,6 @@
 #include"BattlePlayerBase.hpp"
 
 
-namespace gmbb{
-
 
 struct
 ExperienceSet
@@ -30,9 +28,6 @@ Hero: public PlayerBase
   ExperienceSet  expset;
 
 };
-
-
-}
 
 
 

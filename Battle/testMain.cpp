@@ -1,4 +1,6 @@
 #include"Battle/FrontInterface.hpp"
+#include"libgbstd/image.hpp"
+#include"libgbstd/controller.hpp"
 #include<SDL.h>
 #include<cstdlib>
 
@@ -9,9 +11,6 @@
 
 
 
-using namespace gmbb;
-
-
 namespace{
 
 
@@ -19,7 +18,7 @@ SDL_Window*    window;
 SDL_Surface*  surface;
 
 
-Palette
+gbstd::palette
 palette;
 
 
@@ -43,7 +42,7 @@ write(uint8_t*&  ptr, int  pitch, uint32_t  v)
 
 
 void
-transfer(const Image&  img)
+transfer(const gbstd::image&  img)
 {
   auto  base_ptr = static_cast<uint8_t*>(surface->pixels);
 
@@ -107,23 +106,23 @@ process_key_down(const SDL_KeyboardEvent&  evt)
   {
       switch(evt.keysym.sym)
       {
-    case(SDLK_UP   ): ctrl.set(   Controller::up_button_flag);break;
-    case(SDLK_LEFT ): ctrl.set( Controller::left_button_flag);break;
-    case(SDLK_RIGHT): ctrl.set(Controller::right_button_flag);break;
-    case(SDLK_DOWN ): ctrl.set( Controller::down_button_flag);break;
+    case(SDLK_UP   ): gbstd::ctrl.set(   gbstd::controller::up_button_flag);break;
+    case(SDLK_LEFT ): gbstd::ctrl.set( gbstd::controller::left_button_flag);break;
+    case(SDLK_RIGHT): gbstd::ctrl.set(gbstd::controller::right_button_flag);break;
+    case(SDLK_DOWN ): gbstd::ctrl.set( gbstd::controller::down_button_flag);break;
 
-    case(SDLK_SPACE ): ctrl.set(Controller::start_button_flag);break;
+    case(SDLK_SPACE ): gbstd::ctrl.set(gbstd::controller::start_button_flag);break;
     case(SDLK_LSHIFT):
-    case(SDLK_RSHIFT): ctrl.set(Controller::shift_button_flag);break;
+    case(SDLK_RSHIFT): gbstd::ctrl.set(gbstd::controller::shift_button_flag);break;
 
     case(SDLK_RETURN):
     case(SDLK_z):
-        ctrl.set(Controller::p_button_flag);
+        gbstd::ctrl.set(gbstd::controller::p_button_flag);
         break;
     case(SDLK_RCTRL):
     case(SDLK_LCTRL):
     case(SDLK_x    ):
-        ctrl.set(Controller::n_button_flag);
+        gbstd::ctrl.set(gbstd::controller::n_button_flag);
         break;
     case(SDLK_F1):
         SDL_SaveBMP(surface,"__SCREEN.bmp");
@@ -138,23 +137,23 @@ process_key_up(const SDL_KeyboardEvent&  evt)
 {
     switch(evt.keysym.sym)
     {
-  case(SDLK_UP   ): ctrl.unset(   Controller::up_button_flag);break;
-  case(SDLK_LEFT ): ctrl.unset( Controller::left_button_flag);break;
-  case(SDLK_RIGHT): ctrl.unset(Controller::right_button_flag);break;
-  case(SDLK_DOWN ): ctrl.unset( Controller::down_button_flag);break;
+  case(SDLK_UP   ): gbstd::ctrl.unset(   gbstd::controller::up_button_flag);break;
+  case(SDLK_LEFT ): gbstd::ctrl.unset( gbstd::controller::left_button_flag);break;
+  case(SDLK_RIGHT): gbstd::ctrl.unset(gbstd::controller::right_button_flag);break;
+  case(SDLK_DOWN ): gbstd::ctrl.unset( gbstd::controller::down_button_flag);break;
 
-  case(SDLK_SPACE ): ctrl.unset(Controller::start_button_flag);break;
+  case(SDLK_SPACE ): gbstd::ctrl.unset(gbstd::controller::start_button_flag);break;
   case(SDLK_LSHIFT):
-  case(SDLK_RSHIFT): ctrl.unset(Controller::shift_button_flag);break;
+  case(SDLK_RSHIFT): gbstd::ctrl.unset(gbstd::controller::shift_button_flag);break;
 
   case(SDLK_RETURN):
   case(SDLK_z     ):
-      ctrl.unset(Controller::p_button_flag);
+      gbstd::ctrl.unset(gbstd::controller::p_button_flag);
       break;
   case(SDLK_RCTRL):
   case(SDLK_LCTRL):
   case(SDLK_x    ):
-      ctrl.unset(Controller::n_button_flag);
+      gbstd::ctrl.unset(gbstd::controller::n_button_flag);
       break;
     }
 }
@@ -163,14 +162,14 @@ process_key_up(const SDL_KeyboardEvent&  evt)
 void
 process_mouse_button(const SDL_MouseButtonEvent&  evt)
 {
-  ctrl.change_point(evt.x,evt.y);
+  gbstd::ctrl.change_point(evt.x,evt.y);
 }
 
 
 void
 process_mouse_motion(const SDL_MouseMotionEvent&  evt)
 {
-  ctrl.change_point(evt.x,evt.y);
+  gbstd::ctrl.change_point(evt.x,evt.y);
 }
 
 
@@ -208,7 +207,7 @@ main_loop()
 
   auto  now = SDL_GetTicks();
 
-  ctrl.change_time(now);
+  gbstd::ctrl.change_time(now);
 
     if(now >= next)
     {
@@ -252,9 +251,9 @@ main(int  argc, char**  argv)
     for(int  r = 0;  r < 8;  ++r){
     for(int  g = 0;  g < 8;  ++g){
     for(int  b = 0;  b < 8;  ++b){
-      ColorIndex  i(r,g,b);
+      gbstd::color_index  i(r,g,b);
 
-      auto  color = SDL_MapRGB(surface->format,i.r255(),i.g255(),i.b255());
+      auto  color = SDL_MapRGB(surface->format,i.get_r255(),i.get_g255(),i.get_b255());
 
       palette.set_color(i,color);
     }}}

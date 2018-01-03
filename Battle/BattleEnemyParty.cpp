@@ -2,14 +2,13 @@
 #include"ReadOnlyData.hpp"
 
 
-namespace gmbb{
 
 
 void
 EnemyParty::
-load(const char*  name_, const gbdn::list&  ls)
+load(std::string_view  name, const gbdn::list&  ls)
 {
-  name = name_;
+  m_name = name;
 
     for(auto&  v: ls)
     {
@@ -23,14 +22,11 @@ load(const char*  name_, const gbdn::list&  ls)
 
                 if(v.get_string() == sv)
                 {
-                  enemies.emplace_back(make_ro(ene));
+                  m_enemies.emplace_back(gbstd::make_ro(ene));
                 }
             }
         }
     }
-}
-
-
 }
 
 

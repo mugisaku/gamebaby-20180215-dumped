@@ -5,7 +5,6 @@
 #include"BattleCommand.hpp"
 
 
-namespace gmbb{
 
 
 enum class
@@ -31,9 +30,6 @@ Accessory
   AbilityKind  ability1_kind=AbilityKind::null;
 
 };
-
-
-}
 
 
 

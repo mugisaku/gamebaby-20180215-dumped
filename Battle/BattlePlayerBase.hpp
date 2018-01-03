@@ -4,13 +4,11 @@
 
 #include<cstdint>
 #include<string>
-#include"Pointer.hpp"
-#include"gmbb_unicode.hpp"
-#include"gbdn.hpp"
+#include"libgbdn/gbdn.hpp"
+#include"libgbstd/ro_ptr.hpp"
+#include"libgbstd/rw_ptr.hpp"
+#include"libgbstd/unicode.hpp"
 #include"BattleCommand.hpp"
-
-
-namespace gmbb{
 
 
 class
@@ -43,7 +41,7 @@ public:
 
       while(*src)
       {
-        auto  p = UTF8Chunk(*src++).codes;
+        auto  p = gbstd::utf8_encoder(*src++).codes;
 
           while(*p)
           {
@@ -89,48 +87,45 @@ class
 PlayerBase
 {
 protected:
-  std::string  name;
+  std::string  m_name;
 
-  int  body_strength;
-  int  mind_strength;
-  int        agility;
-  int        defense;
-  int      intellect;
+  int  m_body_strength;
+  int  m_mind_strength;
+  int        m_agility;
+  int        m_defense;
+  int      m_intellect;
 
-  int  hp=0;
-  int  mp=0;
+  int  m_hp=0;
+  int  m_mp=0;
 
-  CommandTable  command_table;
+  CommandTable  m_command_table;
 
 public:
   PlayerBase() noexcept{}
-  PlayerBase(const char*  name_, const gbdn::list&  ls){load(name_,ls);}
+  PlayerBase(std::string_view  name, const gbdn::list&  ls){load(name,ls);}
 
-  void  set_name(std::string&&  new_name) noexcept{name = new_name;}
+  void  set_name(std::string_view  new_name) noexcept{m_name = new_name;}
 
-  const std::string&  get_name() const noexcept{return name;}
+  const std::string&  get_name() const noexcept{return m_name;}
 
-  int  get_body_strength() const noexcept{return body_strength;}
-  int  get_mind_strength() const noexcept{return mind_strength;}
-  int        get_agility() const noexcept{return agility;}
-  int        get_defense() const noexcept{return defense;}
-  int      get_intellect() const noexcept{return intellect;}
+  int  get_body_strength() const noexcept{return m_body_strength;}
+  int  get_mind_strength() const noexcept{return m_mind_strength;}
+  int        get_agility() const noexcept{return m_agility;}
+  int        get_defense() const noexcept{return m_defense;}
+  int      get_intellect() const noexcept{return m_intellect;}
 
-  int  get_hp() const noexcept{return hp;}
-  int  get_mp() const noexcept{return mp;}
+  int  get_hp() const noexcept{return m_hp;}
+  int  get_mp() const noexcept{return m_mp;}
 
-  const CommandTable&  get_command_table() const noexcept{return command_table;}
+  const CommandTable&  get_command_table() const noexcept{return m_command_table;}
 
   void  refresh_command_table();
 
-  void  load(const char*  name_, const gbdn::list&  ls);
+  void  load(std::string_view  name, const gbdn::list&  ls);
 
   void  print() const noexcept;
 
 };
-
-
-}
 
 
 

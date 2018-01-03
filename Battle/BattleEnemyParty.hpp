@@ -6,25 +6,19 @@
 #include<vector>
 
 
-namespace gmbb{
-
-
 struct
 EnemyParty
 {
-  std::string  name;
+  std::string  m_name;
 
-  std::vector<ro_ptr<Enemy>>  enemies;
+  std::vector<gbstd::ro_ptr<Enemy>>  m_enemies;
 
   EnemyParty() noexcept{}
-  EnemyParty(const char*  name_, const gbdn::list&  ls){load(name_,ls);}
+  EnemyParty(std::string_view  name, const gbdn::list&  ls){load(name,ls);}
 
-  void  load(const char*  name_, const gbdn::list&  ls);
+  void  load(std::string_view  name, const gbdn::list&  ls);
 
 };
-
-
-}
 
 
 

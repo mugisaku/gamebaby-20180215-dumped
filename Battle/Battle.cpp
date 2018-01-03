@@ -4,9 +4,6 @@
 
 
 
-namespace gmbb{
-
-
 namespace{
 
 
@@ -14,32 +11,30 @@ constexpr int  status_window_h = (16*3);
 
 
 class
-StatusWindow: public Window
+StatusWindow: public gbstd::window
 {
   const int  index;
 
 public:
-  StatusWindow(int  i): Window(8*9,status_window_h,Point(216,status_window_h*i)), index(i){}
+  StatusWindow(int  i): window(8*9,status_window_h,gbstd::point(216,status_window_h*i)), index(i){}
 
-  void  render(Image&  dst, Point  offset) const noexcept override
+  void  render(gbstd::image&  dst, gbstd::point  offset) const noexcept override
   {
-    Window::render(dst,offset);
+    window::render(dst,offset);
 
     offset += get_base_point();
 
     offset.x += 8;
     offset.y += 8;
 
-    StringBuffer  sbuf;
-
 
     auto  pl = hero_team[index];
 
       if(pl)
       {
-        dst.print(pl.get_name().data(),offset,sys::glset);
-        dst.print(sbuf("HP %4d",pl.get_hp()),offset.move_y(8),sys::glset);
-        dst.print(sbuf("MP %4d",pl.get_mp()),offset.move_y(8),sys::glset);
+        dst.print(pl.get_name().data(),offset,sys::font);
+        dst.print(gbstd::make_text("HP %4d",pl.get_hp()),offset.move_y(8),sys::font);
+        dst.print(gbstd::make_text("MP %4d",pl.get_mp()),offset.move_y(8),sys::font);
       }
   }
 
@@ -80,9 +75,9 @@ judge(uint32_t&  pc) noexcept
 
       clear_stream_text();
 
-      sys::char_buffer.push("すべてのてきを　たおした");
+      sys::text_buffer.push("すべてのてきを　たおした");
 
-      coprocesses::push(nullptr,coprocess_of_stream_text);
+      gbstd::playworks::push(nullptr,playwork_of_stream_text);
       break;
   case(hero_team_was_defeated_by_enemy_team):
   case(battle_was_a_draw):
@@ -90,9 +85,9 @@ judge(uint32_t&  pc) noexcept
 
       clear_stream_text();
 
-      sys::char_buffer.push("ぜんめつした");
+      sys::text_buffer.push("ぜんめつした");
 
-      coprocesses::push(nullptr,coprocess_of_stream_text);
+      gbstd::playworks::push(nullptr,playwork_of_stream_text);
       break;
   case(battle_is_continued):
       pc = 3;
@@ -111,7 +106,7 @@ return_from_action_making(int  retval) noexcept
         if(seek_previous_actable_player() ||
               seek_first_actable_player())
         {
-          coprocesses::push(return_from_action_making,coprocess_of_action_making);
+          gbstd::playworks::push(return_from_action_making,playwork_of_action_making);
         }
     }
 
@@ -120,7 +115,7 @@ return_from_action_making(int  retval) noexcept
     {
         if(seek_next_actable_player())
         {
-          coprocesses::push(return_from_action_making,coprocess_of_action_making);
+          gbstd::playworks::push(return_from_action_making,playwork_of_action_making);
         }
     }
 }
@@ -132,14 +127,14 @@ step(uint32_t&  pc) noexcept
     switch(pc)
     {
   case(0):
-//coprocesses::debug(true);
+//gbstd::playwork::debug(true);
         for(auto&  w: status_windows)
         {
           sys::root_task.push(w);
         }
 
 
-      coprocesses::push(nullptr,coprocess_of_stream_text);
+      gbstd::playworks::push(nullptr,playwork_of_stream_text);
       ++pc;
       break;
   case(1):
@@ -147,7 +142,7 @@ step(uint32_t&  pc) noexcept
 
         if(seek_first_actable_player())
         {
-          coprocesses::push(return_from_action_making,coprocess_of_action_making);
+          gbstd::playworks::push(return_from_action_making,playwork_of_action_making);
         }
 
       ++pc;
@@ -166,7 +161,7 @@ step(uint32_t&  pc) noexcept
         {
           set_actor_of_action_processing(actable_player_it++->get());
 
-          coprocesses::push(nullptr,coprocess_of_action_processing);
+          gbstd::playworks::push(nullptr,playwork_of_action_processing);
 
           ++pc;
         }
@@ -181,7 +176,7 @@ step(uint32_t&  pc) noexcept
       break;
   case(5):
   default:
-      coprocesses::pop();
+      gbstd::playworks::pop();
     }
 }
 
@@ -220,24 +215,19 @@ set_parties_of_battle(const EnemyParty&  enep) noexcept
 
   auto  e = enemy_team.begin();
 
-  StringBuffer  sbuf;
-
-    for(auto  ene: enep.enemies)
+    for(auto  ene: enep.m_enemies)
     {
       e->set_operation_style(OperationStyle::automatic);
 
-      sys::char_buffer.push(sbuf("%sが　あらわれた",ene->get_name().data()));
+      sys::text_buffer.push(gbstd::make_text("%sが　あらわれた",ene->get_name().data()));
 
       e++->set_data(*ene);
     }
 }
 
 
-const coprocess
-coprocess_of_battle("battle",step);
-
-
-}
+const gbstd::playwork
+playwork_of_battle("battle",step);
 
 
 

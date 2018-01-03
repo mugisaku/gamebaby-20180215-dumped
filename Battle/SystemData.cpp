@@ -1,33 +1,32 @@
 #include"SystemData.hpp"
 
 
-namespace gmbb{
 namespace sys{
 
 
-GroupTask
+gbstd::group_task
 root_task;
 
 
-IntervalTimer
+gbstd::interval_timer
 interval_timer;
 
 
-GlyphSet
-glset;
+gbstd::font
+font;
 
 
-GlyphSet
-large_glset;
+gbstd::font
+large_font;
 
 
-LinearCharacterBuffer
-char_buffer(1024);
+gbstd::text_buffer
+text_buffer(1024);
 
 
 
 
-}}
+}
 
 
 

@@ -2,39 +2,45 @@
 #define game_SystemData_HPP
 
 
-#include"gmbb_Standard.hpp"
+#include"libgbstd/interval_timer.hpp"
+#include"libgbstd/image.hpp"
+#include"libgbstd/task.hpp"
+#include"libgbstd/text.hpp"
+#include"libgbstd/playwork.hpp"
+#include"libgbstd/unicode.hpp"
+#include"libgbstd/menu.hpp"
+#include"libgbstd/controller.hpp"
 
 
-namespace gmbb{
 namespace sys{
 
 
 
 
-extern IntervalTimer
+extern gbstd::interval_timer
 interval_timer;
 
 
 extern
-GlyphSet
-glset;
+gbstd::font
+font;
 
 
 extern
-GlyphSet
-large_glset;
+gbstd::font
+large_font;
 
 
 extern
-GroupTask
+gbstd::group_task
 root_task;
 
 
-extern LinearCharacterBuffer
-char_buffer;
+extern gbstd::text_buffer
+text_buffer;
 
 
-}}
+}
 
 
 

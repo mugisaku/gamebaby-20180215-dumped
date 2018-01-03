@@ -74,7 +74,7 @@ print(std::u16string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index> 
 {
     for(auto  c: sv)
     {
-      print(c,pt,fnt,coloring);
+      print(static_cast<char16_t>(c),pt,fnt,coloring);
 
       pt.x += fnt.get_width();
     }

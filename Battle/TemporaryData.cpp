@@ -1,7 +1,6 @@
 #include"TemporaryData.hpp"
 
 
-namespace gmbb{
 namespace tmp{
 
 
@@ -21,7 +20,7 @@ uint32_t  last_time;
 uint32_t  next_time;
 
 
-}}
+}
 
 
 

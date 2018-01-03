@@ -1,7 +1,6 @@
 #include"SavedData.hpp"
 
 
-namespace gmbb{
 namespace sav{
 
 
@@ -22,7 +21,7 @@ fullrecover_all_heroes() noexcept
 }
 
 
-}}
+}
 
 
 

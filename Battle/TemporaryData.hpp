@@ -2,11 +2,9 @@
 #define game_TemporaryData_HPP
 
 
-#include"gmbb_Standard.hpp"
 #include"BattlePlayer.hpp"
 
 
-namespace gmbb{
 namespace tmp{
 
 
@@ -19,7 +17,7 @@ extern uint32_t  last_time;
 extern uint32_t  next_time;
 
 
-}}
+}
 
 
 

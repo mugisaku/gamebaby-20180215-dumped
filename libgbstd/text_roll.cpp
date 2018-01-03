@@ -13,6 +13,20 @@ get_buffer_length(int  col_n, int  row_n) noexcept
 {
   return (col_n+1)*row_n;
 }
+
+
+void
+fill_by_zero(char16_t*  begin, char16_t*  end) noexcept
+{
+  auto  p = begin;
+
+    while(p != end)
+    {
+      *p++ = 0;
+    }
+}
+
+
 }
 
 
@@ -31,13 +45,13 @@ void
 text_roll::
 reset() noexcept
 {
-  m_current_length = 0;
+  fill_by_zero(m_data_source,m_data_source_end);
 
   auto  cur = m_first;
 
     while(cur)
     {
-      cur->data[0] = 0;
+      cur->current = cur->begin;
 
       cur = cur->next;
     }
@@ -66,43 +80,44 @@ resize(int  col_n, int  row_n) noexcept
   m_number_of_columns = col_n;
   m_number_of_rows    = row_n;
 
-  m_current_length = 0;
 
-  m_data_source = new char16_t[get_buffer_length(col_n,row_n)];
-  m_line_source = new     line[                         row_n];
+  auto  len = get_buffer_length(col_n,row_n);
 
-  rw_ptr<char16_t>  data_p = m_data_source;
-  rw_ptr<line>      line_p = m_line_source;
+  m_data_source     = new char16_t[len];
+  m_data_source_end = m_data_source+len;
+
+  m_line_source = new line[row_n];
+
+  char16_t*  data_p = m_data_source;
+  line*      line_p = m_line_source;
+
+  m_first = line_p;
 
     if(row_n > 0)
     {
       row_n -= 1;
 
-                  m_first = line_p++;
-      m_current = m_first           ;
+      m_current = line_p++;
 
-      m_current->data = data_p           ;
-                        data_p += col_n+1;
-
-      m_current->data[0] = 0;
+      m_current->begin = data_p         ;
+                         data_p += col_n;
+      m_current->end   = data_p++       ;
 
         while(row_n--)
         {
                       m_current->next = line_p++;
           m_current = m_current->next           ;
 
-          m_current->data = data_p           ;
-                            data_p += col_n+1;
-
-          m_current->data[0] = 0;
+          m_current->begin = data_p         ;
+                             data_p += col_n;
+          m_current->end   = data_p++       ;
         }
-
-
-      m_last = m_current          ;
-               m_current = m_first;
-
-      m_last->next = nullptr;
     }
+
+
+  m_last = line_p;
+
+  reset();
 }
 
 
@@ -120,12 +135,10 @@ rotate() noexcept
 
   m_last->next = nullptr;
 
-  m_last->data[0] = 0;
+  fill_by_zero(m_last->begin,m_last->end);
 
 
   m_current = m_last;
-
-  m_current_length = 0;
 }
 
 
@@ -138,21 +151,16 @@ push(char16_t  c) noexcept
         if(c == '\n')
         {
           m_current = m_current->next;
-
-          m_current_length = 0;
         }
 
       else
         if(c)
         {
-          m_current->data[m_current_length++] = c;
-          m_current->data[m_current_length  ] = 0;
+          *m_current->current++ = c;
 
-            if(m_current_length > (m_number_of_columns-1))
+            if(m_current->current == m_current->end)
             {
               m_current = m_current->next;
-
-              m_current_length = 0;
             }
         }
     }
