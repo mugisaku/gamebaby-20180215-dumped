@@ -8,10 +8,21 @@ EffectKind
 to_effect(const gbdn::string&  s) noexcept
 {
        if(s == std::string_view("null"  )){return EffectKind::null;}
-  else if(s == std::string_view("attack")){return EffectKind::attack;}
+  else if(s == std::string_view("hp_damage")){return EffectKind::hp_damage;}
   else if(s == std::string_view("hp_recover")){return EffectKind::hp_recover;}
 
   return EffectKind::null;
+}
+
+
+ActionKind
+to_action(const gbdn::string&  s) noexcept
+{
+       if(s == std::string_view("null"  )){return ActionKind::null;}
+  else if(s == std::string_view("attack")){return ActionKind::attack;}
+  else if(s == std::string_view("use")){return ActionKind::use;}
+
+  return ActionKind::null;
 }
 
 
@@ -35,15 +46,16 @@ to_target(const gbdn::string&  s) noexcept
 
 void
 BattleCommand::
-load(const char*  name_, const gbdn::list&  ls)
+load(std::string_view  name, const gbdn::list&  ls)
 {
-  name = name_;
+  m_name = name;
 
-  strength = ls.get_named_value("strength").get_integer();
-  weight   = ls.get_named_value("weight").get_integer();
+  m_strength = ls.get_named_value("strength").get_integer();
+  m_weight   = ls.get_named_value("weight").get_integer();
 
-  effect_kind = to_effect(ls.get_named_value("effect").get_string());
-  target_kind = to_target(ls.get_named_value("target").get_string());
+  m_effect_kind = to_effect(ls.get_named_value("effect").get_string());
+  m_action_kind = to_action(ls.get_named_value("action").get_string());
+  m_target_kind = to_target(ls.get_named_value("target").get_string());
 }
 
 

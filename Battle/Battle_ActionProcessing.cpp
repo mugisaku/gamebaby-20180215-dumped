@@ -46,7 +46,7 @@ initialize() noexcept
 
   target_player_list.resize(0);
 
-    switch(cmd.target_kind)
+    switch(cmd.get_target_kind())
     {
   case(TargetKind::null):
       break;
@@ -75,9 +75,23 @@ initialize() noexcept
   target_it     = target_player_list.begin();
   target_it_end = target_player_list.end();
 
-    switch(cmd.effect_kind)
+    switch(cmd.get_action_kind())
     {
-  case(EffectKind::attack):
+  case(ActionKind::attack):
+      set_list(attack_process_list);
+      break;
+  case(ActionKind::use):
+//      process_list = std::ref(hp_recover_process_list);
+      break;
+  case(ActionKind::null):
+//      process_list = std::ref(null_process_list);
+      break;
+    }
+
+
+    switch(cmd.get_effect_kind())
+    {
+  case(EffectKind::hp_damage):
       set_list(attack_process_list);
       break;
   case(EffectKind::hp_recover):

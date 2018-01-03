@@ -22,7 +22,9 @@ load(std::string_view  name, const gbdn::list&  ls)
 
     for(auto&  v: ls.get_named_value("command_table").get_list())
     {
-      cmd++->name = v.get_string().get_data();
+      auto&  s = v.get_string();
+
+      cmd++->set_name(std::string_view(s.get_data(),s.get_length()));
     }
 }
 
@@ -33,11 +35,11 @@ refresh_command_table()
 {
     for(auto&  dst: m_command_table.commands)
     {
-        if(dst.name.size())
+        if(dst.get_name().size())
         {
             for(auto&  src: ro::command_table)
             {
-                if(src.name == dst.name)
+                if(src.get_name() == dst.get_name())
                 {
                   dst = src;
 

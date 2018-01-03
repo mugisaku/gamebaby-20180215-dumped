@@ -21,10 +21,20 @@ TargetKind
 
 
 enum class
-EffectKind
+ActionKind
 {
   null,
   attack,
+  use,
+
+};
+
+
+enum class
+EffectKind
+{
+  null,
+  hp_damage,
   hp_recover,
 
 };
@@ -38,23 +48,33 @@ AbilityKind
 };
 
 
-struct
+class
 BattleCommand
 {
-  std::string  name;
+  std::string  m_name;
 
-  int  strength;
-  int    weight;
+  int  m_strength=0;
+  int    m_weight=0;
 
-  TargetKind  target_kind=TargetKind::null;
-  EffectKind  effect_kind=EffectKind::null;
+  TargetKind  m_target_kind=TargetKind::null;
+  ActionKind  m_action_kind=ActionKind::null;
+  EffectKind  m_effect_kind=EffectKind::null;
 
+public:
   BattleCommand() noexcept{}
-  BattleCommand(const char*  name_, const gbdn::list&  ls){load(name_,ls);}
+  BattleCommand(std::string_view  name, const gbdn::list&  ls){load(name,ls);}
 
-  const std::string&  get_name() const noexcept{return name;}
+  void                set_name(std::string_view  name)       noexcept{       m_name = name;}
+  const std::string&  get_name(                      ) const noexcept{return m_name       ;}
 
-  void  load(const char*  name_, const gbdn::list&  ls);
+  int  get_strength() const noexcept{return m_strength;}
+  int  get_weight() const noexcept{return m_weight;}
+
+  TargetKind  get_target_kind() const noexcept{return m_target_kind;}
+  ActionKind  get_action_kind() const noexcept{return m_action_kind;}
+  EffectKind  get_effect_kind() const noexcept{return m_effect_kind;}
+
+  void  load(std::string_view  name, const gbdn::list&  ls);
 
 };
 
