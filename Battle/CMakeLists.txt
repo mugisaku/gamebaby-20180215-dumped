@@ -22,7 +22,10 @@ set(SOURCES
   Battle_StreamText.cpp
   Battle_ActionMaking.cpp
   Battle_ActionProcessing.cpp
-  process_lists/attack.cpp
+  processes/attack.cpp
+  processes/use.cpp
+  processes/hp_damage.cpp
+  processes/hp_recover.cpp
 )
 
 

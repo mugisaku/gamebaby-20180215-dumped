@@ -40,6 +40,9 @@ extern gbstd::text_buffer
 text_buffer;
 
 
+void  push_text(const char*  fmt, ...) noexcept;
+
+
 }
 
 

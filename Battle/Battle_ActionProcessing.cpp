@@ -4,7 +4,10 @@
 
 
 
-extern std::initializer_list<Process>  attack_process_list;
+extern Process      attack_process;
+extern Process         use_process;
+extern Process   hp_damage_process;
+extern Process  hp_recover_process;
 
 
 namespace{
@@ -23,20 +26,8 @@ BattleTeam::PlayerList::iterator  target_it    ;
 BattleTeam::PlayerList::iterator  target_it_end;
 
 
-using Process = void  (*)(Player&  actor, const BattleCommand&  command, Player&  target) noexcept;
-
-
-std::initializer_list<Process>*  process_list;
-
-std::initializer_list<Process>::const_iterator  process_it    ;
-std::initializer_list<Process>::const_iterator  process_it_end;
-
-
-void
-set_list(std::initializer_list<Process>&  ls)
-{
-  process_list = &ls;
-}
+Process  action_process;
+Process  effect_process;
 
 
 void
@@ -77,34 +68,20 @@ initialize() noexcept
 
     switch(cmd.get_action_kind())
     {
-  case(ActionKind::attack):
-      set_list(attack_process_list);
-      break;
-  case(ActionKind::use):
-//      process_list = std::ref(hp_recover_process_list);
-      break;
+  case(ActionKind::attack): action_process = attack_process;break;
+  case(ActionKind::use   ): action_process =    use_process;break;
   case(ActionKind::null):
-//      process_list = std::ref(null_process_list);
       break;
     }
 
 
     switch(cmd.get_effect_kind())
     {
-  case(EffectKind::hp_damage):
-      set_list(attack_process_list);
-      break;
-  case(EffectKind::hp_recover):
-//      process_list = std::ref(hp_recover_process_list);
-      break;
+  case(EffectKind::hp_damage ): effect_process =  hp_damage_process;break;
+  case(EffectKind::hp_recover): effect_process = hp_recover_process;break;
   case(EffectKind::null):
-//      process_list = std::ref(null_process_list);
       break;
     }
-
-
-  process_it     = process_list->begin();
-  process_it_end = process_list->end();
 }
 
 
@@ -117,39 +94,43 @@ step(uint32_t&  pc) noexcept
       initialize();
       ++pc;
   case(1):
-        if(process_it != process_it_end)
+        if(target_it == target_it_end)
         {
-          auto&  process = *process_it++;
-
-            if(target_it != target_it_end)
-            {
-              auto&  pl = actor.get();
-
-              process(pl,pl.get_current_command(),*target_it);
-            }
-
-          else
-            {
-              ++pc;
-            }
-         }
-
-      else
-        if(target_it != target_it_end)
-        {
-          process_it     = process_list->begin();
-          process_it_end = process_list->end();
-
-          ++target_it;
-
-          clear_stream_text();
+          pc = 4;
         }
 
       else
         {
+          clear_stream_text();
+
           ++pc;
         }
       break;
+  case(2):
+        if(action_process)
+        {
+          auto&  pl = actor.get();
+
+          action_process(pl,pl.get_current_command(),*target_it);
+        }
+
+
+      ++pc;
+      break;
+  case(3):
+        if(effect_process)
+        {
+          auto&  pl = actor.get();
+
+          effect_process(pl,pl.get_current_command(),*target_it);
+        }
+
+
+      ++target_it;
+
+      pc = 1;
+      break;
+  case(4):
   default:;
       gbstd::playworks::pop();
     }

@@ -58,8 +58,6 @@ reset() noexcept
 
 
   m_current = m_first;
-
-  m_last->next = nullptr;
 }
 
 
@@ -91,13 +89,12 @@ resize(int  col_n, int  row_n) noexcept
   char16_t*  data_p = m_data_source;
   line*      line_p = m_line_source;
 
-  m_first = line_p;
+  m_first   = line_p;
+  m_current = line_p;
 
-    if(row_n > 0)
+    if(row_n-- > 0)
     {
-      row_n -= 1;
-
-      m_current = line_p++;
+      ++line_p;
 
       m_current->begin = data_p         ;
                          data_p += col_n;
@@ -115,7 +112,8 @@ resize(int  col_n, int  row_n) noexcept
     }
 
 
-  m_last = line_p;
+  m_last       = m_current;
+  m_last->next =   nullptr;
 
   reset();
 }
@@ -125,20 +123,17 @@ void
 text_roll::
 rotate() noexcept
 {
-  auto  old_first = m_first;
-
-  m_first = old_first->next;
+  auto  old_first = m_first                            ;
+                    m_first = old_first->next          ;
+                              old_first->next = nullptr;
 
   m_last->next = old_first;
+  m_last       = old_first;
+  m_current    = old_first;
 
-  m_last = old_first;
+  m_current->current = m_current->begin;
 
-  m_last->next = nullptr;
-
-  fill_by_zero(m_last->begin,m_last->end);
-
-
-  m_current = m_last;
+  fill_by_zero(m_current->begin,m_current->end);
 }
 
 
@@ -146,7 +141,7 @@ void
 text_roll::
 push(char16_t  c) noexcept
 {
-    if(!is_full())
+    if(!is_full() && c)
     {
         if(c == '\n')
         {
@@ -154,13 +149,15 @@ push(char16_t  c) noexcept
         }
 
       else
-        if(c)
+        if(m_current->current != m_current->end)
         {
+//printf("%s\n",gbstd::utf8_encoder(c).codes);
+
           *m_current->current++ = c;
 
             if(m_current->current == m_current->end)
             {
-              m_current = m_current->next;
+              m_current = (m_current == m_last)? nullptr:m_current->next;
             }
         }
     }

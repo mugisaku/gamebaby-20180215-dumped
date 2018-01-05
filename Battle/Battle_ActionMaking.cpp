@@ -81,6 +81,8 @@ void
 terminate_action_making() noexcept
 {
   sys::root_task.erase(menu_window);
+
+  menu_window.reset_cursor();
 }
 
 

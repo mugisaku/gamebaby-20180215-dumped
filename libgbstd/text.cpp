@@ -24,9 +24,18 @@ make_text(const char*  fmt, ...) noexcept
   va_list  ap;
   va_start(ap,fmt);
 
-  auto  n = vsnprintf(buffer,sizeof(buffer),fmt,ap);
+  auto  sv = make_text_with_va_list(fmt,ap);
 
   va_end(ap);
+
+  return sv;
+}
+
+
+std::string_view
+make_text_with_va_list(const char*  fmt, va_list  ap) noexcept
+{
+  auto  n = vsnprintf(buffer,sizeof(buffer),fmt,ap);
 
     if(n >= buffer_size)
     {

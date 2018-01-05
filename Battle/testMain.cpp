@@ -241,10 +241,12 @@ main(int  argc, char**  argv)
 
   SDL_ShowCursor(SDL_DISABLE);
 
-  window = SDL_CreateWindow("GAME BABY - " __DATE__,SDL_WINDOWPOS_CENTERED,
-                                                    SDL_WINDOWPOS_CENTERED,
-                                                    screen::width*2,
-                                                    screen::height*2,0);
+  window = SDL_CreateWindow("GAME BABY - " __DATE__,
+0,0,
+//                            SDL_WINDOWPOS_CENTERED,
+//                            SDL_WINDOWPOS_CENTERED,
+                            screen::width*2,
+                            screen::height*2,0);
 
   surface = SDL_GetWindowSurface(window);
 

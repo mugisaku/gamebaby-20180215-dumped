@@ -10,6 +10,7 @@ to_effect(const gbdn::string&  s) noexcept
        if(s == std::string_view("null"  )){return EffectKind::null;}
   else if(s == std::string_view("hp_damage")){return EffectKind::hp_damage;}
   else if(s == std::string_view("hp_recover")){return EffectKind::hp_recover;}
+  else {printf("%sというEffectKindはない\n",s.get_data());}
 
   return EffectKind::null;
 }
@@ -21,6 +22,7 @@ to_action(const gbdn::string&  s) noexcept
        if(s == std::string_view("null"  )){return ActionKind::null;}
   else if(s == std::string_view("attack")){return ActionKind::attack;}
   else if(s == std::string_view("use")){return ActionKind::use;}
+  else {printf("%sというActionKindはない\n",s.get_data());}
 
   return ActionKind::null;
 }

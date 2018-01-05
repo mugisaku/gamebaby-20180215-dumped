@@ -29,6 +29,26 @@ load(std::string_view  name, const gbdn::list&  ls)
 }
 
 
+namespace{
+bool
+refresh(BattleCommand&  cmd) noexcept
+{
+    for(auto&  src: ro::command_table)
+    {
+        if(src.get_name() == cmd.get_name())
+        {
+          cmd = src;
+
+          return true;
+        }
+    }
+
+
+  return false;
+}
+}
+
+
 void
 PlayerBase::
 refresh_command_table()
@@ -37,14 +57,9 @@ refresh_command_table()
     {
         if(dst.get_name().size())
         {
-            for(auto&  src: ro::command_table)
+            if(!refresh(dst))
             {
-                if(src.get_name() == dst.get_name())
-                {
-                  dst = src;
-
-                  break;
-                }
+              printf("%sは更新されなかった\n",dst.get_name().data());
             }
         }
     }

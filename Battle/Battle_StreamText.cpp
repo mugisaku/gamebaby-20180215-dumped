@@ -115,6 +115,8 @@ rect_of_versatile_window(0,160,8*(cols+2),16*(rows+1));
 void
 clear_stream_text() noexcept
 {
+  sys::text_buffer.reset();
+
   text_roll.reset();
 }
 

@@ -14,24 +14,24 @@
 class
 NameBuffer
 {
-  char16_t  data[8] = {0};
+  char16_t  m_data[8] = {0};
 
-  uint16_t  length=0;
+  uint16_t  m_length=0;
 
 public:
-  const char16_t*  get_data() const noexcept{return data;}
+  const char16_t*  get_data() const noexcept{return m_data;}
 
-  uint16_t  get_length() const noexcept{return length;}
+  uint16_t  get_length() const noexcept{return m_length;}
 
   void  clear() noexcept
   {
-    data[0] = 0;
+    m_data[0] = 0;
 
-    length = 0;
+    m_length = 0;
   }
 
-  void  push(char16_t  c) noexcept{data[  length++] = c;}
-  void   pop(           ) noexcept{data[--length  ] = 0;}
+  void  push(char16_t  c) noexcept{m_data[  m_length++] = c;}
+  void   pop(           ) noexcept{m_data[--m_length  ] = 0;}
 
   std::string  to_string() const noexcept
   {
@@ -71,16 +71,6 @@ constexpr int  phantom_flag = 0x0800;
 constexpr int   sacred_flag = 0x1000;
 constexpr int    flyer_flag = 0x2000;
 constexpr int   zombie_flag = 0x4000;
-
-
-class
-Compoint
-{
-  int  base_value;
-  int  add0_value;
-  int  add1_value;
-
-};
 
 
 class

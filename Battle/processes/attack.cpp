@@ -1,5 +1,4 @@
 #include"Battle.hpp"
-#include<functional>
 
 
 
@@ -56,30 +55,12 @@ get_result_of_attack(Player&  actor, Player&  target) noexcept
 }
 
 
-std::initializer_list<Process>
-attack_process_list =
+Process
+attack_process = [](Player&  actor, const BattleCommand&  command, Player&  target) noexcept
 {
-[](Player&  actor, const BattleCommand&  command, Player&  target) noexcept
-{
-  sys::text_buffer.push(gbstd::make_text("%sは　%sで",actor.get_name().data(),command.get_name().data()));
-  sys::text_buffer.push(gbstd::make_text("%sに こうげき！",target.get_name().data()));
+  sys::push_text("%sは　%sで",actor.get_name().data(),command.get_name().data());
+  sys::push_text("%sに こうげき！",target.get_name().data());
   gbstd::playworks::push(nullptr,playwork_of_stream_text);
-},
-[](Player&  actor, const BattleCommand&  command, Player&  target) noexcept
-{
-  auto  res = get_result_of_attack(actor,target);
-
-  sys::text_buffer.push(gbstd::make_text("%dかいヒット",res.hit_count));
-  sys::text_buffer.push(gbstd::make_text("%dダメージを　あたえた",res.damage_point));
-  gbstd::playworks::push(nullptr,playwork_of_stream_text);
-
-  target.receive_hp_damage(res.damage_point);
-
-    if(!target.get_hp())
-    {
-      sys::text_buffer.push(gbstd::make_text("%sは　たおれた",target.get_name().data()));
-    }
-},
 };
 
 

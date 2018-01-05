@@ -22,7 +22,7 @@ command:{
       weight:0
     target:self
     action:use
-    effect:hp_revover
+    effect:hp_recover
   }
 
   "てつのゆみや":{
@@ -50,7 +50,7 @@ enemy:{
           agility:12
           defense:4
         intellect:0
-               hp:130
+               hp:10
                mp:0
     command_table:{
       "たいあたり"

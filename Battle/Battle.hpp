@@ -15,20 +15,6 @@
 using Process = void  (*)(Player&  actor, const BattleCommand&  command, Player&  target) noexcept;
 
 
-struct
-ProcessList
-{
-  Process  m_begin;
-  Process  m_end;
-
-public:
-  ProcessList(std::initializer_list<Process>  ls) noexcept:
-  m_begin(*ls.begin()),
-  m_end(*ls.end()){}
-
-};
-
-
 extern const gbstd::rectangle
 rect_of_versatile_window;
 

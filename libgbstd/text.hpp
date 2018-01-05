@@ -13,6 +13,7 @@ namespace texts{
 
 
 std::string_view  make_text(const char*  fmt, ...) noexcept;
+std::string_view  make_text_with_va_list(const char*  fmt, va_list  ap) noexcept;
 
 const char*  get_string(std::string_view  sv) noexcept;
 
@@ -31,7 +32,12 @@ text_buffer
 public:
   text_buffer() noexcept{}
   text_buffer(size_t  length) noexcept{resize(length);}
+  text_buffer(const text_buffer&   rhs) noexcept=delete;
+  text_buffer(      text_buffer&&  rhs) noexcept=delete;
  ~text_buffer(){clear();}
+
+  text_buffer&  operator=(const text_buffer&   rhs) noexcept=delete;
+  text_buffer&  operator=(      text_buffer&&  rhs) noexcept=delete;
 
   void  clear() noexcept;
   void  reset() noexcept;
@@ -43,6 +49,9 @@ public:
   void  push(std::string_view  sv, bool  with_newline=true);
 
   char16_t  pop() noexcept;
+
+  const char*  begin() const noexcept{return m_decoder.get_pointer();}
+  const char*    end() const noexcept{return m_decoder.get_end();}
 
 };
 
@@ -64,7 +73,7 @@ public:
     const line*  m_line;
 
   public:
-    iterator(const line*  ln=nullptr) noexcept: m_line(ln){}
+    iterator(const line*  line=nullptr) noexcept: m_line(line){}
 
     std::u16string_view  operator*() const noexcept;
 
@@ -91,7 +100,12 @@ private:
 public:
   text_roll(                      ) noexcept{}
   text_roll(int  col_n, int  row_n) noexcept{resize(col_n,row_n);}
+  text_roll(const text_roll&   rhs) noexcept=delete;
+  text_roll(      text_roll&&  rhs) noexcept=delete;
  ~text_roll(){clear();}
+
+  text_roll&  operator=(const text_roll&   rhs) noexcept=delete;
+  text_roll&  operator=(      text_roll&&  rhs) noexcept=delete;
 
   int  get_number_of_columns() const noexcept{return m_number_of_columns;}
   int  get_number_of_rows() const noexcept{return m_number_of_rows;}
@@ -118,6 +132,7 @@ public:
 
 
 using texts::make_text;
+using texts::make_text_with_va_list;
 using texts::get_string;
 using texts::text_buffer;
 using texts::text_roll;
