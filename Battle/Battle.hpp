@@ -12,9 +12,6 @@
 #include<initializer_list>
 
 
-using Process = void  (*)(Player&  actor, const BattleCommand&  command, Player&  target) noexcept;
-
-
 extern const gbstd::rectangle
 rect_of_versatile_window;
 

@@ -5,6 +5,7 @@
 #include"BattlePlayerBase.hpp"
 #include"BattleEnemy.hpp"
 #include"BattleEnemyParty.hpp"
+#include"libgbstd/entry_list.hpp"
 #include<vector>
 
 
@@ -23,8 +24,7 @@ extern const std::vector<EnemyParty>&
 enemy_party_table;
 
 
-extern const std::vector<BattleCommand>&
-command_table;
+const BattleCommand&  get_command(std::string_view  name) noexcept;
 
 
 void  load() noexcept;

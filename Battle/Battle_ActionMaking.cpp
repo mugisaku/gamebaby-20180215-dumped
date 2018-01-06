@@ -11,7 +11,12 @@ render(gbstd::image&  dst, gbstd::point  pt, int  index)
 {
   auto&  cmdtbl = get_current_player().get_command_table();
 
-  dst.print(cmdtbl.commands[index].get_name(),pt,sys::font);
+  auto  cmd = cmdtbl.commands[index];
+
+    if(cmd)
+    {
+      dst.print(cmd->get_name(),pt,sys::font);
+    }
 }
 
 
@@ -51,9 +56,9 @@ step(uint32_t&  pc) noexcept
     {
       get_current_player().set_current_command(menu_window.get_item_index());
 
-      auto&  cmd = get_current_player().get_current_command();
+      auto  cmd = get_current_player().get_current_command();
 
-        if(cmd.get_effect_kind() != EffectKind::null)
+        if(cmd)
         {
           gbstd::playworks::pop(1);
         }

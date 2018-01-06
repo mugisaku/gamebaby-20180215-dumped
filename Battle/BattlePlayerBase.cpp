@@ -18,50 +18,13 @@ load(std::string_view  name, const gbdn::list&  ls)
   m_mp            = ls.get_named_value("mp").get_integer();
 
 
- auto  cmd = gbstd::make_rw(m_command_table.commands[0]);
+ auto  cmd = &m_command_table.commands[0];
 
     for(auto&  v: ls.get_named_value("command_table").get_list())
     {
       auto&  s = v.get_string();
 
-      cmd++->set_name(std::string_view(s.get_data(),s.get_length()));
-    }
-}
-
-
-namespace{
-bool
-refresh(BattleCommand&  cmd) noexcept
-{
-    for(auto&  src: ro::command_table)
-    {
-        if(src.get_name() == cmd.get_name())
-        {
-          cmd = src;
-
-          return true;
-        }
-    }
-
-
-  return false;
-}
-}
-
-
-void
-PlayerBase::
-refresh_command_table()
-{
-    for(auto&  dst: m_command_table.commands)
-    {
-        if(dst.get_name().size())
-        {
-            if(!refresh(dst))
-            {
-              printf("%sは更新されなかった\n",dst.get_name().data());
-            }
-        }
+      *cmd++ = &ro::get_command(s.get_view());
     }
 }
 

@@ -25,6 +25,14 @@ command:{
     effect:hp_recover
   }
 
+  'ただのみず':{
+    strength:80
+      weight:0
+    target:self
+    action:use
+    effect:drink_ordinary_water
+  }
+
   "てつのゆみや":{
     strength:80
        weight:14
@@ -78,6 +86,7 @@ class:{
     command_table:{
       "はがねのつるぎ"
       "いやしのみず"
+      "ただのみず"
     }
   }
 

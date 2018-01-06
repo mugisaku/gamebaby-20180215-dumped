@@ -6,6 +6,24 @@
 #include<string>
 
 
+
+
+class Player;
+class BattleCommand;
+
+
+using ProcessCallback = void  (*)(Player&  actor, const BattleCommand&  command, Player&  target) noexcept;
+
+struct
+Process
+{
+  std::string_view  name;
+
+  ProcessCallback  callback;
+
+};
+
+
 enum class
 TargetKind
 {
@@ -20,34 +38,6 @@ TargetKind
 };
 
 
-enum class
-ActionKind
-{
-  null,
-  attack,
-  use,
-
-};
-
-
-enum class
-EffectKind
-{
-  null,
-  hp_damage,
-  hp_recover,
-
-};
-
-
-enum class
-AbilityKind
-{
-  null,
-  
-};
-
-
 class
 BattleCommand
 {
@@ -57,12 +47,13 @@ BattleCommand
   int    m_weight=0;
 
   TargetKind  m_target_kind=TargetKind::null;
-  ActionKind  m_action_kind=ActionKind::null;
-  EffectKind  m_effect_kind=EffectKind::null;
+
+  const Process*  m_action_process=nullptr;
+  const Process*  m_effect_process=nullptr;
 
 public:
   BattleCommand() noexcept{}
-  BattleCommand(std::string_view  name, const gbdn::list&  ls){load(name,ls);}
+  BattleCommand(const gbdn::list&  ls){load(ls);}
 
   void                set_name(std::string_view  name)       noexcept{       m_name = name;}
   const std::string&  get_name(                      ) const noexcept{return m_name       ;}
@@ -71,10 +62,11 @@ public:
   int  get_weight() const noexcept{return m_weight;}
 
   TargetKind  get_target_kind() const noexcept{return m_target_kind;}
-  ActionKind  get_action_kind() const noexcept{return m_action_kind;}
-  EffectKind  get_effect_kind() const noexcept{return m_effect_kind;}
 
-  void  load(std::string_view  name, const gbdn::list&  ls);
+  const Process*  get_action_process() const noexcept{return m_action_process;}
+  const Process*  get_effect_process() const noexcept{return m_effect_process;}
+
+  void  load(const gbdn::list&  ls);
 
 };
 
@@ -84,7 +76,7 @@ CommandTable
 {
   static constexpr int  number_of_commands = 4;
 
-  BattleCommand  commands[number_of_commands];
+  const BattleCommand*  commands[number_of_commands] = {0};
 
 };
 

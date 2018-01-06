@@ -4,12 +4,6 @@
 
 
 
-extern Process      attack_process;
-extern Process         use_process;
-extern Process   hp_damage_process;
-extern Process  hp_recover_process;
-
-
 namespace{
 
 
@@ -26,18 +20,18 @@ BattleTeam::PlayerList::iterator  target_it    ;
 BattleTeam::PlayerList::iterator  target_it_end;
 
 
-Process  action_process;
-Process  effect_process;
+const BattleCommand*
+command;
 
 
 void
 initialize() noexcept
 {
-  auto&  cmd = actor.get().get_current_command();
+  command = actor.get().get_current_command();
 
   target_player_list.resize(0);
 
-    switch(cmd.get_target_kind())
+    switch(command->get_target_kind())
     {
   case(TargetKind::null):
       break;
@@ -65,23 +59,6 @@ initialize() noexcept
 
   target_it     = target_player_list.begin();
   target_it_end = target_player_list.end();
-
-    switch(cmd.get_action_kind())
-    {
-  case(ActionKind::attack): action_process = attack_process;break;
-  case(ActionKind::use   ): action_process =    use_process;break;
-  case(ActionKind::null):
-      break;
-    }
-
-
-    switch(cmd.get_effect_kind())
-    {
-  case(EffectKind::hp_damage ): effect_process =  hp_damage_process;break;
-  case(EffectKind::hp_recover): effect_process = hp_recover_process;break;
-  case(EffectKind::null):
-      break;
-    }
 }
 
 
@@ -107,22 +84,22 @@ step(uint32_t&  pc) noexcept
         }
       break;
   case(2):
-        if(action_process)
+        if(auto  proc = command->get_action_process();  proc)
         {
           auto&  pl = actor.get();
 
-          action_process(pl,pl.get_current_command(),*target_it);
+          proc->callback(pl,*command,*target_it);
         }
 
 
       ++pc;
       break;
   case(3):
-        if(effect_process)
+        if(auto  proc = command->get_effect_process();  proc)
         {
           auto&  pl = actor.get();
 
-          effect_process(pl,pl.get_current_command(),*target_it);
+          proc->callback(pl,*command,*target_it);
         }
 
 

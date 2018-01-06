@@ -12,8 +12,10 @@ std::vector<PlayerBase>
 player_base_table_entity;
 
 
-std::vector<BattleCommand>
-command_table_entity;
+constexpr size_t  max_number_of_commands = 90;
+
+gbstd::entry_list<BattleCommand,max_number_of_commands>
+command_table;
 
 
 std::vector<Enemy>
@@ -45,6 +47,29 @@ read(const gbdn::list&  ls, std::vector<T>&  tbl)
 }
 
 
+template<typename  T, size_t  N>
+void
+read(const gbdn::list&  ls, gbstd::entry_list<T,N>&  tbl)
+{
+    for(auto&  v: ls)
+    {
+        if(v.is_string())
+        {
+          auto&  s = v.get_string();
+
+          auto  vv = s.get_value();
+
+            if(vv && vv->is_list())
+            {
+              auto&  e = tbl[s.get_view()];
+
+              e.load(vv->get_list());
+            }
+        }
+    }
+}
+
+
 }
 
 
@@ -60,8 +85,12 @@ const std::vector<EnemyParty>&
 enemy_party_table = enemy_party_table_entity;
 
 
-const std::vector<BattleCommand>&
-command_table = command_table_entity;
+const BattleCommand&
+get_command(std::string_view  name) noexcept
+{
+  return command_table[name];
+}
+
 
 
 void
@@ -113,7 +142,7 @@ load() noexcept
               else
                 if((s == std::string_view("command")) && subv && subv->is_list())
                 {
-                  read(subv->get_list(),command_table_entity);
+                  read(subv->get_list(),command_table);
                 }
             }
         }
@@ -123,18 +152,6 @@ load() noexcept
     catch(gbdn::value_was_not_found&  not_f)
     {
       printf("%s is not found.\n",not_f.name);
-    }
-
-
-    for(auto&  ene: enemy_table_entity)
-    {
-      ene.refresh_command_table();
-    }
-
-
-    for(auto&  plb: player_base_table_entity)
-    {
-      plb.refresh_command_table();
     }
 }
 

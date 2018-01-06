@@ -109,8 +109,6 @@ public:
 
   const CommandTable&  get_command_table() const noexcept{return m_command_table;}
 
-  void  refresh_command_table();
-
   void  load(std::string_view  name, const gbdn::list&  ls);
 
   void  print() const noexcept;

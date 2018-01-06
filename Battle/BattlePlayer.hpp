@@ -92,8 +92,8 @@ public:
   gbstd::rw_ptr<BattleTeam>  get_own_team()      const noexcept{return      m_own_team;}
   gbstd::rw_ptr<BattleTeam>  get_opposite_team() const noexcept{return m_opposite_team;}
 
-  void  set_current_command(int  i) noexcept{m_current_command_index = i;}
-  const BattleCommand&  get_current_command() const noexcept{return m_command_table.commands[m_current_command_index];}
+  void                  set_current_command(int  i) noexcept{m_current_command_index = i;}
+  const BattleCommand*  get_current_command() const noexcept{return m_command_table.commands[m_current_command_index];}
 
   void  set_operation_style(OperationStyle  op) noexcept{m_operation_style = op;}
   OperationStyle  get_operation_style() const noexcept{return m_operation_style;}
