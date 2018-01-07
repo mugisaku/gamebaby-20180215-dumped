@@ -24,7 +24,7 @@ extern const std::vector<EnemyParty>&
 enemy_party_table;
 
 
-const BattleCommand&  get_command(std::string_view  name) noexcept;
+const BattleCommand&  get_command(gbstd::string_view  name) noexcept;
 
 
 void  load() noexcept;

@@ -19,6 +19,7 @@ set(SOURCES
 
 
 include_directories(./)
+include_directories(../)
 add_library("ty" ${SOURCES})
 add_executable("testTY" testTY.cpp)
 target_link_libraries("testTY" "ty")

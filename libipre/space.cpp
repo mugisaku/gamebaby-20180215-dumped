@@ -11,7 +11,7 @@ namespace ipre_types{
 
 const ty::type_decl*
 space::
-find_type_decl(std::string_view  name) const noexcept
+find_type_decl(gbstd::string_view  name) const noexcept
 {
     for(auto&  decl: m_type_decl_list)
     {
@@ -28,7 +28,7 @@ find_type_decl(std::string_view  name) const noexcept
 
 const ty::var_decl*
 space::
-find_var_decl(std::string_view  name) const noexcept
+find_var_decl(gbstd::string_view  name) const noexcept
 {
     for(auto&  decl: m_var_decl_list)
     {

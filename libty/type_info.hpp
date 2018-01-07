@@ -5,8 +5,7 @@
 #include<cstddef>
 #include<cstdint>
 #include<cstdio>
-#include<string>
-#include<string_view>
+#include"libgbstd/string.hpp"
 #include"print.hpp"
 
 
@@ -37,8 +36,8 @@ type_info
 
   void  unrefer() noexcept;
 
-  type_info(std::string_view  id, type_kind  kind, size_t  size) noexcept;
-  type_info(std::string_view  id, type_kind  kind, const type_info&  source) noexcept;
+  type_info(gbstd::string_view  id, type_kind  kind, size_t  size) noexcept;
+  type_info(gbstd::string_view  id, type_kind  kind, const type_info&  source) noexcept;
   type_info(data*  new_data) noexcept: m_data(new_data){}
   type_info(array_def&&  def) noexcept;
   type_info(enum_def&&  def) noexcept;
@@ -74,7 +73,7 @@ public:
   type_info  remove_rvalue_reference() const noexcept;
 
 
-  const std::string&  get_id() const noexcept;
+  const gbstd::string&  get_id() const noexcept;
 
   size_t   get_size() const noexcept;
   size_t  get_align() const noexcept;

@@ -2,7 +2,7 @@
 #define GMBB_UNICODE_HPP
 
 
-#include<string>
+#include"libgbstd/string.hpp"
 #include<cstdint>
 #include<cstddef>
 
@@ -19,9 +19,9 @@ utf8_decoder
 
 public:
   utf8_decoder(                    ) noexcept{}
-  utf8_decoder(std::string_view  sv) noexcept{*this = sv;}
+  utf8_decoder(gbstd::string_view  sv) noexcept{*this = sv;}
 
-  utf8_decoder&  operator=(std::string_view  sv) noexcept
+  utf8_decoder&  operator=(gbstd::string_view  sv) noexcept
   {
     m_pointer = sv.data();
     m_end     = sv.data()+sv.size();
@@ -39,10 +39,7 @@ public:
 };
 
 
-size_t  u8slen(std::string_view  sv) noexcept;
-
-std::u16string  to_u16string(std::string_view     sv) noexcept;
-std::string     to_string(std::u16string_view  u16sv) noexcept;
+size_t  u8slen(gbstd::string_view  sv) noexcept;
 
 
 struct
@@ -63,8 +60,6 @@ utf8_encoder
 using unicodes::utf8_decoder;
 using unicodes::utf8_encoder;
 using unicodes::u8slen;
-using unicodes::to_u16string;
-using unicodes::to_string;
 
 
 }

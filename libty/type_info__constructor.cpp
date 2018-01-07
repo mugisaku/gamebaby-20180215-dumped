@@ -1,5 +1,6 @@
 #include"type_info_PRIVATE.hpp"
 #include<new>
+#include<string>
 
 
 
@@ -10,7 +11,7 @@ namespace ty_types{
 
 
 type_info::
-type_info(std::string_view  id, type_kind  kind, size_t  size) noexcept:
+type_info(gbstd::string_view  id, type_kind  kind, size_t  size) noexcept:
 m_data(new data)
 {
   m_data->m_id   =   id;
@@ -21,7 +22,7 @@ m_data(new data)
 
 
 type_info::
-type_info(std::string_view  id, type_kind  kind, const type_info&  source) noexcept:
+type_info(gbstd::string_view  id, type_kind  kind, const type_info&  source) noexcept:
 m_data(new data)
 {
   m_data->m_id   =   id;
@@ -35,8 +36,10 @@ type_info::
 type_info(array_def&&  def) noexcept:
 m_data(new data)
 {
+  auto  s = std::to_string(def.get_number_of_elements());
+
   m_data->m_id   = "a";
-  m_data->m_id  += std::to_string(def.get_number_of_elements());
+  m_data->m_id  += s.data();
   m_data->m_kind = type_kind::array;
 
   new(&m_data->m_set.arr) array_def(std::move(def));

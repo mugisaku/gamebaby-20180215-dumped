@@ -8,7 +8,7 @@ namespace ty_types{
 
 void
 enum_def::
-append(std::string_view  name) noexcept
+append(gbstd::string_view  name) noexcept
 {
   m_enumerator_list.emplace_back(name,m_last_value++);
 }
@@ -16,7 +16,7 @@ append(std::string_view  name) noexcept
 
 void
 enum_def::
-append(std::string_view  name, int  value) noexcept
+append(gbstd::string_view  name, int  value) noexcept
 {
   m_last_value = value;
 

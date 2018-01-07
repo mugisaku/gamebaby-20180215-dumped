@@ -9,7 +9,7 @@ namespace ty_types{
 
 
 type_decl::
-type_decl(const type_info&  type_info, std::string_view  name) noexcept:
+type_decl(const type_info&  type_info, gbstd::string_view  name) noexcept:
 m_data(new data)
 {
   m_data->m_type_info = type_info;
@@ -78,7 +78,7 @@ unrefer() noexcept
 
 const type_info&  type_decl::get_info() const noexcept{return m_data->m_type_info;}
 
-const std::string&  type_decl::get_name() const noexcept{return m_data->m_name;}
+const gbstd::string&  type_decl::get_name() const noexcept{return m_data->m_name;}
 
 
 void

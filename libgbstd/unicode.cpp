@@ -1,4 +1,5 @@
 #include"unicode.hpp"
+#include<cstdio>
 
 
 
@@ -27,7 +28,7 @@ utf8_byte_number(unsigned char  c) noexcept
 
 
 size_t
-u8slen(std::string_view  sv) noexcept
+u8slen(gbstd::string_view  sv) noexcept
 {
   size_t  len = 0;
 
@@ -108,40 +109,6 @@ operator()() noexcept
   m_pointer += n;
 
   return c;
-}
-
-
-
-
-std::string
-to_string(std::u16string_view  u16sv) noexcept
-{
-  std::string  s;
-
-    for(auto  c: u16sv)
-    {
-      s += utf8_encoder(c).codes;
-    }
-
-
-  return std::move(s);
-}
-
-
-std::u16string
-to_u16string(std::string_view  sv) noexcept
-{
-  std::u16string  u16s;
-
-  utf8_decoder  dec(sv);
-
-    while(dec)
-    {
-      u16s += dec();
-    }
-
-
-  return std::move(u16s);
 }
 
 

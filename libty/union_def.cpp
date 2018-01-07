@@ -9,7 +9,7 @@ namespace ty_types{
 
 void
 union_def::
-append(const type_decl&  td, std::string  name) noexcept
+append(const type_decl&  td, gbstd::string  name) noexcept
 {
   m_decl_list.emplace_back(td,name);
 

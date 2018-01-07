@@ -53,7 +53,7 @@ print(char16_t  c, point  pt, const font&  fnt, ro_ptr<color_index>  coloring) n
 
 void
 image::
-print(std::string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring) noexcept
+print(gbstd::string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring) noexcept
 {
   utf8_decoder  dec(sv);
 
@@ -70,7 +70,7 @@ print(std::string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index>  co
 
 void
 image::
-print(std::u16string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring) noexcept
+print(gbstd::u16string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring) noexcept
 {
     for(auto  c: sv)
     {

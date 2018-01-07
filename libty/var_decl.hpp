@@ -16,16 +16,16 @@ var_decl
 {
   type_decl  m_type_decl;
 
-  std::string  m_name;
+  gbstd::string  m_name;
 
 public:
-  var_decl(const type_decl&  type_decl, std::string_view  name) noexcept:
+  var_decl(const type_decl&  type_decl, gbstd::string_view  name) noexcept:
   m_type_decl(type_decl),
   m_name(name){}
 
   const type_decl&  get_type_decl() const noexcept{return m_type_decl;}
 
-  const std::string&  get_name() const noexcept{return m_name;}
+  const gbstd::string&  get_name() const noexcept{return m_name;}
 
   void  print(FILE*  f) const noexcept
   {

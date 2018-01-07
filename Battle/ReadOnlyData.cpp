@@ -86,7 +86,7 @@ enemy_party_table = enemy_party_table_entity;
 
 
 const BattleCommand&
-get_command(std::string_view  name) noexcept
+get_command(gbstd::string_view  name) noexcept
 {
   return command_table[name];
 }
@@ -122,25 +122,25 @@ load() noexcept
 
               auto  subv = s.get_value();
 
-                if((s == std::string_view("class")) && subv && subv->is_list())
+                if((s == gbstd::string_view("class")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),player_base_table_entity);
                 }
 
               else
-                if((s == std::string_view("enemy")) && subv && subv->is_list())
+                if((s == gbstd::string_view("enemy")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),enemy_table_entity);
                 }
 
               else
-                if((s == std::string_view("enemy_party")) && subv && subv->is_list())
+                if((s == gbstd::string_view("enemy_party")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),enemy_party_table_entity);
                 }
 
               else
-                if((s == std::string_view("command")) && subv && subv->is_list())
+                if((s == gbstd::string_view("command")) && subv && subv->is_list())
                 {
                   read(subv->get_list(),command_table);
                 }

@@ -6,7 +6,7 @@
 
 void
 EnemyParty::
-load(std::string_view  name, const gbdn::list&  ls)
+load(gbstd::string_view  name, const gbdn::list&  ls)
 {
   m_name = name;
 
@@ -18,7 +18,7 @@ load(std::string_view  name, const gbdn::list&  ls)
             {
               auto&  name = ene.get_name();
 
-              std::string_view  sv(name.data(),name.size());
+              gbstd::string_view  sv(name.data(),name.size());
 
                 if(v.get_string() == sv)
                 {

@@ -2,8 +2,6 @@
 #define union_def_HPP
 
 
-#include<string>
-#include<string_view>
 #include<cstdint>
 #include<vector>
 #include"var_decl.hpp"
@@ -28,7 +26,7 @@ union_def
 public:
   union_def() noexcept{}
 
-  void  append(const type_decl&  td, std::string  name) noexcept;
+  void  append(const type_decl&  td, gbstd::string  name) noexcept;
 
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}

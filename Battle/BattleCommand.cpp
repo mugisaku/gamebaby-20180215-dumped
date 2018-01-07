@@ -13,20 +13,20 @@ namespace{
 TargetKind
 to_target(const gbdn::string&  s) noexcept
 {
-       if(s == std::string_view("null"                )){return TargetKind::null;}
-  else if(s == std::string_view("self"                )){return TargetKind::self;}
-  else if(s == std::string_view("one_of_own_team"     )){return TargetKind::one_of_own_team;}
-  else if(s == std::string_view("all_of_own_team"     )){return TargetKind::all_of_own_team;}
-  else if(s == std::string_view("one_of_opposite_team")){return TargetKind::one_of_opposite_team;}
-  else if(s == std::string_view("all_of_opposite_team")){return TargetKind::all_of_opposite_team;}
-  else if(s == std::string_view("all_of_both_team"    )){return TargetKind::all_of_both_team;}
+       if(s == gbstd::string_view("null"                )){return TargetKind::null;}
+  else if(s == gbstd::string_view("self"                )){return TargetKind::self;}
+  else if(s == gbstd::string_view("one_of_own_team"     )){return TargetKind::one_of_own_team;}
+  else if(s == gbstd::string_view("all_of_own_team"     )){return TargetKind::all_of_own_team;}
+  else if(s == gbstd::string_view("one_of_opposite_team")){return TargetKind::one_of_opposite_team;}
+  else if(s == gbstd::string_view("all_of_opposite_team")){return TargetKind::all_of_opposite_team;}
+  else if(s == gbstd::string_view("all_of_both_team"    )){return TargetKind::all_of_both_team;}
 
   return TargetKind::null;
 }
 
 
 const Process&
-get_process(std::string_view  name) noexcept
+get_process(gbstd::string_view  name) noexcept
 {
     for(auto&  proc: process_list)
     {

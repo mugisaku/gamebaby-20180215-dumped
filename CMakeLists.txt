@@ -32,7 +32,7 @@ set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS} -O0 -g")
 if(EMSC)
   set(EXECUTABLE_EXTENSION ".html")
   set(CMAKE_CXX_COMPILER  em++)
-  set(CMAKE_CXX_FLAGS "-std=c++14 -Werror -Wno-switch -O2")
+  set(CMAKE_CXX_FLAGS "-std=c++1z -Werror -Wno-switch -O2")
   set(CMAKE_CXX_FLAGS_DEBUG "")
   set(CMAKE_CXX_LINK_FLAGS  "${CMAKE_CXX_LINK_FLAGS} -s USE_ZLIB=1 -s USE_LIBPNG=1 -s USE_SDL=2 --embed-file image.png --embed-file script.gamn --embed-file large_font.gz --embed-file small_font.gz")
 endif()
@@ -99,9 +99,9 @@ target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "battle" "gbdn" "tok" 
 
 
 if(EMSC)
-add_custom_target(bincopy ALL COMMAND cp ../bin/image.png ../script.gamn /usr/local/share/gmbb/large_font.gz /usr/local/share/gmbb/small_font.gz ./)
-add_dependencies("testMain${EXECUTABLE_EXTENSION}" bincopy)
-set_target_properties("testMain${EXECUTABLE_EXTENSION}"  PROPERTIES LINK_FLAGS "--shell-file ../shell.html")
+add_custom_target(bincopy ALL COMMAND cp ../bin/image.png ../battle.gb.txt /usr/local/share/gmbb/large_font.gz /usr/local/share/gmbb/small_font.gz ./)
+add_dependencies("testBattle${EXECUTABLE_EXTENSION}" bincopy)
+set_target_properties("testBattle${EXECUTABLE_EXTENSION}"  PROPERTIES LINK_FLAGS "--shell-file ../shell.html")
 endif()
 
 

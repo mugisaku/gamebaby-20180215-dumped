@@ -2,10 +2,10 @@
 #define GMBB_task_HPP
 
 
-#include"image.hpp"
-#include"rw_ptr.hpp"
-#include"ro_ptr.hpp"
-#include<string>
+#include"libgbstd/image.hpp"
+#include"libgbstd/rw_ptr.hpp"
+#include"libgbstd/ro_ptr.hpp"
+#include"libgbstd/string.hpp"
 
 
 namespace gbstd{
@@ -18,7 +18,7 @@ class group_task;
 class
 task
 {
-  std::string  m_name;
+  gbstd::string  m_name;
 
   point  m_base_point;
 
@@ -31,8 +31,8 @@ public:
   task(         ) noexcept{}
   task(point  pt) noexcept: m_base_point(pt){}
 
-  void                set_name(std::string_view  name)       noexcept{       m_name = name;}
-  std::string const&  get_name(                      ) const noexcept{return m_name       ;}
+  void                  set_name(gbstd::string_view  name)       noexcept{       m_name = name;}
+  gbstd::string const&  get_name(                        ) const noexcept{return m_name       ;}
 
   void   set_base_point(point  pt)       noexcept{       m_base_point = pt;}
   point  get_base_point(         ) const noexcept{return m_base_point     ;}
@@ -86,7 +86,7 @@ public:
 
   void  render(image&  dst, point  offset) const noexcept override;
 
-  rw_ptr<task>  find_by_name(std::string_view  name) const noexcept;
+  rw_ptr<task>  find_by_name(gbstd::string_view  name) const noexcept;
 
   bool  is_group() const noexcept override{return true;}
 

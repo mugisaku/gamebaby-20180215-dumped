@@ -25,7 +25,7 @@ step(uint32_t&  pc) noexcept
 
           h = tmp::hero;
 
-          h.set_name(tmp::name_buffer.to_string());
+          h.set_name(tmp::name_buffer.to_string().data());
 
           sav::party.members[0] = gbstd::make_rw(h);
 

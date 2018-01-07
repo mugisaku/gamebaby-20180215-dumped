@@ -14,7 +14,7 @@ namespace binary_streams{
 
 bool
 binary_stream::
-set_content_from_file(std::string_view  path) noexcept
+set_content_from_file(gbstd::string_view  path) noexcept
 {
   m_content.clear();
 
@@ -78,7 +78,7 @@ set_content_from_file(std::string_view  path) noexcept
 
 void
 binary_stream::
-output_content_to_file(std::string_view  path, bool  use_zlib) const noexcept
+output_content_to_file(gbstd::string_view  path, bool  use_zlib) const noexcept
 {
   auto  s = get_string(path);
 

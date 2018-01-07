@@ -18,7 +18,7 @@ char  buffer[buffer_size];
 }
 
 
-std::string_view
+gbstd::string_view
 make_text(const char*  fmt, ...) noexcept
 {
   va_list  ap;
@@ -32,27 +32,27 @@ make_text(const char*  fmt, ...) noexcept
 }
 
 
-std::string_view
+gbstd::string_view
 make_text_with_va_list(const char*  fmt, va_list  ap) noexcept
 {
   auto  n = vsnprintf(buffer,sizeof(buffer),fmt,ap);
 
     if(n >= buffer_size)
     {
-      return std::string_view("バッファが足りない");
+      return gbstd::string_view("バッファが足りない");
     }
 
 
-  return std::string_view(buffer,n);
+  return gbstd::string_view(buffer,n);
 }
 
 
 const char*
-get_string(std::string_view  sv) noexcept
+get_string(gbstd::string_view  sv) noexcept
 {
     if(*(sv.data()+sv.size()))
     {
-      static std::string  s;
+      static gbstd::string  s;
 
       s = sv;
 

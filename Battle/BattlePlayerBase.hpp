@@ -77,7 +77,7 @@ class
 PlayerBase
 {
 protected:
-  std::string  m_name;
+  gbstd::string  m_name;
 
   int  m_body_strength;
   int  m_mind_strength;
@@ -92,11 +92,11 @@ protected:
 
 public:
   PlayerBase() noexcept{}
-  PlayerBase(std::string_view  name, const gbdn::list&  ls){load(name,ls);}
+  PlayerBase(gbstd::string_view  name, const gbdn::list&  ls){load(name,ls);}
 
-  void  set_name(std::string_view  new_name) noexcept{m_name = new_name;}
+  void  set_name(gbstd::string_view  new_name) noexcept{m_name = new_name;}
 
-  const std::string&  get_name() const noexcept{return m_name;}
+  const gbstd::string&  get_name() const noexcept{return m_name;}
 
   int  get_body_strength() const noexcept{return m_body_strength;}
   int  get_mind_strength() const noexcept{return m_mind_strength;}
@@ -109,7 +109,7 @@ public:
 
   const CommandTable&  get_command_table() const noexcept{return m_command_table;}
 
-  void  load(std::string_view  name, const gbdn::list&  ls);
+  void  load(gbstd::string_view  name, const gbdn::list&  ls);
 
   void  print() const noexcept;
 

@@ -51,7 +51,7 @@ operator=(string&&  rhs) noexcept
 
 bool
 string::
-operator==(std::string_view  sv) const noexcept
+operator==(gbstd::string_view  sv) const noexcept
 {
   return (m_length == sv.size()) && (std::strncmp(m_data,sv.data(),m_length) == 0);
 }
@@ -79,7 +79,7 @@ clear() noexcept
 
 void
 string::
-assign(std::string_view  sv, value*  v) noexcept
+assign(gbstd::string_view  sv, value*  v) noexcept
 {
   clear();
 

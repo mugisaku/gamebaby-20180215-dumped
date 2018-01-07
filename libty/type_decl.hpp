@@ -36,7 +36,7 @@ type_decl
 
 public:
   type_decl() noexcept{}
-  type_decl(const type_info&  type_info, std::string_view  name) noexcept;
+  type_decl(const type_info&  type_info, gbstd::string_view  name) noexcept;
   type_decl(const type_decl&   rhs) noexcept{*this = rhs;}
   type_decl(      type_decl&&  rhs) noexcept{*this = std::move(rhs);}
  ~type_decl(){unrefer();}
@@ -51,7 +51,7 @@ public:
 
   const type_info&  get_info() const noexcept;
 
-  const std::string&  get_name() const noexcept;
+  const gbstd::string&  get_name() const noexcept;
 
   void  print(FILE*  f) const noexcept;
 

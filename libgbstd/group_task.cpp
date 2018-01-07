@@ -86,7 +86,7 @@ erase(task&  t) noexcept
 
 rw_ptr<task>
 group_task::
-find_by_name(std::string_view  name) const noexcept
+find_by_name(gbstd::string_view  name) const noexcept
 {
   auto  next = m_first;
 

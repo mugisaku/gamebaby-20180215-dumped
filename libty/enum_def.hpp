@@ -5,8 +5,7 @@
 #include<cstddef>
 #include<cstdint>
 #include<cstdio>
-#include<string>
-#include<string_view>
+#include"libgbstd/string.hpp"
 #include<vector>
 #include"print.hpp"
 
@@ -19,16 +18,16 @@ namespace ty_types{
 class
 enumerator
 {
-  std::string  m_name;
+  gbstd::string  m_name;
 
   int  m_value;
 
 public:
-  enumerator(std::string_view  name, int  value) noexcept:
+  enumerator(gbstd::string_view  name, int  value) noexcept:
   m_name(name),
   m_value(value){}
 
-  const std::string&  get_name() const noexcept{return m_name;}
+  const gbstd::string&  get_name() const noexcept{return m_name;}
 
   int  get_value() const noexcept{return m_value;}
 
@@ -47,8 +46,8 @@ enum_def
 public:
   enum_def() noexcept{}
 
-  void  append(std::string_view  name            ) noexcept;
-  void  append(std::string_view  name, int  value) noexcept;
+  void  append(gbstd::string_view  name            ) noexcept;
+  void  append(gbstd::string_view  name, int  value) noexcept;
 
   size_t   get_size() const noexcept{return 4;}
   size_t  get_align() const noexcept{return 4;}

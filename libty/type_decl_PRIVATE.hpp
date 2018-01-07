@@ -19,7 +19,7 @@ data
 
   type_info  m_type_info;
 
-  std::string  m_name;
+  gbstd::string  m_name;
 
 };
 

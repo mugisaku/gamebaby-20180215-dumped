@@ -43,8 +43,8 @@ seed
 
 
 template<typename  T>
-void
-fill(T  begin, T  end, gbstd::random_number::seed  seed=seed()) noexcept
+inline void
+fill(T  begin, T  end, gbstd::random_number::seed  seed) noexcept
 {
     while(begin != end)
     {

@@ -6,7 +6,7 @@
 
 void
 PlayerBase::
-load(std::string_view  name, const gbdn::list&  ls)
+load(gbstd::string_view  name, const gbdn::list&  ls)
 {
   m_name = name;
   m_body_strength = ls.get_named_value("body_strength").get_integer();

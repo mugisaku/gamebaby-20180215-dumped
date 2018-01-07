@@ -68,7 +68,7 @@ unrefer() noexcept
 }
 
 
-const std::string&  type_info::get_id() const noexcept{return m_data->m_id;}
+const gbstd::string&  type_info::get_id() const noexcept{return m_data->m_id;}
 
 
 template<typename  T>

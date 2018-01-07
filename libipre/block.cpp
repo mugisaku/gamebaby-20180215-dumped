@@ -36,7 +36,7 @@ void
 block::
 read_struct_decl(tok::stream_reader&  r)
 {
-  std::string  name;
+  gbstd::string  name;
 
   r.skip_spaces();
 
@@ -71,9 +71,9 @@ build(tok::stream_reader&  r) noexcept
 
         if(r.is_pointing_identifier())
         {
-          auto&  name = r.read_identifier();
+          auto  name = r.read_identifier();
 
-            if(name == std::string_view("struct"))
+            if(name == gbstd::string_view("struct"))
             {
               read_struct_decl(r);
             }

@@ -1,5 +1,5 @@
 #include"environment.hpp"
-#include<unordered_map>
+#include<vector>
 
 
 
@@ -17,28 +17,30 @@ count_of_report;
 namespace{
 
 
-std::unordered_map<std::string_view,std::string>
-variables;
+//std::vector<gbstd::string_view,gbstd::string>
+//variables;
 
 
 }
 
 
-uint8_t
+int
 fn_keystate;
 
 
 void
-set_value(std::string_view  name, std::string_view  value) noexcept
+set_value(gbstd::string_view  name, gbstd::string_view  value) noexcept
 {
-  variables[name] = std::string(value);
+//  variables[name] = std::string(value);
 }
 
 
-const std::string&
-get_value(std::string_view  name) noexcept
+const gbstd::string&
+get_value(gbstd::string_view  name) noexcept
 {
-  return variables[name];
+static gbstd::string  s;
+//  return variables[0];
+  return s;
 }
 
 

@@ -49,7 +49,7 @@ data
 {
   size_t  m_reference_count=1;
 
-  std::string  m_id;
+  gbstd::string  m_id;
 
   type_kind  m_kind=type_kind::null;
 

@@ -52,7 +52,7 @@ type_info
 type_info::
 add_pointer() const noexcept
 {
-  std::string  new_id("p");
+  gbstd::string  new_id("p");
 
   new_id += get_id();
 
@@ -70,7 +70,7 @@ add_reference() const noexcept
     }
 
 
-  std::string  new_id("r");
+  gbstd::string  new_id("r");
 
   new_id += get_id();
 
@@ -88,7 +88,7 @@ add_rvalue_reference() const noexcept
     }
 
 
-  std::string  new_id("rr");
+  gbstd::string  new_id("rr");
 
   new_id += get_id();
 

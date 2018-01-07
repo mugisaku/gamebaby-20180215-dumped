@@ -3,7 +3,7 @@
 
 
 #include<cstddef>
-#include<string_view>
+#include"libgbstd/string.hpp"
 
 
 namespace gbdn{
@@ -26,7 +26,7 @@ string
 
 public:
   string() noexcept{}
-  string(std::string_view  sv, value*  v=nullptr) noexcept{assign(sv,v);}
+  string(gbstd::string_view  sv, value*  v=nullptr) noexcept{assign(sv,v);}
   string(const string&   rhs) noexcept{*this = rhs;}
   string(      string&&  rhs) noexcept{*this = std::move(rhs);}
  ~string(){clear();}
@@ -34,16 +34,16 @@ public:
   string&  operator=(const string&   rhs) noexcept;
   string&  operator=(      string&&  rhs) noexcept;
 
-  bool  operator==(std::string_view  sv) const noexcept;
+  bool  operator==(gbstd::string_view  sv) const noexcept;
 
   void  clear() noexcept;
 
-  void  assign(std::string_view  sv, value*  v=nullptr) noexcept;
+  void  assign(gbstd::string_view  sv, value*  v=nullptr) noexcept;
 
   const char*  get_data() const noexcept{return m_data;}
   size_t  get_length() const noexcept{return m_length;}
 
-  std::string_view  get_view() const noexcept{return std::string_view(m_data,m_length);}
+  gbstd::string_view  get_view() const noexcept{return gbstd::string_view(m_data,m_length);}
 
   const char*  begin() const noexcept{return m_data       ;}
   const char*    end() const noexcept{return m_data+m_length;}

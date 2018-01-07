@@ -24,8 +24,8 @@ public:
   const space*  get_parent(              ) const noexcept{return m_parent         ;}
   void          set_parent(space*  parent)       noexcept{       m_parent = parent;}
 
-  const ty::type_decl*  find_type_decl(std::string_view  name) const noexcept;
-  const ty::var_decl*   find_var_decl(std::string_view  name) const noexcept;
+  const ty::type_decl*  find_type_decl(gbstd::string_view  name) const noexcept;
+  const ty::var_decl*   find_var_decl(gbstd::string_view  name) const noexcept;
 
 };
 

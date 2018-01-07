@@ -5,8 +5,7 @@
 #include<cstddef>
 #include<cstdint>
 #include<cstdio>
-#include<string>
-#include<string_view>
+#include"libgbstd/string.hpp"
 #include"var_decl.hpp"
 
 
@@ -24,7 +23,7 @@ struct_member: public var_decl
   size_t  m_offset;
 
 public:
-  struct_member(const type_decl&  type_decl, std::string_view  name, size_t  offset) noexcept:
+  struct_member(const type_decl&  type_decl, gbstd::string_view  name, size_t  offset) noexcept:
   var_decl(type_decl,name),
   m_offset(offset){}
 
@@ -56,7 +55,7 @@ struct_def
 public:
   struct_def() noexcept{}
 
-  void  append(const type_decl&  td, std::string  name) noexcept;
+  void  append(const type_decl&  td, gbstd::string  name) noexcept;
 
   size_t   get_size() const noexcept{return m_size;}
   size_t  get_align() const noexcept{return m_align;}

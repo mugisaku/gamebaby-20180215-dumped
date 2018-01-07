@@ -40,8 +40,8 @@ public:
 
   const uint32_t*  get_glyph_data(char16_t  c) const noexcept;
 
-  void  load_from_file(std::string_view  path)       noexcept;
-  void    save_to_file(std::string_view  path) const noexcept;
+  void  load_from_file(gbstd::string_view  path)       noexcept;
+  void    save_to_file(gbstd::string_view  path) const noexcept;
 
   void  load_from_stream(binary_stream_reader&  r)       noexcept;
   void    save_to_stream(binary_stream_writer&  w) const noexcept;

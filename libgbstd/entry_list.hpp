@@ -1,8 +1,8 @@
-#ifndef GMBB_name_list_HPP
-#define GMBB_name_list_HPP
+#ifndef GMBB_entry_list_HPP
+#define GMBB_entry_list_HPP
 
 
-#include<string>
+#include"libgbstd/string.hpp"
 #include<cstddef>
 
 
@@ -30,7 +30,7 @@ public:
   entry_list&  operator=(const entry_list&   rhs) noexcept=delete;
   entry_list&  operator=(      entry_list&&  rhs) noexcept=delete;
 
-  T&  operator[](std::string_view  name) noexcept
+  T&  operator[](gbstd::string_view  name) noexcept
   {
     auto  p = &m_elements[0];
 
@@ -54,7 +54,7 @@ public:
   }
 
 
-  const T&  operator[](std::string_view  name) const noexcept
+  const T&  operator[](gbstd::string_view  name) const noexcept
   {
     auto  p = &m_elements[0];
 

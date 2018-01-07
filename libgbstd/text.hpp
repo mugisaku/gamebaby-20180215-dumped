@@ -5,6 +5,7 @@
 #include<string>
 #include<cstdarg>
 #include"libgbstd/unicode.hpp"
+#include"libgbstd/string.hpp"
 #include<initializer_list>
 
 
@@ -12,10 +13,10 @@ namespace gbstd{
 namespace texts{
 
 
-std::string_view  make_text(const char*  fmt, ...) noexcept;
-std::string_view  make_text_with_va_list(const char*  fmt, va_list  ap) noexcept;
+gbstd::string_view  make_text(const char*  fmt, ...) noexcept;
+gbstd::string_view  make_text_with_va_list(const char*  fmt, va_list  ap) noexcept;
 
-const char*  get_string(std::string_view  sv) noexcept;
+const char*  get_string(gbstd::string_view  sv) noexcept;
 
 
 class
@@ -46,7 +47,7 @@ public:
 
   bool  is_remaining() const noexcept{return(m_decoder.get_pointer() < m_input_pointer);}
 
-  void  push(std::string_view  sv, bool  with_newline=true);
+  void  push(gbstd::string_view  sv, bool  with_newline=true);
 
   char16_t  pop() noexcept;
 
@@ -75,7 +76,7 @@ public:
   public:
     iterator(const line*  line=nullptr) noexcept: m_line(line){}
 
-    std::u16string_view  operator*() const noexcept;
+    gbstd::u16string_view  operator*() const noexcept;
 
     bool  operator!=(const iterator&  rhs) const noexcept;
 

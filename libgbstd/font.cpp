@@ -71,7 +71,7 @@ load(uint32_t*  ln, int  h, int  line_size, binary_stream_reader&  r)
 
 void
 font::
-load_from_file(std::string_view  path) noexcept
+load_from_file(gbstd::string_view  path) noexcept
 {
   binary_stream  s;
 
@@ -125,7 +125,7 @@ load_from_stream(binary_stream_reader&  r) noexcept
 
 void
 font::
-save_to_file(std::string_view  path) const noexcept
+save_to_file(gbstd::string_view  path) const noexcept
 {
   binary_stream  s;
 

@@ -10,6 +10,7 @@ set(SOURCES
 
 
 include_directories(./)
+include_directories(../)
 add_library("tok" ${SOURCES})
 
 

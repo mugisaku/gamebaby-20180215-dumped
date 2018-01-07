@@ -8,7 +8,7 @@ namespace ty_types{
 
 void
 struct_def::
-append(const type_decl&  td, std::string  name) noexcept
+append(const type_decl&  td, gbstd::string  name) noexcept
 {
   size_t  offset = m_size;
 

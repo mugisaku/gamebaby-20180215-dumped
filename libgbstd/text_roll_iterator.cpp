@@ -7,13 +7,13 @@ namespace gbstd{
 namespace texts{
 
 
-std::u16string_view
+gbstd::u16string_view
 text_roll::iterator::
 operator*() const noexcept
 {
   size_t  len = (m_line->current-m_line->begin);
 
-  return std::u16string_view(m_line->begin,len);
+  return gbstd::u16string_view(m_line->begin,len);
 }
 
 

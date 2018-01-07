@@ -2,10 +2,11 @@
 #define stream_reader_HPP
 
 
-#include<string>
-#include<string_view>
+#include"libgbstd/string.hpp"
 #include<cstddef>
 #include<cstdint>
+#include<cstdio>
+#include<string>
 
 
 namespace tok{
@@ -23,7 +24,7 @@ protected:
   size_t  m_line_number=1;
 
 public:
-  stream_context(std::string_view  sv) noexcept:
+  stream_context(gbstd::string_view  sv) noexcept:
   m_line_start(sv.data()),
   m_pointer(sv.data()),
   m_end(sv.data()+sv.size()){}
@@ -73,8 +74,8 @@ public:
 
   stream_context  get_context() const noexcept{return *this;}
 
-  const std::string&  read_identifier() noexcept;
-  const std::string&  read_quoted_string(char  close_char) noexcept;
+  gbstd::string_view  read_identifier() noexcept;
+  gbstd::string_view  read_quoted_string(char  close_char) noexcept;
 
   uint64_t  read_number() noexcept;
 

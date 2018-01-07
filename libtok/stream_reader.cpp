@@ -74,7 +74,7 @@ newline() noexcept
 }
 
 
-const std::string&
+gbstd::string_view
 stream_reader::
 read_identifier() noexcept
 {
@@ -86,11 +86,11 @@ read_identifier() noexcept
     }
 
 
-  return m_string_buffer;
+  return gbstd::string_view(m_string_buffer.data(),m_string_buffer.size());
 }
 
 
-const std::string&
+gbstd::string_view
 stream_reader::
 read_quoted_string(char  close_char) noexcept
 {
@@ -118,7 +118,7 @@ read_quoted_string(char  close_char) noexcept
     }
 
 
-  return m_string_buffer;
+  return gbstd::string_view(m_string_buffer.data(),m_string_buffer.size());
 }
 
 

@@ -130,8 +130,8 @@ public:
   void  fill_rectangle(       rectangle         rect, pixel  pix) noexcept;
 
   void  print(char16_t   c, point  pt, const font&  fnt, ro_ptr<color_index>  coloring=default_coloring) noexcept;
-  void  print(std::string_view     sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring=default_coloring) noexcept;
-  void  print(std::u16string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring=default_coloring) noexcept;
+  void  print(gbstd::string_view     sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring=default_coloring) noexcept;
+  void  print(gbstd::u16string_view  sv, point  pt, const font&  fnt, ro_ptr<color_index>  coloring=default_coloring) noexcept;
 
   void  transfer(image const&  src, rectangle  src_rect, point  dst_pt, int  z=0) noexcept;
 

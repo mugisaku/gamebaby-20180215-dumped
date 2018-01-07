@@ -3,6 +3,7 @@
 
 
 #include"libtok/stream_reader.hpp"
+#include"libgbstd/string.hpp"
 #include<cstdint>
 
 
@@ -16,7 +17,7 @@ class value;
 struct
 value_was_not_found
 {
-  std::string_view  name;
+  gbstd::string_view  name;
   
 };
 
@@ -56,8 +57,8 @@ public:
 
   void  open(const char*  filepath);
 
-  const value&   get_named_value(std::string_view  name) const;
-  const value*  find_named_value(std::string_view  name) const noexcept;
+  const value&   get_named_value(gbstd::string_view  name) const;
+  const value*  find_named_value(gbstd::string_view  name) const noexcept;
   const value*  access(std::initializer_list<const char*>  ls) const noexcept;
 
   void  print(int  indent=0) const noexcept;

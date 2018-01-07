@@ -43,7 +43,7 @@ reset() noexcept
 {
   m_input_pointer = m_data_source;
 
-  m_decoder = std::string_view(m_data_source,m_data_length);
+  m_decoder = gbstd::string_view(m_data_source,m_data_length);
 
   m_input_pointer[0] = 0;
 }
@@ -65,8 +65,8 @@ resize(size_t  length) noexcept
 
 namespace{
 void
-scan(std::string_view::const_iterator&  src,
-     std::string_view::const_iterator   src_end, char*  dst, size_t  n) noexcept
+scan(gbstd::string_view::iterator&  src,
+     gbstd::string_view::iterator   src_end, char*  dst, size_t  n) noexcept
 {
     while((n > 1) && (src != src_end))
     {
@@ -93,10 +93,10 @@ scan(std::string_view::const_iterator&  src,
 
 void
 text_buffer::
-push(std::string_view  sv, bool  with_newline)
+push(gbstd::string_view  sv, bool  with_newline)
 {
-  auto   it = sv.cbegin();
-  auto  end = sv.cend();
+  auto   it = sv.begin();
+  auto  end = sv.end();
     
     while((it != end) && (m_input_pointer < m_decoder.get_end()))
     {
@@ -121,7 +121,7 @@ push(std::string_view  sv, bool  with_newline)
 
           else
             {
-              printf("$の後に$か(が続いていない\n",*it++);
+              printf("$の後に$か(が続いていない\n");
             }
         }
 

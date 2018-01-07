@@ -17,7 +17,7 @@ using ProcessCallback = void  (*)(Player&  actor, const BattleCommand&  command,
 struct
 Process
 {
-  std::string_view  name;
+  gbstd::string_view  name;
 
   ProcessCallback  callback;
 
@@ -41,7 +41,7 @@ TargetKind
 class
 BattleCommand
 {
-  std::string  m_name;
+  gbstd::string  m_name;
 
   int  m_strength=0;
   int    m_weight=0;
@@ -55,8 +55,8 @@ public:
   BattleCommand() noexcept{}
   BattleCommand(const gbdn::list&  ls){load(ls);}
 
-  void                set_name(std::string_view  name)       noexcept{       m_name = name;}
-  const std::string&  get_name(                      ) const noexcept{return m_name       ;}
+  void                set_name(gbstd::string_view  name)       noexcept{       m_name = name;}
+  const gbstd::string&  get_name(                      ) const noexcept{return m_name       ;}
 
   int  get_strength() const noexcept{return m_strength;}
   int  get_weight() const noexcept{return m_weight;}

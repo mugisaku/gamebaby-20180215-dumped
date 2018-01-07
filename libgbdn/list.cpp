@@ -221,7 +221,7 @@ operator=(list&&  rhs) noexcept
 
 const value&
 list::
-get_named_value(std::string_view  name) const
+get_named_value(gbstd::string_view  name) const
 {
   auto  v = find_named_value(name);
 
@@ -237,7 +237,7 @@ get_named_value(std::string_view  name) const
 
 const value*
 list::
-find_named_value(std::string_view  name) const noexcept
+find_named_value(gbstd::string_view  name) const noexcept
 {
     for(auto&  v: *this)
     {
@@ -322,7 +322,7 @@ open(const char*  filepath)
       fclose(f);
 
 
-      tok::stream_reader  r(s);
+      tok::stream_reader  r(s.data());
 
       assign(r,0);
     }

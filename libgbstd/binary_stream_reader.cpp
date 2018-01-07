@@ -11,10 +11,10 @@ namespace binary_streams{
 
 
 binary_stream_reader::
-binary_stream_reader(std::string_view  sv) noexcept:
-m_begin(sv.data()),
-m_current(sv.data()),
-m_end(sv.data()+sv.size())
+binary_stream_reader(const std::vector<char>&  bin) noexcept:
+m_begin(bin.data()),
+m_current(bin.data()),
+m_end(bin.data()+bin.size())
 {
 }
 
