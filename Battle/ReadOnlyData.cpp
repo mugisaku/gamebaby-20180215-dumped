@@ -94,13 +94,13 @@ get_command(gbstd::string_view  name) noexcept
 
 
 void
-load() noexcept
+load(gbstd::string_view  path) noexcept
 {
   gbdn::list  ls;
 
     try
     {
-      ls.open("../battle.gb.txt");
+      ls.open(path);
     }
 
 
@@ -151,7 +151,7 @@ load() noexcept
 
     catch(gbdn::value_was_not_found&  not_f)
     {
-      printf("%s is not found.\n",not_f.name);
+      printf("%s is not found.\n",not_f.name.data());
     }
 }
 

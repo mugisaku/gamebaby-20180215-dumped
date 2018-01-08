@@ -39,9 +39,11 @@ public:
 
     auto  src = get_data();
 
+    gbstd::utf8_encoder  enc;
+
       while(*src)
       {
-        auto  p = gbstd::utf8_encoder(*src++).codes;
+        auto  p = enc(*src++).codes;
 
           while(*p)
           {

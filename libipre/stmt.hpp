@@ -27,7 +27,7 @@ stmt
   union data{
     ty::type_decl  td;
 
-    std::string_view  sv;
+    gbstd::string_view  sv;
 
     data(){}
    ~data(){}

@@ -42,7 +42,7 @@ list
 
 public:
   list() noexcept{}
-  list(const char*  filepath){open(filepath);}
+  list(gbstd::string_view  filepath){open(filepath);}
   list(const list&   rhs) noexcept{*this = rhs;}
   list(      list&&  rhs) noexcept{*this = std::move(rhs);}
  ~list(){clear();}
@@ -55,7 +55,7 @@ public:
 
   uint32_t  size() const noexcept{return m_number_of_values;}
 
-  void  open(const char*  filepath);
+  void  open(gbstd::string_view  filepath);
 
   const value&   get_named_value(gbstd::string_view  name) const;
   const value*  find_named_value(gbstd::string_view  name) const noexcept;

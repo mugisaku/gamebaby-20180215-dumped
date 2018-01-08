@@ -58,7 +58,7 @@ enemy:{
           agility:12
           defense:4
         intellect:0
-               hp:10
+               hp:280
                mp:0
     command_table:{
       "たいあたり"

@@ -18,9 +18,9 @@ set_content_from_file(gbstd::string_view  path) noexcept
 {
   m_content.clear();
 
-  auto  s = get_string(path);
+  string_copy  sc(path);
 
-  auto  gz = gzopen(s,"rb");
+  auto  gz = gzopen(sc.data(),"rb");
 
     if(gz)
     {
@@ -45,7 +45,7 @@ set_content_from_file(gbstd::string_view  path) noexcept
 
   else
     {
-      auto  f = fopen(s,"rb");
+      auto  f = fopen(sc.data(),"rb");
 
         if(f)
         {
@@ -80,11 +80,11 @@ void
 binary_stream::
 output_content_to_file(gbstd::string_view  path, bool  use_zlib) const noexcept
 {
-  auto  s = get_string(path);
+  string_copy  sc(path);
 
     if(use_zlib)
     {
-      auto  gz = gzopen(s,"wb");
+      auto  gz = gzopen(sc.data(),"wb");
 
         if(gz)
         {
@@ -100,7 +100,7 @@ output_content_to_file(gbstd::string_view  path, bool  use_zlib) const noexcept
 
   else
     {
-      auto  f = fopen(s,"wb");
+      auto  f = fopen(sc.data(),"wb");
 
         if(f)
         {

@@ -47,9 +47,9 @@ utf8_encoder
 {
   char  codes[8];
 
-  utf8_encoder(char32_t  c=0) noexcept{*this = c;}
+  utf8_encoder(char32_t  c=0) noexcept{(*this)(c);}
 
-  utf8_encoder&  operator=(char32_t  c) noexcept;
+  utf8_encoder&  operator()(char32_t  c) noexcept;
 
 };
 

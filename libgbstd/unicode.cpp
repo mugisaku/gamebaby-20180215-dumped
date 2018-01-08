@@ -116,7 +116,7 @@ operator()() noexcept
 
 utf8_encoder&
 utf8_encoder::
-operator=(char32_t  c) noexcept
+operator()(char32_t  c) noexcept
 {
   char*  p = codes;
 

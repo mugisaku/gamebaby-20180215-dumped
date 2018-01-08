@@ -27,7 +27,7 @@ enemy_party_table;
 const BattleCommand&  get_command(gbstd::string_view  name) noexcept;
 
 
-void  load() noexcept;
+void  load(gbstd::string_view  path) noexcept;
 
 
 }

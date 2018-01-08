@@ -53,13 +53,15 @@ initialize() noexcept
         sys::font.load_from_file("small_font.gz");
   sys::large_font.load_from_file("large_font.gz");
 
+  ro::load("battle.gb.txt");
+
 #else
         sys::font.load_from_file("/usr/local/share/gmbb/small_font.gz");
   sys::large_font.load_from_file("/usr/local/share/gmbb/large_font.gz");
+
+  ro::load("../battle.gb.txt");
 #endif
 
-
-  ro::load();
 
   screen::enable_render();
   screen::set_fill_color(gbstd::predefined::black);

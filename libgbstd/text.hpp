@@ -16,8 +16,6 @@ namespace texts{
 gbstd::string_view  make_text(const char*  fmt, ...) noexcept;
 gbstd::string_view  make_text_with_va_list(const char*  fmt, va_list  ap) noexcept;
 
-const char*  get_string(gbstd::string_view  sv) noexcept;
-
 
 class
 text_buffer
@@ -134,7 +132,6 @@ public:
 
 using texts::make_text;
 using texts::make_text_with_va_list;
-using texts::get_string;
 using texts::text_buffer;
 using texts::text_roll;
 

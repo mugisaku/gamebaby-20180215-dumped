@@ -4,6 +4,7 @@
 
 
 #include"libgbstd/string_view.hpp"
+#include"libgbstd/string_copy.hpp"
 
 
 namespace gbstd{
@@ -20,10 +21,11 @@ basic_string
 
   void  extend() noexcept
   {
-    auto  new_pointer = new T[(m_capacity*2)+1];
+    auto  new_pointer = new T[((m_capacity+8)*2)+1];
 
     std::memcpy(new_pointer,m_data,m_length);
 
+    m_capacity += 8;
     m_capacity *= 2;
 
     new_pointer[m_length] = 0;
@@ -38,7 +40,7 @@ public:
   basic_string(const T*  s, size_t  l) noexcept{assign(s,l);}
   basic_string(basic_string_view<T>  sv) noexcept{assign(sv);}
   basic_string(const basic_string&   rhs) noexcept{*this = rhs;}
-  basic_string(      basic_string&&  rhs) noexcept{*this = rhs;}
+  basic_string(      basic_string&&  rhs) noexcept{*this = std::move(rhs);}
  ~basic_string(){clear();}
 
   basic_string&  operator=(const basic_string&   rhs) noexcept

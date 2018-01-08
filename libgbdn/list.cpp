@@ -297,9 +297,11 @@ access(std::initializer_list<const char*>  ls) const noexcept
 
 void
 list::
-open(const char*  filepath)
+open(gbstd::string_view  filepath)
 {
-  auto  f = fopen(filepath,"rb");
+  gbstd::string_copy  sc(filepath);
+
+  auto  f = fopen(sc.data(),"rb");
 
     if(f)
     {
@@ -329,7 +331,7 @@ open(const char*  filepath)
 
   else
     {
-      printf("%sを開けない\n",filepath);
+      printf("%sを開けない\n",sc.data());
     }
 }
 

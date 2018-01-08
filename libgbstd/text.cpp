@@ -47,25 +47,6 @@ make_text_with_va_list(const char*  fmt, va_list  ap) noexcept
 }
 
 
-const char*
-get_string(gbstd::string_view  sv) noexcept
-{
-    if(*(sv.data()+sv.size()))
-    {
-      static gbstd::string  s;
-
-      s = sv;
-
-      return s.data();
-    }
-
-  else
-    {
-      return sv.data();
-    }
-}
-
-
 }}
 
 

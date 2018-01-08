@@ -38,6 +38,8 @@ get_process(gbstd::string_view  name) noexcept
 
 
   printf("%sというプロセスはない\n",name.data());
+
+  return *process_list.begin();
 }
 
 
