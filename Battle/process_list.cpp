@@ -23,7 +23,7 @@ get_result_of_attack(Player&  actor, Player&  target) noexcept
 
     for(int  n = 0;  n < actor.get_number_of_attacks();  ++n)
     {
-        if(uni_dist(0,99) < 80)
+        if(uni_dist(0,99) < 90)
         {
           ++res.hit_count;
 

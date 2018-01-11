@@ -82,6 +82,7 @@ set(GAME_SOURCES
 
 
 add_subdirectory(libgbstd)
+add_subdirectory(libgbsnd)
 add_subdirectory(libgbdn)
 add_subdirectory(libty)
 add_subdirectory(libtok)
@@ -91,10 +92,12 @@ add_subdirectory(Battle)
 include_directories(./)
 include_directories(/usr/include/SDL2)
 add_executable("testGBSTD${EXECUTABLE_EXTENSION}" testGBSTD.cpp)
+add_executable("testGBSND${EXECUTABLE_EXTENSION}" testGBSND.cpp)
 add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp)
 #add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp)
 #add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAME_SOURCES})
 target_link_libraries("testGBSTD${EXECUTABLE_EXTENSION}" "gbstd")
+target_link_libraries("testGBSND${EXECUTABLE_EXTENSION}" "gbsnd")
 target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "battle" "gbdn" "tok" "gbstd")
 
 
