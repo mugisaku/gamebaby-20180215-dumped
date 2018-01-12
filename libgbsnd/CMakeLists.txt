@@ -3,6 +3,7 @@
 set(SOURCES
   device.cpp
   device__square_wave.cpp
+  device__noise.cpp
 )
 
 

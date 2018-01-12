@@ -7,9 +7,14 @@ namespace devices{
 
 
 
-uint8_t
+void
 device::
-silence;
+set_keyon_flag() noexcept
+{
+  m_time = 0;
+
+  m_keyon_flag =  true;
+}
 
 
 void

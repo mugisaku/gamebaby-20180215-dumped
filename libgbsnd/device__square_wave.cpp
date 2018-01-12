@@ -32,20 +32,31 @@ update_parameters() noexcept
 
   m_rise_time_base >>= shift_amount;
 
-  m_fall_time_base = m_number_of_samples_per_cycles-m_rise_time;
-
-
-  uint32_t  rem = (m_time%m_number_of_samples_per_cycles);
-
-    if(rem < m_rise_time_base)
+    if(m_rise_time_base)
     {
-      m_rise_time = m_rise_time_base-rem;
+      m_fall_time_base = m_number_of_samples_per_cycles-m_rise_time;
+
+
+      uint32_t  rem = (m_time%m_number_of_samples_per_cycles);
+
+        if(rem < m_rise_time_base)
+        {
+          m_rise_time = m_rise_time_base-rem;
+        }
+
+      else
+        {
+          m_rise_time =                    0;
+          m_fall_time = rem-m_rise_time_base;
+        }
     }
 
   else
     {
-      m_rise_time =                    0;
-      m_fall_time = rem-m_rise_time_base;
+                    m_rise_time_base = m_number_of_samples_per_cycles;
+      m_rise_time = m_rise_time_base                                 ;
+
+      m_fall_time = 0;
     }
 }
 
@@ -98,13 +109,6 @@ output(uint8_t*  begin, uint8_t*  end) noexcept
       update_parameters();
 
       m_need_update = false;
-    }
-
-
-    if(!m_rise_time_base ||
-       !m_fall_time_base)
-    {
-      return;
     }
 
 

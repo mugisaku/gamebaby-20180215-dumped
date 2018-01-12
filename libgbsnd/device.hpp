@@ -25,8 +25,6 @@ class
 device
 {
 protected:
-  static uint8_t  silence;
-
   uint32_t  m_time=0;
 
   uint32_t  m_number_of_cycles_per_seconds=0;//1秒あたりの周波数
@@ -80,7 +78,7 @@ public:
 
 
   bool   test_keyon_flag() const noexcept{return m_keyon_flag;}
-  void    set_keyon_flag() noexcept{m_keyon_flag =  true;}
+  void    set_keyon_flag() noexcept;
   void  unset_keyon_flag() noexcept{m_keyon_flag = false;}
 
 };
@@ -130,7 +128,19 @@ public:
 class
 noise: public device
 {
-  bool  m_short_span_flag;
+  uint16_t  m_seed=0xFFFF;
+
+  uint16_t  m_result=1;
+
+  bool  m_shortspan_flag=false;
+
+public:
+  void  set_keyon_flag() noexcept;
+
+  void    set_shortspan_flag() noexcept{m_shortspan_flag =  true;}
+  void  unset_shortspan_flag() noexcept{m_shortspan_flag = false;}
+
+  void  output(uint8_t*  begin, uint8_t*  end) noexcept;
 
 };
 
@@ -141,6 +151,7 @@ noise: public device
 
 using devices::number_of_samples_per_seconds;
 using devices::square_wave;
+using devices::noise;
 using devices::moddir;
 
 
