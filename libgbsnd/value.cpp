@@ -38,6 +38,20 @@ operator=(reference  r) noexcept
 
 value&
 value::
+operator=(const routine&  rt) noexcept
+{
+  clear();
+
+  m_kind = kind::routine;
+
+  new(&m_data) routine(rt);
+
+  return *this;
+}
+
+
+value&
+value::
 operator=(const value&  rhs) noexcept
 {
   clear();
@@ -51,6 +65,9 @@ operator=(const value&  rhs) noexcept
       break;
   case(kind::reference):
       m_data.r = rhs.m_data.r;
+      break;
+  case(kind::routine):
+      new(&m_data) routine(rhs.m_data.rt);
       break;
     }
 
@@ -75,6 +92,9 @@ operator=(value&&  rhs) noexcept
   case(kind::reference):
       m_data.r = rhs.m_data.r;
       break;
+  case(kind::routine):
+      new(&m_data) routine(std::move(rhs.m_data.rt));
+      break;
     }
 
 
@@ -92,6 +112,9 @@ clear() noexcept
   case(kind::integer):
       break;
   case(kind::reference):
+      break;
+  case(kind::routine):
+      m_data.rt.~routine();
       break;
     }
 

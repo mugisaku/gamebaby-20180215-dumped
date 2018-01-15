@@ -5,6 +5,7 @@
 #include<cstdint>
 #include<cstdio>
 #include"libgbstd/string.hpp"
+#include"libgbsnd/routine.hpp"
 
 
 namespace gbsnd{
@@ -34,12 +35,14 @@ value
     null,
     integer,
     reference,
+    routine,
 
   } m_kind=kind::null;
 
   union data{
     int        i;
     reference  r;
+    routine   rt;
 
     data(){}
    ~data(){}
@@ -50,12 +53,14 @@ public:
   value() noexcept{}
   value(int  i) noexcept{*this = i;}
   value(reference  r) noexcept{*this = r;}
+  value(const routine&  rt) noexcept{*this = rt;}
   value(const value&   rhs) noexcept{*this = rhs;}
   value(      value&&  rhs) noexcept{*this = std::move(rhs);}
  ~value(){clear();}
 
   value&  operator=(int  i) noexcept;
   value&  operator=(reference  r) noexcept;
+  value&  operator=(const routine&  rt) noexcept;
   value&  operator=(const value&   rhs) noexcept;
   value&  operator=(      value&&  rhs) noexcept;
 

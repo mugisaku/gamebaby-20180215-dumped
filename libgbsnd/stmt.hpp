@@ -36,9 +36,22 @@ case_stmt
   int  m_value;
 
 public:
- constexpr case_stmt(int  v) noexcept: m_value(v){}
+  constexpr case_stmt(int  v) noexcept: m_value(v){}
 
- constexpr int  get_value() const noexcept{return m_value;}
+  constexpr int  get_value() const noexcept{return m_value;}
+
+};
+
+
+class
+label_stmt
+{
+  gbstd::string  m_text;
+
+public:
+  label_stmt(gbstd::string_view text) noexcept: m_text(text){}
+
+  const gbstd::string&  get_text() const noexcept{return m_text;}
 
 };
 
@@ -87,6 +100,7 @@ stmt
   union data{
     expr           e;
     block        blk;
+    label_stmt   lbl;
     return_stmt  ret;
     case_stmt    cas;
 
@@ -99,6 +113,7 @@ public:
   stmt() noexcept{}
   stmt(expr&&  e) noexcept{*this = std::move(e);}
   stmt(block&&          blk) noexcept{*this = std::move(blk);}
+  stmt(label_stmt&&     lbl) noexcept{*this = std::move(lbl);}
   stmt(return_stmt&&    ret) noexcept{*this = std::move(ret);}
   stmt(break_stmt     brk) noexcept{*this = brk;}
   stmt(continue_stmt  cnt) noexcept{*this = cnt;}
@@ -110,6 +125,7 @@ public:
 
   stmt&  operator=(expr&&  e) noexcept;
   stmt&  operator=(block&&  blk) noexcept;
+  stmt&  operator=(label_stmt&&   lbl) noexcept;
   stmt&  operator=(return_stmt&&  ret) noexcept;
   stmt&  operator=(break_stmt     brk) noexcept;
   stmt&  operator=(continue_stmt  cnt) noexcept;
@@ -134,7 +150,11 @@ public:
   bool  is_switch()     const noexcept{return m_kind ==  kind::switch_;}
   bool  is_default()    const noexcept{return m_kind ==  kind::default_;}
 
-  
+  const expr&         get_expr()   const noexcept{return m_data.e;}
+  const label_stmt&   get_label()  const noexcept{return m_data.lbl;}
+  const return_stmt&  get_return() const noexcept{return m_data.ret;}
+  const case_stmt&    get_case()   const noexcept{return m_data.cas;}
+  const block&        get_block()  const noexcept{return m_data.blk;}
 
 };
 
@@ -149,6 +169,7 @@ using devices::continue_stmt;
 using devices::default_stmt;
 using devices::case_stmt;
 using devices::return_stmt;
+using devices::label_stmt;
 
 
 }

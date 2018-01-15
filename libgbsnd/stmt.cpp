@@ -38,6 +38,20 @@ operator=(block&&  blk) noexcept
 
 stmt&
 stmt::
+operator=(label_stmt&&  lbl) noexcept
+{
+  clear();
+
+  m_kind = kind::label;
+
+  new(&m_data) label_stmt(std::move(lbl));
+
+  return *this;
+}
+
+
+stmt&
+stmt::
 operator=(return_stmt&&  ret) noexcept
 {
   clear();
@@ -111,7 +125,7 @@ operator=(const stmt&  rhs) noexcept
     switch(m_kind)
     {
   case(kind::expression): new(&m_data) expr(rhs.m_data.e);break;
-  case(kind::label     ): break;
+  case(kind::label     ): new(&m_data) label_stmt(rhs.m_data.lbl);break;
   case(kind::block     ): new(&m_data) block(rhs.m_data.blk);break;
   case(kind::if_       ): break;
   case(kind::while_    ): break;
@@ -141,7 +155,7 @@ operator=(stmt&&  rhs) noexcept
     switch(m_kind)
     {
   case(kind::expression): new(&m_data) expr(std::move(rhs.m_data.e));break;
-  case(kind::label     ): break;
+  case(kind::label     ): new(&m_data) label_stmt(std::move(rhs.m_data.lbl));break;
   case(kind::block     ): new(&m_data) block(std::move(rhs.m_data.blk));break;
   case(kind::if_       ): break;
   case(kind::while_    ): break;
@@ -168,7 +182,7 @@ clear() noexcept
     switch(m_kind)
     {
   case(kind::expression): m_data.e.~expr();break;
-  case(kind::label     ): break;
+  case(kind::label     ): m_data.lbl.~label_stmt();break;
   case(kind::block     ): m_data.blk.~block();break;
   case(kind::if_       ): break;
   case(kind::while_    ): break;
