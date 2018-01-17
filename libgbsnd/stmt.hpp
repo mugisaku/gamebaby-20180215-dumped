@@ -3,6 +3,7 @@
 
 
 #include"libgbsnd/expr.hpp"
+#include"libtok/stream_reader.hpp"
 #include<vector>
 
 
@@ -19,6 +20,9 @@ block
   std::vector<stmt>  m_stmt_list;
 
 public:
+  block() noexcept{}
+  block(tok::stream_reader&  r) noexcept;
+
   const stmt*  begin() const noexcept;
   const stmt*    end() const noexcept;
 

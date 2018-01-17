@@ -13,7 +13,7 @@ read_binary_number() noexcept
 {
   uint64_t  i = 0;
 
-    for(;;)
+    while(!is_reached_end())
     {
       auto  c = *m_pointer;
 
@@ -49,7 +49,8 @@ read_octal_number() noexcept
 {
   uint64_t  i = 0;
 
-    while((*m_pointer >= '0') &&
+    while(!is_reached_end()   &&
+          (*m_pointer >= '0') &&
           (*m_pointer <= '7'))
     {
       i <<= 3;
@@ -68,7 +69,8 @@ read_decimal_number() noexcept
 {
   uint64_t  i = 0;
 
-    while((*m_pointer >= '0') &&
+    while(!is_reached_end() &&
+          (*m_pointer >= '0') &&
           (*m_pointer <= '9'))
     {
       i *= 10;
@@ -87,7 +89,7 @@ read_hexadecimal_number() noexcept
 {
   uint64_t  i = 0;
 
-    for(;;)
+    while(!is_reached_end())
     {
       auto  c = *m_pointer;
 

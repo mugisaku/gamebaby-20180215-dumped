@@ -1,4 +1,5 @@
 #include"libgbsnd/device.hpp"
+#include"libgbsnd/script.hpp"
 
 
 #include<SDL.h>
@@ -104,6 +105,9 @@ main_loop()
     {
       last = now;
 
+      SDL_FillRect(SDL_GetWindowSurface(window),nullptr,0);
+
+      SDL_UpdateWindowSurface(window);
     }
 }
 
@@ -120,6 +124,8 @@ main(int  argc, char**  argv)
   SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 
   initialize();
+
+  auto  scr = gbsnd::script::build_from_file("../gb.snd.txt");
 
   SDL_ShowCursor(SDL_DISABLE);
 

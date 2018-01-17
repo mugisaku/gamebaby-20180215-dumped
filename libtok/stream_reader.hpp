@@ -71,6 +71,7 @@ stream_reader: public stream_context
 public:
   using stream_context::stream_context;
 
+  bool  operator==(gbstd::string_view  sv) const noexcept;
 
   stream_context  get_context() const noexcept{return *this;}
 
@@ -79,9 +80,10 @@ public:
 
   uint64_t  read_number() noexcept;
 
-  char  get_char() const noexcept{return *m_pointer;}
+  char  get_char() const noexcept{return is_reached_end()? 0:*m_pointer;}
 
   void  advance() noexcept{++m_pointer;}
+  bool  advance_if_matched(gbstd::string_view  sv) noexcept;
 
   bool  is_pointing_identifier() const noexcept;
   bool  is_pointing_number() const noexcept;

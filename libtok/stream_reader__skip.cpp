@@ -87,7 +87,7 @@ void
 stream_reader::
 skip_spaces()
 {
-    for(;;)
+    while(!is_reached_end())
     {
       auto  c = *m_pointer;
 

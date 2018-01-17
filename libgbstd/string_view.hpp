@@ -86,6 +86,8 @@ public:
 
   constexpr const char*  data() const noexcept{return m_pointer;}
 
+  constexpr const char&  operator[](int  i) const noexcept{return m_pointer[i];}
+
   constexpr bool  is_null_terminated() const noexcept{return !*(m_pointer+m_length);}
 
   using iterator = const T*;

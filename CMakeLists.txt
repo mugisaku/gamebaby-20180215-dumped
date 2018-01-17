@@ -97,7 +97,7 @@ add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp)
 #add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp)
 #add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAME_SOURCES})
 target_link_libraries("testGBSTD${EXECUTABLE_EXTENSION}" "gbstd")
-target_link_libraries("testGBSND${EXECUTABLE_EXTENSION}" "gbsnd" "gbstd")
+target_link_libraries("testGBSND${EXECUTABLE_EXTENSION}" "gbsnd" "tok" "gbstd")
 target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "battle" "gbdn" "tok" "gbstd")
 
 

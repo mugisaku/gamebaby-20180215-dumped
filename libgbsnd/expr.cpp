@@ -11,27 +11,13 @@ namespace devices{
 
 expr&
 expr::
-operator=(int  i) noexcept
+operator=(operand&&  o) noexcept
 {
   clear();
 
-  m_kind = kind::integer_literal;
+  m_kind = kind::operand;
 
-  m_data.i = i;
-
-  return *this;
-}
-
-
-expr&
-expr::
-operator=(gbstd::string&&  s) noexcept
-{
-  clear();
-
-  m_kind = kind::identifier;
-
-  m_data.s = std::move(s);
+  m_data.o = std::move(o);
 
   return *this;
 }
@@ -75,11 +61,8 @@ operator=(const expr&  rhs) noexcept
 
     switch(m_kind)
     {
-  case(kind::integer_literal):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::identifier):
-      new(&m_data.s) gbstd::string(rhs.m_data.s);
+  case(kind::operand):
+      new(&m_data) operand(rhs.m_data.o);
       break;
   case(kind::unary_operation):
       new(&m_data.unop) unary_operation(rhs.m_data.unop);
@@ -104,11 +87,8 @@ operator=(expr&&  rhs) noexcept
 
     switch(m_kind)
     {
-  case(kind::integer_literal):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::identifier):
-      new(&m_data.s) gbstd::string(std::move(rhs.m_data.s));
+  case(kind::operand):
+      new(&m_data) operand(std::move(rhs.m_data.o));
       break;
   case(kind::unary_operation):
       new(&m_data.unop) unary_operation(std::move(rhs.m_data.unop));
@@ -130,10 +110,8 @@ clear() noexcept
 {
     switch(m_kind)
     {
-  case(kind::integer_literal):
-      break;
-  case(kind::identifier):
-      m_data.s.~basic_string();
+  case(kind::operand):
+      m_data.o.~operand();
       break;
   case(kind::unary_operation):
       m_data.unop.~unary_operation();
@@ -154,13 +132,8 @@ evaluate(const execution_context&  ctx) const noexcept
 {
     switch(m_kind)
     {
-  case(kind::integer_literal):
-      return value(m_data.i);
-      break;
-  case(kind::identifier):
-      {
-        return *ctx.seek_value(m_data.s);
-      }
+  case(kind::operand):
+      return m_data.o.evaluate(ctx);
       break;
   case(kind::unary_operation):
       return m_data.unop.evaluate(ctx);

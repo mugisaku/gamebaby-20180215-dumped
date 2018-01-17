@@ -66,6 +66,14 @@ public:
 
   void  clear() noexcept;
 
+  bool  is_reference() const noexcept{return m_kind == kind::reference;}
+  bool  is_integer()   const noexcept{return m_kind == kind::integer;}
+  bool  is_routine()   const noexcept{return m_kind == kind::routine;}
+
+  int             get_reference() const noexcept{return m_data.i;}
+  reference       get_integer()   const noexcept{return m_data.r;}
+  const routine&  get_routine()   const noexcept{return m_data.rt;}
+
 };
 
 

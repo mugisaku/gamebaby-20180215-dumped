@@ -6,13 +6,20 @@ set(SOURCES
   device__noise.cpp
   stmt.cpp
   expr.cpp
-  block.cpp
-  routine.cpp
+  expr__make_expr.cpp
+  operand.cpp
   expr__unary_operation.cpp
   expr__binary_operation.cpp
+  block.cpp
+  routine.cpp
   execution_context.cpp
   execution_frame.cpp
   value.cpp
+  tree_node.cpp
+  tree_block.cpp
+  script.cpp
+  script_token.cpp
+  script_token_string.cpp
 )
 
 

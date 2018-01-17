@@ -5,6 +5,7 @@
 
 #include"libgbstd/string_view.hpp"
 #include"libgbstd/string_copy.hpp"
+#include"libgbstd/utility.hpp"
 
 
 namespace gbstd{

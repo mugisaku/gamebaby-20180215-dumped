@@ -1,10 +1,29 @@
-#include"libgbsnd/routine_PRIVATE.hpp"
+#include"libgbsnd/routine.hpp"
+#include"libgbsnd/stmt.hpp"
 
 
 namespace gbsnd{
 namespace devices{
 
 
+
+
+struct
+routine::
+data
+{
+  size_t  m_reference_count=1;
+
+  parameter_list  m_parameter_list;
+
+  block*  m_block=nullptr;
+
+  ~data()
+  {
+    delete m_block;
+  }
+
+};
 
 
 routine::

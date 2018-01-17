@@ -50,6 +50,38 @@ isidentn(char  c) noexcept
 
 bool
 stream_reader::
+operator==(gbstd::string_view  sv) const noexcept
+{
+    if((m_end-m_pointer) >= sv.size())
+    {
+      return std::memcmp(m_pointer,sv.data(),sv.size()) == 0;
+    }
+
+
+  return false;
+}
+
+
+
+
+bool
+stream_reader::
+advance_if_matched(gbstd::string_view  sv) noexcept
+{
+    if(*this == sv)
+    {
+      m_pointer += sv.size();
+
+      return true;
+    }
+
+
+  return false;
+}
+
+
+bool
+stream_reader::
 is_pointing_identifier() const noexcept
 {
   return isident0(*m_pointer);
@@ -80,7 +112,7 @@ read_identifier() noexcept
 {
   m_string_buffer.resize(0,0);
 
-    while(isidentn(*m_pointer))
+    while(!is_reached_end() && isidentn(*m_pointer))
     {
       m_string_buffer.push_back(*m_pointer++);
     }
@@ -96,7 +128,7 @@ read_quoted_string(char  close_char) noexcept
 {
   m_string_buffer.resize(0,0);
 
-    while(*m_pointer)
+    while(!is_reached_end())
     {
       auto  c = *m_pointer++;
 
