@@ -9,26 +9,14 @@ namespace devices{
 
 
 namespace{
-struct
-op
-{
-  gbstd::string_view  m_sv;
-
-  operator_code  m_opco;
-
-  constexpr op(gbstd::string_view  sv) noexcept:
-  m_sv(sv),
-  m_opco(operator_code::from_string_view(sv)){}
-
-};
-
-
 bool
-try_push(tok::stream_reader&  r, op  op_, std::vector<script_token>&  buf) noexcept
+try_push(tok::stream_reader&  r, operator_word  opw, std::vector<script_token>&  buf) noexcept
 {
-    if(r.advance_if_matched(op_.m_sv))
+  gbstd::string_view  sv(opw.data(),opw.size());
+
+    if(r.advance_if_matched(sv))
     {
-      buf.emplace_back(op_.m_opco);
+      buf.emplace_back(opw);
 
       return true;
     }
@@ -72,6 +60,14 @@ m_close(close)
         }
 
       else
+        if(c == ';')
+        {
+          r.advance();
+
+          buffer.emplace_back(semicolon{});
+        }
+
+      else
         if(c == '(')
         {
           r.advance();
@@ -105,50 +101,49 @@ m_close(close)
           throw;
         }
 
-      else if(try_push(r,gbstd::string_view("..."),buffer)){}
-      else if(try_push(r,gbstd::string_view("."),buffer)){}
-      else if(try_push(r,gbstd::string_view("++"),buffer)){}
-      else if(try_push(r,gbstd::string_view("+="),buffer)){}
-      else if(try_push(r,gbstd::string_view("+"),buffer)){}
-      else if(try_push(r,gbstd::string_view("--"),buffer)){}
-      else if(try_push(r,gbstd::string_view("->"),buffer)){}
-      else if(try_push(r,gbstd::string_view("-="),buffer)){}
-      else if(try_push(r,gbstd::string_view("-"),buffer)){}
-      else if(try_push(r,gbstd::string_view("*="),buffer)){}
-      else if(try_push(r,gbstd::string_view("*"),buffer)){}
-      else if(try_push(r,gbstd::string_view("/="),buffer)){}
-      else if(try_push(r,gbstd::string_view("/"),buffer)){}
-      else if(try_push(r,gbstd::string_view("%="),buffer)){}
-      else if(try_push(r,gbstd::string_view("%"),buffer)){}
-      else if(try_push(r,gbstd::string_view("<<="),buffer)){}
-      else if(try_push(r,gbstd::string_view("<<"),buffer)){}
-      else if(try_push(r,gbstd::string_view("<="),buffer)){}
-      else if(try_push(r,gbstd::string_view("<"),buffer)){}
-      else if(try_push(r,gbstd::string_view(">>="),buffer)){}
-      else if(try_push(r,gbstd::string_view(">>"),buffer)){}
-      else if(try_push(r,gbstd::string_view(">="),buffer)){}
-      else if(try_push(r,gbstd::string_view(">"),buffer)){}
-      else if(try_push(r,gbstd::string_view("||"),buffer)){}
-      else if(try_push(r,gbstd::string_view("|="),buffer)){}
-      else if(try_push(r,gbstd::string_view("|"),buffer)){}
-      else if(try_push(r,gbstd::string_view("&&"),buffer)){}
-      else if(try_push(r,gbstd::string_view("&="),buffer)){}
-      else if(try_push(r,gbstd::string_view("&"),buffer)){}
-      else if(try_push(r,gbstd::string_view("^="),buffer)){}
-      else if(try_push(r,gbstd::string_view("^"),buffer)){}
-      else if(try_push(r,gbstd::string_view("=="),buffer)){}
-      else if(try_push(r,gbstd::string_view("="),buffer)){}
-      else if(try_push(r,gbstd::string_view("!="),buffer)){}
-      else if(try_push(r,gbstd::string_view("!"),buffer)){}
-      else if(try_push(r,gbstd::string_view("::"),buffer)){}
-      else if(try_push(r,gbstd::string_view(":"),buffer)){}
-      else if(try_push(r,gbstd::string_view(","),buffer)){}
-      else if(try_push(r,gbstd::string_view("?"),buffer)){}
-      else if(try_push(r,gbstd::string_view(";"),buffer)){}
+      else if(try_push(r,operator_word("..."),buffer)){}
+      else if(try_push(r,operator_word("."),buffer)){}
+      else if(try_push(r,operator_word("++"),buffer)){}
+      else if(try_push(r,operator_word("+="),buffer)){}
+      else if(try_push(r,operator_word("+"),buffer)){}
+      else if(try_push(r,operator_word("--"),buffer)){}
+      else if(try_push(r,operator_word("->"),buffer)){}
+      else if(try_push(r,operator_word("-="),buffer)){}
+      else if(try_push(r,operator_word("-"),buffer)){}
+      else if(try_push(r,operator_word("*="),buffer)){}
+      else if(try_push(r,operator_word("*"),buffer)){}
+      else if(try_push(r,operator_word("/="),buffer)){}
+      else if(try_push(r,operator_word("/"),buffer)){}
+      else if(try_push(r,operator_word("%="),buffer)){}
+      else if(try_push(r,operator_word("%"),buffer)){}
+      else if(try_push(r,operator_word("<<="),buffer)){}
+      else if(try_push(r,operator_word("<<"),buffer)){}
+      else if(try_push(r,operator_word("<="),buffer)){}
+      else if(try_push(r,operator_word("<"),buffer)){}
+      else if(try_push(r,operator_word(">>="),buffer)){}
+      else if(try_push(r,operator_word(">>"),buffer)){}
+      else if(try_push(r,operator_word(">="),buffer)){}
+      else if(try_push(r,operator_word(">"),buffer)){}
+      else if(try_push(r,operator_word("||"),buffer)){}
+      else if(try_push(r,operator_word("|="),buffer)){}
+      else if(try_push(r,operator_word("|"),buffer)){}
+      else if(try_push(r,operator_word("&&"),buffer)){}
+      else if(try_push(r,operator_word("&="),buffer)){}
+      else if(try_push(r,operator_word("&"),buffer)){}
+      else if(try_push(r,operator_word("^="),buffer)){}
+      else if(try_push(r,operator_word("^"),buffer)){}
+      else if(try_push(r,operator_word("=="),buffer)){}
+      else if(try_push(r,operator_word("="),buffer)){}
+      else if(try_push(r,operator_word("!="),buffer)){}
+      else if(try_push(r,operator_word("!"),buffer)){}
+      else if(try_push(r,operator_word("::"),buffer)){}
+      else if(try_push(r,operator_word(":"),buffer)){}
+      else if(try_push(r,operator_word(","),buffer)){}
+      else if(try_push(r,operator_word("?"),buffer)){}
       else
         if(r.is_pointing_identifier())
         {
-          buffer.emplace_back(gbstd::string(r.read_identifier()));
+          buffer.emplace_back(identifier(r.read_identifier()));
         }
 
       else
@@ -168,7 +163,7 @@ m_close(close)
 
   m_length = buffer.size();
 
-  m_data = new script_token[m_length+1];
+  m_data = new script_token[m_length];
 
   script_token*  p = m_data;
 

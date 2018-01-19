@@ -3,7 +3,6 @@
 
 
 #include"libgbsnd/expr.hpp"
-#include"libtok/stream_reader.hpp"
 #include<vector>
 
 
@@ -12,16 +11,21 @@ namespace devices{
 
 
 class stmt;
+class script_token_string;
 
 
 class
 block
 {
+  block*  m_parent=nullptr;
+
+  bool  m_repetition=false;
+
   std::vector<stmt>  m_stmt_list;
 
 public:
   block() noexcept{}
-  block(tok::stream_reader&  r) noexcept;
+  block(const script_token_string&  toks) noexcept;
 
   const stmt*  begin() const noexcept;
   const stmt*    end() const noexcept;
@@ -137,6 +141,8 @@ public:
   stmt&  operator=(case_stmt      cas) noexcept;
   stmt&  operator=(const stmt&   rhs) noexcept;
   stmt&  operator=(      stmt&&  rhs) noexcept;
+
+  operator bool() const noexcept{return m_kind != kind::null;}
 
   void  clear() noexcept;
 

@@ -16,8 +16,8 @@ operator=(const binary_operation&  rhs) noexcept
 
   m_operator = rhs.m_operator;
 
-  m_left_expr  = duplicate(rhs.m_left_expr );
-  m_right_expr = duplicate(rhs.m_right_expr);
+  m_left_expr  = gbstd::duplicate(rhs.m_left_expr );
+  m_right_expr = gbstd::duplicate(rhs.m_right_expr);
 
   return *this;
 }

@@ -24,13 +24,13 @@ operator=(uint64_t  i) noexcept
 
 script_token&
 script_token::
-operator=(gbstd::string&&  id) noexcept
+operator=(const identifier&  id) noexcept
 {
   clear();
 
   m_kind = kind::identifier;
 
-  new(&m_data) gbstd::string(std::move(id));
+  new(&m_data) identifier(id);
 
   return *this;
 }
@@ -38,13 +38,13 @@ operator=(gbstd::string&&  id) noexcept
 
 script_token&
 script_token::
-operator=(const operator_code&  opco) noexcept
+operator=(operator_word  opw) noexcept
 {
   clear();
 
-  m_kind = kind::operator_code;
+  m_kind = kind::operator_word;
 
-  m_data.opco = opco;
+  m_data.opw = opw;
 
   return *this;
 }
@@ -66,6 +66,18 @@ operator=(script_token_string&&  toks) noexcept
 
 script_token&
 script_token::
+operator=(semicolon  semcol) noexcept
+{
+  clear();
+
+  m_kind = kind::semicolon;
+
+  return *this;
+}
+
+
+script_token&
+script_token::
 operator=(const script_token&  rhs) noexcept
 {
   clear();
@@ -78,10 +90,10 @@ operator=(const script_token&  rhs) noexcept
       m_data.i = rhs.m_data.i;
       break;
   case(kind::identifier):
-      new(&m_data) gbstd::string(rhs.m_data.id);
+      new(&m_data) identifier(rhs.m_data.id);
       break;
-  case(kind::operator_code):
-      m_data.opco = rhs.m_data.opco;
+  case(kind::operator_word):
+      m_data.opw = rhs.m_data.opw;
       break;
   case(kind::token_string):
       new(&m_data) script_token_string(rhs.m_data.toks);
@@ -107,10 +119,10 @@ operator=(script_token&&  rhs) noexcept
       m_data.i = rhs.m_data.i;
       break;
   case(kind::identifier):
-      new(&m_data) gbstd::string(std::move(rhs.m_data.id));
+      new(&m_data) identifier(std::move(rhs.m_data.id));
       break;
-  case(kind::operator_code):
-      m_data.opco = rhs.m_data.opco;
+  case(kind::operator_word):
+      m_data.opw = rhs.m_data.opw;
       break;
   case(kind::token_string):
       new(&m_data) script_token_string(std::move(rhs.m_data.toks));
@@ -134,7 +146,7 @@ clear() noexcept
   case(kind::identifier):
       gbstd::destruct(m_data.id);
       break;
-  case(kind::operator_code):
+  case(kind::operator_word):
       break;
   case(kind::token_string):
       gbstd::destruct(m_data.toks);
@@ -144,6 +156,71 @@ clear() noexcept
 
   m_kind = kind::null;
 }
+
+
+
+
+bool
+script_token::
+is_identifier(string_view_list  ls) const noexcept
+{
+    if(is_identifier())
+    {
+      auto  idsv = m_data.id.view();
+
+        for(auto&  sv: ls)
+        {
+            if(idsv == sv)
+            {
+              return true;
+            }
+        }
+    }
+
+
+  return false;
+}
+
+
+bool
+script_token::
+is_operator_word(string_view_list  ls) const noexcept
+{
+    if(is_operator_word())
+    {
+      auto  opsv = m_data.opw.to_string_view();
+
+        for(auto&  sv: ls)
+        {
+            if(opsv == sv)
+            {
+              return true;
+            }
+        }
+    }
+
+
+  return false;
+}
+
+
+bool
+script_token::
+is_token_string(char  open, char  close) const noexcept
+{
+    if(is_token_string())
+    {
+      auto&  toks = get_token_string();
+
+      return(toks.get_open()  ==  open) &&
+            (toks.get_close() == close);
+    }
+
+
+  return false;
+}
+
+
 
 
 void
@@ -158,11 +235,14 @@ print(FILE*  f, int  indent) const noexcept
   case(kind::identifier):
       fprintf(f,"%s ",m_data.id.data());
       break;
-  case(kind::operator_code):
-      fprintf(f,"%s ",m_data.opco.get_string());
+  case(kind::operator_word):
+      fprintf(f,"%s ",m_data.opw.data());
       break;
   case(kind::token_string):
       m_data.toks.print(f,indent);
+      break;
+  case(kind::semicolon):
+      fprintf(f,";");
       break;
     }
 }

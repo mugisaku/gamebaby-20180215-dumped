@@ -25,13 +25,13 @@ operator=(uint64_t  i) noexcept
 
 operand&
 operand::
-operator=(gbstd::string&&  s) noexcept
+operator=(const identifier&  id) noexcept
 {
   clear();
 
   m_kind = kind::identifier;
 
-  m_data.s = std::move(s);
+  new(&m_data) identifier(id);
 
   return *this;
 }
@@ -65,7 +65,7 @@ operator=(const operand&  rhs) noexcept
       m_data.i = rhs.m_data.i;
       break;
   case(kind::identifier):
-      new(&m_data.s) gbstd::string(rhs.m_data.s);
+      new(&m_data) identifier(rhs.m_data.id);
       break;
   case(kind::expression):
       m_data.e = new expr(*rhs.m_data.e);
@@ -91,7 +91,7 @@ operator=(operand&&  rhs) noexcept
       m_data.i = rhs.m_data.i;
       break;
   case(kind::identifier):
-      new(&m_data.s) gbstd::string(std::move(rhs.m_data.s));
+      new(&m_data) identifier(std::move(rhs.m_data.id));
       break;
   case(kind::expression):
       m_data.e = rhs.m_data.e;
@@ -112,7 +112,7 @@ clear() noexcept
   case(kind::integer_literal):
       break;
   case(kind::identifier):
-      m_data.s.~basic_string();
+      gbstd::destruct(m_data.id);
       break;
   case(kind::expression):
       delete m_data.e;
@@ -134,7 +134,7 @@ evaluate(const execution_context&  ctx) const noexcept
       break;
   case(kind::identifier):
       {
-        return *ctx.seek_value(m_data.s);
+        return *ctx.seek_value(m_data.id.view());
       }
       break;
   case(kind::expression):

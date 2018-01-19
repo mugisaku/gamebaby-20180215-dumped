@@ -44,7 +44,21 @@ operator=(const routine&  rt) noexcept
 
   m_kind = kind::routine;
 
-  new(&m_data) routine(rt);
+  m_data.rt = &rt;
+
+  return *this;
+}
+
+
+value&
+value::
+operator=(square_wave&  sq) noexcept
+{
+  clear();
+
+  m_kind = kind::square_wave;
+
+  m_data.sq = &sq;
 
   return *this;
 }
@@ -67,7 +81,10 @@ operator=(const value&  rhs) noexcept
       m_data.r = rhs.m_data.r;
       break;
   case(kind::routine):
-      new(&m_data) routine(rhs.m_data.rt);
+      m_data.rt = rhs.m_data.rt;
+      break;
+  case(kind::square_wave):
+      m_data.sq = rhs.m_data.sq;
       break;
     }
 
@@ -93,7 +110,10 @@ operator=(value&&  rhs) noexcept
       m_data.r = rhs.m_data.r;
       break;
   case(kind::routine):
-      new(&m_data) routine(std::move(rhs.m_data.rt));
+      m_data.rt = rhs.m_data.rt;
+      break;
+  case(kind::square_wave):
+      m_data.sq = rhs.m_data.sq;
       break;
     }
 
@@ -114,7 +134,8 @@ clear() noexcept
   case(kind::reference):
       break;
   case(kind::routine):
-      m_data.rt.~routine();
+      break;
+  case(kind::square_wave):
       break;
     }
 

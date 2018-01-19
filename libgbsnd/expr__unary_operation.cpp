@@ -16,7 +16,7 @@ operator=(const unary_operation&  rhs) noexcept
 
   m_operator = rhs.m_operator;
 
-  m_expr = duplicate(rhs.m_expr);
+  m_expr = gbstd::duplicate(rhs.m_expr);
 
   return *this;
 }

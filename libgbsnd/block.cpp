@@ -1,4 +1,5 @@
 #include"libgbsnd/stmt.hpp"
+#include"libgbsnd/script.hpp"
 
 
 namespace gbsnd{
@@ -6,71 +7,45 @@ namespace devices{
 
 
 block::
-block(tok::stream_reader&  r) noexcept
+block(const script_token_string&  toks) noexcept
 {
-    for(;;)
+  script_token_cursor  cur(toks);
+
+    while(cur)
     {
-      r.skip_spaces();
-
-        if(r.is_reached_end())
+        if(cur[0].is_identifier())
         {
+          using  sv = gbstd::string_view;
+
+          sv  id(cur[0].get_identifier().view());
+
+               if(id == sv("return")){}
+          else if(id == sv("while")){}
+          else if(id == sv("if")){}
+          else if(id == sv("for")){}
+          else if(id == sv("switch")){}
+          else if(id == sv("case")){}
+          else if(id == sv("goto")){}
+          else if(id == sv("default")){}
+          else if(id == sv("break")){}
+          else if(id == sv("continue")){}
+          else
+            {
+              
+            }
+        }
+
+      else
+        if(cur[0].is_semicolon())
+        {
+          cur += 1;
+        }
+
+      else
+        {
+          printf("**error**\n");
+
           break;
-        }
-
-      else
-        if(r.is_pointing_identifier())
-        {
-          auto  id = r.read_identifier();
-
-               if(id == gbstd::string_view("return")){}
-          else if(id == gbstd::string_view("while")){}
-          else if(id == gbstd::string_view("if")){}
-          else if(id == gbstd::string_view("for")){}
-          else if(id == gbstd::string_view("switch")){}
-          else if(id == gbstd::string_view("case")){}
-          else if(id == gbstd::string_view("goto")){}
-          else if(id == gbstd::string_view("default")){}
-          else if(id == gbstd::string_view("break")){}
-          else if(id == gbstd::string_view("continue")){}
-          else if(id == gbstd::string_view("true")){}
-          else if(id == gbstd::string_view("false")){}
-        }
-
-      else
-        if(r.is_pointing_number())
-        {
-        }
-
-      else
-        {
-          auto  c = r.get_char();
-
-            if(c == '(')
-            {
-              r.advance();
-            }
-
-          else
-            if(c == '[')
-            {
-              r.advance();
-            }
-
-          else
-            if(c == '{')
-            {
-              r.advance();
-            }
-
-          else
-            if((c == ')') ||
-               (c == ']') ||
-               (c == '}'))
-            {
-              printf("開いてない\'%c\'が出現\n",c);
-
-              break;
-            }
         }
     }
 }

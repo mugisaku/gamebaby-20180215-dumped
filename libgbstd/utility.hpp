@@ -11,10 +11,18 @@ namespace gbstd{
 
 
 template<typename  T>
-void
+inline void
 destruct(T&  t) noexcept
 {
   t.~T();
+}
+
+
+template<typename  T>
+inline T*
+duplicate(T*  src) noexcept
+{
+  return src? new T(*src):nullptr;
 }
 
 

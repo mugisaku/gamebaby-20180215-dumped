@@ -4,6 +4,7 @@
 
 #include<cstdint>
 #include<cstdio>
+#include"libgbstd/string.hpp"
 
 
 namespace gbsnd{
@@ -24,6 +25,8 @@ moddir: uint8_t //Modification Direction:変更方向
 class
 device
 {
+  gbstd::string  m_name;
+
 protected:
   uint32_t  m_time=0;
 
@@ -50,6 +53,11 @@ protected:
   void  check_play_length() noexcept;
 
 public:
+  bool  operator==(gbstd::string_view  name) const noexcept{return m_name == name;}
+
+  void                  set_name(gbstd::string_view  name)       noexcept{       m_name = name;}
+  const gbstd::string&  get_name(                        ) const noexcept{return m_name       ;}
+
   uint32_t  get_time() const noexcept{return m_time;}
 
   void      set_number_of_cycles_per_seconds(uint32_t  n)       noexcept;

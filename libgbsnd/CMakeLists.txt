@@ -15,11 +15,11 @@ set(SOURCES
   execution_context.cpp
   execution_frame.cpp
   value.cpp
-  tree_node.cpp
-  tree_block.cpp
+  shared_string.cpp
   script.cpp
   script_token.cpp
   script_token_string.cpp
+  script_token_cursor.cpp
 )
 
 

@@ -3,19 +3,12 @@
 
 
 #include"libgbsnd/object.hpp"
-#include"libtok/stream_reader.hpp"
+#include"libgbsnd/script.hpp"
+#include"libgbstd/utility.hpp"
 
 
 namespace gbsnd{
 namespace devices{
-
-
-template<typename  T>
-inline T*
-duplicate(T*  src) noexcept
-{
-  return src? new T(*src):nullptr;
-}
 
 
 class expr;
@@ -35,7 +28,7 @@ operand
   union data{
     uint64_t  i;
 
-    gbstd::string  s;
+    identifier  id;
 
     expr*  e;
 
@@ -47,14 +40,14 @@ operand
 public:
   operand() noexcept{}
   operand(uint64_t  i) noexcept{*this = i;}
-  operand(gbstd::string&&  s) noexcept{*this = std::move(s);}
+  operand(const identifier&  id) noexcept{*this = std::move(id);}
   operand(expr*  e) noexcept{*this = e;}
   operand(const operand&   rhs) noexcept{*this = rhs;}
   operand(      operand&&  rhs) noexcept{*this = std::move(rhs);}
  ~operand(){clear();}
 
   operand&  operator=(uint64_t  i) noexcept;
-  operand&  operator=(gbstd::string&&  s) noexcept;
+  operand&  operator=(const identifier&  id) noexcept;
   operand&  operator=(expr*  e) noexcept;
   operand&  operator=(const operand&   rhs) noexcept;
   operand&  operator=(      operand&&  rhs) noexcept;
@@ -67,7 +60,7 @@ public:
   bool  is_expression()       const noexcept{return m_kind == kind::expression;}
 
   uint64_t              get_integer_literal()  const noexcept{return m_data.i;}
-  const gbstd::string&  get_identifier()       const noexcept{return m_data.s;}
+  const identifier&     get_identifier()       const noexcept{return m_data.id;}
   const expr&           get_expression()       const noexcept{return *m_data.e;}
 
   value  evaluate(const execution_context&  ctx) const noexcept;
@@ -217,7 +210,7 @@ public:
 
 
 expr  make_expr(gbstd::string_view  sv) noexcept;
-expr  make_expr(tok::stream_reader&  r, char  open, char  close) noexcept;
+expr  make_expr(script_token_cursor&  cur) noexcept;
 
 
 }
