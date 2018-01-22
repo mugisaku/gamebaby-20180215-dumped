@@ -10,6 +10,32 @@ namespace devices{
 
 value&
 value::
+operator=(undefined  u) noexcept
+{
+  clear();
+
+  m_kind = kind::undefined;
+
+  return *this;
+}
+
+
+value&
+value::
+operator=(bool  b) noexcept
+{
+  clear();
+
+  m_kind = kind::boolean;
+
+  m_data.b = b;
+
+  return *this;
+}
+
+
+value&
+value::
 operator=(int  i) noexcept
 {
   clear();
@@ -74,6 +100,9 @@ operator=(const value&  rhs) noexcept
 
     switch(m_kind)
     {
+  case(kind::boolean):
+      m_data.b = rhs.m_data.b;
+      break;
   case(kind::integer):
       m_data.i = rhs.m_data.i;
       break;
@@ -103,6 +132,9 @@ operator=(value&&  rhs) noexcept
 
     switch(m_kind)
     {
+  case(kind::boolean):
+      m_data.b = rhs.m_data.b;
+      break;
   case(kind::integer):
       m_data.i = rhs.m_data.i;
       break;
@@ -142,6 +174,113 @@ clear() noexcept
 
   m_kind = kind::null;
 }
+
+
+
+
+value
+value::
+convert_to_integer() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::undefined):
+      break;
+  case(kind::integer):
+      return value(m_data.i);
+      break;
+  case(kind::reference):
+      return m_data.r().get_value().convert_to_integer();
+      break;
+  case(kind::routine):
+      break;
+  case(kind::square_wave):
+      break;
+    }
+
+
+  return value(undefined());
+}
+
+
+value
+value::
+convert_to_boolean() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::undefined):
+      return value(false);
+      break;
+  case(kind::integer):
+      return value(m_data.i? true:false);
+      break;
+  case(kind::reference):
+      return m_data.r().get_value().convert_to_boolean();
+      break;
+  case(kind::routine):
+      return value(true);
+      break;
+  case(kind::square_wave):
+      return value(true);
+      break;
+    }
+
+
+  return value(undefined());
+}
+
+
+value
+value::
+convert_to_routine() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::undefined):
+      break;
+  case(kind::integer):
+      break;
+  case(kind::reference):
+      return m_data.r().get_value().convert_to_routine();
+      break;
+  case(kind::routine):
+      return *this;
+      break;
+  case(kind::square_wave):
+      break;
+    }
+
+
+  return value(undefined());
+}
+
+
+value
+value::
+convert_to_square_wave() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::undefined):
+      break;
+  case(kind::integer):
+      break;
+  case(kind::reference):
+      return m_data.r().get_value().convert_to_square_wave();
+      break;
+  case(kind::routine):
+      break;
+  case(kind::square_wave):
+      return *this;
+      break;
+    }
+
+
+  return value(undefined());
+}
+
+
 
 
 }}

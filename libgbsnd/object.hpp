@@ -29,11 +29,16 @@ public:
 };
 
 
+class undefined{public: constexpr undefined() noexcept{}};
+
+
 class
 value
 {
   enum class kind{
     null,
+    undefined,
+    boolean,
     integer,
     reference,
     routine,
@@ -42,6 +47,7 @@ value
   } m_kind=kind::null;
 
   union data{
+    bool             b;
     int              i;
     reference        r;
     const routine*  rt;
@@ -54,6 +60,8 @@ value
 
 public:
   value() noexcept{}
+  value(undefined  u) noexcept{*this = u;}
+  value(bool  b) noexcept{*this = b;}
   value(int  i) noexcept{*this = i;}
   value(reference  r) noexcept{*this = r;}
   value(const routine&  rt) noexcept{*this = rt;}
@@ -62,6 +70,8 @@ public:
   value(      value&&  rhs) noexcept{*this = std::move(rhs);}
  ~value(){clear();}
 
+  value&  operator=(undefined  u) noexcept;
+  value&  operator=(bool  b) noexcept;
   value&  operator=(int  i) noexcept;
   value&  operator=(reference  r) noexcept;
   value&  operator=(const routine&  rt) noexcept;
@@ -69,17 +79,27 @@ public:
   value&  operator=(const value&   rhs) noexcept;
   value&  operator=(      value&&  rhs) noexcept;
 
+  operator bool() const noexcept{return (m_kind != kind::null) && !is_undefined();}
+
   void  clear() noexcept;
 
+  bool  is_undefined()   const noexcept{return m_kind == kind::undefined;}
+  bool  is_boolean()     const noexcept{return m_kind == kind::boolean;}
   bool  is_reference()   const noexcept{return m_kind == kind::reference;}
   bool  is_integer()     const noexcept{return m_kind == kind::integer;}
   bool  is_routine()     const noexcept{return m_kind == kind::routine;}
   bool  is_square_wavw() const noexcept{return m_kind == kind::square_wave;}
 
-  int             get_reference()   const noexcept{return m_data.i;}
-  reference       get_integer()     const noexcept{return m_data.r;}
+  int             get_integer()     const noexcept{return m_data.i;}
+  bool            get_boolean()     const noexcept{return m_data.b;}
+  reference       get_reference()   const noexcept{return m_data.r;}
   const routine&  get_routine()     const noexcept{return *m_data.rt;}
   square_wave&    get_square_wave() const noexcept{return *m_data.sq;}
+
+  value  convert_to_integer() const noexcept;
+  value  convert_to_boolean() const noexcept;
+  value  convert_to_routine() const noexcept;
+  value  convert_to_square_wave() const noexcept;
 
 };
 
