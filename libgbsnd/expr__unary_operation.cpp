@@ -14,7 +14,8 @@ operator=(const unary_operation&  rhs) noexcept
 {
   clear();
 
-  m_operator = rhs.m_operator;
+  m_kind = rhs.m_kind;
+  m_word = rhs.m_word;
 
   m_expr = gbstd::duplicate(rhs.m_expr);
 
@@ -28,8 +29,9 @@ operator=(unary_operation&&  rhs) noexcept
 {
   clear();
 
-  std::swap(m_operator,rhs.m_operator);
-  std::swap(m_expr    ,rhs.m_expr    );
+  std::swap(m_kind,rhs.m_kind);
+  std::swap(m_word,rhs.m_word);
+  std::swap(m_expr,rhs.m_expr);
 
   return *this;
 }
@@ -37,12 +39,22 @@ operator=(unary_operation&&  rhs) noexcept
 
 void
 unary_operation::
-assign(unary_operator  op, expr*  expr) noexcept
+assign(operator_word  word, expr*  expr) noexcept
 {
   clear();
 
-  m_operator = op;
-  m_expr     = expr;
+  m_word = word;
+  m_expr = expr;
+}
+
+
+void
+unary_operation::
+reset(expr*  expr) noexcept
+{
+  clear();
+
+  m_expr = expr;
 }
 
 
@@ -59,6 +71,33 @@ value
 unary_operation::
 evaluate(const execution_context&  ctx) const noexcept
 {
+}
+
+
+void
+unary_operation::
+print() const noexcept
+{
+    if(is_prefix())
+    {
+      short_string  ss(m_word);
+
+      printf("%s",ss.data());
+    }
+
+
+    if(m_expr)
+    {
+      m_expr->print();
+    }
+
+
+    if(is_postfix())
+    {
+      short_string  ss(m_word);
+
+      printf("%s",ss.data());
+    }
 }
 
 

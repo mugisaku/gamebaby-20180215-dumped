@@ -14,7 +14,7 @@ operator=(const binary_operation&  rhs) noexcept
 {
   clear();
 
-  m_operator = rhs.m_operator;
+  m_word = rhs.m_word;
 
   m_left_expr  = gbstd::duplicate(rhs.m_left_expr );
   m_right_expr = gbstd::duplicate(rhs.m_right_expr);
@@ -29,7 +29,7 @@ operator=(binary_operation&&  rhs) noexcept
 {
   clear();
 
-  std::swap(m_operator  ,rhs.m_operator  );
+  std::swap(m_word      ,rhs.m_word      );
   std::swap(m_left_expr ,rhs.m_left_expr );
   std::swap(m_right_expr,rhs.m_right_expr);
 
@@ -39,13 +39,24 @@ operator=(binary_operation&&  rhs) noexcept
 
 void
 binary_operation::
-assign(binary_operator  op, expr*  l, expr*  r) noexcept
+assign(operator_word  word, expr*  l, expr*  r) noexcept
 {
   clear();
 
-  m_operator   = op;
-  m_left_expr  =  l;
-  m_right_expr =  r;
+  m_word       = word;
+  m_left_expr  =    l;
+  m_right_expr =    r;
+}
+
+
+void
+binary_operation::
+reset(expr*  l, expr*  r) noexcept
+{
+  clear();
+
+  m_left_expr  = l;
+  m_right_expr = r;
 }
 
 
@@ -65,6 +76,27 @@ value
 binary_operation::
 evaluate(const execution_context&  ctx) const noexcept
 {
+}
+
+
+void
+binary_operation::
+print() const noexcept
+{
+    if(m_left_expr)
+    {
+      m_left_expr->print();
+    }
+
+
+  short_string  ss(m_word);
+
+  printf("%s",ss.data());
+
+    if(m_right_expr)
+    {
+      m_right_expr->print();
+    }
 }
 
 

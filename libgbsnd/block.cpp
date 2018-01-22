@@ -31,8 +31,11 @@ block(const script_token_string&  toks) noexcept
           else if(id == sv("continue")){}
           else
             {
-              
+              auto  e = make_expr(cur);
+
+              e->print();
             }
+cur += 1;
         }
 
       else

@@ -5,6 +5,7 @@
 #include"libgbsnd/object.hpp"
 #include"libgbsnd/script.hpp"
 #include"libgbstd/utility.hpp"
+#include<memory>
 
 
 namespace gbsnd{
@@ -65,29 +66,28 @@ public:
 
   value  evaluate(const execution_context&  ctx) const noexcept;
 
-};
+  void  print() const noexcept;
 
-
-enum class
-unary_operator
-{
-  null,
-  neg,
-  log_not,
-  bit_not,
 };
 
 
 class
 unary_operation
 {
-  unary_operator  m_operator=unary_operator::null;
+  enum class kind{
+     prefix,
+    postfix,
+
+  } m_kind;
+
+  operator_word  m_word;
 
   expr*  m_expr=nullptr;
 
 public:
   unary_operation() noexcept;
-  unary_operation(unary_operator  op, expr*  expr) noexcept{assign(op,expr);}
+  unary_operation(bool  prefix, operator_word  word) noexcept: m_kind(prefix? kind::prefix:kind::postfix), m_word(word){}
+  unary_operation(operator_word  word, expr*  expr) noexcept{assign(word,expr);}
   unary_operation(const unary_operation&   rhs) noexcept{*this = rhs;}
   unary_operation(      unary_operation&&  rhs) noexcept{*this = std::move(rhs);}
  ~unary_operation(){clear();}
@@ -95,52 +95,34 @@ public:
   unary_operation&  operator=(const unary_operation&   rhs) noexcept;
   unary_operation&  operator=(      unary_operation&&  rhs) noexcept;
 
-  void  assign(unary_operator  op, expr*  expr) noexcept;
+  void  assign(operator_word  word, expr*  expr) noexcept;
+
+  void  reset(expr*  expr) noexcept;
 
   void  clear() noexcept;
 
+  bool  is_prefix()  const noexcept{return m_kind == kind::prefix;}
+  bool  is_postfix() const noexcept{return m_kind == kind::postfix;}
+
   value  evaluate(const execution_context&  ctx) const noexcept;
 
-};
-
-
-enum class
-binary_operator
-{
-  null,
-  add,
-  sub,
-  mul,
-  div,
-  rem,
-  shl,
-  shr,
-  bit_and,
-  bit_or,
-  bit_xor,
-  log_nd,
-  log_or,
-  eq,
-  neq,
-  lt,
-  lteq,
-  gt,
-  gteq,
-  asmt,
+  void  print() const noexcept;
 
 };
+
 
 class
 binary_operation
 {
-  binary_operator  m_operator=binary_operator::null;
+  operator_word  m_word;
 
   expr*   m_left_expr=nullptr;
   expr*  m_right_expr=nullptr;
 
 public:
   binary_operation() noexcept;
-  binary_operation(binary_operator  op, expr*  l, expr*  r) noexcept{assign(op,l,r);}
+  binary_operation(operator_word  word) noexcept: m_word(word){}
+  binary_operation(operator_word  word, expr*  l, expr*  r) noexcept{assign(word,l,r);}
   binary_operation(const binary_operation&   rhs) noexcept{*this = rhs;}
   binary_operation(      binary_operation&&  rhs) noexcept{*this = std::move(rhs);}
  ~binary_operation(){clear();}
@@ -148,11 +130,15 @@ public:
   binary_operation&  operator=(const binary_operation&   rhs) noexcept;
   binary_operation&  operator=(      binary_operation&&  rhs) noexcept;
 
-  void  assign(binary_operator  op, expr*  l, expr*  r) noexcept;
+  void  assign(operator_word  word, expr*  l, expr*  r) noexcept;
+
+  void  reset(expr*  l, expr*  r) noexcept;
 
   void  clear() noexcept;
   
   value  evaluate(const execution_context&  ctx) const noexcept;
+
+  void  print() const noexcept;
 
 };
 
@@ -163,15 +149,14 @@ expr
   enum class kind{
     null,
     operand,
-            unary_operation,
-     prefix_unary_operation,
-    postfix_unary_operation,
+    unary_operation,
     binary_operation,
 
   } m_kind=kind::null;
 
   union data{
-    operand               o;
+    operand  o;
+
     unary_operation    unop;
     binary_operation  binop;
 
@@ -200,17 +185,23 @@ public:
   bool  is_unary_operation()  const noexcept{return m_kind == kind::unary_operation;}
   bool  is_binary_operation() const noexcept{return m_kind == kind::binary_operation;}
 
-  const operand&           get_operand()          const noexcept{return m_data.o;}
+  operand&           get_operand()          noexcept{return m_data.o;}
+  unary_operation&   get_unary_operation()  noexcept{return m_data.unop;}
+  binary_operation&  get_binary_operation() noexcept{return m_data.binop;}
+
+  const operand&           get_operand()                 const noexcept{return m_data.o;}
   const unary_operation&   get_unary_operation()  const noexcept{return m_data.unop;}
-  const binary_operation&  get_binary_operation() const noexcept{return m_data.binop;}
+  const binary_operation&  get_binary_operation()        const noexcept{return m_data.binop;}
 
   value  evaluate(const execution_context&  ctx) const noexcept;
+
+  void  print() const noexcept;
 
 };
 
 
-expr  make_expr(gbstd::string_view  sv) noexcept;
-expr  make_expr(script_token_cursor&  cur) noexcept;
+std::unique_ptr<expr>  make_expr(gbstd::string_view  sv) noexcept;
+std::unique_ptr<expr>  make_expr(script_token_cursor&  cur) noexcept;
 
 
 }

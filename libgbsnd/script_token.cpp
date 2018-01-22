@@ -188,11 +188,9 @@ is_operator_word(string_view_list  ls) const noexcept
 {
     if(is_operator_word())
     {
-      auto  opsv = m_data.opw.to_string_view();
-
         for(auto&  sv: ls)
         {
-            if(opsv == sv)
+            if(m_data.opw == operator_word(sv))
             {
               return true;
             }

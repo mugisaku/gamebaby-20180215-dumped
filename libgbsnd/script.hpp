@@ -20,30 +20,37 @@ class script_token;
 class
 operator_word
 {
-  char  m_data[4];
-
-  size_t  m_length;
+  uint32_t  m_data;
 
 public:
+  constexpr operator_word() noexcept: m_data(0){}
+
   constexpr operator_word(gbstd::string_view  sv) noexcept:
-  m_data{(sv.size() >= 1)? sv[0]:static_cast<char>(0),
-         (sv.size() >= 2)? sv[1]:static_cast<char>(0),
-         (sv.size() >= 3)? sv[2]:static_cast<char>(0),0},m_length(sv.size()){}
+  m_data(((sv.size() >= 1)? (sv[0]<<24):0)|
+         ((sv.size() >= 2)? (sv[1]<<16):0)|
+         ((sv.size() >= 3)? (sv[2]<< 8):0)){}
+
+  constexpr bool  operator==(const operator_word&  rhs) const noexcept{return m_data == rhs.m_data;}
+
+  constexpr uint32_t  data() const noexcept{return m_data;}
+
+};
+
+
+class
+short_string
+{
+  char  m_data[4];
+
+public:
+  constexpr short_string() noexcept: m_data{0}{}
+
+  constexpr short_string(operator_word  opw) noexcept:
+  m_data{static_cast<char>((opw.data()>>24)     ),
+         static_cast<char>((opw.data()>>16)&0xFF),
+         static_cast<char>((opw.data()>> 8)&0xFF),0}{}
 
   constexpr const char*  data() const noexcept{return m_data;}
-  constexpr size_t       size() const noexcept{return m_length;}
-
-  constexpr operator uint32_t() const noexcept
-  {
-    return (m_data[0]<<24)|
-           (m_data[1]<<16)|
-           (m_data[2]<< 8);
-  }
-
-  constexpr gbstd::string_view  to_string_view() const noexcept
-  {
-    return gbstd::string_view(data(),size());
-  }
 
 };
 

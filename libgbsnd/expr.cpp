@@ -31,7 +31,7 @@ operator=(unary_operation&&  unop) noexcept
 
   m_kind = kind::unary_operation;
 
-  m_data.unop = std::move(unop);
+  new(&m_data) unary_operation(std::move(unop));
 
   return *this;
 }
@@ -45,7 +45,7 @@ operator=(binary_operation&&  binop) noexcept
 
   m_kind = kind::binary_operation;
 
-  m_data.binop = std::move(binop);
+  new(&m_data) binary_operation(std::move(binop));
 
   return *this;
 }
@@ -65,10 +65,10 @@ operator=(const expr&  rhs) noexcept
       new(&m_data) operand(rhs.m_data.o);
       break;
   case(kind::unary_operation):
-      new(&m_data.unop) unary_operation(rhs.m_data.unop);
+      new(&m_data) unary_operation(rhs.m_data.unop);
       break;
   case(kind::binary_operation):
-      new(&m_data.binop) binary_operation(rhs.m_data.binop);
+      new(&m_data) binary_operation(rhs.m_data.binop);
       break;
     }
 
@@ -91,10 +91,10 @@ operator=(expr&&  rhs) noexcept
       new(&m_data) operand(std::move(rhs.m_data.o));
       break;
   case(kind::unary_operation):
-      new(&m_data.unop) unary_operation(std::move(rhs.m_data.unop));
+      new(&m_data) unary_operation(std::move(rhs.m_data.unop));
       break;
   case(kind::binary_operation):
-      new(&m_data.binop) binary_operation(std::move(rhs.m_data.binop));
+      new(&m_data) binary_operation(std::move(rhs.m_data.binop));
       break;
     }
 
@@ -111,13 +111,13 @@ clear() noexcept
     switch(m_kind)
     {
   case(kind::operand):
-      m_data.o.~operand();
+      gbstd::destruct(m_data.o);
       break;
   case(kind::unary_operation):
-      m_data.unop.~unary_operation();
+      gbstd::destruct(m_data.unop);
       break;
   case(kind::binary_operation):
-      m_data.binop.~binary_operation();
+      gbstd::destruct(m_data.binop);
       break;
     }
 
@@ -145,6 +145,25 @@ evaluate(const execution_context&  ctx) const noexcept
 
 
   return value();
+}
+
+
+void
+expr::
+print() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::operand):
+      return m_data.o.print();
+      break;
+  case(kind::unary_operation):
+      return m_data.unop.print();
+      break;
+  case(kind::binary_operation):
+      return m_data.binop.print();
+      break;
+    }
 }
 
 

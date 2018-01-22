@@ -147,6 +147,25 @@ evaluate(const execution_context&  ctx) const noexcept
 }
 
 
+void
+operand::
+print() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::integer_literal):
+      printf("%lu",m_data.i);
+      break;
+  case(kind::identifier):
+      printf("%s",m_data.id.data());
+      break;
+  case(kind::expression):
+      m_data.e->print();
+      break;
+    }
+}
+
+
 }}
 
 
