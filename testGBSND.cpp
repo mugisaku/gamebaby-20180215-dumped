@@ -127,6 +127,7 @@ main(int  argc, char**  argv)
 
   auto  scr = gbsnd::script::build_from_file("../gb.snd.txt");
 
+
   SDL_ShowCursor(SDL_DISABLE);
 
   window = SDL_CreateWindow("GAME BABY - " __DATE__,

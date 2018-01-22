@@ -72,7 +72,8 @@ public:
 
   constexpr int  precedence() const noexcept{return m_precedence;}
 
-  constexpr bool  operator<(const operator_egg&  rhs) const noexcept{return m_precedence < rhs.m_precedence;}
+  constexpr bool  operator==(const operator_egg&  rhs) const noexcept{return m_precedence == rhs.m_precedence;}
+  constexpr bool  operator< (const operator_egg&  rhs) const noexcept{return m_precedence <  rhs.m_precedence;}
 
   constexpr bool  is_right_to_left() const noexcept{return m_right_to_left;}
 
@@ -115,6 +116,15 @@ public:
       {
         auto&  bk = m_operator_stack.back();
 
+          if(bk == opeg)
+          {
+              if(opeg.is_right_to_left())
+              {
+                break;
+              }
+          }
+
+        else
           if(bk < opeg)
           {
             break;

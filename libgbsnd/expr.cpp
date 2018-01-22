@@ -152,18 +152,23 @@ void
 expr::
 print() const noexcept
 {
+  printf("(");
+
     switch(m_kind)
     {
   case(kind::operand):
-      return m_data.o.print();
+      m_data.o.print();
       break;
   case(kind::unary_operation):
-      return m_data.unop.print();
+      m_data.unop.print();
       break;
   case(kind::binary_operation):
-      return m_data.binop.print();
+      m_data.binop.print();
       break;
     }
+
+
+  printf(")");
 }
 
 

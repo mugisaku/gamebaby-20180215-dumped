@@ -34,6 +34,7 @@ block(const script_token_string&  toks) noexcept
               auto  e = make_expr(cur);
 
               e->print();
+printf("\n");
             }
 cur += 1;
         }
