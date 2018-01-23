@@ -19,24 +19,46 @@ block(const script_token_string&  toks) noexcept
 
           sv  id(cur[0].get_identifier().view());
 
-               if(id == sv("return")){}
+            if(id == sv("return"))
+            {
+            }
+
           else if(id == sv("while")){}
           else if(id == sv("if")){}
           else if(id == sv("for")){}
           else if(id == sv("switch")){}
           else if(id == sv("case")){}
           else if(id == sv("goto")){}
-          else if(id == sv("default")){}
-          else if(id == sv("break")){}
-          else if(id == sv("continue")){}
+          else
+            if(id == sv("default"))
+            {
+              m_stmt_list.emplace_back(default_stmt());
+
+              ++cur;
+            }
+
+          else
+            if(id == sv("break"))
+            {
+              m_stmt_list.emplace_back(break_stmt());
+
+              ++cur;
+            }
+
+          else
+            if(id == sv("continue"))
+            {
+              m_stmt_list.emplace_back(continue_stmt());
+
+              ++cur;
+            }
+
           else
             {
               auto  e = make_expr(cur);
 
-              e->print();
-printf("\n");
+              m_stmt_list.emplace_back();
             }
-cur += 1;
         }
 
       else

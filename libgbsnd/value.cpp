@@ -78,6 +78,20 @@ operator=(const routine&  rt) noexcept
 
 value&
 value::
+operator=(const property&  pr) noexcept
+{
+  clear();
+
+  m_kind = kind::property;
+
+  m_data.pr = pr;
+
+  return *this;
+}
+
+
+value&
+value::
 operator=(square_wave&  sq) noexcept
 {
   clear();
@@ -112,6 +126,9 @@ operator=(const value&  rhs) noexcept
   case(kind::routine):
       m_data.rt = rhs.m_data.rt;
       break;
+  case(kind::property):
+      m_data.pr = rhs.m_data.pr;
+      break;
   case(kind::square_wave):
       m_data.sq = rhs.m_data.sq;
       break;
@@ -144,6 +161,9 @@ operator=(value&&  rhs) noexcept
   case(kind::routine):
       m_data.rt = rhs.m_data.rt;
       break;
+  case(kind::property):
+      m_data.pr = rhs.m_data.pr;
+      break;
   case(kind::square_wave):
       m_data.sq = rhs.m_data.sq;
       break;
@@ -166,8 +186,6 @@ clear() noexcept
   case(kind::reference):
       break;
   case(kind::routine):
-      break;
-  case(kind::square_wave):
       break;
     }
 
@@ -195,8 +213,6 @@ convert_to_integer() const noexcept
       return m_data.r().get_value().convert_to_integer();
       break;
   case(kind::routine):
-      break;
-  case(kind::square_wave):
       break;
     }
 
@@ -226,9 +242,6 @@ convert_to_boolean() const noexcept
   case(kind::routine):
       return value(true);
       break;
-  case(kind::square_wave):
-      return value(true);
-      break;
     }
 
 
@@ -252,35 +265,6 @@ convert_to_routine() const noexcept
       return m_data.r().get_value().convert_to_routine();
       break;
   case(kind::routine):
-      return *this;
-      break;
-  case(kind::square_wave):
-      break;
-    }
-
-
-  return value(undefined());
-}
-
-
-value
-value::
-convert_to_square_wave() const noexcept
-{
-    switch(m_kind)
-    {
-  case(kind::undefined):
-      break;
-  case(kind::boolean):
-      break;
-  case(kind::integer):
-      break;
-  case(kind::reference):
-      return m_data.r().get_value().convert_to_square_wave();
-      break;
-  case(kind::routine):
-      break;
-  case(kind::square_wave):
       return *this;
       break;
     }
@@ -310,6 +294,9 @@ print() const noexcept
       break;
   case(kind::routine):
       printf("routine");
+      break;
+  case(kind::property):
+      printf("property");
       break;
   case(kind::square_wave):
       printf("square_wave");

@@ -289,6 +289,20 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("."))
     {
+      auto  lv = m_left_expr->evaluate(ctx);
+
+        if(lv.is_reference() && m_right_expr->is_operand())
+        {
+          auto&  o = m_right_expr->get_operand();
+
+            if(o.is_identifier())
+            {
+              auto&  obj = lv.get_reference()();
+            }
+        }
+
+
+      printf("メンバアクセスエッラー");
     }
 
   else

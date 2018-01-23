@@ -76,10 +76,17 @@ public:
 };
 
 
-struct
+class
 return_stmt
 {
-  devices::expr  expr;
+  expr  m_expr;
+
+public:
+  return_stmt() noexcept{}
+  return_stmt(expr&&  expr) noexcept:
+  m_expr(std::move(expr)){}
+
+  const expr&  get_expr() const noexcept{return m_expr;}
 
 };
 
@@ -106,7 +113,8 @@ stmt
   } m_kind=kind::null;
 
   union data{
-    expr           e;
+    expr  e;
+
     block        blk;
     label_stmt   lbl;
     return_stmt  ret;

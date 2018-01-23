@@ -53,11 +53,32 @@ operand&
 operand::
 operator=(const identifier&  id) noexcept
 {
-  clear();
+    if(id == gbstd::string_view("undefined"))
+    {
+      *this = undefined();
+    }
 
-  m_kind = kind::identifier;
+  else
+    if(id == gbstd::string_view("true"))
+    {
+      *this = true;
+    }
 
-  new(&m_data) identifier(id);
+  else
+    if(id == gbstd::string_view("false"))
+    {
+      *this = false;
+    }
+
+  else
+    {
+      clear();
+
+      m_kind = kind::identifier;
+
+      new(&m_data) identifier(id);
+    }
+
 
   return *this;
 }

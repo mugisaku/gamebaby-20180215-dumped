@@ -190,6 +190,8 @@ public:
   expr&  operator=(const expr&   rhs) noexcept;
   expr&  operator=(      expr&&  rhs) noexcept;
 
+  operator bool() const noexcept{return m_kind != kind::null;}
+
   void  clear() noexcept;
 
   bool  is_operand()          const noexcept{return m_kind == kind::operand;}

@@ -29,6 +29,8 @@ public:
   shared_string&  operator=(const shared_string&   rhs) noexcept;
   shared_string&  operator=(      shared_string&&  rhs) noexcept;
 
+  bool  operator==(gbstd::string_view  sv) const noexcept;
+
   const char*  data() const noexcept;
   size_t       size() const noexcept;
 

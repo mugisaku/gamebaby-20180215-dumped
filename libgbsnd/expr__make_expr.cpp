@@ -153,6 +153,12 @@ public:
       }
 
 
+      if(m_expr_stack.empty())
+      {
+        return nullptr;
+      }
+
+
     std::vector<std::unique_ptr<expr>>  buffer;
 
       for(auto&  e: m_expr_stack)
@@ -307,6 +313,28 @@ make_expr(script_token_cursor&  cur) noexcept
           else
             {
               printf("不明な演算子\n");
+            }
+        }
+
+      else
+        if(tok.is_token_string())
+        {
+          auto&  toks = tok.get_token_string();
+
+            if((toks.get_open()  == '(') &&
+               (toks.get_close() == ')'))
+            {
+            }
+
+          else
+            if((toks.get_open()  == '[') &&
+               (toks.get_close() == ']'))
+            {
+             }
+
+          else
+            {
+              printf("不明な字句列\n");
             }
         }
 

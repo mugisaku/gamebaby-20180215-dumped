@@ -91,6 +91,14 @@ operator=(shared_string&&  rhs) noexcept
 
 
 
+bool
+shared_string::
+operator==(gbstd::string_view  sv) const noexcept
+{
+  return gbstd::string_view(m_data->data,m_data->length) == sv;
+}
+
+
 const char*
 shared_string::
 data() const noexcept
