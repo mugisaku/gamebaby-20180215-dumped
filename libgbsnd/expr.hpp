@@ -219,6 +219,7 @@ std::unique_ptr<expr>  make_expr(script_token_cursor&  cur) noexcept;
 
 
 using devices::expr;
+using devices::make_expr;
 
 
 }

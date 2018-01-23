@@ -186,6 +186,8 @@ convert_to_integer() const noexcept
     {
   case(kind::undefined):
       break;
+  case(kind::boolean):
+      break;
   case(kind::integer):
       return value(m_data.i);
       break;
@@ -211,6 +213,9 @@ convert_to_boolean() const noexcept
     {
   case(kind::undefined):
       return value(false);
+      break;
+  case(kind::boolean):
+      return *this;
       break;
   case(kind::integer):
       return value(m_data.i? true:false);
@@ -239,6 +244,8 @@ convert_to_routine() const noexcept
     {
   case(kind::undefined):
       break;
+  case(kind::boolean):
+      break;
   case(kind::integer):
       break;
   case(kind::reference):
@@ -264,6 +271,8 @@ convert_to_square_wave() const noexcept
     {
   case(kind::undefined):
       break;
+  case(kind::boolean):
+      break;
   case(kind::integer):
       break;
   case(kind::reference):
@@ -281,6 +290,32 @@ convert_to_square_wave() const noexcept
 }
 
 
+void
+value::
+print() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::undefined):
+      printf("undefined");
+      break;
+  case(kind::boolean):
+      printf("%s",m_data.b? "true":"false");
+      break;
+  case(kind::integer):
+      printf("%d",m_data.i);
+      break;
+  case(kind::reference):
+      printf("reference");
+      break;
+  case(kind::routine):
+      printf("routine");
+      break;
+  case(kind::square_wave):
+      printf("square_wave");
+      break;
+    }
+}
 
 
 }}

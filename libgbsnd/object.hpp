@@ -101,6 +101,8 @@ public:
   value  convert_to_routine() const noexcept;
   value  convert_to_square_wave() const noexcept;
 
+  void  print() const noexcept;
+
 };
 
 

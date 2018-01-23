@@ -103,6 +103,8 @@ postfix_note
   }
 
 public:
+  const last&  get_last() const noexcept{return m_last;}
+
   void  push(operand&&  o) noexcept
   {
     m_expr_stack.emplace_back(new expr(std::move(o)));
@@ -137,7 +139,10 @@ public:
 
     m_operator_stack.emplace_back(opeg);
 
-    m_last.be_operator();
+      if(opeg.is_binary())
+      {
+        m_last.be_operator();
+      }
   }
 
   std::unique_ptr<expr>  make_expr() noexcept
@@ -196,7 +201,15 @@ public:
 
       if(buffer.size() != 1)
       {
-        printf("出力結果が不正\n");
+        printf("%d.出力結果が不正\n",buffer.size());
+
+          for(auto&  e: buffer)
+          {
+            e->print();
+
+            printf("\n");
+          }
+
 
         return nullptr;
       }
@@ -247,7 +260,11 @@ make_expr(script_token_cursor&  cur) noexcept
               note.push(oe(ok::prefix_unary,opw,0));
             }
 
-          else if(opw == operator_word("*")){note.push(oe(ok::prefix_unary,opw,2,true));}
+          else if(opw == operator_word("*"))
+            {
+              note.push(note.get_last().is_operand()? oe(ok::binary      ,opw,4     )
+                                                    : oe(ok::prefix_unary,opw,2,true));
+            }
           else if(opw == operator_word("&")){note.push(oe(ok::prefix_unary,opw,2,true));}
           else if(opw == operator_word("!")){note.push(oe(ok::prefix_unary,opw,2,true));}
           else if(opw == operator_word("~")){note.push(oe(ok::prefix_unary,opw,2,true));}
@@ -255,7 +272,6 @@ make_expr(script_token_cursor&  cur) noexcept
 
           else if(opw == operator_word(  "+")){note.push(oe(ok::binary,opw,5));}
           else if(opw == operator_word(  "-")){note.push(oe(ok::binary,opw,5));}
-          else if(opw == operator_word(  "*")){note.push(oe(ok::binary,opw,4));}
           else if(opw == operator_word(  "/")){note.push(oe(ok::binary,opw,4));}
           else if(opw == operator_word(  "%")){note.push(oe(ok::binary,opw,4));}
           else if(opw == operator_word( "<<")){note.push(oe(ok::binary,opw,6));}

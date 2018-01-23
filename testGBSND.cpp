@@ -1,5 +1,7 @@
 #include"libgbsnd/device.hpp"
 #include"libgbsnd/script.hpp"
+#include"libgbsnd/expr.hpp"
+#include"libgbsnd/execution.hpp"
 
 
 #include<SDL.h>
@@ -118,6 +120,23 @@ main_loop()
 int
 main(int  argc, char**  argv)
 {
+//  auto  scr = gbsnd::script::build_from_file("../gb.snd.txt");
+
+  auto  e = gbsnd::make_expr("1+2*4");
+
+    if(e)
+    {
+      e->print();
+
+      gbsnd::execution_context  ctx;
+
+      auto  v = e->evaluate(ctx);
+
+      v.print();
+    }
+
+return 0;
+
   constexpr int  w = 240;
   constexpr int  h = 240;
 
@@ -125,7 +144,6 @@ main(int  argc, char**  argv)
 
   initialize();
 
-  auto  scr = gbsnd::script::build_from_file("../gb.snd.txt");
 
 
   SDL_ShowCursor(SDL_DISABLE);
