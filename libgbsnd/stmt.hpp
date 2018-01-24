@@ -59,7 +59,7 @@ sleep_stmt
 public:
   sleep_stmt(expr&&  e) noexcept: m_expr(std::move(e)){}
 
-  const expr&  get_value() const noexcept{return m_expr;}
+  const expr&  get_expr() const noexcept{return m_expr;}
 
 };
 
@@ -105,6 +105,20 @@ public:
 
 
 class
+print_stmt
+{
+  expr  m_expr;
+
+public:
+  print_stmt(expr&&  expr) noexcept:
+  m_expr(std::move(expr)){}
+
+  const expr&  get_expr() const noexcept{return m_expr;}
+
+};
+
+
+class
 stmt
 {
   enum class kind{
@@ -122,6 +136,7 @@ stmt
     case_,
     default_,
     sleep,
+    print,
     return_,
 
   } m_kind=kind::null;
@@ -134,6 +149,7 @@ stmt
     return_stmt  ret;
     case_stmt    cas;
     sleep_stmt   slp;
+    print_stmt   prn;
 
     data(){}
    ~data(){}
@@ -151,6 +167,7 @@ public:
   stmt(default_stmt   dfl) noexcept{*this = dfl;}
   stmt(case_stmt      cas) noexcept{*this = cas;}
   stmt(sleep_stmt&&   slp) noexcept{*this = std::move(slp);}
+  stmt(print_stmt&&   prn) noexcept{*this = std::move(prn);}
   stmt(const stmt&   rhs) noexcept{*this = rhs;}
   stmt(      stmt&&  rhs) noexcept{*this = std::move(rhs);}
  ~stmt(){clear();}
@@ -164,6 +181,7 @@ public:
   stmt&  operator=(default_stmt   dfl) noexcept;
   stmt&  operator=(case_stmt      cas) noexcept;
   stmt&  operator=(sleep_stmt&&   slp) noexcept;
+  stmt&  operator=(print_stmt&&   prn) noexcept;
   stmt&  operator=(const stmt&   rhs) noexcept;
   stmt&  operator=(      stmt&&  rhs) noexcept;
 
