@@ -28,6 +28,8 @@ expr
 
   void  unrefer() noexcept;
 
+  expr(data*  dat) noexcept;
+
 public:
   expr() noexcept{}
   expr(operand&&  o) noexcept{*this = std::move(o);}
@@ -52,6 +54,8 @@ public:
   operand&           get_operand()          const noexcept;
   unary_operation&   get_unary_operation()  const noexcept;
   binary_operation&  get_binary_operation() const noexcept;
+
+  expr  get_parent() const noexcept;
 
   value  evaluate(const execution_context&  ctx) const noexcept;
 
@@ -148,6 +152,8 @@ public:
   bool  is_prefix()  const noexcept{return m_kind == kind::prefix;}
   bool  is_postfix() const noexcept{return m_kind == kind::postfix;}
 
+  expr  get_expr() const noexcept{return m_expr;}
+
   value  evaluate(const execution_context&  ctx) const noexcept;
 
   void  print() const noexcept;
@@ -168,6 +174,9 @@ public:
   binary_operation(operator_word  word) noexcept: m_word(word){}
 
   void  reset(expr&&  l, expr&&  r) noexcept;
+
+  expr  get_left_expr() const noexcept{return m_left_expr;}
+  expr  get_right_expr() const noexcept{return m_right_expr;}
 
   value  evaluate(const execution_context&  ctx) const noexcept;
 

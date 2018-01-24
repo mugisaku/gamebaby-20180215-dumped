@@ -20,6 +20,8 @@ struct
 expr::
 data
 {
+  data*  parent=nullptr;
+
   size_t  reference_count=1;
 
   data_kind  kind;
@@ -35,6 +37,21 @@ data
   } data;
 
 };
+
+
+
+
+expr::
+expr(data*  dat) noexcept:
+m_data(dat)
+{
+    if(m_data)
+    {
+      ++m_data->reference_count;
+    }
+}
+
+
 
 
 expr&
@@ -65,6 +82,8 @@ operator=(unary_operation&&  unop) noexcept
 
   new(&m_data->data) unary_operation(std::move(unop));
 
+  m_data->data.unop.get_expr().m_data->parent = m_data;
+
   return *this;
 }
 
@@ -80,6 +99,9 @@ operator=(binary_operation&&  binop) noexcept
   m_data->kind = data_kind::binary_operation;
 
   new(&m_data->data) binary_operation(std::move(binop));
+
+  m_data->data.binop.get_left_expr().m_data->parent  = m_data;
+  m_data->data.binop.get_right_expr().m_data->parent = m_data;
 
   return *this;
 }
@@ -157,6 +179,12 @@ unary_operation&   expr::get_unary_operation()  const noexcept{return m_data->da
 binary_operation&  expr::get_binary_operation() const noexcept{return m_data->data.binop;}
 
 
+expr
+expr::
+get_parent() const noexcept
+{
+  return expr(m_data->parent);
+}
 
 
 value
