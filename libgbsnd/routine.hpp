@@ -44,6 +44,8 @@ public:
   void          set_block(block*  blk)       noexcept;
   const block*  get_block(           ) const noexcept;
 
+  void  print() const noexcept;
+
 };
 
 

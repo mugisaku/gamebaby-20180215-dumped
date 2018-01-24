@@ -102,6 +102,29 @@ get_block() const noexcept
 }
 
 
+void
+routine::
+print() const noexcept
+{
+  printf("(");
+
+    for(auto&  s: m_parameter_list)
+    {
+      printf("%s,",s.data());
+    }
+
+
+  printf(")");
+
+    if(m_block)
+    {
+      printf("\n");
+
+      m_block->print();
+    }
+}
+
+
 }}
 
 

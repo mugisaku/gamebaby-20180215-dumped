@@ -132,7 +132,7 @@ main(int  argc, char**  argv)
 //                            SDL_WINDOWPOS_CENTERED,
                             w,
                             h,0);
-
+script.print();
   gbsnd::execution_context  ctx(script);
 
   ctx.call("main",{});

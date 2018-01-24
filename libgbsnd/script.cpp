@@ -14,6 +14,8 @@ data
 {
   size_t  reference_count=1;
 
+  gbstd::string  source_path;
+
   std::vector<square_wave*>  square_wave_list;
   std::vector<routine*>          routine_list;
 
@@ -23,9 +25,11 @@ data
 
 
 script::
-script(const script_token_string&  toks) noexcept:
+script(const script_token_string&  toks, gbstd::string_view  source_path) noexcept:
 m_data(new data)
 {
+  m_data->source_path = source_path;
+
   script_token_cursor  cur(toks.begin(),toks.end());
 
     while(cur)
@@ -138,6 +142,14 @@ unrefer() noexcept
 
 
 
+const gbstd::string&
+script::
+get_source_path() const noexcept
+{
+  return m_data->source_path;
+}
+
+
 std::vector<routine*>&
 script::
 get_routine_list() const noexcept
@@ -173,16 +185,40 @@ find_routine(gbstd::string_view  name) const noexcept
 }
 
 
+void
+script::
+print() const noexcept
+{
+  printf("source path: %s\n",m_data->source_path.data());
+
+  printf("reference_count: %ld\n",m_data->reference_count);
+
+  printf("objects: %d{\n",m_data->object_list.size());
+
+    for(auto&  obj: m_data->object_list)
+    {
+      obj.print();
+
+      printf("\n");
+    }
+
+
+  printf("}\n\n");
+}
+
+
+
+
 script
 script::
-build_from_string(gbstd::string_view  sv) noexcept
+build_from_string(gbstd::string_view  sv, gbstd::string_view  source_path) noexcept
 {
   tok::stream_reader  r(sv);
 
   script_token_string  toks(r,0,0);
 
 
-  script  scr(toks);
+  script  scr(toks,source_path);
 
   return std::move(scr);
 }
@@ -198,7 +234,7 @@ build_from_file(gbstd::string_view  path) noexcept
 
     if(f)
     {
-      auto  scr = build_from_file(f);
+      auto  scr = build_from_file(f,path);
 
       fclose(f);
 
@@ -217,7 +253,7 @@ build_from_file(gbstd::string_view  path) noexcept
 
 script
 script::
-build_from_file(FILE*  f) noexcept
+build_from_file(FILE*  f, gbstd::string_view  source_path) noexcept
 {
   gbstd::string  s;
 
@@ -235,7 +271,7 @@ build_from_file(FILE*  f) noexcept
     }
 
 
-  return build_from_string(s);
+  return build_from_string(s,source_path);
 }
 
 

@@ -204,7 +204,7 @@ script
 
   data*  m_data=nullptr;
 
-  script(const script_token_string&  toks) noexcept;
+  script(const script_token_string&  toks, gbstd::string_view  source_path) noexcept;
 
   void  unrefer() noexcept;
 
@@ -217,14 +217,18 @@ public:
   script&  operator=(const script&   rhs) noexcept;
   script&  operator=(      script&&  rhs) noexcept;
 
+  const gbstd::string&  get_source_path() const noexcept;
+
   std::vector<routine*>&          get_routine_list() const noexcept;
   std::vector<square_wave*>&  get_square_wave_list() const noexcept;
 
   const routine*  find_routine(gbstd::string_view  name) const noexcept;
 
-  static script  build_from_string(gbstd::string_view  sv) noexcept;
+  void  print() const noexcept;
+
+  static script  build_from_string(gbstd::string_view  sv, gbstd::string_view  source_path) noexcept;
   static script  build_from_file(gbstd::string_view  path) noexcept;
-  static script  build_from_file(FILE*  f) noexcept;
+  static script  build_from_file(FILE*  f, gbstd::string_view  source_path) noexcept;
 
 };
 

@@ -293,7 +293,7 @@ print() const noexcept
       printf("reference");
       break;
   case(kind::routine):
-      printf("routine");
+      m_data.rt->print();
       break;
   case(kind::property):
       printf("property");

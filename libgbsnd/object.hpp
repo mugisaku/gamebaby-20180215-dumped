@@ -160,6 +160,13 @@ public:
         value&  get_value()       noexcept{return m_value;}
   const value&  get_value() const noexcept{return m_value;}
 
+  void  print() const noexcept
+  {
+    printf("%s = ",m_name.data());
+
+    m_value.print();
+  }
+
 };
 
 
