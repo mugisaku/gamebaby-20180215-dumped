@@ -6,7 +6,7 @@ namespace gbsnd{
 namespace devices{
 
 
-std::unique_ptr<expr>
+expr
 make_expr(gbstd::string_view  sv) noexcept
 {
   tok::stream_reader  r(sv);
@@ -15,7 +15,7 @@ make_expr(gbstd::string_view  sv) noexcept
 
   script_token_cursor  cur(toks);
 
-  return make_expr(cur);
+  return read_expr(cur);
 }
 
 
@@ -77,11 +77,11 @@ public:
 
   constexpr bool  is_right_to_left() const noexcept{return m_right_to_left;}
 
-  expr*  create_expr() const noexcept
+  expr  make_expr() const noexcept
   {
-    return is_prefix_unary() ? new expr( unary_operation( true,m_word))
-          :is_postfix_unary()? new expr( unary_operation(false,m_word))
-          :                    new expr(binary_operation(      m_word));
+    return is_prefix_unary() ? expr( unary_operation( true,m_word))
+          :is_postfix_unary()? expr( unary_operation(false,m_word))
+          :                    expr(binary_operation(      m_word));
   }
 
 };
@@ -92,12 +92,12 @@ postfix_note
 {
   last  m_last;
 
-  std::vector<std::unique_ptr<expr>>      m_expr_stack;
-  std::vector<operator_egg>           m_operator_stack;
+  std::vector<expr>              m_expr_stack;
+  std::vector<operator_egg>  m_operator_stack;
 
   void  transfer_operator() noexcept
   {
-    m_expr_stack.emplace_back(m_operator_stack.back().create_expr());
+    m_expr_stack.emplace_back(m_operator_stack.back().make_expr());
 
     m_operator_stack.pop_back();
   }
@@ -107,7 +107,7 @@ public:
 
   void  push(operand&&  o) noexcept
   {
-    m_expr_stack.emplace_back(new expr(std::move(o)));
+    m_expr_stack.emplace_back(std::move(o));
 
     m_last.be_operand();
   }
@@ -145,7 +145,7 @@ public:
       }
   }
 
-  std::unique_ptr<expr>  make_expr() noexcept
+  expr  make_expr() noexcept
   {
       while(m_operator_stack.size())
       {
@@ -155,50 +155,55 @@ public:
 
       if(m_expr_stack.empty())
       {
-        return nullptr;
+        return expr();
       }
 
 
-    std::vector<std::unique_ptr<expr>>  buffer;
+    std::vector<expr>  buffer;
 
       for(auto&  e: m_expr_stack)
       {
-          if(e->is_operand())
+          if(e.is_operand())
           {
             buffer.emplace_back(std::move(e));
           }
 
         else
-          if(e->is_unary_operation())
+          if(e.is_unary_operation())
           {
               if(buffer.size() < 1)
               {
                 printf("単項演算の演算項が無い\n");
 
-                return nullptr;
+                return expr();
               }
 
 
-            e->get_unary_operation().reset(buffer.back().release());
+            auto  oexpr = new expr(std::move(buffer.back()));
+
+            e.get_unary_operation().reset(oexpr);
 
             buffer.back() = std::move(e);
           }
 
         else
-          if(e->is_binary_operation())
+          if(e.is_binary_operation())
           {
               if(buffer.size() < 2)
               {
                 printf("二項演算の演算項が足りない\n");
 
-                return nullptr;
+                return expr();
               }
 
 
-            auto  r = buffer.back().release();
-                      buffer.pop_back();
+            auto  r = new expr(std::move(buffer.back()));
 
-            e->get_binary_operation().reset(buffer.back().release(),r);
+            buffer.pop_back();
+
+            auto  l = new expr(std::move(buffer.back()));
+
+            e.get_binary_operation().reset(l,r);
 
             buffer.back() = std::move(e);
           }
@@ -211,13 +216,13 @@ public:
 
           for(auto&  e: buffer)
           {
-            e->print();
+            e.print();
 
             printf("\n");
           }
 
 
-        return nullptr;
+        return expr();
       }
 
 
@@ -227,8 +232,8 @@ public:
 };
 
 
-std::unique_ptr<expr>
-make_expr(script_token_cursor&  cur) noexcept
+expr
+read_expr(script_token_cursor&  cur) noexcept
 {
   postfix_note  note;
 

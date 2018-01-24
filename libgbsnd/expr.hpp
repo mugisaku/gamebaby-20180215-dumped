@@ -213,8 +213,8 @@ public:
 };
 
 
-std::unique_ptr<expr>  make_expr(gbstd::string_view  sv) noexcept;
-std::unique_ptr<expr>  make_expr(script_token_cursor&  cur) noexcept;
+expr  make_expr(gbstd::string_view  sv) noexcept;
+expr  read_expr(script_token_cursor&  cur) noexcept;
 
 
 }
@@ -222,6 +222,7 @@ std::unique_ptr<expr>  make_expr(script_token_cursor&  cur) noexcept;
 
 using devices::expr;
 using devices::make_expr;
+using devices::read_expr;
 
 
 }
