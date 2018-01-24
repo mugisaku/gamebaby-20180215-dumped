@@ -146,27 +146,30 @@ stmt&
 stmt::
 operator=(const stmt&  rhs) noexcept
 {
-  clear();
-
-  m_kind = rhs.m_kind;
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::expression): new(&m_data) expr(rhs.m_data.e);break;
-  case(kind::label     ): new(&m_data) label_stmt(rhs.m_data.lbl);break;
-  case(kind::block     ): new(&m_data) block(rhs.m_data.blk);break;
-  case(kind::if_       ): break;
-  case(kind::while_    ): break;
-  case(kind::for_      ): break;
-  case(kind::break_    ): break;
-  case(kind::continue_ ): break;
-  case(kind::goto_     ): break;
-  case(kind::switch_   ): break;
-  case(kind::case_     ): new(&m_data) case_stmt(rhs.m_data.cas);break;
-  case(kind::default_  ): break;
-  case(kind::return_   ): new(&m_data) return_stmt(rhs.m_data.ret);break;
-  case(kind::sleep     ): new(&m_data) sleep_stmt(rhs.m_data.slp);break;
-  case(kind::print     ): new(&m_data) print_stmt(rhs.m_data.prn);break;
+      clear();
+
+      m_kind = rhs.m_kind;
+
+        switch(m_kind)
+        {
+      case(kind::expression): new(&m_data) expr(rhs.m_data.e);break;
+      case(kind::label     ): new(&m_data) label_stmt(rhs.m_data.lbl);break;
+      case(kind::block     ): new(&m_data) block(rhs.m_data.blk);break;
+      case(kind::if_       ): break;
+      case(kind::while_    ): break;
+      case(kind::for_      ): break;
+      case(kind::break_    ): break;
+      case(kind::continue_ ): break;
+      case(kind::goto_     ): break;
+      case(kind::switch_   ): break;
+      case(kind::case_     ): new(&m_data) case_stmt(rhs.m_data.cas);break;
+      case(kind::default_  ): break;
+      case(kind::return_   ): new(&m_data) return_stmt(rhs.m_data.ret);break;
+      case(kind::sleep     ): new(&m_data) sleep_stmt(rhs.m_data.slp);break;
+      case(kind::print     ): new(&m_data) print_stmt(rhs.m_data.prn);break;
+        }
     }
 
 
@@ -178,27 +181,30 @@ stmt&
 stmt::
 operator=(stmt&&  rhs) noexcept
 {
-  clear();
-
-  std::swap(m_kind,rhs.m_kind);
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::expression): new(&m_data) expr(std::move(rhs.m_data.e));break;
-  case(kind::label     ): new(&m_data) label_stmt(std::move(rhs.m_data.lbl));break;
-  case(kind::block     ): new(&m_data) block(std::move(rhs.m_data.blk));break;
-  case(kind::if_       ): break;
-  case(kind::while_    ): break;
-  case(kind::for_      ): break;
-  case(kind::break_    ): break;
-  case(kind::continue_ ): break;
-  case(kind::goto_     ): break;
-  case(kind::switch_   ): break;
-  case(kind::case_     ): new(&m_data) case_stmt(std::move(rhs.m_data.cas));break;
-  case(kind::default_  ): break;
-  case(kind::return_   ): new(&m_data) return_stmt(std::move(rhs.m_data.ret));break;
-  case(kind::sleep     ): new(&m_data) sleep_stmt(std::move(rhs.m_data.slp));break;
-  case(kind::print     ): new(&m_data) print_stmt(std::move(rhs.m_data.prn));break;
+      clear();
+
+      std::swap(m_kind,rhs.m_kind);
+
+        switch(m_kind)
+        {
+      case(kind::expression): new(&m_data) expr(std::move(rhs.m_data.e));break;
+      case(kind::label     ): new(&m_data) label_stmt(std::move(rhs.m_data.lbl));break;
+      case(kind::block     ): new(&m_data) block(std::move(rhs.m_data.blk));break;
+      case(kind::if_       ): break;
+      case(kind::while_    ): break;
+      case(kind::for_      ): break;
+      case(kind::break_    ): break;
+      case(kind::continue_ ): break;
+      case(kind::goto_     ): break;
+      case(kind::switch_   ): break;
+      case(kind::case_     ): new(&m_data) case_stmt(std::move(rhs.m_data.cas));break;
+      case(kind::default_  ): break;
+      case(kind::return_   ): new(&m_data) return_stmt(std::move(rhs.m_data.ret));break;
+      case(kind::sleep     ): new(&m_data) sleep_stmt(std::move(rhs.m_data.slp));break;
+      case(kind::print     ): new(&m_data) print_stmt(std::move(rhs.m_data.prn));break;
+        }
     }
 
 

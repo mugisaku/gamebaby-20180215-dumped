@@ -8,65 +8,6 @@ namespace devices{
 
 
 
-unary_operation&
-unary_operation::
-operator=(const unary_operation&  rhs) noexcept
-{
-  clear();
-
-  m_kind = rhs.m_kind;
-  m_word = rhs.m_word;
-
-  m_expr = gbstd::duplicate(rhs.m_expr);
-
-  return *this;
-}
-
-
-unary_operation&
-unary_operation::
-operator=(unary_operation&&  rhs) noexcept
-{
-  clear();
-
-  std::swap(m_kind,rhs.m_kind);
-  std::swap(m_word,rhs.m_word);
-  std::swap(m_expr,rhs.m_expr);
-
-  return *this;
-}
-
-
-void
-unary_operation::
-assign(operator_word  word, expr*  expr) noexcept
-{
-  clear();
-
-  m_word = word;
-  m_expr = expr;
-}
-
-
-void
-unary_operation::
-reset(expr*  expr) noexcept
-{
-  clear();
-
-  m_expr = expr;
-}
-
-
-void
-unary_operation::
-clear() noexcept
-{
-  delete m_expr          ;
-         m_expr = nullptr;
-}
-
-
 value
 unary_operation::
 evaluate(const execution_context&  ctx) const noexcept
@@ -78,7 +19,7 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("!"))
     {
-      auto  v = m_expr->evaluate(ctx).convert_to_boolean();
+      auto  v = m_expr.evaluate(ctx).convert_to_boolean();
 
         if(v)
         {
@@ -89,7 +30,7 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("-"))
     {
-      auto  v = m_expr->evaluate(ctx).convert_to_integer();
+      auto  v = m_expr.evaluate(ctx).convert_to_integer();
 
         if(v)
         {
@@ -100,7 +41,7 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("~"))
     {
-      auto  v = m_expr->evaluate(ctx).convert_to_integer();
+      auto  v = m_expr.evaluate(ctx).convert_to_integer();
 
         if(v)
         {
@@ -132,7 +73,7 @@ print() const noexcept
 
     if(m_expr)
     {
-      m_expr->print();
+      m_expr.print();
     }
 
 

@@ -55,6 +55,7 @@ operator=(gbstd::string_view  sv) noexcept
 
   m_data->data[sv.size()] = 0;
 
+
   return *this;
 }
 
@@ -63,13 +64,16 @@ shared_string&
 shared_string::
 operator=(const shared_string&  rhs) noexcept
 {
-  unrefer();
-
-  m_data = rhs.m_data;
-
-    if(m_data)
+    if(this != &rhs)
     {
-      ++m_data->reference_count;
+      unrefer();
+
+      m_data = rhs.m_data;
+
+        if(m_data)
+        {
+          ++m_data->reference_count;
+        }
     }
 
 
@@ -81,9 +85,13 @@ shared_string&
 shared_string::
 operator=(shared_string&&  rhs) noexcept
 {
-  unrefer();
+    if(this != &rhs)
+    {
+      unrefer();
 
-  std::swap(m_data,rhs.m_data);
+      std::swap(m_data,rhs.m_data);
+    }
+
 
   return *this;
 }

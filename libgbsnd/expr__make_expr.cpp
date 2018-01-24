@@ -179,9 +179,7 @@ public:
               }
 
 
-            auto  oexpr = new expr(std::move(buffer.back()));
-
-            e.get_unary_operation().reset(oexpr);
+            e.get_unary_operation().reset(expr(std::move(buffer.back())));
 
             buffer.back() = std::move(e);
           }
@@ -197,13 +195,13 @@ public:
               }
 
 
-            auto  r = new expr(std::move(buffer.back()));
+            expr  r(std::move(buffer.back()));
 
             buffer.pop_back();
 
-            auto  l = new expr(std::move(buffer.back()));
+            expr  l(std::move(buffer.back()));
 
-            e.get_binary_operation().reset(l,r);
+            e.get_binary_operation().reset(std::move(l),std::move(r));
 
             buffer.back() = std::move(e);
           }
@@ -329,6 +327,9 @@ read_expr(script_token_cursor&  cur) noexcept
             if((toks.get_open()  == '(') &&
                (toks.get_close() == ')'))
             {
+              script_token_cursor  cocur(toks);
+
+              note.push(operand(new expr(read_expr(cocur))));
             }
 
           else

@@ -202,7 +202,8 @@ public:
   bool  is_case()       const noexcept{return m_kind ==  kind::case_;}
   bool  is_switch()     const noexcept{return m_kind ==  kind::switch_;}
   bool  is_default()    const noexcept{return m_kind ==  kind::default_;}
-  bool  is_sleep()    const noexcept{return m_kind ==  kind::sleep;}
+  bool  is_sleep()      const noexcept{return m_kind ==  kind::sleep;}
+  bool  is_print()      const noexcept{return m_kind ==  kind::print;}
 
   const expr&         get_expr()   const noexcept{return m_data.e;}
   const label_stmt&   get_label()  const noexcept{return m_data.lbl;}
@@ -210,6 +211,7 @@ public:
   const case_stmt&    get_case()   const noexcept{return m_data.cas;}
   const block&        get_block()  const noexcept{return m_data.blk;}
   const sleep_stmt&   get_sleep()  const noexcept{return m_data.slp;}
+  const print_stmt&   get_print()  const noexcept{return m_data.prn;}
 
   void  print() const noexcept;
 

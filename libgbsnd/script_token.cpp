@@ -80,24 +80,27 @@ script_token&
 script_token::
 operator=(const script_token&  rhs) noexcept
 {
-  clear();
-
-  m_kind = rhs.m_kind;
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::integer_literal):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::identifier):
-      new(&m_data) identifier(rhs.m_data.id);
-      break;
-  case(kind::operator_word):
-      m_data.opw = rhs.m_data.opw;
-      break;
-  case(kind::token_string):
-      new(&m_data) script_token_string(rhs.m_data.toks);
-      break;
+      clear();
+
+      m_kind = rhs.m_kind;
+
+        switch(m_kind)
+        {
+      case(kind::integer_literal):
+          m_data.i = rhs.m_data.i;
+          break;
+      case(kind::identifier):
+          new(&m_data) identifier(rhs.m_data.id);
+          break;
+      case(kind::operator_word):
+          m_data.opw = rhs.m_data.opw;
+          break;
+      case(kind::token_string):
+          new(&m_data) script_token_string(rhs.m_data.toks);
+          break;
+        }
     }
 
 
@@ -109,24 +112,27 @@ script_token&
 script_token::
 operator=(script_token&&  rhs) noexcept
 {
-  clear();
-
-  std::swap(m_kind,rhs.m_kind);
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::integer_literal):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::identifier):
-      new(&m_data) identifier(std::move(rhs.m_data.id));
-      break;
-  case(kind::operator_word):
-      m_data.opw = rhs.m_data.opw;
-      break;
-  case(kind::token_string):
-      new(&m_data) script_token_string(std::move(rhs.m_data.toks));
-      break;
+      clear();
+
+      std::swap(m_kind,rhs.m_kind);
+
+        switch(m_kind)
+        {
+      case(kind::integer_literal):
+          m_data.i = rhs.m_data.i;
+          break;
+      case(kind::identifier):
+          new(&m_data) identifier(std::move(rhs.m_data.id));
+          break;
+      case(kind::operator_word):
+          m_data.opw = rhs.m_data.opw;
+          break;
+      case(kind::token_string):
+          new(&m_data) script_token_string(std::move(rhs.m_data.toks));
+          break;
+        }
     }
 
 

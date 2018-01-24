@@ -153,7 +153,8 @@ object
 
 public:
   object() noexcept{}
-  object(gbstd::string_view  name, value&&  v) noexcept: m_name(name), m_value(std::move(v)){}
+  object(gbstd::string_view  name, const value&   v) noexcept: m_name(name), m_value(v){}
+  object(gbstd::string_view  name,       value&&  v) noexcept: m_name(name), m_value(std::move(v)){}
 
   const gbstd::string&   get_name() const noexcept{return m_name;}
 

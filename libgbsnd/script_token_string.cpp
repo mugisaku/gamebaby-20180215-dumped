@@ -180,15 +180,18 @@ script_token_string&
 script_token_string::
 operator=(const script_token_string&  rhs) noexcept
 {
-  clear();
+    if(this != &rhs)
+    {
+      clear();
 
-  m_data = new script_token[rhs.m_length];
+      m_data = new script_token[rhs.m_length];
 
-  m_length = rhs.m_length;
-  m_open   = rhs.m_open  ;
-  m_close  = rhs.m_close ;
+      m_length = rhs.m_length;
+      m_open   = rhs.m_open  ;
+      m_close  = rhs.m_close ;
 
-  std::copy(rhs.begin(),rhs.end(),m_data);
+      std::copy(rhs.begin(),rhs.end(),m_data);
+    }
 
 
   return *this;
@@ -199,12 +202,15 @@ script_token_string&
 script_token_string::
 operator=(script_token_string&&  rhs) noexcept
 {
-  clear();
+    if(this != &rhs)
+    {
+      clear();
 
-  std::swap(m_data  ,rhs.m_data  );
-  std::swap(m_length,rhs.m_length);
-  std::swap(m_open  ,rhs.m_open  );
-  std::swap(m_close ,rhs.m_close );
+      std::swap(m_data  ,rhs.m_data  );
+      std::swap(m_length,rhs.m_length);
+      std::swap(m_open  ,rhs.m_open  );
+      std::swap(m_close ,rhs.m_close );
+    }
 
 
   return *this;

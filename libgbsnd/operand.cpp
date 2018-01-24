@@ -86,13 +86,13 @@ operator=(const identifier&  id) noexcept
 
 operand&
 operand::
-operator=(expr*  e) noexcept
+operator=(expr&&  e) noexcept
 {
   clear();
 
   m_kind = kind::expression;
 
-  m_data.e = e;
+  new(&m_data) expr(std::move(e));
 
   return *this;
 }
@@ -102,24 +102,27 @@ operand&
 operand::
 operator=(const operand&  rhs) noexcept
 {
-  clear();
-
-  m_kind = rhs.m_kind;
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::boolean_literal):
-      m_data.b = rhs.m_data.b;
-      break;
-  case(kind::integer_literal):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::identifier):
-      new(&m_data) identifier(rhs.m_data.id);
-      break;
-  case(kind::expression):
-      m_data.e = new expr(*rhs.m_data.e);
-      break;
+      clear();
+
+      m_kind = rhs.m_kind;
+
+        switch(m_kind)
+        {
+      case(kind::boolean_literal):
+          m_data.b = rhs.m_data.b;
+          break;
+      case(kind::integer_literal):
+          m_data.i = rhs.m_data.i;
+          break;
+      case(kind::identifier):
+          new(&m_data) identifier(rhs.m_data.id);
+          break;
+      case(kind::expression):
+          new(&m_data.e) expr(rhs.m_data.e);
+          break;
+        }
     }
 
 
@@ -131,23 +134,26 @@ operand&
 operand::
 operator=(operand&&  rhs) noexcept
 {
-  clear();
-
-  std::swap(m_kind,rhs.m_kind);
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::boolean_literal):
-      m_data.b = rhs.m_data.b;
-      break;
-  case(kind::integer_literal):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::identifier):
-      new(&m_data) identifier(std::move(rhs.m_data.id));
-      break;
-  case(kind::expression):
-      m_data.e = rhs.m_data.e;
+      clear();
+
+      std::swap(m_kind,rhs.m_kind);
+
+        switch(m_kind)
+        {
+      case(kind::boolean_literal):
+          m_data.b = rhs.m_data.b;
+          break;
+      case(kind::integer_literal):
+          m_data.i = rhs.m_data.i;
+          break;
+      case(kind::identifier):
+          new(&m_data) identifier(std::move(rhs.m_data.id));
+          break;
+      case(kind::expression):
+          new(&m_data) expr(std::move(rhs.m_data.e));
+        }
     }
 
 
@@ -168,7 +174,7 @@ clear() noexcept
       gbstd::destruct(m_data.id);
       break;
   case(kind::expression):
-      delete m_data.e;
+      gbstd::destruct(m_data.e);
     }
 
 
@@ -197,7 +203,7 @@ evaluate(const execution_context&  ctx) const noexcept
       }
       break;
   case(kind::expression):
-      return m_data.e->evaluate(ctx);
+      return m_data.e.evaluate(ctx);
       break;
     }
 
@@ -225,7 +231,7 @@ print() const noexcept
       printf("%s",m_data.id.data());
       break;
   case(kind::expression):
-      m_data.e->print();
+      m_data.e.print();
       break;
     }
 }

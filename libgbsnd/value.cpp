@@ -108,30 +108,33 @@ value&
 value::
 operator=(const value&  rhs) noexcept
 {
-  clear();
-
-  m_kind = rhs.m_kind;
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::boolean):
-      m_data.b = rhs.m_data.b;
-      break;
-  case(kind::integer):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::reference):
-      m_data.r = rhs.m_data.r;
-      break;
-  case(kind::routine):
-      m_data.rt = rhs.m_data.rt;
-      break;
-  case(kind::property):
-      m_data.pr = rhs.m_data.pr;
-      break;
-  case(kind::square_wave):
-      m_data.sq = rhs.m_data.sq;
-      break;
+      clear();
+
+      m_kind = rhs.m_kind;
+
+        switch(m_kind)
+        {
+      case(kind::boolean):
+          m_data.b = rhs.m_data.b;
+          break;
+      case(kind::integer):
+          m_data.i = rhs.m_data.i;
+          break;
+      case(kind::reference):
+          m_data.r = rhs.m_data.r;
+          break;
+      case(kind::routine):
+          m_data.rt = rhs.m_data.rt;
+          break;
+      case(kind::property):
+          m_data.pr = rhs.m_data.pr;
+          break;
+      case(kind::square_wave):
+          m_data.sq = rhs.m_data.sq;
+          break;
+        }
     }
 
 
@@ -143,30 +146,33 @@ value&
 value::
 operator=(value&&  rhs) noexcept
 {
-  clear();
-
-  std::swap(m_kind,rhs.m_kind);
-
-    switch(m_kind)
+    if(this != &rhs)
     {
-  case(kind::boolean):
-      m_data.b = rhs.m_data.b;
-      break;
-  case(kind::integer):
-      m_data.i = rhs.m_data.i;
-      break;
-  case(kind::reference):
-      m_data.r = rhs.m_data.r;
-      break;
-  case(kind::routine):
-      m_data.rt = rhs.m_data.rt;
-      break;
-  case(kind::property):
-      m_data.pr = rhs.m_data.pr;
-      break;
-  case(kind::square_wave):
-      m_data.sq = rhs.m_data.sq;
-      break;
+      clear();
+
+      std::swap(m_kind,rhs.m_kind);
+
+        switch(m_kind)
+        {
+      case(kind::boolean):
+          m_data.b = rhs.m_data.b;
+          break;
+      case(kind::integer):
+          m_data.i = rhs.m_data.i;
+          break;
+      case(kind::reference):
+          m_data.r = rhs.m_data.r;
+          break;
+      case(kind::routine):
+          m_data.rt = rhs.m_data.rt;
+          break;
+      case(kind::property):
+          m_data.pr = rhs.m_data.pr;
+          break;
+      case(kind::square_wave):
+          m_data.sq = rhs.m_data.sq;
+          break;
+        }
     }
 
 

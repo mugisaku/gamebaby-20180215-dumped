@@ -96,13 +96,16 @@ script&
 script::
 operator=(const script&   rhs) noexcept
 {
-  unrefer();
-
-  m_data = rhs.m_data;
-
-    if(m_data)
+    if(this != &rhs)
     {
-      ++m_data->reference_count;
+      unrefer();
+
+      m_data = rhs.m_data;
+
+        if(m_data)
+        {
+          ++m_data->reference_count;
+        }
     }
 
 
@@ -114,9 +117,12 @@ script&
 script::
 operator=(script&&  rhs) noexcept
 {
-  unrefer();
+    if(this != &rhs)
+    {
+      unrefer();
 
-  std::swap(m_data,rhs.m_data);
+      std::swap(m_data,rhs.m_data);
+    }
 
 
   return *this;

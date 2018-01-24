@@ -8,67 +8,12 @@ namespace devices{
 
 
 
-binary_operation&
-binary_operation::
-operator=(const binary_operation&  rhs) noexcept
-{
-  clear();
-
-  m_word = rhs.m_word;
-
-  m_left_expr  = gbstd::duplicate(rhs.m_left_expr );
-  m_right_expr = gbstd::duplicate(rhs.m_right_expr);
-
-  return *this;
-}
-
-
-binary_operation&
-binary_operation::
-operator=(binary_operation&&  rhs) noexcept
-{
-  clear();
-
-  std::swap(m_word      ,rhs.m_word      );
-  std::swap(m_left_expr ,rhs.m_left_expr );
-  std::swap(m_right_expr,rhs.m_right_expr);
-
-  return *this;
-}
-
-
 void
 binary_operation::
-assign(operator_word  word, expr*  l, expr*  r) noexcept
+reset(expr&&  l, expr&&  r) noexcept
 {
-  clear();
-
-  m_word       = word;
-  m_left_expr  =    l;
-  m_right_expr =    r;
-}
-
-
-void
-binary_operation::
-reset(expr*  l, expr*  r) noexcept
-{
-  clear();
-
-  m_left_expr  = l;
-  m_right_expr = r;
-}
-
-
-void
-binary_operation::
-clear() noexcept
-{
-  delete m_left_expr          ;
-         m_left_expr = nullptr;
-
-  delete m_right_expr          ;
-         m_right_expr = nullptr;
+  m_left_expr  = std::move(l);
+  m_right_expr = std::move(r);
 }
 
 
@@ -85,8 +30,8 @@ evaluate(const execution_context&  ctx) const noexcept
 {
     if(m_word == operator_word("+"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()+rv.get_integer()):value(undefined());
     }
@@ -94,8 +39,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("-"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()-rv.get_integer()):value(undefined());
     }
@@ -103,8 +48,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("*"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()*rv.get_integer()):value(undefined());
     }
@@ -112,8 +57,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("/"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       auto  ri = rv.get_integer();
 
@@ -123,8 +68,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("%"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       auto  ri = rv.get_integer();
 
@@ -134,8 +79,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("<<"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()<<rv.get_integer()):value(undefined());
     }
@@ -143,8 +88,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word(">>"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()>>rv.get_integer()):value(undefined());
     }
@@ -152,8 +97,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("|"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()|rv.get_integer()):value(undefined());
     }
@@ -161,7 +106,7 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("||"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_boolean();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_boolean();
 
         if(lv.is_boolean())
         {
@@ -172,7 +117,7 @@ evaluate(const execution_context&  ctx) const noexcept
 
           else
             {
-              auto  rv =  m_right_expr->evaluate(ctx).convert_to_boolean();
+              auto  rv =  m_right_expr.evaluate(ctx).convert_to_boolean();
 
                 if(rv.is_boolean())
                 {
@@ -185,8 +130,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("&"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()&rv.get_integer()):value(undefined());
     }
@@ -194,7 +139,7 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("&&"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_boolean();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_boolean();
 
         if(lv.is_boolean())
         {
@@ -205,7 +150,7 @@ evaluate(const execution_context&  ctx) const noexcept
 
           else
             {
-              auto  rv =  m_right_expr->evaluate(ctx).convert_to_boolean();
+              auto  rv =  m_right_expr.evaluate(ctx).convert_to_boolean();
 
                 if(rv.is_boolean())
                 {
@@ -218,8 +163,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("^"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer()^rv.get_integer()):value(undefined());
     }
@@ -227,8 +172,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("=="))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer() == rv.get_integer()):value(undefined());
     }
@@ -236,8 +181,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("!="))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer() != rv.get_integer()):value(undefined());
     }
@@ -245,8 +190,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("<"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer() < rv.get_integer()):value(undefined());
     }
@@ -254,8 +199,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word("<="))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer() <= rv.get_integer()):value(undefined());
     }
@@ -263,8 +208,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word(">"))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer() > rv.get_integer()):value(undefined());
     }
@@ -272,8 +217,8 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word(">="))
     {
-      auto  lv =  m_left_expr->evaluate(ctx).convert_to_integer();
-      auto  rv = m_right_expr->evaluate(ctx).convert_to_integer();
+      auto  lv =  m_left_expr.evaluate(ctx).convert_to_integer();
+      auto  rv = m_right_expr.evaluate(ctx).convert_to_integer();
 
       return are_both_integer(lv,rv)? value(lv.get_integer() >= rv.get_integer()):value(undefined());
     }
@@ -281,19 +226,19 @@ evaluate(const execution_context&  ctx) const noexcept
   else
     if(m_word == operator_word(","))
     {
-      auto  lv =  m_left_expr->evaluate(ctx);
+      auto  lv =  m_left_expr.evaluate(ctx);
 
-      return m_right_expr->evaluate(ctx);
+      return m_right_expr.evaluate(ctx);
     }
 
   else
     if(m_word == operator_word("."))
     {
-      auto  lv = m_left_expr->evaluate(ctx);
+      auto  lv = m_left_expr.evaluate(ctx);
 
-        if(lv.is_reference() && m_right_expr->is_operand())
+        if(lv.is_reference() && m_right_expr.is_operand())
         {
-          auto&  o = m_right_expr->get_operand();
+          auto&  o = m_right_expr.get_operand();
 
             if(o.is_identifier())
             {
@@ -378,7 +323,7 @@ print() const noexcept
 {
     if(m_left_expr)
     {
-      m_left_expr->print();
+      m_left_expr.print();
     }
 
 
@@ -388,7 +333,7 @@ print() const noexcept
 
     if(m_right_expr)
     {
-      m_right_expr->print();
+      m_right_expr.print();
     }
 }
 
