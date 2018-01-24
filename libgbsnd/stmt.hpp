@@ -19,8 +19,6 @@ block
 {
   block*  m_parent=nullptr;
 
-  bool  m_repetition=false;
-
   std::vector<stmt>  m_stmt_list;
 
 public:
@@ -29,6 +27,8 @@ public:
 
   const stmt*  begin() const noexcept;
   const stmt*    end() const noexcept;
+
+  void  print() const noexcept;
 
 };
 
@@ -47,6 +47,19 @@ public:
   constexpr case_stmt(int  v) noexcept: m_value(v){}
 
   constexpr int  get_value() const noexcept{return m_value;}
+
+};
+
+
+class
+sleep_stmt
+{
+  expr  m_expr;
+
+public:
+  sleep_stmt(expr&&  e) noexcept: m_expr(std::move(e)){}
+
+  const expr&  get_value() const noexcept{return m_expr;}
 
 };
 
@@ -108,6 +121,7 @@ stmt
     switch_,
     case_,
     default_,
+    sleep,
     return_,
 
   } m_kind=kind::null;
@@ -119,6 +133,7 @@ stmt
     label_stmt   lbl;
     return_stmt  ret;
     case_stmt    cas;
+    sleep_stmt   slp;
 
     data(){}
    ~data(){}
@@ -135,6 +150,7 @@ public:
   stmt(continue_stmt  cnt) noexcept{*this = cnt;}
   stmt(default_stmt   dfl) noexcept{*this = dfl;}
   stmt(case_stmt      cas) noexcept{*this = cas;}
+  stmt(sleep_stmt&&   slp) noexcept{*this = std::move(slp);}
   stmt(const stmt&   rhs) noexcept{*this = rhs;}
   stmt(      stmt&&  rhs) noexcept{*this = std::move(rhs);}
  ~stmt(){clear();}
@@ -147,6 +163,7 @@ public:
   stmt&  operator=(continue_stmt  cnt) noexcept;
   stmt&  operator=(default_stmt   dfl) noexcept;
   stmt&  operator=(case_stmt      cas) noexcept;
+  stmt&  operator=(sleep_stmt&&   slp) noexcept;
   stmt&  operator=(const stmt&   rhs) noexcept;
   stmt&  operator=(      stmt&&  rhs) noexcept;
 
@@ -167,12 +184,16 @@ public:
   bool  is_case()       const noexcept{return m_kind ==  kind::case_;}
   bool  is_switch()     const noexcept{return m_kind ==  kind::switch_;}
   bool  is_default()    const noexcept{return m_kind ==  kind::default_;}
+  bool  is_sleep()    const noexcept{return m_kind ==  kind::sleep;}
 
   const expr&         get_expr()   const noexcept{return m_data.e;}
   const label_stmt&   get_label()  const noexcept{return m_data.lbl;}
   const return_stmt&  get_return() const noexcept{return m_data.ret;}
   const case_stmt&    get_case()   const noexcept{return m_data.cas;}
   const block&        get_block()  const noexcept{return m_data.blk;}
+  const sleep_stmt&   get_sleep()  const noexcept{return m_data.slp;}
+
+  void  print() const noexcept;
 
 };
 
@@ -188,6 +209,7 @@ using devices::default_stmt;
 using devices::case_stmt;
 using devices::return_stmt;
 using devices::label_stmt;
+using devices::sleep_stmt;
 
 
 }

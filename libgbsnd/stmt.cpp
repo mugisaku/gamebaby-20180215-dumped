@@ -116,6 +116,20 @@ operator=(case_stmt  cas) noexcept
 
 stmt&
 stmt::
+operator=(sleep_stmt&&  slp) noexcept
+{
+  clear();
+
+  m_kind = kind::sleep;
+
+  new(&m_data) sleep_stmt(slp);
+
+  return *this;
+}
+
+
+stmt&
+stmt::
 operator=(const stmt&  rhs) noexcept
 {
   clear();
@@ -137,6 +151,7 @@ operator=(const stmt&  rhs) noexcept
   case(kind::case_     ): new(&m_data) case_stmt(rhs.m_data.cas);break;
   case(kind::default_  ): break;
   case(kind::return_   ): new(&m_data) return_stmt(rhs.m_data.ret);break;
+  case(kind::sleep     ): new(&m_data) sleep_stmt(rhs.m_data.slp);break;
     }
 
 
@@ -167,6 +182,7 @@ operator=(stmt&&  rhs) noexcept
   case(kind::case_     ): new(&m_data) case_stmt(std::move(rhs.m_data.cas));break;
   case(kind::default_  ): break;
   case(kind::return_   ): new(&m_data) return_stmt(std::move(rhs.m_data.ret));break;
+  case(kind::sleep     ): new(&m_data) sleep_stmt(std::move(rhs.m_data.slp));break;
     }
 
 
@@ -181,9 +197,9 @@ clear() noexcept
 {
     switch(m_kind)
     {
-  case(kind::expression): m_data.e.~expr();break;
-  case(kind::label     ): m_data.lbl.~label_stmt();break;
-  case(kind::block     ): m_data.blk.~block();break;
+  case(kind::expression): gbstd::destruct(m_data.e);break;
+  case(kind::label     ): gbstd::destruct(m_data.lbl);break;
+  case(kind::block     ): gbstd::destruct(m_data.blk);break;
   case(kind::if_       ): break;
   case(kind::while_    ): break;
   case(kind::for_      ): break;
@@ -193,11 +209,45 @@ clear() noexcept
   case(kind::switch_   ): break;
   case(kind::case_     ): break;
   case(kind::default_  ): break;
-  case(kind::return_   ): m_data.ret.~return_stmt();break;
+  case(kind::return_   ): gbstd::destruct(m_data.ret);break;
+  case(kind::sleep     ): gbstd::destruct(m_data.slp);break;
     }
 
 
   m_kind = kind::null;
+}
+
+
+void
+stmt::
+print() const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::expression): m_data.e.print();break;
+  case(kind::label     ): break;
+  case(kind::block     ): m_data.blk.print();break;
+  case(kind::if_       ): break;
+  case(kind::while_    ): break;
+  case(kind::for_      ): break;
+  case(kind::break_    ): printf("break");break;
+  case(kind::continue_ ): printf("continue");break;
+  case(kind::goto_     ): break;
+  case(kind::switch_   ): break;
+  case(kind::case_     ): break;
+  case(kind::default_  ): printf("default");break;
+  case(kind::return_   ):
+      printf("return ");
+      m_data.ret.get_expr().print();
+      break;
+  case(kind::sleep):
+      printf("sleep ");
+      m_data.slp;
+      break;
+    }
+
+
+  printf(";");
 }
 
 

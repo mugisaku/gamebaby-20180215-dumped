@@ -6,6 +6,8 @@ namespace gbsnd{
 namespace devices{
 
 
+
+
 block::
 block(const script_token_string&  toks) noexcept
 {
@@ -79,6 +81,22 @@ block(const script_token_string&  toks) noexcept
 
 const stmt*  block::begin() const noexcept{return m_stmt_list.data();}
 const stmt*    block::end() const noexcept{return m_stmt_list.data()+m_stmt_list.size();}
+
+
+void
+block::
+print() const noexcept
+{
+  printf("{\n");
+
+    for(auto&  stmt: m_stmt_list)
+    {
+      stmt.print();
+    }
+
+
+  printf("}\n\n");
+}
 
 
 }}
