@@ -24,18 +24,17 @@ SDL_AudioDeviceID
 id;
 
 
-gbsnd::square_wave
-sq;
-
-
-gbsnd::noise
-noi;
+gbsnd::script
+script;
 
 
 void
 callback(void*  userdata, uint8_t*  buf, int  len)
 {
-  noi.output(buf,buf+len);
+    for(auto  sq: script.get_square_wave_list())
+    {
+      sq->output(buf,buf+len);
+    }
 }
 
 
@@ -49,13 +48,6 @@ initialize()
   spec.callback = callback;
 
 	 id = SDL_OpenAudioDevice(SDL_GetAudioDeviceName(0,0),0,&spec,nullptr,0);
-
-  noi.set_volume(50);
-  noi.set_number_of_cycles_per_seconds(8000);
-//  noi.set_vm_wait_count_source(80);
-//  noi.set_vm_moddir(gbsnd::moddir::down);
-  noi.set_keyon_flag();
-//  noi.set_shortspan_flag();
 
   SDL_PauseAudioDevice(id,0);
 }
@@ -120,22 +112,8 @@ main_loop()
 int
 main(int  argc, char**  argv)
 {
-//  auto  scr = gbsnd::script::build_from_file("../gb.snd.txt");
+  script = gbsnd::script::build_from_file("../gb.snd.txt");
 
-  auto  e = gbsnd::make_expr("1+2*4");
-
-    if(e)
-    {
-      e->print();
-
-      gbsnd::execution_context  ctx;
-
-      auto  v = e->evaluate(ctx);
-
-      v.print();
-    }
-
-return 0;
 
   constexpr int  w = 240;
   constexpr int  h = 240;
@@ -155,6 +133,9 @@ return 0;
                             w,
                             h,0);
 
+  gbsnd::execution_context  ctx(script);
+
+  ctx.call("main",{});
 
     for(;;)
     {

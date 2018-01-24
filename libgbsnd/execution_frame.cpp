@@ -7,6 +7,18 @@ namespace gbsnd{
 namespace devices{
 
 
+
+
+void
+execution_frame::
+assign(gbstd::string_view  name, const routine&  r, const std::vector<value>&  args) noexcept
+{
+  m_routine_name = name;
+}
+
+
+
+
 const object*
 execution_frame::
 find_object(gbstd::string_view  name) const noexcept

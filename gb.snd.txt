@@ -4,7 +4,7 @@ square_wave  sq;
 routine
 main()
 {
-  a = b = c = d;
+  sq.keyon_flag;
 }
 
 

@@ -200,17 +200,27 @@ public:
 class
 script
 {
-  std::vector<square_wave*>  m_square_wave_list;
-  std::vector<routine*>          m_routine_list;
+  struct data;
 
-  std::vector<object>  m_object_list;
+  data*  m_data=nullptr;
 
-  script() noexcept{}
   script(const script_token_string&  toks) noexcept;
 
+  void  unrefer() noexcept;
+
 public:
-  std::vector<routine*>&          get_routine_list() noexcept{return m_routine_list;}
-  std::vector<square_wave*>&  get_square_wave_list() noexcept{return m_square_wave_list;}
+  script() noexcept{}
+  script(const script&   rhs) noexcept{*this = rhs;}
+  script(      script&&  rhs) noexcept{*this = std::move(rhs);}
+ ~script(){unrefer();}
+
+  script&  operator=(const script&   rhs) noexcept;
+  script&  operator=(      script&&  rhs) noexcept;
+
+  std::vector<routine*>&          get_routine_list() const noexcept;
+  std::vector<square_wave*>&  get_square_wave_list() const noexcept;
+
+  const routine*  find_routine(gbstd::string_view  name) const noexcept;
 
   static script  build_from_string(gbstd::string_view  sv) noexcept;
   static script  build_from_file(gbstd::string_view  path) noexcept;

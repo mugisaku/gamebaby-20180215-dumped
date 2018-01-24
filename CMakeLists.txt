@@ -91,20 +91,20 @@ add_subdirectory(Battle)
 
 include_directories(./)
 include_directories(/usr/include/SDL2)
-add_executable("testGBSTD${EXECUTABLE_EXTENSION}" testGBSTD.cpp)
+#add_executable("testGBSTD${EXECUTABLE_EXTENSION}" testGBSTD.cpp)
 add_executable("testGBSND${EXECUTABLE_EXTENSION}" testGBSND.cpp)
-add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp)
+#add_executable("testBattle${EXECUTABLE_EXTENSION}" Battle/testMain.cpp)
 #add_executable("testRandom${EXECUTABLE_EXTENSION}" Battle/testRandom.cpp)
 #add_executable("testMessembly${EXECUTABLE_EXTENSION}" Game/testMessembly.cpp ${GAME_SOURCES})
-target_link_libraries("testGBSTD${EXECUTABLE_EXTENSION}" "gbstd")
+#target_link_libraries("testGBSTD${EXECUTABLE_EXTENSION}" "gbstd")
 target_link_libraries("testGBSND${EXECUTABLE_EXTENSION}" "gbsnd" "tok" "gbstd")
-target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "battle" "gbdn" "tok" "gbstd")
+#target_link_libraries("testBattle${EXECUTABLE_EXTENSION}" "battle" "gbdn" "tok" "gbstd")
 
 
 if(EMSC)
-add_custom_target(bincopy ALL COMMAND cp ../bin/image.png ../battle.gb.txt /usr/local/share/gmbb/large_font.gz /usr/local/share/gmbb/small_font.gz ./)
-add_dependencies("testBattle${EXECUTABLE_EXTENSION}" bincopy)
-set_target_properties("testBattle${EXECUTABLE_EXTENSION}"  PROPERTIES LINK_FLAGS "--shell-file ../shell.html")
+#add_custom_target(bincopy ALL COMMAND cp ../bin/image.png ../battle.gb.txt /usr/local/share/gmbb/large_font.gz /usr/local/share/gmbb/small_font.gz ./)
+#add_dependencies("testBattle${EXECUTABLE_EXTENSION}" bincopy)
+#set_target_properties("testBattle${EXECUTABLE_EXTENSION}"  PROPERTIES LINK_FLAGS "--shell-file ../shell.html")
 endif()
 
 

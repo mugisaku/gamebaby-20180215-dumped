@@ -298,11 +298,13 @@ evaluate(const execution_context&  ctx) const noexcept
             if(o.is_identifier())
             {
               auto&  obj = lv.get_reference()();
+
+              return value(property(obj,square_wave::find_accessor(o.get_identifier().view())));
             }
         }
 
 
-      printf("メンバアクセスエッラー");
+      printf("メンバアクセスエラー");
     }
 
   else

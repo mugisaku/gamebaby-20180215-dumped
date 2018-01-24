@@ -1,4 +1,5 @@
 #include"libgbsnd/device.hpp"
+#include"libgbsnd/object.hpp"
 
 
 namespace gbsnd{
@@ -159,6 +160,47 @@ REDO:
       modify_volume();
       check_play_length();
     }
+}
+
+
+
+
+const accessor&
+square_wave::
+find_accessor(gbstd::string_view  name) noexcept
+{
+  static const accessor  null{"",[](const value&  objv                 ){return value();},
+                                 [](      value&  objv, const value&  v){               }};
+
+  static const accessor  list[] =
+  {
+    {"keyon_flag",
+      [](const value&  objv){
+        return value(objv.get_square_wave().test_keyon_flag());
+      },
+      [](value&  objv, const value&  v){
+        auto&  sq = objv.get_square_wave();
+
+          if(v.is_boolean())
+          {
+              if(v.get_boolean()){  sq.set_keyon_flag();}
+            else                 {sq.unset_keyon_flag();}
+          }
+      }
+    },
+  };
+
+
+    for(auto&  a: list)
+    {
+        if(a.name == name)
+        {
+          return a;
+        }
+    }
+
+
+  return null;
 }
 
 

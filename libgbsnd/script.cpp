@@ -8,8 +8,23 @@ namespace devices{
 
 
 
+struct
 script::
-script(const script_token_string&  toks) noexcept
+data
+{
+  size_t  reference_count=1;
+
+  std::vector<square_wave*>  square_wave_list;
+  std::vector<routine*>          routine_list;
+
+  std::vector<object>  object_list;
+
+};
+
+
+script::
+script(const script_token_string&  toks) noexcept:
+m_data(new data)
 {
   script_token_cursor  cur(toks.begin(),toks.end());
 
@@ -31,9 +46,9 @@ script(const script_token_string&  toks) noexcept
 
               sq->set_name(var_name);
 
-              m_square_wave_list.emplace_back(sq);
+              m_data->square_wave_list.emplace_back(sq);
 
-              m_object_list.emplace_back(var_name,value(*sq));
+              m_data->object_list.emplace_back(var_name,value(*sq));
             }
 
           else
@@ -48,7 +63,7 @@ script(const script_token_string&  toks) noexcept
                   
                   auto  rt = new routine(parals,block);
 
-                  m_object_list.emplace_back(var_name,value(*rt));
+                  m_data->object_list.emplace_back(var_name,value(*rt));
 
                   cur += 2;
                 }
@@ -71,6 +86,91 @@ script(const script_token_string&  toks) noexcept
 }
 
 
+
+
+script&
+script::
+operator=(const script&   rhs) noexcept
+{
+  unrefer();
+
+  m_data = rhs.m_data;
+
+    if(m_data)
+    {
+      ++m_data->reference_count;
+    }
+
+
+  return *this;
+}
+
+
+script&
+script::
+operator=(script&&  rhs) noexcept
+{
+  unrefer();
+
+  std::swap(m_data,rhs.m_data);
+
+
+  return *this;
+}
+
+
+
+
+void
+script::
+unrefer() noexcept
+{
+    if(m_data)
+    {
+        if(!--m_data->reference_count)
+        {
+          delete m_data          ;
+                 m_data = nullptr;
+        }
+    }
+}
+
+
+
+
+std::vector<routine*>&
+script::
+get_routine_list() const noexcept
+{
+  return m_data->routine_list;
+}
+
+
+std::vector<square_wave*>&
+script::
+get_square_wave_list() const noexcept
+{
+  return m_data->square_wave_list;
+}
+
+
+
+
+const routine*
+script::
+find_routine(gbstd::string_view  name) const noexcept
+{
+    for(auto&  obj: m_data->object_list)
+    {
+        if((obj.get_name() == name) && obj.get_value().is_routine())
+        {
+          return &obj.get_value().get_routine();
+        }
+    }
+
+
+  return nullptr;
+}
 
 
 script

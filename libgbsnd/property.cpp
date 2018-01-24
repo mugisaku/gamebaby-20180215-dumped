@@ -8,8 +8,8 @@ namespace devices{
 
 
 
-value  property::get(               ) const noexcept{return m_getter(*m_object  );}
-void   property::set(const value&  v) const noexcept{       m_setter(*m_object,v);}
+value  property::get(               ) const noexcept{return m_accessor.getter(m_object->get_value()  );}
+void   property::set(const value&  v) const noexcept{       m_accessor.setter(m_object->get_value(),v);}
 
 
 

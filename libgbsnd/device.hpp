@@ -14,6 +14,9 @@ namespace devices{
 constexpr int  number_of_samples_per_seconds = 8000;//1秒あたりのサンプル数
 
 
+class accessor;
+
+
 enum class
 moddir: uint8_t //Modification Direction:変更方向
 {
@@ -113,6 +116,8 @@ square_wave: public device
   void  modify_frequency() noexcept;
 
 public:
+  static const accessor&  find_accessor(gbstd::string_view  name) noexcept;
+
   void  update_parameters() noexcept;
 
   void     set_fm_shift_amount(uint8_t  a)       noexcept{       m_fm_shift_amount = a;}

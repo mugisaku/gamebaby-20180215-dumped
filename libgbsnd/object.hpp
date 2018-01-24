@@ -17,24 +17,31 @@ class object;
 class value;
 
 
+struct
+accessor
+{
+  using getter_callback = value  (*)(const value&  objv                 );
+  using setter_callback = void   (*)(      value&  objv, const value&  v);
+
+  gbstd::string  name;
+
+  getter_callback  getter;
+  setter_callback  setter;
+
+};
+
+
 class
 property
 {
-public:
-  using getter = value  (*)(object&  obj                 );
-  using setter = void   (*)(object&  obj, const value&  v);
-
-private:
   object*  m_object;
 
-  getter  m_getter;
-  setter  m_setter;
+  accessor  m_accessor;
 
 public:
-  property(object&  obj, getter  get, setter  set) noexcept:
+  property(object&  obj, accessor  accessor) noexcept:
   m_object(&obj),
-  m_getter(get),
-  m_setter(set){}
+  m_accessor(accessor){}
 
   value  get(               ) const noexcept;
   void   set(const value&  v) const noexcept;
@@ -149,7 +156,9 @@ public:
   object(gbstd::string_view  name, value&&  v) noexcept: m_name(name), m_value(std::move(v)){}
 
   const gbstd::string&   get_name() const noexcept{return m_name;}
-  const value&        get_value() const noexcept{return m_value;}
+
+        value&  get_value()       noexcept{return m_value;}
+  const value&  get_value() const noexcept{return m_value;}
 
 };
 
@@ -160,6 +169,8 @@ public:
 using devices::reference;
 using devices::value;
 using devices::object;
+using devices::accessor;
+using devices::property;
 
 
 }
