@@ -5,11 +5,9 @@ set(SOURCES
   device__square_wave.cpp
   device__noise.cpp
   stmt.cpp
-  expr.cpp
-  expr__make_expr.cpp
+  expr_element.cpp
+  expr_array.cpp
   operand.cpp
-  expr__unary_operation.cpp
-  expr__binary_operation.cpp
   block.cpp
   routine.cpp
   execution_context.cpp

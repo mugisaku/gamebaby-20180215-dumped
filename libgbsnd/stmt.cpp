@@ -10,13 +10,13 @@ namespace devices{
 
 stmt&
 stmt::
-operator=(expr&&  e) noexcept
+operator=(expr_array&&  e) noexcept
 {
   clear();
 
   m_kind = kind::expression;
 
-  new(&m_data) expr(std::move(e));
+  new(&m_data) expr_array(std::move(e));
 
   return *this;
 }
@@ -154,7 +154,7 @@ operator=(const stmt&  rhs) noexcept
 
         switch(m_kind)
         {
-      case(kind::expression): new(&m_data) expr(rhs.m_data.e);break;
+      case(kind::expression): new(&m_data) expr_array(rhs.m_data.e);break;
       case(kind::label     ): new(&m_data) label_stmt(rhs.m_data.lbl);break;
       case(kind::block     ): new(&m_data) block(rhs.m_data.blk);break;
       case(kind::if_       ): break;
@@ -189,7 +189,7 @@ operator=(stmt&&  rhs) noexcept
 
         switch(m_kind)
         {
-      case(kind::expression): new(&m_data) expr(std::move(rhs.m_data.e));break;
+      case(kind::expression): new(&m_data) expr_array(std::move(rhs.m_data.e));break;
       case(kind::label     ): new(&m_data) label_stmt(std::move(rhs.m_data.lbl));break;
       case(kind::block     ): new(&m_data) block(std::move(rhs.m_data.blk));break;
       case(kind::if_       ): break;

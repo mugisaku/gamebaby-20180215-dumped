@@ -86,13 +86,13 @@ operator=(const identifier&  id) noexcept
 
 operand&
 operand::
-operator=(expr&&  e) noexcept
+operator=(const expr_array&  e) noexcept
 {
   clear();
 
-  m_kind = kind::expression;
+  m_kind = kind::expression_array;
 
-  new(&m_data) expr(std::move(e));
+  new(&m_data) expr_array(e);
 
   return *this;
 }
@@ -119,8 +119,8 @@ operator=(const operand&  rhs) noexcept
       case(kind::identifier):
           new(&m_data) identifier(rhs.m_data.id);
           break;
-      case(kind::expression):
-          new(&m_data.e) expr(rhs.m_data.e);
+      case(kind::expression_array):
+          new(&m_data) expr_array(rhs.m_data.ea);
           break;
         }
     }
@@ -151,8 +151,9 @@ operator=(operand&&  rhs) noexcept
       case(kind::identifier):
           new(&m_data) identifier(std::move(rhs.m_data.id));
           break;
-      case(kind::expression):
-          new(&m_data) expr(std::move(rhs.m_data.e));
+      case(kind::expression_array):
+          new(&m_data) expr_array(std::move(rhs.m_data.ea));
+          break;
         }
     }
 
@@ -173,8 +174,9 @@ clear() noexcept
   case(kind::identifier):
       gbstd::destruct(m_data.id);
       break;
-  case(kind::expression):
-      gbstd::destruct(m_data.e);
+  case(kind::expression_array):
+      gbstd::destruct(m_data.ea);
+      break;
     }
 
 
@@ -202,8 +204,8 @@ evaluate(const execution_context&  ctx) const noexcept
         return *ctx.seek_value(m_data.id.view());
       }
       break;
-  case(kind::expression):
-      return m_data.e.evaluate(ctx);
+  case(kind::expression_array):
+      return m_data.ea.evaluate(ctx);
       break;
     }
 
@@ -230,8 +232,8 @@ print() const noexcept
   case(kind::identifier):
       printf("%s",m_data.id.data());
       break;
-  case(kind::expression):
-      m_data.e.print();
+  case(kind::expression_array):
+      m_data.ea .print();
       break;
     }
 }

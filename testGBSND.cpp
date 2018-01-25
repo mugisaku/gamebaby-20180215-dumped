@@ -133,9 +133,9 @@ main(int  argc, char**  argv)
                             w,
                             h,0);
 script.print();
-  gbsnd::execution_context  ctx(script);
+//  gbsnd::execution_context  ctx(script);
 
-  ctx.call("main",{});
+//  ctx.call("main",{});
 
     for(;;)
     {

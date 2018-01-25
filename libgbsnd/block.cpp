@@ -25,7 +25,7 @@ block(const script_token_string&  toks) noexcept
             {
               ++cur;
 
-              m_stmt_list.emplace_back(return_stmt(read_expr(cur)));
+              m_stmt_list.emplace_back(return_stmt(expr_array(cur)));
             }
 
           else if(id == sv("while")){}
@@ -60,7 +60,7 @@ block(const script_token_string&  toks) noexcept
 
           else
             {
-              m_stmt_list.emplace_back(read_expr(cur));
+              m_stmt_list.emplace_back(expr_array(cur));
             }
         }
 

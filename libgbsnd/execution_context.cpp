@@ -25,8 +25,6 @@ evaluation_frame
 
   evaluation_phase  phase;
 
-  const devices::expr*  expr;
-
 };
 
 
@@ -188,8 +186,6 @@ run() noexcept
                 if(stmt.is_expression())
                 {
                   frame.eval_frame = new evaluation_frame;
-
-                  frame.eval_frame->expr = &stmt.get_expr();
                 }
             }
         }

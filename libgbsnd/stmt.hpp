@@ -54,12 +54,12 @@ public:
 class
 sleep_stmt
 {
-  expr  m_expr;
+  expr_array  m_expr;
 
 public:
-  sleep_stmt(expr&&  e) noexcept: m_expr(std::move(e)){}
+  sleep_stmt(expr_array&&  e) noexcept: m_expr(std::move(e)){}
 
-  const expr&  get_expr() const noexcept{return m_expr;}
+  expr_array  get_expr() const noexcept{return m_expr;}
 
 };
 
@@ -80,9 +80,9 @@ public:
 class
 for_stmt: public block
 {
-  expr  m_initialize_expr;
-  expr   m_condition_expr;
-  expr      m_modify_expr;
+  expr_array  m_initialize_expr;
+  expr_array   m_condition_expr;
+  expr_array      m_modify_expr;
 
 public:
 
@@ -92,14 +92,14 @@ public:
 class
 return_stmt
 {
-  expr  m_expr;
+  expr_array  m_expr;
 
 public:
   return_stmt() noexcept{}
-  return_stmt(expr&&  expr) noexcept:
+  return_stmt(expr_array&&  expr) noexcept:
   m_expr(std::move(expr)){}
 
-  const expr&  get_expr() const noexcept{return m_expr;}
+  expr_array  get_expr() const noexcept{return m_expr;}
 
 };
 
@@ -107,13 +107,13 @@ public:
 class
 print_stmt
 {
-  expr  m_expr;
+  expr_array  m_expr;
 
 public:
-  print_stmt(expr&&  expr) noexcept:
+  print_stmt(expr_array&&  expr) noexcept:
   m_expr(std::move(expr)){}
 
-  const expr&  get_expr() const noexcept{return m_expr;}
+  expr_array  get_expr() const noexcept{return m_expr;}
 
 };
 
@@ -142,7 +142,7 @@ stmt
   } m_kind=kind::null;
 
   union data{
-    expr  e;
+    expr_array  e;
 
     block        blk;
     label_stmt   lbl;
@@ -158,7 +158,7 @@ stmt
 
 public:
   stmt() noexcept{}
-  stmt(expr&&  e) noexcept{*this = std::move(e);}
+  stmt(expr_array&&  e) noexcept{*this = std::move(e);}
   stmt(block&&          blk) noexcept{*this = std::move(blk);}
   stmt(label_stmt&&     lbl) noexcept{*this = std::move(lbl);}
   stmt(return_stmt&&    ret) noexcept{*this = std::move(ret);}
@@ -172,7 +172,7 @@ public:
   stmt(      stmt&&  rhs) noexcept{*this = std::move(rhs);}
  ~stmt(){clear();}
 
-  stmt&  operator=(expr&&  e) noexcept;
+  stmt&  operator=(expr_array&&  e) noexcept;
   stmt&  operator=(block&&  blk) noexcept;
   stmt&  operator=(label_stmt&&   lbl) noexcept;
   stmt&  operator=(return_stmt&&  ret) noexcept;
@@ -205,7 +205,7 @@ public:
   bool  is_sleep()      const noexcept{return m_kind ==  kind::sleep;}
   bool  is_print()      const noexcept{return m_kind ==  kind::print;}
 
-  const expr&         get_expr()   const noexcept{return m_data.e;}
+  const expr_array&   get_expr()   const noexcept{return m_data.e;}
   const label_stmt&   get_label()  const noexcept{return m_data.lbl;}
   const return_stmt&  get_return() const noexcept{return m_data.ret;}
   const case_stmt&    get_case()   const noexcept{return m_data.cas;}
