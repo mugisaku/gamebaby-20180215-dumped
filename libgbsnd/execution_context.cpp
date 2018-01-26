@@ -18,9 +18,7 @@ frame
 
   std::list<object>  object_list;
 
-  std::vector<value>  value_stack;
-
-  std::vector<operand>  operand_buffer;
+  devices::data_stack  data_stack;
 
   const expr_element*  eval_it    ;
   const expr_element*  eval_it_end;
@@ -113,7 +111,6 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
   frm.current = blk->begin();
   frm.end     = blk->end();
 
-  frm.value_stack.clear();
   frm.object_list.clear();
 
   frm.eval_it     = nullptr;
@@ -147,9 +144,21 @@ void
 execution_context::
 step_evaluation(execution_context::frame&  frame) noexcept
 {
+  auto&  stack = frame.data_stack;
+
     if(frame.eval_it >= frame.eval_it_end)
     {
       frame.eval_it = nullptr;
+
+        if(stack.get_length() != 1)
+        {
+          printf("評価結果が不正\n");
+        }
+
+      else
+        {
+        }
+
 
       return;
     }
@@ -157,17 +166,15 @@ step_evaluation(execution_context::frame&  frame) noexcept
 
   auto&  e = *frame.eval_it++;
 
-  auto&  buf = frame.operand_buffer;
-
     if(e.is_operand())
     {
-      buf.emplace_back(e.get_operand());
+      stack.push(e.get_operand().evaluate(*this));
     }
 
   else
     if(e.is_prefix_unary_operator())
     {
-        if(buf.size() < 1)
+        if(stack.get_length() < 1)
         {
           printf("単項演算の演算項が足りない\n");
 
@@ -175,15 +182,13 @@ step_evaluation(execution_context::frame&  frame) noexcept
         }
 
 
-      operation  op(prefix_unary_operator{e.get_operator_word()},operand(buf.back()));
-
-      buf.back() = std::move(op);
+      stack.operate_prefix_unary(e.get_operator_word());
     }
 
   else
     if(e.is_postfix_unary_operator())
     {
-        if(buf.size() < 1)
+        if(stack.get_length() < 1)
         {
           printf("単項演算の演算項が足りない\n");
 
@@ -191,15 +196,13 @@ step_evaluation(execution_context::frame&  frame) noexcept
         }
 
 
-      operation  op(postfix_unary_operator{e.get_operator_word()},operand(buf.back()));
-
-      buf.back() = std::move(op);
+      stack.operate_postfix_unary(e.get_operator_word());
     }
 
   else
     if(e.is_binary_operator())
     {
-        if(buf.size() < 2)
+        if(stack.get_length() < 2)
         {
           printf("二項演算の演算項が足りない\n");
 
@@ -207,15 +210,7 @@ step_evaluation(execution_context::frame&  frame) noexcept
         }
 
 
-      operand  op2(std::move(buf.back()));
-
-      buf.pop_back();
-
-      operand  op1(std::move(buf.back()));
-
-      operation  op(binary_operator{e.get_operator_word()},std::move(op1),std::move(op2));
-
-      buf.back() = std::move(op);
+      stack.operate_binary(e.get_operator_word());
     }
 }
 
@@ -250,7 +245,7 @@ run() noexcept
               frame.eval_it     = e.begin();
               frame.eval_it_end = e.end();
 
-              frame.operand_buffer.clear();
+              frame.data_stack.reset();
             }
         }
 

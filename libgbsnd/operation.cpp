@@ -142,6 +142,21 @@ value
 operation::
 evaluate(const execution_context&  ctx) const noexcept
 {
+    switch(m_data->kind)
+    {
+  case(operation_kind::prefix_unary):
+//      return devices::evaluate(m_data->word,m_data->first_operand);
+      break;
+  case(operation_kind::postfix_unary):
+//      return devices::evaluate(m_data->first_operand,m_data->word);
+      break;
+  case(operation_kind::binary):
+//      return devices::evaluate(m_data->first_operand,m_data->word,m_data->second_operand);
+      break;
+    }
+
+
+  return value();
 }
 
 

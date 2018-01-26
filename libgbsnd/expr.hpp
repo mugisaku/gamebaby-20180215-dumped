@@ -76,6 +76,31 @@ public:
 
 
 class
+data_stack
+{
+  static constexpr size_t  max_length = 32;
+
+  value  m_values[max_length];
+
+  size_t  m_length=0;
+
+public:
+  void  push(value&&  v) noexcept{m_values[m_length++] = std::move(v);}
+  const value&  pop() noexcept{return m_values[--m_length];}
+  const value&  top() const noexcept{return m_values[m_length-1];}
+
+  void  reset() noexcept{m_length = 0;}
+
+  size_t  get_length() const noexcept{return m_length;}
+
+  const value&  operate_prefix_unary( operator_word  opw) noexcept;
+  const value&  operate_postfix_unary(operator_word  opw) noexcept;
+  const value&  operate_binary(       operator_word  opw) noexcept;
+
+};
+
+
+class
 expr_array
 {
   class maker;
