@@ -419,105 +419,80 @@ print() const noexcept
     }
 
 
-  std::vector<const operand*>  buffer;
+  std::vector<operand>  buf;
 
     for(auto&  e: *this)
     {
-/*
         if(e.is_operand())
         {
-          buffer.emplace_back(&e.get_operand());
+          buf.emplace_back(e.get_operand());
         }
 
       else
         if(e.is_prefix_unary_operator())
         {
-            if(buffer.size() < 1)
+            if(buf.size() < 1)
             {
-              printf("単項演算の演算項が無い\n");
+              printf("結果が不正\n");
 
               return;
             }
 
 
-          short_string  ss(e.get_operator_word());
+          operation  op(prefix_unary_operator{e.get_operator_word()},operand(buf.back()));
 
-          printf("%s",ss.data());
-
-          buffer.back()->print();
-          buffer.pop_back();
+          buf.back() = std::move(op);
         }
 
       else
         if(e.is_postfix_unary_operator())
         {
-            if(buffer.size() < 1)
+            if(buf.size() < 1)
             {
-              printf("単項演算の演算項が無い\n");
+              printf("結果が不正\n");
 
               return;
             }
 
 
-          short_string  ss(e.get_operator_word());
+          operation  op(postfix_unary_operator{e.get_operator_word()},operand(buf.back()));
 
-          buffer.back()->print();
-          buffer.pop_back();
-
-          printf("%s",ss.data());
+          buf.back() = std::move(op);
         }
 
       else
         if(e.is_binary_operator())
         {
-            if(buffer.size() < 2)
+            if(buf.size() < 2)
             {
-              printf("二項演算の演算項が足りない\n");
+              printf("結果が不正\n");
 
               return;
             }
 
 
-          short_string  ss(e.get_operator_word());
+          operand  op2(std::move(buf.back()));
 
-          buffer.back()->print();
-          buffer.pop_back();
+          buf.pop_back();
 
-          printf("%s",ss.data());
+          operand  op1(std::move(buf.back()));
 
-          buffer.back()->print();
-          buffer.pop_back();
-        }
-*/
-        if(e.is_operand())
-        {
-          e.get_operand().print();
-        }
+          operation  op(binary_operator{e.get_operator_word()},std::move(op1),std::move(op2));
 
-      else
-        if(e.is_prefix_unary_operator())
-        {
-          short_string  ss(e.get_operator_word());
-
-          printf("%s",ss.data());
-        }
-
-      else
-        if(e.is_postfix_unary_operator())
-        {
-          short_string  ss(e.get_operator_word());
-
-          printf("%s",ss.data());
-        }
-
-      else
-        if(e.is_binary_operator())
-        {
-          short_string  ss(e.get_operator_word());
-
-          printf("%s",ss.data());
+          buf.back() = std::move(op);
         }
     }
+
+
+    if(buf.size() != 1)
+    {
+      printf("結果が不正\n");
+
+      return;
+    }
+
+
+  buf.front().print();
 }
 
 

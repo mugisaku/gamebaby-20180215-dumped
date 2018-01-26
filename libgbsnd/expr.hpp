@@ -45,6 +45,37 @@ binary_operator
 
 
 class
+operation
+{
+  struct data;
+
+  data*  m_data=nullptr;
+
+  void  unrefer() noexcept;
+
+public:
+  operation(prefix_unary_operator  op, operand&&  o) noexcept;
+  operation(postfix_unary_operator  op, operand&&  o) noexcept;
+  operation(binary_operator  op, operand&&  o1, operand&&  o2) noexcept;
+  operation(const operation&   rhs) noexcept{*this = rhs;}
+  operation(      operation&  rhs) noexcept{*this = std::move(rhs);}
+ ~operation(){unrefer();}
+
+  operation&  operator=(const operation&   rhs) noexcept;
+  operation&  operator=(      operation&&  rhs) noexcept;
+
+  bool  is_prefix_unary() const noexcept;
+  bool  is_postfix_unary() const noexcept;
+  bool  is_binary() const noexcept;
+
+  value  evaluate(const execution_context&  ctx) const noexcept;
+
+  void  print() const noexcept;
+
+};
+
+
+class
 expr_array
 {
   class maker;
@@ -88,6 +119,7 @@ operand
     integer_literal,
     identifier,
     expression_array,
+    operation,
   } m_kind=kind::null; 
 
   union data{
@@ -98,6 +130,8 @@ operand
     identifier  id;
 
     expr_array  ea;
+
+    operation  op;
 
     data(){}
    ~data(){}
@@ -111,6 +145,7 @@ public:
   operand(uint64_t  i) noexcept{*this = i;}
   operand(const identifier&  id) noexcept{*this = std::move(id);}
   operand(const expr_array&  e) noexcept{*this = e;}
+  operand(const operation&  op) noexcept{*this = op;}
   operand(const operand&   rhs) noexcept{*this = rhs;}
   operand(      operand&&  rhs) noexcept{*this = std::move(rhs);}
  ~operand(){clear();}
@@ -120,6 +155,7 @@ public:
   operand&  operator=(uint64_t  i) noexcept;
   operand&  operator=(const identifier&  id) noexcept;
   operand&  operator=(const expr_array&  e) noexcept;
+  operand&  operator=(const operation&  op) noexcept;
   operand&  operator=(const operand&   rhs) noexcept;
   operand&  operator=(      operand&&  rhs) noexcept;
 
@@ -131,11 +167,13 @@ public:
   bool  is_integer_literal()   const noexcept{return m_kind == kind::integer_literal;}
   bool  is_identifier()        const noexcept{return m_kind == kind::identifier;}
   bool  is_expression_array()  const noexcept{return m_kind == kind::expression_array;}
+  bool  is_operation()         const noexcept{return m_kind == kind::operation;}
 
   bool               get_boolean_literal()  const noexcept{return m_data.b;}
   uint64_t           get_integer_literal()  const noexcept{return m_data.i;}
   const identifier&  get_identifier()       const noexcept{return m_data.id;}
-  expr_array         get_expression_array()       const noexcept{return m_data.ea;}
+  const expr_array&  get_expression_array() const noexcept{return m_data.ea;}
+  const operation&   get_operation()        const noexcept{return m_data.op;}
 
   value  evaluate(const execution_context&  ctx) const noexcept;
 

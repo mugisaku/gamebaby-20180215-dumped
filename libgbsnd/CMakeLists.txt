@@ -7,6 +7,7 @@ set(SOURCES
   stmt.cpp
   expr_element.cpp
   expr_array.cpp
+  operation.cpp
   operand.cpp
   block.cpp
   routine.cpp

@@ -50,6 +50,16 @@ public:
          static_cast<char>((opw.data()>>16)&0xFF),
          static_cast<char>((opw.data()>> 8)&0xFF),0}{}
 
+  short_string&  operator=(operator_word  opw) noexcept
+  {
+    m_data[0] = (opw.data()>>24);
+    m_data[1] = (opw.data()>>16)&0xFF;
+    m_data[2] = (opw.data()>> 8)&0xFF;
+
+    return *this;
+  }
+
+
   constexpr const char*  data() const noexcept{return m_data;}
 
 };

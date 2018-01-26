@@ -100,6 +100,20 @@ operator=(const expr_array&  e) noexcept
 
 operand&
 operand::
+operator=(const operation&  op) noexcept
+{
+  clear();
+
+  m_kind = kind::operation;
+
+  new(&m_data) operation(op);
+
+  return *this;
+}
+
+
+operand&
+operand::
 operator=(const operand&  rhs) noexcept
 {
     if(this != &rhs)
@@ -121,6 +135,9 @@ operator=(const operand&  rhs) noexcept
           break;
       case(kind::expression_array):
           new(&m_data) expr_array(rhs.m_data.ea);
+          break;
+      case(kind::operation):
+          new(&m_data) operation(rhs.m_data.op);
           break;
         }
     }
@@ -154,6 +171,9 @@ operator=(operand&&  rhs) noexcept
       case(kind::expression_array):
           new(&m_data) expr_array(std::move(rhs.m_data.ea));
           break;
+      case(kind::operation):
+          new(&m_data) operation(std::move(rhs.m_data.op));
+          break;
         }
     }
 
@@ -176,6 +196,9 @@ clear() noexcept
       break;
   case(kind::expression_array):
       gbstd::destruct(m_data.ea);
+      break;
+  case(kind::operation):
+      gbstd::destruct(m_data.op);
       break;
     }
 
@@ -207,6 +230,9 @@ evaluate(const execution_context&  ctx) const noexcept
   case(kind::expression_array):
       return m_data.ea.evaluate(ctx);
       break;
+  case(kind::operation):
+      return m_data.op.evaluate(ctx);
+      break;
     }
 
 
@@ -233,7 +259,10 @@ print() const noexcept
       printf("%s",m_data.id.data());
       break;
   case(kind::expression_array):
-      m_data.ea .print();
+      m_data.ea.print();
+      break;
+  case(kind::operation):
+      m_data.op.print();
       break;
     }
 }
