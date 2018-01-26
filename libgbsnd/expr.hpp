@@ -234,6 +234,7 @@ public:
 
 using devices::expr_element;
 using devices::expr_array;
+using devices::operation;
 
 
 }

@@ -132,18 +132,25 @@ main(int  argc, char**  argv)
 //                            SDL_WINDOWPOS_CENTERED,
                             w,
                             h,0);
-script.print();
-//  gbsnd::execution_context  ctx(script);
+  gbsnd::execution_context  ctx(script);
 
-//  ctx.call("main",{});
+  ctx.call("main",{});
 
+  ctx.run();
+
+  ctx.get_returned_value().print();
+
+printf(" was returned\n");
+
+/*
     for(;;)
     {
       main_loop();
 
       SDL_Delay(20);
     }
-
+*/
+  quit();
 
   return 0;
 }

@@ -33,6 +33,8 @@ execution_context
 
   value  m_returned_value;
 
+  void  step_evaluation(execution_context::frame&  frame) noexcept;
+
 public:
   execution_context(const script&  scr) noexcept;
  ~execution_context(){clear();}

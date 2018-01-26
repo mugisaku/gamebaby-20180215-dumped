@@ -373,7 +373,7 @@ read(script_token_cursor&  cur) noexcept
             {
               script_token_cursor  cocur(toks);
 
-//              mk.push(operand(read_expr(cocur))));
+              mk.push(operand(expr_array(cocur)));
             }
 
           else
@@ -433,7 +433,7 @@ print() const noexcept
         {
             if(buf.size() < 1)
             {
-              printf("結果が不正\n");
+              printf("単項演算の演算項が足りない\n");
 
               return;
             }
@@ -449,7 +449,7 @@ print() const noexcept
         {
             if(buf.size() < 1)
             {
-              printf("結果が不正\n");
+              printf("単項演算の演算項が足りない\n");
 
               return;
             }
@@ -465,7 +465,7 @@ print() const noexcept
         {
             if(buf.size() < 2)
             {
-              printf("結果が不正\n");
+              printf("二項演算の演算項が足りない\n");
 
               return;
             }

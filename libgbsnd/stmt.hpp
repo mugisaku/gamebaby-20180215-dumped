@@ -59,7 +59,7 @@ sleep_stmt
 public:
   sleep_stmt(expr_array&&  e) noexcept: m_expr(std::move(e)){}
 
-  expr_array  get_expr() const noexcept{return m_expr;}
+  const expr_array&  get_expr() const noexcept{return m_expr;}
 
 };
 
@@ -99,7 +99,7 @@ public:
   return_stmt(expr_array&&  expr) noexcept:
   m_expr(std::move(expr)){}
 
-  expr_array  get_expr() const noexcept{return m_expr;}
+  const expr_array&  get_expr() const noexcept{return m_expr;}
 
 };
 
@@ -113,7 +113,7 @@ public:
   print_stmt(expr_array&&  expr) noexcept:
   m_expr(std::move(expr)){}
 
-  expr_array  get_expr() const noexcept{return m_expr;}
+  const expr_array&  get_expr() const noexcept{return m_expr;}
 
 };
 

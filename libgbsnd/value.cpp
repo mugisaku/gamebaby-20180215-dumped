@@ -286,6 +286,9 @@ print() const noexcept
 {
     switch(m_kind)
     {
+  case(kind::null):
+      printf("null");
+      break;
   case(kind::undefined):
       printf("undefined");
       break;
