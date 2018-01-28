@@ -11,18 +11,6 @@ namespace devices{
 
 operand&
 operand::
-operator=(undefined  u) noexcept
-{
-  clear();
-
-  m_kind = kind::undefined_literal;
-
-  return *this;
-}
-
-
-operand&
-operand::
 operator=(bool  b) noexcept
 {
   clear();
@@ -53,12 +41,6 @@ operand&
 operand::
 operator=(const identifier&  id) noexcept
 {
-    if(id == gbstd::string_view("undefined"))
-    {
-      *this = undefined();
-    }
-
-  else
     if(id == gbstd::string_view("true"))
     {
       *this = true;
@@ -213,9 +195,6 @@ evaluate(const execution_context&  ctx) const noexcept
 {
     switch(m_kind)
     {
-  case(kind::undefined_literal):
-      return value(undefined());
-      break;
   case(kind::boolean_literal):
       return value(m_data.b);
       break;
@@ -244,9 +223,6 @@ print() const noexcept
 {
     switch(m_kind)
     {
-  case(kind::undefined_literal):
-      printf("undefined");
-      break;
   case(kind::boolean_literal):
       printf("%s",m_data.b? "true":"false");
       break;

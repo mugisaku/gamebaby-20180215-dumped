@@ -141,7 +141,6 @@ operand
 {
   enum class kind{
     null,
-    undefined_literal,
     boolean_literal,
     integer_literal,
     identifier,
@@ -167,7 +166,6 @@ operand
 
 public:
   operand() noexcept{}
-  operand(undefined  u) noexcept{*this = u;}
   operand(bool  b) noexcept{*this = b;}
   operand(uint64_t  i) noexcept{*this = i;}
   operand(const identifier&  id) noexcept{*this = std::move(id);}
@@ -177,7 +175,6 @@ public:
   operand(      operand&&  rhs) noexcept{*this = std::move(rhs);}
  ~operand(){clear();}
 
-  operand&  operator=(undefined  u) noexcept;
   operand&  operator=(bool  b) noexcept;
   operand&  operator=(uint64_t  i) noexcept;
   operand&  operator=(const identifier&  id) noexcept;
@@ -189,7 +186,6 @@ public:
 
   void  clear() noexcept;
 
-  bool  is_undefined_literal() const noexcept{return m_kind == kind::undefined_literal;}
   bool  is_boolean_literal()   const noexcept{return m_kind == kind::boolean_literal;}
   bool  is_integer_literal()   const noexcept{return m_kind == kind::integer_literal;}
   bool  is_identifier()        const noexcept{return m_kind == kind::identifier;}

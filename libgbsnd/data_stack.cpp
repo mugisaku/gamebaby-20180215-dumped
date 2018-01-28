@@ -41,31 +41,31 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
 {
     if(opw == gbstd::string_view("||"))
     {
-      auto  rv = pop().get_boolean_value(ctx);
+      auto  rv = pop().get_integer_value(ctx);
 
-        if(rv.get_boolean())
+        if(rv.get_integer())
         {
           top() = value(true);
         }
 
       else
         {
-          auto  lv = top().get_boolean_value(ctx);
+          auto  lv = top().get_integer_value(ctx);
 
-          top() = value(lv.get_boolean());
+          top() = value(lv.get_integer());
         }
     }
 
   else
     if(opw == gbstd::string_view("&&"))
     {
-      auto  rv = pop().get_boolean_value(ctx);
+      auto  rv = pop().get_integer_value(ctx);
 
-        if(rv.get_boolean())
+        if(rv.get_integer())
         {
-          auto  lv = top().get_boolean_value(ctx);
+          auto  lv = top().get_integer_value(ctx);
 
-          top() = value(lv.get_boolean());
+          top() = value(lv.get_integer());
         }
 
       else
@@ -257,13 +257,6 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
   else
     if(opw == gbstd::string_view("="))
     {
-      auto  rv = pop().get_boolean_value(ctx);
-      auto  lv = top().get_boolean_value(ctx);
-
-/*
-      top() = value(lv.get_boolean()
-                    rv.get_boolean());
-*/
     }
 
   else

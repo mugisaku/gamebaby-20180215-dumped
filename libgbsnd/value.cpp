@@ -11,25 +11,13 @@ namespace devices{
 
 value&
 value::
-operator=(undefined  u) noexcept
-{
-  clear();
-
-  m_kind = kind::undefined;
-
-  return *this;
-}
-
-
-value&
-value::
 operator=(bool  b) noexcept
 {
   clear();
 
-  m_kind = kind::boolean;
+  m_kind = kind::integer;
 
-  m_data.b = b;
+  m_data.i = b? 1:0;
 
   return *this;
 }
@@ -131,9 +119,6 @@ operator=(const value&  rhs) noexcept
 
         switch(m_kind)
         {
-      case(kind::boolean):
-          m_data.b = rhs.m_data.b;
-          break;
       case(kind::integer):
           m_data.i = rhs.m_data.i;
           break;
@@ -172,9 +157,6 @@ operator=(value&&  rhs) noexcept
 
         switch(m_kind)
         {
-      case(kind::boolean):
-          m_data.b = rhs.m_data.b;
-          break;
       case(kind::integer):
           m_data.i = rhs.m_data.i;
           break;
@@ -232,10 +214,6 @@ get_integer_value(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
-  case(kind::undefined):
-      break;
-  case(kind::boolean):
-      break;
   case(kind::integer):
       return value(m_data.i);
       break;
@@ -247,41 +225,13 @@ get_integer_value(const execution_context*  ctx) const noexcept
   case(kind::identifier):
       return ctx? ctx->get_value(m_data.id.view()).get_integer_value(ctx):value();
       break;
-    }
-
-
-  return value(undefined());
-}
-
-
-value
-value::
-get_boolean_value(const execution_context*  ctx) const noexcept
-{
-    switch(m_kind)
-    {
-  case(kind::undefined):
-      return value(false);
-      break;
-  case(kind::boolean):
-      return *this;
-      break;
-  case(kind::integer):
-      return value(m_data.i? true:false);
-      break;
-  case(kind::reference):
-      return m_data.r().get_boolean_value(ctx);
-      break;
-  case(kind::identifier):
-      return ctx? ctx->get_value(m_data.id.view()).get_boolean_value(ctx):value();
-      break;
-  case(kind::routine):
-      return value(true);
+  case(kind::property):
+      return m_data.pr.get();
       break;
     }
 
 
-  return value(undefined());
+  return value(0);
 }
 
 
@@ -291,10 +241,6 @@ get_routine_value(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
-  case(kind::undefined):
-      break;
-  case(kind::boolean):
-      break;
   case(kind::integer):
       break;
   case(kind::reference):
@@ -309,7 +255,7 @@ get_routine_value(const execution_context*  ctx) const noexcept
     }
 
 
-  return value(undefined());
+  return value(0);
 }
 
 
@@ -319,10 +265,6 @@ get_reference_value(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
-  case(kind::undefined):
-      break;
-  case(kind::boolean):
-      break;
   case(kind::integer):
       break;
   case(kind::reference):
@@ -336,7 +278,7 @@ get_reference_value(const execution_context*  ctx) const noexcept
     }
 
 
-  return value(undefined());
+  return value(0);
 }
 
 
@@ -350,12 +292,6 @@ print() const noexcept
     {
   case(kind::null):
       printf("null");
-      break;
-  case(kind::undefined):
-      printf("undefined");
-      break;
-  case(kind::boolean):
-      printf("%s",m_data.b? "true":"false");
       break;
   case(kind::integer):
       printf("%d",m_data.i);

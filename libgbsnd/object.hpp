@@ -72,16 +72,11 @@ public:
 };
 
 
-class undefined{public: constexpr undefined() noexcept{}};
-
-
 class
 value
 {
   enum class kind{
     null,
-    undefined,
-    boolean,
     integer,
     identifier,
     reference,
@@ -92,7 +87,6 @@ value
   } m_kind=kind::null;
 
   union data{
-    bool             b;
     int              i;
     reference        r;
     const routine*  rt;
@@ -107,7 +101,6 @@ value
 
 public:
   value() noexcept{}
-  value(undefined  u) noexcept{*this = u;}
   value(bool  b) noexcept{*this = b;}
   value(int  i) noexcept{*this = i;}
   value(reference  r) noexcept{*this = r;}
@@ -119,7 +112,6 @@ public:
   value(      value&&  rhs) noexcept{*this = std::move(rhs);}
  ~value(){clear();}
 
-  value&  operator=(undefined  u) noexcept;
   value&  operator=(bool  b) noexcept;
   value&  operator=(int  i) noexcept;
   value&  operator=(reference  r) noexcept;
@@ -130,12 +122,10 @@ public:
   value&  operator=(const value&   rhs) noexcept;
   value&  operator=(      value&&  rhs) noexcept;
 
-  operator bool() const noexcept{return (m_kind != kind::null) && !is_undefined();}
+  operator bool() const noexcept{return m_kind != kind::null;}
 
   void  clear() noexcept;
 
-  bool  is_undefined()   const noexcept{return m_kind == kind::undefined;}
-  bool  is_boolean()     const noexcept{return m_kind == kind::boolean;}
   bool  is_reference()   const noexcept{return m_kind == kind::reference;}
   bool  is_integer()     const noexcept{return m_kind == kind::integer;}
   bool  is_routine()     const noexcept{return m_kind == kind::routine;}
@@ -144,7 +134,6 @@ public:
   bool  is_square_wave() const noexcept{return m_kind == kind::square_wave;}
 
   int                get_integer()     const noexcept{return m_data.i;}
-  bool               get_boolean()     const noexcept{return m_data.b;}
   reference          get_reference()   const noexcept{return m_data.r;}
   const routine&     get_routine()     const noexcept{return *m_data.rt;}
   const identifier&  get_identifier()  const noexcept{return m_data.id;}
@@ -152,7 +141,6 @@ public:
   square_wave&       get_square_wave() const noexcept{return *m_data.sq;}
 
   value  get_integer_value(const execution_context*  ctx) const noexcept;
-  value  get_boolean_value(const execution_context*  ctx) const noexcept;
   value  get_routine_value(const execution_context*  ctx) const noexcept;
   value  get_reference_value(const execution_context*  ctx) const noexcept;
 

@@ -34,7 +34,7 @@ set(const value&  v, const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
-  case(kind::b  ): refer<bool>()     = v.get_boolean_value(ctx).get_boolean();break;
+  case(kind::b  ): refer<bool>()     = v.get_integer_value(ctx).get_integer();break;
   case(kind::i8 ): refer<  int8_t>() = v.get_integer_value(ctx).get_integer();break;
   case(kind::u8 ): refer< uint8_t>() = v.get_integer_value(ctx).get_integer();break;
   case(kind::i16): refer< int16_t>() = v.get_integer_value(ctx).get_integer();break;
