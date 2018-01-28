@@ -223,9 +223,7 @@ evaluate(const execution_context&  ctx) const noexcept
       return value(static_cast<int>(m_data.i));
       break;
   case(kind::identifier):
-      {
-        return *ctx.seek_value(m_data.id.view());
-      }
+      return value(m_data.id);
       break;
   case(kind::expression_array):
       return m_data.ea.evaluate(ctx);

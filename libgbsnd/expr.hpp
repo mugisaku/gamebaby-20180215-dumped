@@ -87,15 +87,17 @@ data_stack
 public:
   void  push(value&&  v) noexcept{m_values[m_length++] = std::move(v);}
   const value&  pop() noexcept{return m_values[--m_length];}
+
+        value&  top()       noexcept{return m_values[m_length-1];}
   const value&  top() const noexcept{return m_values[m_length-1];}
 
   void  reset() noexcept{m_length = 0;}
 
-  size_t  get_length() const noexcept{return m_length;}
+  size_t  size() const noexcept{return m_length;}
 
-  const value&  operate_prefix_unary( operator_word  opw) noexcept;
-  const value&  operate_postfix_unary(operator_word  opw) noexcept;
-  const value&  operate_binary(       operator_word  opw) noexcept;
+  const value&  operate_prefix_unary( operator_word  opw, const execution_context*  ctx) noexcept;
+  const value&  operate_postfix_unary(operator_word  opw, const execution_context*  ctx) noexcept;
+  const value&  operate_binary(       operator_word  opw, const execution_context*  ctx) noexcept;
 
 };
 

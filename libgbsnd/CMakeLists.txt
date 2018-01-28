@@ -13,6 +13,7 @@ set(SOURCES
   block.cpp
   routine.cpp
   execution_context.cpp
+  reference.cpp
   property.cpp
   value.cpp
   shared_string.cpp

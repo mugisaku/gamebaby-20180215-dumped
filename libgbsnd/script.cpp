@@ -1,5 +1,6 @@
 #include"libgbsnd/script.hpp"
 #include"libtok/stream_reader.hpp"
+#include<memory>
 
 
 namespace gbsnd{
@@ -16,10 +17,10 @@ data
 
   gbstd::string  source_path;
 
-  std::vector<square_wave*>  square_wave_list;
-  std::vector<routine*>          routine_list;
+  std::vector<std::unique_ptr<square_wave>>  square_wave_list;
+  std::vector<std::unique_ptr<routine>>          routine_list;
 
-  std::vector<object>  object_list;
+  std::list<object>  object_list;
 
 };
 
@@ -52,7 +53,9 @@ m_data(new data)
 
               m_data->square_wave_list.emplace_back(sq);
 
-              m_data->object_list.emplace_back(var_name,value(*sq));
+              m_data->object_list.emplace_back(*sq);
+
+              m_data->object_list.back().set_name(var_name);
             }
 
           else
@@ -67,7 +70,8 @@ m_data(new data)
                   
                   auto  rt = new routine(parals,block);
 
-                  m_data->object_list.emplace_back(var_name,value(*rt));
+                  m_data->object_list.emplace_back(*rt);
+                  m_data->object_list.back().set_name(var_name);
 
                   cur += 2;
                 }
@@ -156,7 +160,15 @@ get_source_path() const noexcept
 }
 
 
-std::vector<routine*>&
+std::list<object>&
+script::
+get_object_list() const noexcept
+{
+  return m_data->object_list;
+}
+
+
+const std::vector<std::unique_ptr<routine>>&
 script::
 get_routine_list() const noexcept
 {
@@ -164,7 +176,7 @@ get_routine_list() const noexcept
 }
 
 
-std::vector<square_wave*>&
+const std::vector<std::unique_ptr<square_wave>>&
 script::
 get_square_wave_list() const noexcept
 {
@@ -180,9 +192,9 @@ find_routine(gbstd::string_view  name) const noexcept
 {
     for(auto&  obj: m_data->object_list)
     {
-        if((obj.get_name() == name) && obj.get_value().is_routine())
+        if((obj.get_name() == name) && obj.is_routine())
         {
-          return &obj.get_value().get_routine();
+          return &obj.get_routine();
         }
     }
 

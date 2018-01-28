@@ -6,7 +6,7 @@
 #include<cstdio>
 #include"libgbstd/string.hpp"
 #include"libgbsnd/routine.hpp"
-#include"libgbsnd/device.hpp"
+#include"libgbsnd/shared_string.hpp"
 
 
 namespace gbsnd{
@@ -15,36 +15,44 @@ namespace devices{
 
 class object;
 class value;
-
-
-struct
-accessor
-{
-  using getter_callback = value  (*)(const value&  objv                 );
-  using setter_callback = void   (*)(      value&  objv, const value&  v);
-
-  gbstd::string  name;
-
-  getter_callback  getter;
-  setter_callback  setter;
-
-};
+class square_wave;
+class execution_context;
 
 
 class
 property
 {
-  object*  m_object;
+  enum class kind{
+    null,
+    b,
+    i8,
+    u8,
+    i16,
+    u16,
+    i32,
+    u32,
 
-  accessor  m_accessor;
+  } m_kind=kind::null;
+
+
+  void*  m_pointer=nullptr;
+
+  bool*  m_notifier=nullptr;
+
+  template<typename  T>
+  T&  refer() const noexcept{return *static_cast<T*>(m_pointer);}
 
 public:
-  property(object&  obj, accessor  accessor) noexcept:
-  m_object(&obj),
-  m_accessor(accessor){}
+  constexpr property(    bool&  v, bool*  n=nullptr) noexcept: m_kind(kind::b  ), m_pointer(&v), m_notifier(n){}
+  constexpr property(  int8_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::i8 ), m_pointer(&v), m_notifier(n){}
+  constexpr property( uint8_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::u8 ), m_pointer(&v), m_notifier(n){}
+  constexpr property( int16_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::i16), m_pointer(&v), m_notifier(n){}
+  constexpr property(uint16_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::u16), m_pointer(&v), m_notifier(n){}
+  constexpr property( int32_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::i32), m_pointer(&v), m_notifier(n){}
+  constexpr property(uint32_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::u32), m_pointer(&v), m_notifier(n){}
 
-  value  get(               ) const noexcept;
-  void   set(const value&  v) const noexcept;
+  value  get(                                              ) const noexcept;
+  void   set(const value&  v, const execution_context*  ctx) const noexcept;
 
 };
 
@@ -58,6 +66,8 @@ public:
   reference(object&  o) noexcept: m_pointer(&o){}
 
   object&  operator()() const noexcept{return *m_pointer;}
+
+  property  get_property(const identifier&  id) const noexcept;
 
 };
 
@@ -73,6 +83,7 @@ value
     undefined,
     boolean,
     integer,
+    identifier,
     reference,
     routine,
     property,
@@ -85,6 +96,7 @@ value
     int              i;
     reference        r;
     const routine*  rt;
+    identifier      id;
     property        pr;
     square_wave*    sq;
 
@@ -100,6 +112,7 @@ public:
   value(int  i) noexcept{*this = i;}
   value(reference  r) noexcept{*this = r;}
   value(const routine&  rt) noexcept{*this = rt;}
+  value(const identifier&  id) noexcept{*this = id;}
   value(const property&  pr) noexcept{*this = pr;}
   value(square_wave&  sq) noexcept{*this = sq;}
   value(const value&   rhs) noexcept{*this = rhs;}
@@ -111,6 +124,7 @@ public:
   value&  operator=(int  i) noexcept;
   value&  operator=(reference  r) noexcept;
   value&  operator=(const routine&  rt) noexcept;
+  value&  operator=(const identifier&  id) noexcept;
   value&  operator=(const property&  pr) noexcept;
   value&  operator=(square_wave&  sq) noexcept;
   value&  operator=(const value&   rhs) noexcept;
@@ -125,19 +139,22 @@ public:
   bool  is_reference()   const noexcept{return m_kind == kind::reference;}
   bool  is_integer()     const noexcept{return m_kind == kind::integer;}
   bool  is_routine()     const noexcept{return m_kind == kind::routine;}
+  bool  is_identifier()  const noexcept{return m_kind == kind::identifier;}
   bool  is_property()    const noexcept{return m_kind == kind::property;}
   bool  is_square_wave() const noexcept{return m_kind == kind::square_wave;}
 
-  int              get_integer()     const noexcept{return m_data.i;}
-  bool             get_boolean()     const noexcept{return m_data.b;}
-  reference        get_reference()   const noexcept{return m_data.r;}
-  const routine&   get_routine()     const noexcept{return *m_data.rt;}
-  const property&  get_property()    const noexcept{return m_data.pr;}
-  square_wave&     get_square_wave() const noexcept{return *m_data.sq;}
+  int                get_integer()     const noexcept{return m_data.i;}
+  bool               get_boolean()     const noexcept{return m_data.b;}
+  reference          get_reference()   const noexcept{return m_data.r;}
+  const routine&     get_routine()     const noexcept{return *m_data.rt;}
+  const identifier&  get_identifier()  const noexcept{return m_data.id;}
+  const property&    get_property()    const noexcept{return m_data.pr;}
+  square_wave&       get_square_wave() const noexcept{return *m_data.sq;}
 
-  value  convert_to_integer() const noexcept;
-  value  convert_to_boolean() const noexcept;
-  value  convert_to_routine() const noexcept;
+  value  get_integer_value(const execution_context*  ctx) const noexcept;
+  value  get_boolean_value(const execution_context*  ctx) const noexcept;
+  value  get_routine_value(const execution_context*  ctx) const noexcept;
+  value  get_reference_value(const execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
 
@@ -145,27 +162,21 @@ public:
 
 
 class
-object
+object: public value
 {
   gbstd::string  m_name;
 
-  value  m_value;
-
 public:
-  object() noexcept{}
-  object(gbstd::string_view  name, const value&   v) noexcept: m_name(name), m_value(v){}
-  object(gbstd::string_view  name,       value&&  v) noexcept: m_name(name), m_value(std::move(v)){}
+  using value::value;
 
-  const gbstd::string&   get_name() const noexcept{return m_name;}
-
-        value&  get_value()       noexcept{return m_value;}
-  const value&  get_value() const noexcept{return m_value;}
+  void                   set_name(gbstd::string_view  name)       noexcept{m_name = name;}
+  const gbstd::string&   get_name(                        ) const noexcept{return m_name;}
 
   void  print() const noexcept
   {
     printf("%s = ",m_name.data());
 
-    m_value.print();
+    value::print();
   }
 
 };
@@ -177,7 +188,6 @@ public:
 using devices::reference;
 using devices::value;
 using devices::object;
-using devices::accessor;
 using devices::property;
 
 

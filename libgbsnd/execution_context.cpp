@@ -120,23 +120,38 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
 
     for(auto&  p: r->get_parameter_list())
     {
-      frm.object_list.emplace_back(p,*arg_it++);
+      frm.object_list.emplace_back(*arg_it++);
+
+      frm.object_list.back().set_name(p);
     }
 }
 
 
-const value*
+value
 execution_context::
-seek_value(gbstd::string_view  name) const noexcept
+get_value(gbstd::string_view  name) const noexcept
 {
-/*
-    if(m_frame_pointer)
-    {
-      auto  o = m_frame_pointer->find_object(name);
-    }
-*/
+  auto&  frm = m_frame_stack[m_number_of_frames-1];
 
-  return nullptr;
+    for(auto&  obj: frm.object_list)
+    {
+        if(obj.get_name() == name)
+        {
+          return value(reference(obj));
+        }
+    }
+
+
+    for(auto&  obj: m_script.get_object_list())
+    {
+        if(obj.get_name() == name)
+        {
+          return value(reference(obj));
+        }
+    }
+
+
+  return value();
 }
 
 
@@ -150,12 +165,27 @@ step_evaluation(execution_context::frame&  frame) noexcept
     {
       frame.eval_it = nullptr;
 
-        if(stack.get_length() != 1)
+      auto&  stmt = *frame.current++;
+
+        if(stmt.is_return())
         {
-          printf("評価結果が不正\n");
         }
 
       else
+        if(stmt.is_print())
+        {
+            if(stack.size())
+            {
+              printf("PRINT: ");
+
+              stack.top().print();
+
+              printf("\n");
+            }
+        }
+
+      else
+        if(stmt.is_expression())
         {
         }
 
@@ -174,7 +204,7 @@ step_evaluation(execution_context::frame&  frame) noexcept
   else
     if(e.is_prefix_unary_operator())
     {
-        if(stack.get_length() < 1)
+        if(stack.size() < 1)
         {
           printf("単項演算の演算項が足りない\n");
 
@@ -182,13 +212,13 @@ step_evaluation(execution_context::frame&  frame) noexcept
         }
 
 
-      stack.operate_prefix_unary(e.get_operator_word());
+      stack.operate_prefix_unary(e.get_operator_word(),this);
     }
 
   else
     if(e.is_postfix_unary_operator())
     {
-        if(stack.get_length() < 1)
+        if(stack.size() < 1)
         {
           printf("単項演算の演算項が足りない\n");
 
@@ -196,13 +226,13 @@ step_evaluation(execution_context::frame&  frame) noexcept
         }
 
 
-      stack.operate_postfix_unary(e.get_operator_word());
+      stack.operate_postfix_unary(e.get_operator_word(),this);
     }
 
   else
     if(e.is_binary_operator())
     {
-        if(stack.get_length() < 2)
+        if(stack.size() < 2)
         {
           printf("二項演算の演算項が足りない\n");
 
@@ -210,7 +240,7 @@ step_evaluation(execution_context::frame&  frame) noexcept
         }
 
 
-      stack.operate_binary(e.get_operator_word());
+      stack.operate_binary(e.get_operator_word(),this);
     }
 }
 
@@ -231,14 +261,11 @@ run() noexcept
       else
         if(frame.current < frame.end)
         {
-          auto&  stmt = *frame.current++;
+          auto&  stmt = *frame.current;
 
-            if(stmt.is_return())
-            {
-            }
-
-          else
-            if(stmt.is_expression())
+            if(stmt.is_return() ||
+               stmt.is_print()  ||
+               stmt.is_expression())
             {
               auto&  e = stmt.get_expr();
 
@@ -246,6 +273,11 @@ run() noexcept
               frame.eval_it_end = e.end();
 
               frame.data_stack.reset();
+            }
+
+          else
+            {
+              ++frame.current;
             }
         }
 

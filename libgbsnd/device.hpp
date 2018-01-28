@@ -5,6 +5,7 @@
 #include<cstdint>
 #include<cstdio>
 #include"libgbstd/string.hpp"
+#include"libgbsnd/object.hpp"
 
 
 namespace gbsnd{
@@ -116,7 +117,7 @@ square_wave: public device
   void  modify_frequency() noexcept;
 
 public:
-  static const accessor&  find_accessor(gbstd::string_view  name) noexcept;
+  property  get_property(gbstd::string_view  name) noexcept;
 
   void  update_parameters() noexcept;
 

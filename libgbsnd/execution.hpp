@@ -50,7 +50,7 @@ public:
 
   void  resize(size_t  n) noexcept;
 
-  const value*  seek_value(gbstd::string_view  name) const noexcept;
+  value  get_value(gbstd::string_view  name) const noexcept;
 
   const value  get_returned_value() const noexcept{return m_returned_value;}
 

@@ -31,7 +31,7 @@ script;
 void
 callback(void*  userdata, uint8_t*  buf, int  len)
 {
-    for(auto  sq: script.get_square_wave_list())
+    for(auto&  sq: script.get_square_wave_list())
     {
       sq->output(buf,buf+len);
     }
@@ -132,6 +132,9 @@ main(int  argc, char**  argv)
 //                            SDL_WINDOWPOS_CENTERED,
                             w,
                             h,0);
+
+script.print();
+printf("\n");
   gbsnd::execution_context  ctx(script);
 
   ctx.call("main",{});

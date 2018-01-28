@@ -7,6 +7,8 @@
 #include"libgbsnd/shared_string.hpp"
 #include"libtok/stream_reader.hpp"
 #include<cstdio>
+#include<list>
+#include<memory>
 #include<initializer_list>
 
 
@@ -66,9 +68,6 @@ public:
 
 
 struct semicolon{};
-
-
-using identifier = shared_string;
 
 
 class
@@ -229,8 +228,9 @@ public:
 
   const gbstd::string&  get_source_path() const noexcept;
 
-  std::vector<routine*>&          get_routine_list() const noexcept;
-  std::vector<square_wave*>&  get_square_wave_list() const noexcept;
+  std::list<object>&               get_object_list() const noexcept;
+  const std::vector<std::unique_ptr<routine>>&          get_routine_list() const noexcept;
+  const std::vector<std::unique_ptr<square_wave>>&  get_square_wave_list() const noexcept;
 
   const routine*  find_routine(gbstd::string_view  name) const noexcept;
 

@@ -1,4 +1,5 @@
 #include"libgbsnd/object.hpp"
+#include"libgbsnd/execution.hpp"
 #include<new>
 
 
@@ -78,6 +79,20 @@ operator=(const routine&  rt) noexcept
 
 value&
 value::
+operator=(const identifier&  id) noexcept
+{
+  clear();
+
+  m_kind = kind::identifier;
+
+  new(&m_data) identifier(id);
+
+  return *this;
+}
+
+
+value&
+value::
 operator=(const property&  pr) noexcept
 {
   clear();
@@ -128,6 +143,9 @@ operator=(const value&  rhs) noexcept
       case(kind::routine):
           m_data.rt = rhs.m_data.rt;
           break;
+      case(kind::identifier):
+          new(&m_data) identifier(rhs.m_data.id);
+          break;
       case(kind::property):
           m_data.pr = rhs.m_data.pr;
           break;
@@ -166,6 +184,9 @@ operator=(value&&  rhs) noexcept
       case(kind::routine):
           m_data.rt = rhs.m_data.rt;
           break;
+      case(kind::identifier):
+          new(&m_data) identifier(std::move(rhs.m_data.id));
+          break;
       case(kind::property):
           m_data.pr = rhs.m_data.pr;
           break;
@@ -193,6 +214,9 @@ clear() noexcept
       break;
   case(kind::routine):
       break;
+  case(kind::identifier):
+      gbstd::destruct(m_data.id);
+      break;
     }
 
 
@@ -204,7 +228,7 @@ clear() noexcept
 
 value
 value::
-convert_to_integer() const noexcept
+get_integer_value(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
@@ -216,9 +240,12 @@ convert_to_integer() const noexcept
       return value(m_data.i);
       break;
   case(kind::reference):
-      return m_data.r().get_value().convert_to_integer();
+      return m_data.r().get_integer_value(ctx);
       break;
   case(kind::routine):
+      break;
+  case(kind::identifier):
+      return ctx? ctx->get_value(m_data.id.view()).get_integer_value(ctx):value();
       break;
     }
 
@@ -229,7 +256,7 @@ convert_to_integer() const noexcept
 
 value
 value::
-convert_to_boolean() const noexcept
+get_boolean_value(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
@@ -243,7 +270,10 @@ convert_to_boolean() const noexcept
       return value(m_data.i? true:false);
       break;
   case(kind::reference):
-      return m_data.r().get_value().convert_to_boolean();
+      return m_data.r().get_boolean_value(ctx);
+      break;
+  case(kind::identifier):
+      return ctx? ctx->get_value(m_data.id.view()).get_boolean_value(ctx):value();
       break;
   case(kind::routine):
       return value(true);
@@ -257,7 +287,7 @@ convert_to_boolean() const noexcept
 
 value
 value::
-convert_to_routine() const noexcept
+get_routine_value(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
@@ -268,7 +298,10 @@ convert_to_routine() const noexcept
   case(kind::integer):
       break;
   case(kind::reference):
-      return m_data.r().get_value().convert_to_routine();
+      return m_data.r().get_routine_value(ctx);
+      break;
+  case(kind::identifier):
+      return ctx? ctx->get_value(m_data.id.view()).get_routine_value(ctx):value();
       break;
   case(kind::routine):
       return *this;
@@ -278,6 +311,35 @@ convert_to_routine() const noexcept
 
   return value(undefined());
 }
+
+
+value
+value::
+get_reference_value(const execution_context*  ctx) const noexcept
+{
+    switch(m_kind)
+    {
+  case(kind::undefined):
+      break;
+  case(kind::boolean):
+      break;
+  case(kind::integer):
+      break;
+  case(kind::reference):
+      return *this;
+      break;
+  case(kind::identifier):
+      return ctx? ctx->get_value(m_data.id.view()):value();
+      break;
+  case(kind::routine):
+      break;
+    }
+
+
+  return value(undefined());
+}
+
+
 
 
 void

@@ -39,6 +39,9 @@ public:
 };
 
 
+using identifier = shared_string;
+
+
 }
 
 

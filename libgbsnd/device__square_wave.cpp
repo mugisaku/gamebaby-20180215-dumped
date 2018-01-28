@@ -165,42 +165,19 @@ REDO:
 
 
 
-const accessor&
+property
 square_wave::
-find_accessor(gbstd::string_view  name) noexcept
+get_property(gbstd::string_view  name) noexcept
 {
-  static const accessor  null{"",[](const value&  objv                 ){return value();},
-                                 [](      value&  objv, const value&  v){               }};
+  using sv = gbstd::string_view;
 
-  static const accessor  list[] =
-  {
-    {"keyon_flag",
-      [](const value&  objv){
-        return value(objv.get_square_wave().test_keyon_flag());
-      },
-      [](value&  objv, const value&  v){
-        auto&  sq = objv.get_square_wave();
-
-          if(v.is_boolean())
-          {
-              if(v.get_boolean()){  sq.set_keyon_flag();}
-            else                 {sq.unset_keyon_flag();}
-          }
-      }
-    },
-  };
+       if(name == sv("keyon_flag")){return property(m_keyon_flag,&m_need_update);}
+  else if(name == sv("keyon_flag")){return property(m_keyon_flag,&m_need_update);}
 
 
-    for(auto&  a: list)
-    {
-        if(a.name == name)
-        {
-          return a;
-        }
-    }
+  static bool  dummy;
 
-
-  return null;
+  return property(dummy);
 }
 
 

@@ -28,6 +28,22 @@ block(const script_token_string&  toks) noexcept
               m_stmt_list.emplace_back(return_stmt(expr_array(cur)));
             }
 
+          else
+            if(id == sv("sleep"))
+            {
+              ++cur;
+
+              m_stmt_list.emplace_back(sleep_stmt(expr_array(cur)));
+            }
+
+          else
+            if(id == sv("print"))
+            {
+              ++cur;
+
+              m_stmt_list.emplace_back(print_stmt(expr_array(cur)));
+            }
+
           else if(id == sv("while")){}
           else if(id == sv("if")){}
           else if(id == sv("for")){}
