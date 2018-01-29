@@ -145,14 +145,14 @@ printf("\n");
 
 printf(" was returned\n");
 
-/*
     for(;;)
     {
       main_loop();
 
       SDL_Delay(20);
     }
-*/
+
+
   quit();
 
   return 0;

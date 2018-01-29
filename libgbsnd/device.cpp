@@ -9,11 +9,11 @@ namespace devices{
 
 void
 device::
-set_keyon_flag() noexcept
+set_keyon_flag(bool  v) noexcept
 {
   m_time = 0;
 
-  m_keyon_flag =  true;
+  m_keyon_flag = v;
 }
 
 

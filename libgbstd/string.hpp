@@ -44,6 +44,20 @@ public:
   basic_string(      basic_string&&  rhs) noexcept{*this = std::move(rhs);}
  ~basic_string(){clear();}
 
+  basic_string&  operator=(basic_string_view<T>  sv) noexcept
+  {
+    assign(sv);
+
+    return *this;
+  }
+
+  basic_string&  operator=(const char*  s) noexcept
+  {
+    assign(s);
+
+    return *this;
+  }
+
   basic_string&  operator=(const basic_string&   rhs) noexcept
   {
     assign(rhs.data(),rhs.size());
@@ -93,6 +107,18 @@ public:
   bool  operator!=(const basic_string&  rhs) const noexcept
   {
     return !(*this == rhs);
+  }
+
+
+  bool  operator==(const basic_string_view<T>&  sv) const noexcept
+  {
+    return (m_length == sv.size()) && (std::memcmp(m_data,sv.data(),m_length) == 0);
+  }
+
+
+  bool  operator!=(const basic_string_view<T>&  sv) const noexcept
+  {
+    return !(*this == sv);
   }
 
 

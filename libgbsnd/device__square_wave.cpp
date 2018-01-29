@@ -144,6 +144,7 @@ REDO:
             }
 
           else
+            if(m_rise_time_base)
             {
               m_rise_time = m_rise_time_base;
 
@@ -163,22 +164,6 @@ REDO:
 }
 
 
-
-
-property
-square_wave::
-get_property(gbstd::string_view  name) noexcept
-{
-  using sv = gbstd::string_view;
-
-       if(name == sv("keyon_flag")){return property(m_keyon_flag,&m_need_update);}
-  else if(name == sv("keyon_flag")){return property(m_keyon_flag,&m_need_update);}
-
-
-  static bool  dummy;
-
-  return property(dummy);
-}
 
 
 }}

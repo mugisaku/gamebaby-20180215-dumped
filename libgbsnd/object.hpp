@@ -22,37 +22,22 @@ class execution_context;
 class
 property
 {
-  enum class kind{
-    null,
-    b,
-    i8,
-    u8,
-    i16,
-    u16,
-    i32,
-    u32,
-
-  } m_kind=kind::null;
-
-
   void*  m_pointer=nullptr;
 
-  bool*  m_notifier=nullptr;
-
-  template<typename  T>
-  T&  refer() const noexcept{return *static_cast<T*>(m_pointer);}
+  int  (*m_callback)(void*  ptr, const int*  v);
 
 public:
-  constexpr property(    bool&  v, bool*  n=nullptr) noexcept: m_kind(kind::b  ), m_pointer(&v), m_notifier(n){}
-  constexpr property(  int8_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::i8 ), m_pointer(&v), m_notifier(n){}
-  constexpr property( uint8_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::u8 ), m_pointer(&v), m_notifier(n){}
-  constexpr property( int16_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::i16), m_pointer(&v), m_notifier(n){}
-  constexpr property(uint16_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::u16), m_pointer(&v), m_notifier(n){}
-  constexpr property( int32_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::i32), m_pointer(&v), m_notifier(n){}
-  constexpr property(uint32_t&  v, bool*  n=nullptr) noexcept: m_kind(kind::u32), m_pointer(&v), m_notifier(n){}
+  constexpr property(void*  pointer, int  (*callback)(void*,const int*)) noexcept:
+  m_pointer(pointer),
+  m_callback(callback){}
 
-  value  get(                                              ) const noexcept;
-  void   set(const value&  v, const execution_context*  ctx) const noexcept;
+  template<typename  T>
+  constexpr property(void*  pointer, int  (*callback)(T*,const int*)) noexcept:
+  m_pointer(pointer),
+  m_callback(reinterpret_cast<int  (*)(void*,const int*)>(callback)){}
+
+  int   get(      ) const noexcept;
+  void  set(int  v) const noexcept;
 
 };
 
@@ -133,7 +118,7 @@ public:
   bool  is_property()    const noexcept{return m_kind == kind::property;}
   bool  is_square_wave() const noexcept{return m_kind == kind::square_wave;}
 
-  int                get_integer()     const noexcept{return m_data.i;}
+  int&               get_integer()           noexcept{return m_data.i;}
   reference          get_reference()   const noexcept{return m_data.r;}
   const routine&     get_routine()     const noexcept{return *m_data.rt;}
   const identifier&  get_identifier()  const noexcept{return m_data.id;}
@@ -162,7 +147,7 @@ public:
 
   void  print() const noexcept
   {
-    printf("%s = ",m_name.data());
+    printf("%s %d= ",m_name.data(),m_name.size());
 
     value::print();
   }

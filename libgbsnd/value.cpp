@@ -252,6 +252,8 @@ get_routine_value(const execution_context*  ctx) const noexcept
   case(kind::routine):
       return *this;
       break;
+  case(kind::property):
+      break;
     }
 
 
@@ -266,6 +268,7 @@ get_reference_value(const execution_context*  ctx) const noexcept
     switch(m_kind)
     {
   case(kind::integer):
+      printf("整数は参照になれない\n");
       break;
   case(kind::reference):
       return *this;
@@ -274,6 +277,10 @@ get_reference_value(const execution_context*  ctx) const noexcept
       return ctx? ctx->get_value(m_data.id.view()):value();
       break;
   case(kind::routine):
+      printf("ルーチンは参照になれない\n");
+      break;
+  case(kind::property):
+      printf("プロパティーは参照になれない\n");
       break;
     }
 
@@ -303,7 +310,7 @@ print() const noexcept
       m_data.rt->print();
       break;
   case(kind::property):
-      printf("property");
+      printf("property{ %d }",m_data.pr.get());
       break;
   case(kind::square_wave):
       printf("square_wave");

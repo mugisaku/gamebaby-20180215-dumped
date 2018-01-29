@@ -144,6 +144,11 @@ get_value(gbstd::string_view  name) const noexcept
 
     for(auto&  obj: m_script.get_object_list())
     {
+/*
+printf("**%s,%d == %s,%d.\n",obj.get_name().data(),
+                             obj.get_name().size(),name.data(),
+                                                   name.size());
+*/
         if(obj.get_name() == name)
         {
           return value(reference(obj));
@@ -151,6 +156,7 @@ get_value(gbstd::string_view  name) const noexcept
     }
 
 
+//printf("%s not found.\n",name.data());
   return value();
 }
 

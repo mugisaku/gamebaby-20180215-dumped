@@ -74,7 +74,7 @@ public:
   uint32_t  get_play_length(           ) const noexcept{return m_play_length    ;}
 
   bool   test_play_length_flag() const noexcept{return m_play_length_flag;}
-  void    set_play_length_flag() noexcept{m_play_length_flag =  true;}
+  void    set_play_length_flag(bool  v=true) noexcept{m_play_length_flag = v;}
   void  unset_play_length_flag() noexcept{m_play_length_flag = false;}
 
 
@@ -90,7 +90,7 @@ public:
 
 
   bool   test_keyon_flag() const noexcept{return m_keyon_flag;}
-  void    set_keyon_flag() noexcept;
+  void    set_keyon_flag(bool  v=true) noexcept;
   void  unset_keyon_flag() noexcept{m_keyon_flag = false;}
 
 };
@@ -117,8 +117,6 @@ square_wave: public device
   void  modify_frequency() noexcept;
 
 public:
-  property  get_property(gbstd::string_view  name) noexcept;
-
   void  update_parameters() noexcept;
 
   void     set_fm_shift_amount(uint8_t  a)       noexcept{       m_fm_shift_amount = a;}

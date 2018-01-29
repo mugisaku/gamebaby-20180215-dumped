@@ -257,6 +257,31 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
   else
     if(opw == gbstd::string_view("="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          lv.get_property().set(i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() = i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
@@ -328,7 +353,11 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
       else
         if(!lv.is_reference())
         {
+          printf(".%s\n",rv.get_identifier().view().data());
+
           printf("左辺が参照ではない\n");
+
+          lv.print();
         }
 
       else

@@ -4,7 +4,9 @@ square_wave  sq;
 routine
 main()
 {
-  print sq.keyon_flag;
+  print sq.number_of_cycles_per_seconds=400;
+  print sq.volume=123;
+  print sq.keyon_flag = 1;
 }
 
 
