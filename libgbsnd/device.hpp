@@ -147,9 +147,10 @@ noise: public device
   bool  m_shortspan_flag=false;
 
 public:
-  void  set_keyon_flag() noexcept;
+  void  set_keyon_flag(bool  v=true) noexcept;
 
-  void    set_shortspan_flag() noexcept{m_shortspan_flag =  true;}
+  bool   test_shortspan_flag() const noexcept{return m_shortspan_flag;}
+  void    set_shortspan_flag(bool  v=true) noexcept{m_shortspan_flag = v;}
   void  unset_shortspan_flag() noexcept{m_shortspan_flag = false;}
 
   void  output(uint8_t*  begin, uint8_t*  end) noexcept;

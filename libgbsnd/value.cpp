@@ -109,6 +109,20 @@ operator=(square_wave&  sq) noexcept
 
 value&
 value::
+operator=(noise&  no) noexcept
+{
+  clear();
+
+  m_kind = kind::noise;
+
+  m_data.no = &no;
+
+  return *this;
+}
+
+
+value&
+value::
 operator=(const value&  rhs) noexcept
 {
     if(this != &rhs)
@@ -136,6 +150,9 @@ operator=(const value&  rhs) noexcept
           break;
       case(kind::square_wave):
           m_data.sq = rhs.m_data.sq;
+          break;
+      case(kind::noise):
+          m_data.no = rhs.m_data.no;
           break;
         }
     }
@@ -174,6 +191,9 @@ operator=(value&&  rhs) noexcept
           break;
       case(kind::square_wave):
           m_data.sq = rhs.m_data.sq;
+          break;
+      case(kind::noise):
+          m_data.no = rhs.m_data.no;
           break;
         }
     }
@@ -314,6 +334,9 @@ print() const noexcept
       break;
   case(kind::square_wave):
       printf("square_wave");
+      break;
+  case(kind::noise):
+      printf("noise");
       break;
     }
 }

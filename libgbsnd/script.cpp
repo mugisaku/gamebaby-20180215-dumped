@@ -18,6 +18,7 @@ data
   gbstd::string  source_path;
 
   std::vector<std::unique_ptr<square_wave>>  square_wave_list;
+  std::vector<std::unique_ptr<noise>>              noise_list;
   std::vector<std::unique_ptr<routine>>          routine_list;
 
   std::list<object>  object_list;
@@ -54,6 +55,20 @@ m_data(new data)
               m_data->square_wave_list.emplace_back(sq);
 
               m_data->object_list.emplace_back(*sq);
+
+              m_data->object_list.back().set_name(var_name);
+            }
+
+          else
+            if(type_name == sv("noise"))
+            {
+              auto  noi = new noise;
+
+              noi->set_name(var_name);
+
+              m_data->noise_list.emplace_back(noi);
+
+              m_data->object_list.emplace_back(*noi);
 
               m_data->object_list.back().set_name(var_name);
             }

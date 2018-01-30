@@ -28,6 +28,10 @@ gbsnd::script
 script;
 
 
+gbsnd::execution_context
+ctx;
+
+
 void
 callback(void*  userdata, uint8_t*  buf, int  len)
 {
@@ -95,6 +99,8 @@ main_loop()
 
   auto  now = SDL_GetTicks();
 
+  ctx.run(gbsnd::millisecond{now});
+
     if(now >= last+1000)
     {
       last = now;
@@ -133,17 +139,9 @@ main(int  argc, char**  argv)
                             w,
                             h,0);
 
-script.print();
-printf("\n");
-  gbsnd::execution_context  ctx(script);
+  ctx.reset(script);
 
   ctx.call("main",{});
-
-  ctx.run();
-
-  ctx.get_returned_value().print();
-
-printf(" was returned\n");
 
     for(;;)
     {

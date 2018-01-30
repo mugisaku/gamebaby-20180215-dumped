@@ -144,6 +144,20 @@ operator=(print_stmt&&  prn) noexcept
 
 stmt&
 stmt::
+operator=(exit_stmt&&  exi) noexcept
+{
+  clear();
+
+  m_kind = kind::exit;
+
+  new(&m_data) exit_stmt(exi);
+
+  return *this;
+}
+
+
+stmt&
+stmt::
 operator=(const stmt&  rhs) noexcept
 {
     if(this != &rhs)
@@ -169,6 +183,7 @@ operator=(const stmt&  rhs) noexcept
       case(kind::return_   ): new(&m_data) return_stmt(rhs.m_data.ret);break;
       case(kind::sleep     ): new(&m_data) sleep_stmt(rhs.m_data.slp);break;
       case(kind::print     ): new(&m_data) print_stmt(rhs.m_data.prn);break;
+      case(kind::exit      ): new(&m_data) exit_stmt(rhs.m_data.exi);break;
         }
     }
 
@@ -204,6 +219,7 @@ operator=(stmt&&  rhs) noexcept
       case(kind::return_   ): new(&m_data) return_stmt(std::move(rhs.m_data.ret));break;
       case(kind::sleep     ): new(&m_data) sleep_stmt(std::move(rhs.m_data.slp));break;
       case(kind::print     ): new(&m_data) print_stmt(std::move(rhs.m_data.prn));break;
+      case(kind::exit      ): new(&m_data) exit_stmt(std::move(rhs.m_data.exi));break;
         }
     }
 
@@ -234,6 +250,7 @@ clear() noexcept
   case(kind::return_   ): gbstd::destruct(m_data.ret);break;
   case(kind::sleep     ): gbstd::destruct(m_data.slp);break;
   case(kind::print     ): gbstd::destruct(m_data.prn);break;
+  case(kind::exit      ): gbstd::destruct(m_data.exi);break;
     }
 
 
@@ -269,6 +286,10 @@ print() const noexcept
       break;
   case(kind::sleep):
       printf("sleep ");
+      m_data.slp.get_expr().print();
+      break;
+  case(kind::exit):
+      printf("exit ");
       m_data.slp.get_expr().print();
       break;
     }

@@ -105,6 +105,21 @@ public:
 
 
 class
+exit_stmt
+{
+  expr_array  m_expr;
+
+public:
+  exit_stmt() noexcept{}
+  exit_stmt(expr_array&&  expr) noexcept:
+  m_expr(std::move(expr)){}
+
+  const expr_array&  get_expr() const noexcept{return m_expr;}
+
+};
+
+
+class
 print_stmt
 {
   expr_array  m_expr;
@@ -138,6 +153,7 @@ stmt
     sleep,
     print,
     return_,
+    exit,
 
   } m_kind=kind::null;
 
@@ -150,6 +166,7 @@ stmt
     case_stmt    cas;
     sleep_stmt   slp;
     print_stmt   prn;
+    exit_stmt    exi;
 
     data(){}
    ~data(){}
@@ -168,6 +185,7 @@ public:
   stmt(case_stmt      cas) noexcept{*this = cas;}
   stmt(sleep_stmt&&   slp) noexcept{*this = std::move(slp);}
   stmt(print_stmt&&   prn) noexcept{*this = std::move(prn);}
+  stmt(exit_stmt&&    exi) noexcept{*this = std::move(exi);}
   stmt(const stmt&   rhs) noexcept{*this = rhs;}
   stmt(      stmt&&  rhs) noexcept{*this = std::move(rhs);}
  ~stmt(){clear();}
@@ -182,6 +200,7 @@ public:
   stmt&  operator=(case_stmt      cas) noexcept;
   stmt&  operator=(sleep_stmt&&   slp) noexcept;
   stmt&  operator=(print_stmt&&   prn) noexcept;
+  stmt&  operator=(exit_stmt&&    exi) noexcept;
   stmt&  operator=(const stmt&   rhs) noexcept;
   stmt&  operator=(      stmt&&  rhs) noexcept;
 
@@ -204,6 +223,7 @@ public:
   bool  is_default()    const noexcept{return m_kind ==  kind::default_;}
   bool  is_sleep()      const noexcept{return m_kind ==  kind::sleep;}
   bool  is_print()      const noexcept{return m_kind ==  kind::print;}
+  bool  is_exit()       const noexcept{return m_kind ==  kind::exit;}
 
   const expr_array&   get_expr()   const noexcept{return m_data.e;}
   const label_stmt&   get_label()  const noexcept{return m_data.lbl;}
@@ -212,6 +232,7 @@ public:
   const block&        get_block()  const noexcept{return m_data.blk;}
   const sleep_stmt&   get_sleep()  const noexcept{return m_data.slp;}
   const print_stmt&   get_print()  const noexcept{return m_data.prn;}
+  const exit_stmt&    get_exit()   const noexcept{return m_data.exi;}
 
   void  print() const noexcept;
 

@@ -28,11 +28,15 @@ frame
 
 
 
+void
 execution_context::
-execution_context(const script&  scr) noexcept:
-m_script(scr)
+reset(const script&  scr) noexcept
 {
+  m_script = scr;
+
   resize(80);
+
+  m_state = state::not_ready;
 }
 
 
@@ -47,6 +51,8 @@ clear() noexcept
 
   m_max_number_of_frames = 0;
   m_number_of_frames     = 0;
+
+  m_state = state::not_ready;
 }
 
 
@@ -79,6 +85,8 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
     {
       printf("フレームスタックがいっぱいで、%sは実行できない",sc.data());
 
+      m_state = state::not_ready;
+
       return;
     }
 
@@ -89,6 +97,8 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
     {
       printf("%sというルーチンが見つからない",sc.data());
 
+      m_state = state::not_ready;
+
       return;
     }
 
@@ -96,6 +106,8 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
     if(r->get_parameter_list().size() != argument_list.size())
     {
       printf("引数の数が一致しない\n");
+
+      m_state = state::not_ready;
 
       return;
     }
@@ -124,6 +136,9 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
 
       frm.object_list.back().set_name(p);
     }
+
+
+  m_state = state::ready;
 }
 
 
@@ -144,11 +159,6 @@ get_value(gbstd::string_view  name) const noexcept
 
     for(auto&  obj: m_script.get_object_list())
     {
-/*
-printf("**%s,%d == %s,%d.\n",obj.get_name().data(),
-                             obj.get_name().size(),name.data(),
-                                                   name.size());
-*/
         if(obj.get_name() == name)
         {
           return value(reference(obj));
@@ -156,7 +166,6 @@ printf("**%s,%d == %s,%d.\n",obj.get_name().data(),
     }
 
 
-//printf("%s not found.\n",name.data());
   return value();
 }
 
@@ -166,39 +175,6 @@ execution_context::
 step_evaluation(execution_context::frame&  frame) noexcept
 {
   auto&  stack = frame.data_stack;
-
-    if(frame.eval_it >= frame.eval_it_end)
-    {
-      frame.eval_it = nullptr;
-
-      auto&  stmt = *frame.current++;
-
-        if(stmt.is_return())
-        {
-        }
-
-      else
-        if(stmt.is_print())
-        {
-            if(stack.size())
-            {
-              printf("PRINT: ");
-
-              stack.top().print();
-
-              printf("\n");
-            }
-        }
-
-      else
-        if(stmt.is_expression())
-        {
-        }
-
-
-      return;
-    }
-
 
   auto&  e = *frame.eval_it++;
 
@@ -251,17 +227,97 @@ step_evaluation(execution_context::frame&  frame) noexcept
 }
 
 
-execution_context::result
+void
 execution_context::
-run() noexcept
+return_(value  v) noexcept
 {
-    for(;;)
+    if(--m_number_of_frames)
+    {
+      auto&  frame = m_frame_stack[m_number_of_frames-1];
+
+      frame.data_stack.push(std::move(v));
+    }
+}
+
+
+void
+execution_context::
+run(millisecond  ms) noexcept
+{
+    if(is_sleeping() && (m_rising_time <= ms.value))
+    {
+      m_state = state::ready;
+    }
+
+
+    if(!is_ready())
+    {
+      return;
+    }
+
+
+    while(m_number_of_frames)
     {
       auto&  frame = m_frame_stack[m_number_of_frames-1];
 
         if(frame.eval_it)
         {
-          step_evaluation(frame);
+            if(frame.eval_it < frame.eval_it_end)
+            {
+              step_evaluation(frame);
+            }
+
+          else
+            {
+              auto&  stack = frame.data_stack;
+
+              frame.eval_it = nullptr;
+
+              auto&  stmt = *frame.current++;
+
+                if(stmt.is_return())
+                {
+                  return_(stack.size()? stack.top():value());
+                }
+
+              else
+                if(stmt.is_sleep())
+                {
+                  m_rising_time = ms.value+(stack.size()? stack.top().get_integer():0);
+
+                  m_state = state::sleeping;
+
+                  return;
+                }
+
+              else
+                if(stmt.is_exit())
+                {
+                  m_returned_value = stack.size()? stack.top():value();
+
+                  m_state = state::exited;
+
+                  return;
+                }
+
+              else
+                if(stmt.is_print())
+                {
+                    if(stack.size())
+                    {
+                      printf("PRINT: ");
+
+                      stack.top().print();
+
+                      printf("\n");
+                    }
+                }
+
+              else
+                if(stmt.is_expression())
+                {
+                }
+            }
         }
 
       else
@@ -270,6 +326,8 @@ run() noexcept
           auto&  stmt = *frame.current;
 
             if(stmt.is_return() ||
+               stmt.is_sleep()  ||
+               stmt.is_exit()   ||
                stmt.is_print()  ||
                stmt.is_expression())
             {
@@ -289,14 +347,12 @@ run() noexcept
 
       else
         {
-          m_returned_value = value();
-
-          break;
+          return_(value());
         }
     }
 
 
-  return result::returned;
+  m_state = state::exited;
 }
 
 

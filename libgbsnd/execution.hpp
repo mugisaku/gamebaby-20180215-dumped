@@ -19,6 +19,13 @@ class value;
 class routine;
 
 
+struct
+millisecond
+{
+  uint32_t  value;
+};
+
+
 class
 execution_context
 {
@@ -33,13 +40,29 @@ execution_context
 
   value  m_returned_value;
 
+  uint32_t  m_rising_time;
+
+  enum class state{
+    not_ready,
+    ready,
+    sleeping,
+    exited,
+
+  } m_state=state::not_ready;
+
+
   void  step_evaluation(execution_context::frame&  frame) noexcept;
 
+  void  return_(value  v) noexcept;
+
 public:
-  execution_context(const script&  scr) noexcept;
+  execution_context() noexcept{}
+  execution_context(const script&  scr) noexcept{reset(scr);}
  ~execution_context(){clear();}
 
   void  clear() noexcept;
+
+  void  reset(const script&  scr) noexcept;
 
   bool  test_capacity() const noexcept{return m_number_of_frames < m_max_number_of_frames;}
 
@@ -54,15 +77,12 @@ public:
 
   const value  get_returned_value() const noexcept{return m_returned_value;}
 
+  bool  is_not_ready() const noexcept{return m_state == state::not_ready;}
+  bool  is_ready()     const noexcept{return m_state == state::ready;}
+  bool  is_sleeping()  const noexcept{return m_state == state::sleeping;}
+  bool  is_exited()    const noexcept{return m_state == state::exited;}
 
-  enum class result{
-    slept,
-    returned,
-
-  };
-
-
-  result  run() noexcept;
+  void  run(millisecond  ms) noexcept;
 
 };
 
@@ -71,6 +91,7 @@ public:
 
 
 using devices::execution_context;
+using devices::millisecond;
 
 
 }

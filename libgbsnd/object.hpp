@@ -16,6 +16,7 @@ namespace devices{
 class object;
 class value;
 class square_wave;
+class noise;
 class execution_context;
 
 
@@ -32,8 +33,8 @@ public:
   m_callback(callback){}
 
   template<typename  T>
-  constexpr property(void*  pointer, int  (*callback)(T*,const int*)) noexcept:
-  m_pointer(pointer),
+  constexpr property(T&  t, int  (*callback)(T*,const int*)) noexcept:
+  m_pointer(&t),
   m_callback(reinterpret_cast<int  (*)(void*,const int*)>(callback)){}
 
   int   get(      ) const noexcept;
@@ -68,6 +69,7 @@ value
     routine,
     property,
     square_wave,
+    noise,
 
   } m_kind=kind::null;
 
@@ -78,6 +80,7 @@ value
     identifier      id;
     property        pr;
     square_wave*    sq;
+    noise*          no;
 
     data(){}
    ~data(){}
@@ -93,6 +96,7 @@ public:
   value(const identifier&  id) noexcept{*this = id;}
   value(const property&  pr) noexcept{*this = pr;}
   value(square_wave&  sq) noexcept{*this = sq;}
+  value(noise&  no) noexcept{*this = no;}
   value(const value&   rhs) noexcept{*this = rhs;}
   value(      value&&  rhs) noexcept{*this = std::move(rhs);}
  ~value(){clear();}
@@ -104,6 +108,7 @@ public:
   value&  operator=(const identifier&  id) noexcept;
   value&  operator=(const property&  pr) noexcept;
   value&  operator=(square_wave&  sq) noexcept;
+  value&  operator=(noise&  no) noexcept;
   value&  operator=(const value&   rhs) noexcept;
   value&  operator=(      value&&  rhs) noexcept;
 
@@ -117,6 +122,7 @@ public:
   bool  is_identifier()  const noexcept{return m_kind == kind::identifier;}
   bool  is_property()    const noexcept{return m_kind == kind::property;}
   bool  is_square_wave() const noexcept{return m_kind == kind::square_wave;}
+  bool  is_noise()       const noexcept{return m_kind == kind::noise;}
 
   int&               get_integer()           noexcept{return m_data.i;}
   reference          get_reference()   const noexcept{return m_data.r;}
@@ -124,6 +130,7 @@ public:
   const identifier&  get_identifier()  const noexcept{return m_data.id;}
   const property&    get_property()    const noexcept{return m_data.pr;}
   square_wave&       get_square_wave() const noexcept{return *m_data.sq;}
+  noise&             get_noise()       const noexcept{return *m_data.no;}
 
   value  get_integer_value(const execution_context*  ctx) const noexcept;
   value  get_routine_value(const execution_context*  ctx) const noexcept;

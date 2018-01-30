@@ -1,12 +1,13 @@
 square_wave  sq;
+//noise         noi;
 
 
 routine
 main()
 {
-  print sq.number_of_cycles_per_seconds=400;
-  print sq.volume=123;
-  print sq.keyon_flag = 1;
+  sq.number_of_cycles_per_seconds=880;
+  sq.volume=80;
+  sq.keyon_flag = 1;
 }
 
 

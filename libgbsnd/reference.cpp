@@ -73,6 +73,77 @@ sq_volume(square_wave*  sq, const int*  v)
 
   return sq->get_volume();
 }
+
+
+
+
+int
+no_play_length(noise*  no, const int*  v)
+{
+    if(v)
+    {
+      no->set_play_length(*v);
+    }
+
+
+  return no->get_play_length();
+}
+
+
+int
+no_play_length_flag(noise*  no, const int*  v)
+{
+    if(v)
+    {
+      no->set_play_length_flag(*v);
+    }
+
+
+  return no->test_play_length_flag();
+}
+
+
+int
+no_keyon_flag(noise*  no, const int*  v)
+{
+    if(v)
+    {
+      no->set_keyon_flag(*v);
+    }
+
+
+  return no->test_keyon_flag();
+}
+
+
+int
+no_volume(noise*  no, const int*  v)
+{
+    if(v)
+    {
+      no->set_volume(*v);
+    }
+
+
+  return no->get_volume();
+}
+
+
+int
+no_shortspan_flag(noise*  no, const int*  v)
+{
+    if(v)
+    {
+      no->set_shortspan_flag(*v);
+    }
+
+
+  return no->test_shortspan_flag();
+}
+
+
+
+
 }
 
 
@@ -90,11 +161,26 @@ get_property(const identifier&  id) const noexcept
     {
       auto&  sq = obj.get_square_wave();
 
-           if(name == sv("keyon_flag"                  )){return property(&sq,sq_keyon_flag);}
-      else if(name == sv("volume"                      )){return property(&sq,sq_volume);}
-      else if(name == sv("number_of_cycles_per_seconds")){return property(&sq,sq_number_of_cycles_per_seconds);}
-      else if(name == sv("play_length"                 )){return property(&sq,sq_play_length);}
-      else if(name == sv("play_length_flag"            )){return property(&sq,sq_play_length_flag);}
+           if(name == sv("keyon_flag"                  )){return property(sq,sq_keyon_flag);}
+      else if(name == sv("volume"                      )){return property(sq,sq_volume);}
+      else if(name == sv("number_of_cycles_per_seconds")){return property(sq,sq_number_of_cycles_per_seconds);}
+      else if(name == sv("play_length"                 )){return property(sq,sq_play_length);}
+      else if(name == sv("play_length_flag"            )){return property(sq,sq_play_length_flag);}
+//  else if(name == sv("")){return property();}
+
+
+    }
+
+  else
+    if(obj.is_noise())
+    {
+      auto&  no = obj.get_noise();
+
+           if(name == sv("keyon_flag"              )){return property(no,no_keyon_flag);}
+      else if(name == sv("volume"                  )){return property(no,no_volume);}
+      else if(name == sv("play_length"             )){return property(no,no_play_length);}
+      else if(name == sv("play_length_flag"        )){return property(no,no_play_length_flag);}
+      else if(name == sv("shortspan_flag"          )){return property(no,no_shortspan_flag);}
 //  else if(name == sv("")){return property();}
 
 

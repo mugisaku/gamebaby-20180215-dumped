@@ -9,9 +9,9 @@ namespace devices{
 
 void
 noise::
-set_keyon_flag() noexcept
+set_keyon_flag(bool  v) noexcept
 {
-  device::set_keyon_flag();
+  device::set_keyon_flag(v);
 
   m_time = m_number_of_samples_per_cycles;
 
