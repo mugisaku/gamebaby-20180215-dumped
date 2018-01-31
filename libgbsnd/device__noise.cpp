@@ -23,7 +23,7 @@ set_keyon_flag(bool  v) noexcept
 
 void
 noise::
-output(uint8_t*  begin, uint8_t*  end) noexcept
+output(uint32_t*  begin, uint32_t*  end) noexcept
 {
   auto  it = begin;
 
@@ -52,7 +52,7 @@ output(uint8_t*  begin, uint8_t*  end) noexcept
         }
 
 
-      *it++ = v;
+      *it++ = (v<<16);
  
       ++m_time;
 

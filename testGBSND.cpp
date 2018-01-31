@@ -32,12 +32,32 @@ gbsnd::execution_context
 ctx;
 
 
+constexpr int  number_of_samples = 1024;
+
+uint32_t
+buffer[number_of_samples];
+
+
 void
 callback(void*  userdata, uint8_t*  buf, int  len)
 {
+  memset(buffer,0,sizeof(uint32_t)*len);
+
     for(auto&  sq: script.get_square_wave_list())
     {
-      sq->output(buf,buf+len);
+      sq->output(buffer,&buffer[len]);
+    }
+
+
+  auto  buf_end = buf+len;
+
+  const uint32_t*  src = buffer;
+
+    while(buf < buf_end)
+    {
+      auto  v = (*src++)>>16;
+
+      *buf++ = (v > 0xFF)? 0xFF:v;
     }
 }
 
@@ -47,7 +67,7 @@ initialize()
 {
   spec.freq     = gbsnd::number_of_samples_per_seconds;
   spec.format   = AUDIO_U8;
-  spec.samples  = 1024;
+  spec.samples  = number_of_samples;
   spec.channels = 1;
   spec.callback = callback;
 
@@ -138,6 +158,7 @@ main(int  argc, char**  argv)
 //                            SDL_WINDOWPOS_CENTERED,
                             w,
                             h,0);
+
 
   ctx.reset(script);
 

@@ -75,6 +75,84 @@ sq_volume(square_wave*  sq, const int*  v)
 }
 
 
+int
+sq_vm_wait_count_source(square_wave*  sq, const int*  v)
+{
+    if(v)
+    {
+      sq->set_vm_wait_count_source(*v);
+    }
+
+
+  return sq->get_vm_wait_count_source();
+}
+
+
+int
+sq_vm_moddir(square_wave*  sq, const int*  v)
+{
+    if(v)
+    {
+      sq->set_vm_moddir(*v? moddir::up:moddir::down);
+    }
+
+
+  return (sq->get_vm_moddir() == moddir::up)? 1:0;
+}
+
+
+int
+sq_fm_shift_amount(square_wave*  sq, const int*  v)
+{
+    if(v)
+    {
+      sq->set_fm_shift_amount(*v);
+    }
+
+
+  return sq->get_fm_shift_amount();
+}
+
+
+int
+sq_fm_wait_count_source(square_wave*  sq, const int*  v)
+{
+    if(v)
+    {
+      sq->set_fm_wait_count_source(*v);
+    }
+
+
+  return sq->get_fm_wait_count_source();
+}
+
+
+int
+sq_fm_moddir(square_wave*  sq, const int*  v)
+{
+    if(v)
+    {
+      sq->set_fm_moddir(*v? moddir::up:moddir::down);
+    }
+
+
+  return (sq->get_fm_moddir() == moddir::up)? 1:0;
+}
+
+
+int
+sq_duty_ratio(square_wave*  sq, const int*  v)
+{
+    if(v)
+    {
+      sq->set_duty_ratio(*v);
+    }
+
+
+  return sq->get_duty_ratio();
+}
+
+
 
 
 int
@@ -161,11 +239,17 @@ get_property(const identifier&  id) const noexcept
     {
       auto&  sq = obj.get_square_wave();
 
-           if(name == sv("keyon_flag"                  )){return property(sq,sq_keyon_flag);}
-      else if(name == sv("volume"                      )){return property(sq,sq_volume);}
-      else if(name == sv("number_of_cycles_per_seconds")){return property(sq,sq_number_of_cycles_per_seconds);}
-      else if(name == sv("play_length"                 )){return property(sq,sq_play_length);}
-      else if(name == sv("play_length_flag"            )){return property(sq,sq_play_length_flag);}
+           if(name == sv("keyon_flag"          )){return property(sq,sq_keyon_flag);}
+      else if(name == sv("volume"              )){return property(sq,sq_volume);}
+      else if(name == sv("frequency"           )){return property(sq,sq_number_of_cycles_per_seconds);}
+      else if(name == sv("play_length"         )){return property(sq,sq_play_length);}
+      else if(name == sv("play_length_flag"    )){return property(sq,sq_play_length_flag);}
+      else if(name == sv("vm_wait_count_source")){return property(sq,sq_vm_wait_count_source);}
+      else if(name == sv("vm_moddir"           )){return property(sq,sq_vm_moddir);}
+      else if(name == sv("fm_shift_amount"     )){return property(sq,sq_fm_shift_amount);}
+      else if(name == sv("fm_wait_count_source")){return property(sq,sq_fm_wait_count_source);}
+      else if(name == sv("fm_moddir"           )){return property(sq,sq_fm_moddir);}
+      else if(name == sv("duty_ratio"          )){return property(sq,sq_duty_ratio);}
 //  else if(name == sv("")){return property();}
 
 

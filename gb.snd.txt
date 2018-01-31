@@ -5,8 +5,12 @@ square_wave  sq;
 routine
 main()
 {
-  sq.number_of_cycles_per_seconds=880;
+  sq.frequency=110;
   sq.volume=80;
+  sq.fm_wait_count_source = 2000;
+  sq.fm_shift_amount = 3;
+  sq.fm_moddir = 1;
+
   sq.keyon_flag = 1;
 }
 

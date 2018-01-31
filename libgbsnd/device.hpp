@@ -15,9 +15,6 @@ namespace devices{
 constexpr int  number_of_samples_per_seconds = 8000;//1秒あたりのサンプル数
 
 
-class accessor;
-
-
 enum class
 moddir: uint8_t //Modification Direction:変更方向
 {
@@ -119,8 +116,8 @@ square_wave: public device
 public:
   void  update_parameters() noexcept;
 
-  void     set_fm_shift_amount(uint8_t  a)       noexcept{       m_fm_shift_amount = a;}
-  uint8_t  get_fm_shift_amount(          ) const noexcept{return m_fm_shift_amount    ;}
+  void     set_fm_shift_amount(uint8_t  a)       noexcept{       m_fm_shift_amount = a&7;}
+  uint8_t  get_fm_shift_amount(          ) const noexcept{return m_fm_shift_amount      ;}
 
   void      set_fm_wait_count_source(uint32_t  v)       noexcept{       m_fm_wait_count_source = v;}
   uint32_t  get_fm_wait_count_source(           ) const noexcept{return m_fm_wait_count_source    ;}
@@ -132,7 +129,7 @@ public:
   void     set_duty_ratio(uint8_t  r)       noexcept;
   uint8_t  get_duty_ratio(          ) const noexcept{return m_duty_ratio;}
 
-  void  output(uint8_t*  begin, uint8_t*  end) noexcept;
+  void  output(uint32_t*  begin, uint32_t*  end) noexcept;
 
 };
 
@@ -153,7 +150,7 @@ public:
   void    set_shortspan_flag(bool  v=true) noexcept{m_shortspan_flag = v;}
   void  unset_shortspan_flag() noexcept{m_shortspan_flag = false;}
 
-  void  output(uint8_t*  begin, uint8_t*  end) noexcept;
+  void  output(uint32_t*  begin, uint32_t*  end) noexcept;
 
 };
 

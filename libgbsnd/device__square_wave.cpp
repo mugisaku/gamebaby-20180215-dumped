@@ -35,7 +35,7 @@ update_parameters() noexcept
 
     if(m_rise_time_base)
     {
-      m_fall_time_base = m_number_of_samples_per_cycles-m_rise_time;
+      m_fall_time_base = m_number_of_samples_per_cycles-m_rise_time_base;
 
 
       uint32_t  rem = (m_time%m_number_of_samples_per_cycles);
@@ -54,10 +54,7 @@ update_parameters() noexcept
 
   else
     {
-                    m_rise_time_base = m_number_of_samples_per_cycles;
-      m_rise_time = m_rise_time_base                                 ;
-
-      m_fall_time = 0;
+      m_fall_time_base = 0;
     }
 }
 
@@ -91,8 +88,8 @@ modify_frequency() noexcept
 
           auto  n = m_number_of_cycles_per_seconds;
 
-               if(m_fm_moddir == moddir::up  ){n = n+(n>>m_fm_shift_amount);}
-          else if(m_fm_moddir == moddir::down){n = n-(n>>m_fm_shift_amount);}
+               if(m_fm_moddir == moddir::up  ){n = n+(1+(n>>m_fm_shift_amount));}
+          else if(m_fm_moddir == moddir::down){n = n-(1+(n>>m_fm_shift_amount));}
 
 
           set_number_of_cycles_per_seconds(n);
@@ -103,7 +100,7 @@ modify_frequency() noexcept
 
 void
 square_wave::
-output(uint8_t*  begin, uint8_t*  end) noexcept
+output(uint32_t*  begin, uint32_t*  end) noexcept
 {
     if(m_need_update)
     {
@@ -116,6 +113,12 @@ output(uint8_t*  begin, uint8_t*  end) noexcept
   auto  it = begin;
 
   uint8_t  v = 0;
+
+    if(!m_rise_time_base)
+    {
+      return;
+    }
+
 
     while(it != end)
     {
@@ -144,7 +147,6 @@ REDO:
             }
 
           else
-            if(m_rise_time_base)
             {
               m_rise_time = m_rise_time_base;
 
@@ -153,7 +155,7 @@ REDO:
         }
 
 
-      *it++ = v;
+      *it++ += (v<<16);
 
       ++m_time;
 
