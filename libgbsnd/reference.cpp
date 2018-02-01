@@ -251,6 +251,7 @@ get_property(const identifier&  id) const noexcept
       else if(name == sv("fm_moddir"           )){return property(sq,sq_fm_moddir);}
       else if(name == sv("duty_ratio"          )){return property(sq,sq_duty_ratio);}
 //  else if(name == sv("")){return property();}
+      else {printf("%sという名のプロパティは見つからない\n",name.data());}
 
 
     }
@@ -266,6 +267,7 @@ get_property(const identifier&  id) const noexcept
       else if(name == sv("play_length_flag"        )){return property(no,no_play_length_flag);}
       else if(name == sv("shortspan_flag"          )){return property(no,no_shortspan_flag);}
 //  else if(name == sv("")){return property();}
+      else {printf("%sという名のプロパティは見つからない\n",name.data());}
 
 
     }

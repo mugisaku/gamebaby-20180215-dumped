@@ -112,7 +112,7 @@ output(uint32_t*  begin, uint32_t*  end) noexcept
 
   auto  it = begin;
 
-  uint8_t  v = 0;
+  int  v = 0;
 
     if(!m_rise_time_base)
     {
@@ -138,7 +138,7 @@ REDO:
           else
             if(m_fall_time)
             {
-              v = 0;
+              v = -m_volume;
 
                 if(!--m_fall_time)
                 {

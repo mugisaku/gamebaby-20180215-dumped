@@ -199,6 +199,14 @@ get_square_wave_list() const noexcept
 }
 
 
+const std::vector<std::unique_ptr<noise>>&
+script::
+get_noise_list() const noexcept
+{
+  return m_data->noise_list;
+}
+
+
 
 
 const routine*

@@ -27,7 +27,7 @@ output(uint32_t*  begin, uint32_t*  end) noexcept
 {
   auto  it = begin;
 
-  uint8_t  v = m_result? m_volume:0;
+  int  v = 0;
 
     while(it != end)
     {
@@ -45,20 +45,19 @@ output(uint32_t*  begin, uint32_t*  end) noexcept
                                    (m_seed>>(m_shortspan_flag? 5:13)))&1);
               m_result ^= m_seed&1;
 
-              v = m_result? m_volume:0;
+              v = m_result? m_volume:-m_volume;
 
               m_time = 0;
             }
         }
 
 
-      *it++ = (v<<16);
+      *it++ += (v<<16);
  
       ++m_time;
 
       modify_volume();
       check_play_length();
-
     }
 }
 

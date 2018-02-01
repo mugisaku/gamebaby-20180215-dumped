@@ -75,8 +75,8 @@ public:
   void  unset_play_length_flag() noexcept{m_play_length_flag = false;}
 
 
-  void     set_volume(uint8_t  v)       noexcept{       m_volume = v;}
-  uint8_t  get_volume(          ) const noexcept{return m_volume    ;}
+  void     set_volume(uint8_t  v)       noexcept{       m_volume = v&0x7F;}
+  uint8_t  get_volume(          ) const noexcept{return m_volume         ;}
 
   void      set_vm_wait_count_source(uint32_t  v)       noexcept{       m_vm_wait_count_source = v;}
   uint32_t  get_vm_wait_count_source(           ) const noexcept{return m_vm_wait_count_source    ;}

@@ -79,7 +79,8 @@ public:
   constexpr type  operator/(int  n) const noexcept{return type(internal_value{m_value.data/n});}
   constexpr type  operator%(int  n) const noexcept{return type(internal_value{m_value.data%n});}
 
-  constexpr type  round() const noexcept{return type(internal_value{(m_value.data+half)&0xFFFF0000});}
+
+  type&  operator=(int  n) noexcept{return *this = type(n);}
 
   type&  operator+=(type const&  rhs) noexcept{return *this = (*this)+rhs;}
   type&  operator-=(type const&  rhs) noexcept{return *this = (*this)-rhs;}
@@ -89,6 +90,8 @@ public:
   type&  operator*=(int  n) noexcept{m_value.data *= n;  return *this;}
   type&  operator/=(int  n) noexcept{m_value.data /= n;  return *this;}
   type&  operator%=(int  n) noexcept{m_value.data %= n;  return *this;}
+
+  int  to_int() const noexcept{return (m_value.data+half)>>shift_amount;}
 
 };
 

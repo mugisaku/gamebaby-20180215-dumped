@@ -49,6 +49,12 @@ callback(void*  userdata, uint8_t*  buf, int  len)
     }
 
 
+    for(auto&  no: script.get_noise_list())
+    {
+      no->output(buffer,&buffer[len]);
+    }
+
+
   auto  buf_end = buf+len;
 
   const uint32_t*  src = buffer;
@@ -66,7 +72,7 @@ void
 initialize()
 {
   spec.freq     = gbsnd::number_of_samples_per_seconds;
-  spec.format   = AUDIO_U8;
+  spec.format   = AUDIO_S8;
   spec.samples  = number_of_samples;
   spec.channels = 1;
   spec.callback = callback;

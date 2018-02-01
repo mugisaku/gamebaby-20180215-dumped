@@ -1,17 +1,21 @@
 square_wave  sq;
-//noise         noi;
+noise        no;
 
 
 routine
 main()
 {
-  sq.frequency=110;
-  sq.volume=80;
-  sq.fm_wait_count_source = 2000;
-  sq.fm_shift_amount = 3;
-  sq.fm_moddir = 1;
+  sq.frequency=440;
+  sq.volume=30;
 
-  sq.keyon_flag = 1;
+  no.volume = 32;
+
+//  sq.keyon_flag = 1;
+  no.keyon_flag = 1;
+
+  sleep 10*200;
+
+  no.shortspan_flag = 1;
 }
 
 
