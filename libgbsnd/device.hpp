@@ -5,6 +5,7 @@
 #include<cstdint>
 #include<cstdio>
 #include"libgbstd/string.hpp"
+#include"libgbstd/fixed_point_number.hpp"
 #include"libgbsnd/object.hpp"
 
 
@@ -12,7 +13,7 @@ namespace gbsnd{
 namespace devices{
 
 
-constexpr int  number_of_samples_per_seconds = 8000;//1秒あたりのサンプル数
+constexpr gbstd::fixed_point_number  number_of_samples_per_seconds(8000);//1秒あたりのサンプル数
 
 
 enum class
@@ -31,8 +32,8 @@ device
 protected:
   uint32_t  m_time=0;
 
-  uint32_t  m_number_of_cycles_per_seconds=0;//1秒あたりの周波数
-  uint32_t  m_number_of_samples_per_cycles=0;//1周波あたりのサンプル数
+  gbstd::fixed_point_number  m_number_of_cycles_per_seconds;//1秒あたりの周波数
+  gbstd::fixed_point_number  m_number_of_samples_per_cycles;//1周波あたりのサンプル数
 
   uint32_t  m_play_length=0;
 
@@ -47,7 +48,7 @@ protected:
   bool  m_play_length_flag=false;
   bool  m_keyon_flag=false;//真の時、音を鳴らす
 
-  bool  m_need_update=false;
+  bool  m_need_update=true;
 
   void  modify_volume() noexcept;
 
@@ -62,9 +63,9 @@ public:
   uint32_t  get_time() const noexcept{return m_time;}
 
   void      set_number_of_cycles_per_seconds(uint32_t  n)       noexcept;
-  uint32_t  get_number_of_cycles_per_seconds(           ) const noexcept{return m_number_of_samples_per_cycles;}
+  uint32_t  get_number_of_cycles_per_seconds(           ) const noexcept{return m_number_of_samples_per_cycles.to_int();}
 
-  uint32_t  get_number_of_samples_per_cycles() const noexcept{return m_number_of_samples_per_cycles;}
+  uint32_t  get_number_of_samples_per_cycles() const noexcept{return m_number_of_samples_per_cycles.to_int();}
 
 
   void      set_play_length(uint32_t  v)       noexcept{       m_play_length = v;}
@@ -96,12 +97,17 @@ public:
 class
 square_wave: public device
 {
-//fm = Frequency Modification = 周波数変更
-  uint32_t  m_rise_time_base=0;
-  uint32_t  m_rise_time     =0;
-  uint32_t  m_fall_time_base=0;
-  uint32_t  m_fall_time     =0;
+  uint32_t  m_constant_of_high_part_samples;
+  uint32_t   m_constant_of_low_part_samples;
 
+  uint32_t  m_count_of_samples;
+
+  enum class mode{
+    high,
+     low,
+  } m_mode;
+
+//fm = Frequency Modification = 周波数変更
   uint32_t  m_fm_wait_count_source=0;
   uint32_t  m_fm_wait_count       =0;
 

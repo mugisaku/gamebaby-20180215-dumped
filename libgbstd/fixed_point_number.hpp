@@ -55,9 +55,12 @@ private:
                       :  to_int(s  ,0);
   }
 
+
+  constexpr explicit fixed_point_number(internal_value  v) noexcept: m_value{v.data}{}
+
 public:
   constexpr explicit fixed_point_number() noexcept: m_value{0}{}
-  constexpr explicit fixed_point_number(internal_value  v) noexcept: m_value{v.data}{}
+  constexpr explicit fixed_point_number(int  n) noexcept: m_value{n<<shift_amount}{}
   constexpr explicit fixed_point_number(char const*  s) noexcept: m_value{to_int(s)}{}
 
   constexpr  operator bool() const noexcept{return m_value.data;}
@@ -78,7 +81,13 @@ public:
   constexpr type  operator*(int  n) const noexcept{return type(internal_value{m_value.data*n});}
   constexpr type  operator/(int  n) const noexcept{return type(internal_value{m_value.data/n});}
   constexpr type  operator%(int  n) const noexcept{return type(internal_value{m_value.data%n});}
+  constexpr type  operator<<(int  n) const noexcept{return type(internal_value{m_value.data<<n});}
+  constexpr type  operator>>(int  n) const noexcept{return type(internal_value{m_value.data>>n});}
 
+  constexpr int  to_int() const noexcept
+  {
+    return ((m_value.data >= 0)? (m_value.data+half)
+                               : (m_value.data-half))>>shift_amount;}
 
   type&  operator=(int  n) noexcept{return *this = type(n);}
 
@@ -90,13 +99,12 @@ public:
   type&  operator*=(int  n) noexcept{m_value.data *= n;  return *this;}
   type&  operator/=(int  n) noexcept{m_value.data /= n;  return *this;}
   type&  operator%=(int  n) noexcept{m_value.data %= n;  return *this;}
-
-  int  to_int() const noexcept{return (m_value.data+half)>>shift_amount;}
+  type&  operator<<=(int  n) noexcept{m_value.data <<= n;  return *this;}
+  type&  operator>>=(int  n) noexcept{m_value.data >>= n;  return *this;}
 
 };
 
 
-using fpn = fixed_point_number;
 
 
 }

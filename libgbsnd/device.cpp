@@ -21,10 +21,10 @@ void
 device::
 set_number_of_cycles_per_seconds(uint32_t  n) noexcept
 {
-    if(n && (n <= number_of_samples_per_seconds))
+    if(n && (n <= number_of_samples_per_seconds.to_int()))
     {
-      m_number_of_cycles_per_seconds =                               n;
-      m_number_of_samples_per_cycles = number_of_samples_per_seconds/n;
+      m_number_of_cycles_per_seconds = n;
+      m_number_of_samples_per_cycles = number_of_samples_per_seconds/static_cast<int>(n);
 
       m_need_update = true;
     }

@@ -20,41 +20,42 @@ update_parameters() noexcept
     }
 
 
-  m_rise_time_base = m_number_of_samples_per_cycles<<shift_amount;
+  gbstd::fixed_point_number  high_part_samples = m_number_of_samples_per_cycles;
 
     switch(m_duty_ratio)
     {
-  case(0): m_rise_time_base /= 8;break;
-  case(1): m_rise_time_base /= 4;break;
-  case(2): m_rise_time_base /= 2;break;
-  case(3): m_rise_time_base  = m_rise_time_base/4*3;break;
+  case(0): high_part_samples /= 8;break;
+  case(1): high_part_samples /= 4;break;
+  case(2): high_part_samples /= 2;break;
+  case(3): high_part_samples = high_part_samples/4*3;break;
     }
 
 
-  m_rise_time_base >>= shift_amount;
-
-    if(m_rise_time_base)
+    if(high_part_samples)
     {
-      m_fall_time_base = m_number_of_samples_per_cycles-m_rise_time_base;
+      m_constant_of_high_part_samples = high_part_samples.to_int();
+      m_constant_of_low_part_samples  = (m_number_of_samples_per_cycles-high_part_samples).to_int();
 
+      auto  rem = m_time%m_number_of_samples_per_cycles.to_int();
 
-      uint32_t  rem = (m_time%m_number_of_samples_per_cycles);
-
-        if(rem < m_rise_time_base)
+        if(rem < m_constant_of_high_part_samples)
         {
-          m_rise_time = m_rise_time_base-rem;
+          m_mode = mode::high;
+
+          m_count_of_samples = m_constant_of_high_part_samples-rem;
         }
 
       else
         {
-          m_rise_time =                    0;
-          m_fall_time = rem-m_rise_time_base;
+          m_mode = mode::low;
+
+          m_count_of_samples = rem-m_constant_of_high_part_samples;
         }
     }
 
   else
     {
-      m_fall_time_base = 0;
+      m_constant_of_high_part_samples = 0;
     }
 }
 
@@ -114,7 +115,7 @@ output(uint32_t*  begin, uint32_t*  end) noexcept
 
   int  v = 0;
 
-    if(!m_rise_time_base)
+    if(!m_constant_of_high_part_samples)
     {
       return;
     }
@@ -125,32 +126,28 @@ output(uint32_t*  begin, uint32_t*  end) noexcept
 REDO:
         if(test_keyon_flag())
         {
-            if(m_rise_time)
+            if(m_mode == mode::high)
             {
               v = m_volume;
 
-                if(!--m_rise_time)
+                if(!--m_count_of_samples)
                 {
-                  m_fall_time = m_fall_time_base;
+                  m_count_of_samples = m_constant_of_low_part_samples;
+
+                  m_mode = mode::low;
                 }
             }
 
           else
-            if(m_fall_time)
             {
               v = -m_volume;
 
-                if(!--m_fall_time)
+                if(!--m_count_of_samples)
                 {
-                  m_rise_time = m_rise_time_base;
+                  m_count_of_samples = m_constant_of_high_part_samples;
+
+                  m_mode = mode::high;
                 }
-            }
-
-          else
-            {
-              m_rise_time = m_rise_time_base;
-
-              goto REDO;
             }
         }
 

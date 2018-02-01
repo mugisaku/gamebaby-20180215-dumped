@@ -71,7 +71,7 @@ callback(void*  userdata, uint8_t*  buf, int  len)
 void
 initialize()
 {
-  spec.freq     = gbsnd::number_of_samples_per_seconds;
+  spec.freq     = gbsnd::number_of_samples_per_seconds.to_int();
   spec.format   = AUDIO_S8;
   spec.samples  = number_of_samples;
   spec.channels = 1;

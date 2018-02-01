@@ -10,12 +10,22 @@ main()
 
   no.volume = 32;
 
-//  sq.keyon_flag = 1;
-  no.keyon_flag = 1;
+  sq.keyon_flag = 1;
+//  no.keyon_flag = 1;
 
-  sleep 10*200;
+  sleep 1000;
 
-  no.shortspan_flag = 1;
+  sq.duty_ratio = 1;
+
+  sleep 1000;
+
+  sq.duty_ratio = 2;
+
+  sleep 1000;
+
+  sq.duty_ratio = 3;
+
+  sleep 1000;
 }
 
 
