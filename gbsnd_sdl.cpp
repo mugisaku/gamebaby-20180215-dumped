@@ -71,7 +71,7 @@ callback(void*  userdata, uint8_t*  buf, int  len)
 void
 initialize()
 {
-  spec.freq     = gbsnd::number_of_samples_per_seconds.to_int();
+  spec.freq     = gbsnd::number_of_samples_per_seconds;
   spec.format   = AUDIO_S8;
   spec.samples  = number_of_samples;
   spec.channels = 1;
@@ -99,6 +99,15 @@ quit()
 
 
 void
+fill_screen()
+{
+  SDL_FillRect(SDL_GetWindowSurface(window),nullptr,0);
+
+  SDL_UpdateWindowSurface(window);
+}
+
+
+void
 main_loop()
 {
   static SDL_Event  evt;
@@ -121,20 +130,18 @@ main_loop()
     }
 
 
-  static uint32_t  last;
+//  static uint32_t  last;
 
   auto  now = SDL_GetTicks();
 
   ctx.run(gbsnd::millisecond{now});
 
+/*
     if(now >= last+1000)
     {
       last = now;
-
-      SDL_FillRect(SDL_GetWindowSurface(window),nullptr,0);
-
-      SDL_UpdateWindowSurface(window);
     }
+*/
 }
 
 
@@ -165,6 +172,7 @@ main(int  argc, char**  argv)
                             w,
                             h,0);
 
+  fill_screen();
 
   ctx.reset(script);
 

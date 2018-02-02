@@ -287,51 +287,333 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
   else
     if(opw == gbstd::string_view("+="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()+i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() += i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("-="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()-i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() -= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("*="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()*i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() *= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("/="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(!i)
+        {
+          printf("ゼロ除算\n");
+        }
+
+      else
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()/i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() /= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("%="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(!i)
+        {
+          printf("ゼロ除算\n");
+        }
+
+      else
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()%i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() %= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("<<="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()<<i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() <<= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view(">>="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()>>i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() >>= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("|="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()|i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() |= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("&="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()&i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() &= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else
     if(opw == gbstd::string_view("^="))
     {
+      auto   rv = pop().get_integer_value(ctx);
+      auto&  lv = top();
+
+      int  i = rv.get_integer();
+
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+          p.set(p.get()^i);
+        }
+
+      else
+        if(lv.is_reference())
+        {
+         auto&  obj = lv.get_reference()();
+
+            if(obj.is_integer())
+            {
+              obj.get_integer() ^= i;
+            }
+        }
+
+      else
+        {
+          printf("=, 左辺が参照でもプロパティでもない\n");
+        }
     }
 
   else

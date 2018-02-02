@@ -58,6 +58,9 @@ public:
 };
 
 
+struct system{};
+
+
 class
 value
 {
@@ -70,6 +73,7 @@ value
     property,
     square_wave,
     noise,
+    system,
 
   } m_kind=kind::null;
 
@@ -97,6 +101,7 @@ public:
   value(const property&  pr) noexcept{*this = pr;}
   value(square_wave&  sq) noexcept{*this = sq;}
   value(noise&  no) noexcept{*this = no;}
+  value(system  sys) noexcept{*this = sys;}
   value(const value&   rhs) noexcept{*this = rhs;}
   value(      value&&  rhs) noexcept{*this = std::move(rhs);}
  ~value(){clear();}
@@ -109,6 +114,7 @@ public:
   value&  operator=(const property&  pr) noexcept;
   value&  operator=(square_wave&  sq) noexcept;
   value&  operator=(noise&  no) noexcept;
+  value&  operator=(system  sys) noexcept;
   value&  operator=(const value&   rhs) noexcept;
   value&  operator=(      value&&  rhs) noexcept;
 
@@ -123,6 +129,7 @@ public:
   bool  is_property()    const noexcept{return m_kind == kind::property;}
   bool  is_square_wave() const noexcept{return m_kind == kind::square_wave;}
   bool  is_noise()       const noexcept{return m_kind == kind::noise;}
+  bool  is_system()      const noexcept{return m_kind == kind::system;}
 
   int&               get_integer()           noexcept{return m_data.i;}
   reference          get_reference()   const noexcept{return m_data.r;}
@@ -148,6 +155,8 @@ object: public value
 
 public:
   using value::value;
+
+  object(value&&  v, gbstd::string_view  name) noexcept: value(std::move(v)), m_name(name){}
 
   void                   set_name(gbstd::string_view  name)       noexcept{m_name = name;}
   const gbstd::string&   get_name(                        ) const noexcept{return m_name;}

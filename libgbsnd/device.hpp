@@ -5,7 +5,6 @@
 #include<cstdint>
 #include<cstdio>
 #include"libgbstd/string.hpp"
-#include"libgbstd/fixed_point_number.hpp"
 #include"libgbsnd/object.hpp"
 
 
@@ -13,7 +12,7 @@ namespace gbsnd{
 namespace devices{
 
 
-constexpr gbstd::fixed_point_number  number_of_samples_per_seconds(8000);//1秒あたりのサンプル数
+constexpr int  number_of_samples_per_seconds = 8000;//1秒あたりのサンプル数
 
 
 enum class
@@ -32,8 +31,8 @@ device
 protected:
   uint32_t  m_time=0;
 
-  gbstd::fixed_point_number  m_number_of_cycles_per_seconds;//1秒あたりの周波数
-  gbstd::fixed_point_number  m_number_of_samples_per_cycles;//1周波あたりのサンプル数
+  double  m_number_of_cycles_per_seconds=0;//1秒あたりの周波数
+  double  m_number_of_samples_per_cycles=0;//1周波あたりのサンプル数
 
   uint32_t  m_play_length=0;
 
@@ -62,10 +61,10 @@ public:
 
   uint32_t  get_time() const noexcept{return m_time;}
 
-  void      set_number_of_cycles_per_seconds(uint32_t  n)       noexcept;
-  uint32_t  get_number_of_cycles_per_seconds(           ) const noexcept{return m_number_of_samples_per_cycles.to_int();}
+  void      set_number_of_cycles_per_seconds(double  n)       noexcept;
+  uint32_t  get_number_of_cycles_per_seconds(         ) const noexcept{return m_number_of_samples_per_cycles;}
 
-  uint32_t  get_number_of_samples_per_cycles() const noexcept{return m_number_of_samples_per_cycles.to_int();}
+  uint32_t  get_number_of_samples_per_cycles() const noexcept{return m_number_of_samples_per_cycles;}
 
 
   void      set_play_length(uint32_t  v)       noexcept{       m_play_length = v;}
@@ -125,9 +124,9 @@ public:
   void     set_fm_shift_amount(uint8_t  a)       noexcept{       m_fm_shift_amount = a&7;}
   uint8_t  get_fm_shift_amount(          ) const noexcept{return m_fm_shift_amount      ;}
 
-  void      set_fm_wait_count_source(uint32_t  v)       noexcept{       m_fm_wait_count_source = v;}
-  uint32_t  get_fm_wait_count_source(           ) const noexcept{return m_fm_wait_count_source    ;}
-  uint32_t  get_fm_wait_count(                  ) const noexcept{return m_fm_wait_count           ;}
+  void      set_fm_wait_count_source(uint32_t  v)       noexcept;
+  uint32_t  get_fm_wait_count_source(           ) const noexcept{return m_fm_wait_count_source;}
+  uint32_t  get_fm_wait_count(                  ) const noexcept{return m_fm_wait_count       ;}
 
   void    set_fm_moddir(moddir  d)       noexcept{       m_fm_moddir = d;}
   moddir  get_fm_moddir(         ) const noexcept{return m_fm_moddir    ;}

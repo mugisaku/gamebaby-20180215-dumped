@@ -12,31 +12,31 @@ void
 square_wave::
 update_parameters() noexcept
 {
-  constexpr int  shift_amount = 16;
-
-    if(!m_number_of_samples_per_cycles)
+    if(m_number_of_samples_per_cycles == 0.0)
     {
       return;
     }
 
 
-  gbstd::fixed_point_number  high_part_samples = m_number_of_samples_per_cycles;
+  double  high_part_samples = m_number_of_samples_per_cycles;
 
     switch(m_duty_ratio)
     {
-  case(0): high_part_samples /= 8;break;
-  case(1): high_part_samples /= 4;break;
-  case(2): high_part_samples /= 2;break;
-  case(3): high_part_samples = high_part_samples/4*3;break;
+  case(0): high_part_samples *= 0.125;break;
+  case(1): high_part_samples *= 0.250;break;
+  case(2): high_part_samples *= 0.500;break;
+  case(3): high_part_samples *= 0.750;break;
     }
 
 
-    if(high_part_samples)
+    if(high_part_samples >= 0.0)
     {
-      m_constant_of_high_part_samples = high_part_samples.to_int();
-      m_constant_of_low_part_samples  = (m_number_of_samples_per_cycles-high_part_samples).to_int();
+      m_constant_of_high_part_samples = high_part_samples;
+      m_constant_of_low_part_samples  = (m_number_of_samples_per_cycles-high_part_samples);
 
-      auto  rem = m_time%m_number_of_samples_per_cycles.to_int();
+//printf("%d %d\n",m_constant_of_high_part_samples,m_constant_of_low_part_samples);
+
+      auto  rem = m_time%static_cast<uint32_t>(m_number_of_samples_per_cycles);
 
         if(rem < m_constant_of_high_part_samples)
         {
@@ -72,6 +72,15 @@ set_duty_ratio(uint8_t  r) noexcept
 
 void
 square_wave::
+set_fm_wait_count_source(uint32_t  v) noexcept
+{
+  m_fm_wait_count_source = v;
+  m_fm_wait_count        = v;
+}
+
+
+void
+square_wave::
 modify_frequency() noexcept
 {
     if(m_fm_shift_amount)
@@ -89,11 +98,11 @@ modify_frequency() noexcept
 
           auto  n = m_number_of_cycles_per_seconds;
 
-               if(m_fm_moddir == moddir::up  ){n = n+(1+(n>>m_fm_shift_amount));}
-          else if(m_fm_moddir == moddir::down){n = n-(1+(n>>m_fm_shift_amount));}
+               if(m_fm_moddir == moddir::up  ){n = n+(n/(1+1*m_fm_shift_amount));}
+          else if(m_fm_moddir == moddir::down){n = n-(n/(1+1*m_fm_shift_amount));}
 
 
-          set_number_of_cycles_per_seconds(n);
+          set_number_of_cycles_per_seconds((n > 0.0)? n:0.0);
         }
     }
 }

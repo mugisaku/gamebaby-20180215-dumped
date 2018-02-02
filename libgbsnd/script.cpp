@@ -34,6 +34,8 @@ m_data(new data)
 
   script_token_cursor  cur(toks.begin(),toks.end());
 
+  m_data->object_list.emplace_back(value(system{}),"system");
+
     while(cur)
     {
       using sv = gbstd::string_view;
@@ -54,9 +56,7 @@ m_data(new data)
 
               m_data->square_wave_list.emplace_back(sq);
 
-              m_data->object_list.emplace_back(*sq);
-
-              m_data->object_list.back().set_name(var_name);
+              m_data->object_list.emplace_back(value(*sq),var_name);
             }
 
           else
@@ -68,9 +68,7 @@ m_data(new data)
 
               m_data->noise_list.emplace_back(noi);
 
-              m_data->object_list.emplace_back(*noi);
-
-              m_data->object_list.back().set_name(var_name);
+              m_data->object_list.emplace_back(value(*noi),var_name);
             }
 
           else
@@ -85,8 +83,7 @@ m_data(new data)
                   
                   auto  rt = new routine(parals,block);
 
-                  m_data->object_list.emplace_back(*rt);
-                  m_data->object_list.back().set_name(var_name);
+                  m_data->object_list.emplace_back(value(*rt),var_name);
 
                   cur += 2;
                 }

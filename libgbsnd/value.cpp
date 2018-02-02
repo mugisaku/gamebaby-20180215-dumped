@@ -123,6 +123,18 @@ operator=(noise&  no) noexcept
 
 value&
 value::
+operator=(system  sys) noexcept
+{
+  clear();
+
+  m_kind = kind::system;
+
+  return *this;
+}
+
+
+value&
+value::
 operator=(const value&  rhs) noexcept
 {
     if(this != &rhs)
@@ -337,6 +349,9 @@ print() const noexcept
       break;
   case(kind::noise):
       printf("noise");
+      break;
+  case(kind::system):
+      printf("system");
       break;
     }
 }

@@ -7,25 +7,28 @@ main()
 {
   sq.frequency=440;
   sq.volume=30;
+//  sq.fm_shift_amount=3;
+//  sq.fm_wait_count_source=2000;
 
   no.volume = 32;
 
   sq.keyon_flag = 1;
-//  no.keyon_flag = 1;
 
   sleep 1000;
 
-  sq.duty_ratio = 1;
+  sq.volume += 12;
 
   sleep 1000;
 
-  sq.duty_ratio = 2;
+  sq.volume += 12;
 
   sleep 1000;
 
-  sq.duty_ratio = 3;
+  sq.volume += 12;
 
   sleep 1000;
+
+  sq.volume += 12;
 }
 
 
