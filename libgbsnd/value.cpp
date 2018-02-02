@@ -1,5 +1,6 @@
 #include"libgbsnd/object.hpp"
 #include"libgbsnd/execution.hpp"
+#include"libgbsnd/routine.hpp"
 #include<new>
 
 

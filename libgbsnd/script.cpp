@@ -1,5 +1,6 @@
 #include"libgbsnd/script.hpp"
 #include"libtok/stream_reader.hpp"
+#include"libgbsnd/routine.hpp"
 #include<memory>
 
 

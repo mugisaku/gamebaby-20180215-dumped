@@ -24,7 +24,7 @@ routine(const script_token_string&  parals_src, const script_token_string&  blk_
     }
 
 
-  m_block = new block(blk_src);
+//  m_block = new block(blk_src);
 }
 
 
@@ -34,10 +34,12 @@ routine&
 routine::
 operator=(const routine&   rhs) noexcept
 {
-  clear();
+    if(this != &rhs)
+    {
+      m_parameter_list = rhs.m_parameter_list;
+      m_stmt_list.reset(gbstd::duplicate(rhs.m_stmt_list.get()));
+    }
 
-  m_parameter_list = rhs.m_parameter_list;
-  m_block          = gbstd::duplicate(rhs.m_block);
 
   return *this;
 }
@@ -47,26 +49,17 @@ routine&
 routine::
 operator=(routine&&  rhs) noexcept
 {
-  clear();
+    if(this != &rhs)
+    {
+      std::swap(m_parameter_list,rhs.m_parameter_list);
+      std::swap(m_stmt_list     ,rhs.m_stmt_list     );
+    }
 
-  std::swap(m_parameter_list,rhs.m_parameter_list);
-  std::swap(m_block         ,rhs.m_block         );
 
   return *this;
 }
 
 
-
-
-void
-routine::
-clear() noexcept
-{
-  m_parameter_list.clear();
-
-  delete m_block          ;
-         m_block = nullptr;
-}
 
 
 void
@@ -87,18 +80,17 @@ get_parameter_list() const noexcept
 
 void
 routine::
-set_block(block*  blk) noexcept
+set_stmt_list(stmt_list*  ls) noexcept
 {
-  delete m_block      ;
-         m_block = blk;
+  m_stmt_list.reset(ls);
 }
 
 
-const block*
+const std::unique_ptr<stmt_list>&
 routine::
-get_block() const noexcept
+get_stmt_list() const noexcept
 {
-  return m_block;
+  return m_stmt_list;
 }
 
 
@@ -116,11 +108,14 @@ print() const noexcept
 
   printf(")");
 
-    if(m_block)
+    if(m_stmt_list)
     {
       printf("\n");
 
-      m_block->print();
+        for(auto&  stmt: *m_stmt_list)
+        {
+          stmt.print();
+        }
     }
 }
 

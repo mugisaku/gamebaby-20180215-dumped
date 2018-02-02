@@ -5,7 +5,6 @@
 #include<cstdint>
 #include<cstdio>
 #include"libgbstd/string.hpp"
-#include"libgbsnd/routine.hpp"
 #include"libgbsnd/shared_string.hpp"
 
 
@@ -14,6 +13,7 @@ namespace devices{
 
 
 class object;
+class routine;
 class value;
 class square_wave;
 class noise;

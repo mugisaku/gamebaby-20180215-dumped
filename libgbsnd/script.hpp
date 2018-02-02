@@ -7,6 +7,7 @@
 #include"libgbsnd/shared_string.hpp"
 #include"libtok/stream_reader.hpp"
 #include<cstdio>
+#include<vector>
 #include<list>
 #include<memory>
 #include<initializer_list>

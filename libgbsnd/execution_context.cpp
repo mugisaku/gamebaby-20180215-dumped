@@ -1,6 +1,7 @@
 #include"libgbsnd/execution.hpp"
 #include"libgbsnd/object.hpp"
 #include"libgbsnd/stmt.hpp"
+#include"libgbsnd/routine.hpp"
 
 
 namespace gbsnd{
@@ -13,8 +14,8 @@ frame
 {
   gbstd::string  routine_name;
 
-  const stmt*  current;
-  const stmt*      end;
+  stmt_list::const_iterator  current;
+  stmt_list::const_iterator      end;
 
   std::list<object>  object_list;
 
@@ -118,10 +119,10 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
   frm.routine_name = routine_name;
 
 
-  auto  blk = r->get_block();
+  auto&  ls = r->get_stmt_list();
 
-  frm.current = blk->begin();
-  frm.end     = blk->end();
+  frm.current = ls->begin();
+  frm.end     = ls->end();
 
   frm.object_list.clear();
 
