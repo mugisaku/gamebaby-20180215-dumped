@@ -228,11 +228,10 @@ print() const noexcept
       printf("branch(");
       m_data.bra.get_expr().print();
       printf(")");
-      printf("goto %s",m_data.bra.get_dst_label().data());
+      printf(" if %s, goto %s",m_data.bra.get_boolean()? "true":"false",m_data.bra.get_dst_label().data());
       break;
   case(kind::jump):
-      printf("jump ");
-      printf(" %s",m_data.jmp.get_dst_label().data());
+      printf("jump to %s",m_data.jmp.get_dst_label().data());
       break;
     }
 

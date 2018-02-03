@@ -7,6 +7,29 @@ main()
 {
     while(1)
     {
+        if(1)
+        {
+          break;
+        }
+
+      else
+        if(1)
+        {
+          break;
+        }
+
+      else
+        if(1)
+        {
+          break;
+        }
+
+      else
+        {
+          continue;
+        }
+
+
       sq.frequency=440;
       sq.volume=30;
 

@@ -16,6 +16,7 @@ struct
 context
 {
   int      if_count;
+  int     for_count;
   int   while_count;
   int  switch_count;
 
@@ -23,7 +24,9 @@ context
 
 
 void
-build(const char*  label_base, context&  ctx, script_token_cursor&  cur, stmt_list&  ls) noexcept
+build(const char*  label_base,
+      const char*     break_label,
+      const char*  continue_label, context&  ctx, script_token_cursor&  cur, stmt_list&  ls) noexcept
 {
     while(cur)
     {
@@ -64,25 +67,25 @@ build(const char*  label_base, context&  ctx, script_token_cursor&  cur, stmt_li
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  gbstd::tmpstr  while_label_base("WHILE%03d",ctx.while_count++);
-                  gbstd::tmpstr  while_begin_label("%s_BEGIN",while_label_base);
-                  gbstd::tmpstr    while_end_label  ("%s_END",while_label_base);
+                  gbstd::tmpstr  co_label_base("WHILE%03d",ctx.while_count++);
+                  gbstd::tmpstr    begin_label("%s_BEGIN" ,*co_label_base);
+                  gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
 
 
-                  ls.emplace_back(label_stmt(*while_begin_label));
+                  ls.emplace_back(label_stmt(*begin_label));
 
 
                   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-                  ls.emplace_back(branch_stmt(expr_array(expr_cur),*while_end_label,false));
+                  ls.emplace_back(branch_stmt(expr_array(expr_cur),*end_label,false));
 
 
                   script_token_cursor  blk_cur(cur[1].get_token_string());
 
-                  build(*while_label_base,ctx,blk_cur,ls);
+                  build(*co_label_base,*end_label,*begin_label,ctx,blk_cur,ls);
 
 
-                  ls.emplace_back(label_stmt(*	while_end_label));
+                  ls.emplace_back(label_stmt(*end_label));
 
 
                   cur += 2;
@@ -96,10 +99,136 @@ build(const char*  label_base, context&  ctx, script_token_cursor&  cur, stmt_li
                 }
             }
 
-          else if(id == sv("if")){}
-          else if(id == sv("for")){}
-          else if(id == sv("switch")){}
-          else if(id == sv("case")){}
+          else
+            if(id == sv("if"))
+            {
+              cur += 1;
+
+              int  block_number = 0;
+
+                if(cur[0].is_token_string('(',')') &&
+                   cur[1].is_token_string('{','}'))
+                {
+                  gbstd::tmpstr  co_label_base("IF%03d",ctx.if_count++);
+                  gbstd::tmpstr      end_label("%s_END",*co_label_base);
+                  gbstd::tmpstr     next_label("%s_%03d",*co_label_base,++block_number);
+
+
+                  script_token_cursor  expr_cur(cur[0].get_token_string());
+
+                  ls.emplace_back(branch_stmt(expr_array(expr_cur),*next_label,false));
+
+
+                  script_token_cursor  blk_cur(cur[1].get_token_string());
+
+                  build(*co_label_base,break_label,continue_label,ctx,blk_cur,ls);
+
+
+                  ls.emplace_back(jump_stmt(*end_label));
+
+
+                  cur += 2;
+
+                    while(cur[0].is_identifier({gbstd::string_view("else")}))
+                    {
+                      cur += 1;
+
+                      ls.emplace_back(label_stmt(*next_label));
+
+                        if(cur[0].is_token_string('{','}'))
+                        {
+                          blk_cur = script_token_cursor(cur[0].get_token_string());
+
+                          build(*co_label_base,break_label,continue_label,ctx,blk_cur,ls);
+
+                          cur += 1;
+
+                          break;
+                        }
+
+                      else
+                        if(cur[0].is_identifier({gbstd::string_view("if")}) &&
+                           cur[1].is_token_string('(',')') &&
+                           cur[2].is_token_string('{','}'))
+                        {
+                          next_label("%s_%03d",*co_label_base,++block_number);
+
+
+                          expr_cur = script_token_cursor(cur[1].get_token_string());
+
+                          ls.emplace_back(branch_stmt(expr_array(expr_cur),*next_label,false));
+
+
+                          blk_cur = script_token_cursor(cur[2].get_token_string());
+
+                          ls.emplace_back(jump_stmt(*end_label));
+
+                          cur += 3;
+                        }
+                    }
+
+
+                  ls.emplace_back(label_stmt(*end_label));
+                }
+
+              else
+                {
+                  printf("if構文が不正\n");
+
+                  break;
+                }
+            }
+
+          else
+            if(id == sv("for"))
+            {
+            }
+
+          else
+            if(id == sv("switch"))
+            {
+              cur += 1;
+
+                if(cur[0].is_token_string('(',')') &&
+                   cur[1].is_token_string('{','}'))
+                {
+                  gbstd::tmpstr  co_label_base("SWITCH%03d",ctx.switch_count++);
+                  gbstd::tmpstr    begin_label("%s_BEGIN" ,*co_label_base);
+                  gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
+
+
+                  ls.emplace_back(label_stmt(*begin_label));
+
+
+                  script_token_cursor  expr_cur(cur[0].get_token_string());
+
+                  ls.emplace_back(branch_stmt(expr_array(expr_cur),*end_label,false));
+
+
+                  script_token_cursor  blk_cur(cur[1].get_token_string());
+
+                  build(*co_label_base,*end_label,*begin_label,ctx,blk_cur,ls);
+
+
+                  ls.emplace_back(label_stmt(*end_label));
+
+
+                  cur += 2;
+                }
+
+              else
+                {
+                  printf("switch構文が不正\n");
+
+                  break;
+                }
+            }
+
+          else
+            if(id == sv("case"))
+            {
+            }
+
           else
             if(id == sv("goto"))
             {
@@ -129,9 +258,7 @@ build(const char*  label_base, context&  ctx, script_token_cursor&  cur, stmt_li
             {
               ++cur;
 
-              gbstd::tmpstr  label("%s_END",label_base);
-
-              ls.emplace_back(jump_stmt(*label));
+              ls.emplace_back(jump_stmt(break_label));
             }
 
           else
@@ -139,9 +266,7 @@ build(const char*  label_base, context&  ctx, script_token_cursor&  cur, stmt_li
             {
               ++cur;
 
-              gbstd::tmpstr  label("%s_BEGIN",label_base);
-
-              ls.emplace_back(jump_stmt(*label));
+              ls.emplace_back(jump_stmt(continue_label));
             }
 
           else
@@ -176,7 +301,7 @@ build_stmt_list(const script_token_string&  toks) noexcept
 
   context  ctx = {0};
 
-  build("",ctx,cur,*ls);
+  build("","","",ctx,cur,*ls);
 
   return ls;
 }
