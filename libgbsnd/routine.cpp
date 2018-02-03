@@ -24,7 +24,7 @@ routine(const script_token_string&  parals_src, const script_token_string&  blk_
     }
 
 
-//  m_block = new block(blk_src);
+  m_stmt_list.reset(build_stmt_list(blk_src));
 }
 
 
@@ -110,12 +110,17 @@ print() const noexcept
 
     if(m_stmt_list)
     {
-      printf("\n");
+      printf("\n{\n");
 
         for(auto&  stmt: *m_stmt_list)
         {
           stmt.print();
+
+          printf("\n");
         }
+
+
+      printf("}\n\n\n");
     }
 }
 

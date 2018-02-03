@@ -163,7 +163,7 @@ public:
 
   void  print() const noexcept
   {
-    printf("%s %d= ",m_name.data(),m_name.size());
+    printf("%s = ",m_name.data());
 
     value::print();
   }

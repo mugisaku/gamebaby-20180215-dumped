@@ -24,20 +24,6 @@ operator=(expr_array&&  e) noexcept
 
 stmt&
 stmt::
-operator=(block&&  blk) noexcept
-{
-  clear();
-
-  m_kind = kind::block;
-
-  new(&m_data) block(std::move(blk));
-
-  return *this;
-}
-
-
-stmt&
-stmt::
 operator=(label_stmt&&  lbl) noexcept
 {
   clear();
@@ -66,63 +52,13 @@ operator=(return_stmt&&  ret) noexcept
 
 stmt&
 stmt::
-operator=(break_stmt  brk) noexcept
-{
-  clear();
-
-  m_kind = kind::break_;
-
-  return *this;
-}
-
-
-stmt&
-stmt::
-operator=(continue_stmt  cnt) noexcept
-{
-  clear();
-
-  m_kind = kind::continue_;
-
-  return *this;
-}
-
-
-stmt&
-stmt::
-operator=(default_stmt  dfl) noexcept
-{
-  clear();
-
-  m_kind = kind::default_;
-
-  return *this;
-}
-
-
-stmt&
-stmt::
-operator=(case_stmt  cas) noexcept
-{
-  clear();
-
-  m_kind = kind::case_;
-
-  new(&m_data) case_stmt(cas);
-
-  return *this;
-}
-
-
-stmt&
-stmt::
 operator=(sleep_stmt&&  slp) noexcept
 {
   clear();
 
   m_kind = kind::sleep;
 
-  new(&m_data) sleep_stmt(slp);
+  new(&m_data) sleep_stmt(std::move(slp));
 
   return *this;
 }
@@ -136,7 +72,7 @@ operator=(print_stmt&&  prn) noexcept
 
   m_kind = kind::print;
 
-  new(&m_data) print_stmt(prn);
+  new(&m_data) print_stmt(std::move(prn));
 
   return *this;
 }
@@ -150,7 +86,35 @@ operator=(exit_stmt&&  exi) noexcept
 
   m_kind = kind::exit;
 
-  new(&m_data) exit_stmt(exi);
+  new(&m_data) exit_stmt(std::move(exi));
+
+  return *this;
+}
+
+
+stmt&
+stmt::
+operator=(branch_stmt&&  bra) noexcept
+{
+  clear();
+
+  m_kind = kind::branch;
+
+  new(&m_data) branch_stmt(std::move(bra));
+
+  return *this;
+}
+
+
+stmt&
+stmt::
+operator=(jump_stmt&&  jmp) noexcept
+{
+  clear();
+
+  m_kind = kind::jump;
+
+  new(&m_data) jump_stmt(std::move(jmp));
 
   return *this;
 }
@@ -170,20 +134,12 @@ operator=(const stmt&  rhs) noexcept
         {
       case(kind::expression): new(&m_data) expr_array(rhs.m_data.e);break;
       case(kind::label     ): new(&m_data) label_stmt(rhs.m_data.lbl);break;
-      case(kind::block     ): new(&m_data) block(rhs.m_data.blk);break;
-      case(kind::if_       ): break;
-      case(kind::while_    ): break;
-      case(kind::for_      ): break;
-      case(kind::break_    ): break;
-      case(kind::continue_ ): break;
-      case(kind::goto_     ): break;
-      case(kind::switch_   ): break;
-      case(kind::case_     ): new(&m_data) case_stmt(rhs.m_data.cas);break;
-      case(kind::default_  ): break;
       case(kind::return_   ): new(&m_data) return_stmt(rhs.m_data.ret);break;
       case(kind::sleep     ): new(&m_data) sleep_stmt(rhs.m_data.slp);break;
       case(kind::print     ): new(&m_data) print_stmt(rhs.m_data.prn);break;
       case(kind::exit      ): new(&m_data) exit_stmt(rhs.m_data.exi);break;
+      case(kind::branch    ): new(&m_data) branch_stmt(rhs.m_data.bra);break;
+      case(kind::jump      ): new(&m_data) jump_stmt(rhs.m_data.jmp);break;
         }
     }
 
@@ -206,20 +162,12 @@ operator=(stmt&&  rhs) noexcept
         {
       case(kind::expression): new(&m_data) expr_array(std::move(rhs.m_data.e));break;
       case(kind::label     ): new(&m_data) label_stmt(std::move(rhs.m_data.lbl));break;
-      case(kind::block     ): new(&m_data) block(std::move(rhs.m_data.blk));break;
-      case(kind::if_       ): break;
-      case(kind::while_    ): break;
-      case(kind::for_      ): break;
-      case(kind::break_    ): break;
-      case(kind::continue_ ): break;
-      case(kind::goto_     ): break;
-      case(kind::switch_   ): break;
-      case(kind::case_     ): new(&m_data) case_stmt(std::move(rhs.m_data.cas));break;
-      case(kind::default_  ): break;
       case(kind::return_   ): new(&m_data) return_stmt(std::move(rhs.m_data.ret));break;
       case(kind::sleep     ): new(&m_data) sleep_stmt(std::move(rhs.m_data.slp));break;
       case(kind::print     ): new(&m_data) print_stmt(std::move(rhs.m_data.prn));break;
       case(kind::exit      ): new(&m_data) exit_stmt(std::move(rhs.m_data.exi));break;
+      case(kind::branch    ): new(&m_data) branch_stmt(std::move(rhs.m_data.bra));break;
+      case(kind::jump      ): new(&m_data) jump_stmt(rhs.m_data.jmp);break;
         }
     }
 
@@ -237,20 +185,12 @@ clear() noexcept
     {
   case(kind::expression): gbstd::destruct(m_data.e);break;
   case(kind::label     ): gbstd::destruct(m_data.lbl);break;
-  case(kind::block     ): gbstd::destruct(m_data.blk);break;
-  case(kind::if_       ): break;
-  case(kind::while_    ): break;
-  case(kind::for_      ): break;
-  case(kind::break_    ): break;
-  case(kind::continue_ ): break;
-  case(kind::goto_     ): break;
-  case(kind::switch_   ): break;
-  case(kind::case_     ): break;
-  case(kind::default_  ): break;
   case(kind::return_   ): gbstd::destruct(m_data.ret);break;
   case(kind::sleep     ): gbstd::destruct(m_data.slp);break;
   case(kind::print     ): gbstd::destruct(m_data.prn);break;
   case(kind::exit      ): gbstd::destruct(m_data.exi);break;
+  case(kind::branch    ): gbstd::destruct(m_data.bra);break;
+  case(kind::jump      ): gbstd::destruct(m_data.jmp);break;
     }
 
 
@@ -265,17 +205,9 @@ print() const noexcept
     switch(m_kind)
     {
   case(kind::expression): m_data.e.print();break;
-  case(kind::label     ): break;
-  case(kind::block     ): m_data.blk.print();break;
-  case(kind::if_       ): break;
-  case(kind::while_    ): break;
-  case(kind::for_      ): break;
-  case(kind::break_    ): printf("break");break;
-  case(kind::continue_ ): printf("continue");break;
-  case(kind::goto_     ): break;
-  case(kind::switch_   ): break;
-  case(kind::case_     ): break;
-  case(kind::default_  ): printf("default");break;
+  case(kind::label     ):
+      printf("label %s",m_data.lbl.get_text().data());
+      break;
   case(kind::return_   ):
       printf("return ");
       m_data.ret.get_expr().print();
@@ -291,6 +223,16 @@ print() const noexcept
   case(kind::exit):
       printf("exit ");
       m_data.slp.get_expr().print();
+      break;
+  case(kind::branch):
+      printf("branch(");
+      m_data.bra.get_expr().print();
+      printf(")");
+      printf("goto %s",m_data.bra.get_dst_label().data());
+      break;
+  case(kind::jump):
+      printf("jump ");
+      printf(" %s",m_data.jmp.get_dst_label().data());
       break;
     }
 

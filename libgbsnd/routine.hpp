@@ -13,7 +13,6 @@ namespace devices{
 
 
 using parameter_list = std::vector<gbstd::string>;
-using      stmt_list = std::vector<stmt>;
 
 class script_token_string;
 

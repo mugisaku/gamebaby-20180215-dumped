@@ -5,30 +5,15 @@ noise        no;
 routine
 main()
 {
-  sq.frequency=440;
-  sq.volume=30;
-//  sq.fm_shift_amount=3;
-//  sq.fm_wait_count_source=2000;
+    while(1)
+    {
+      sq.frequency=440;
+      sq.volume=30;
 
-  no.volume = 32;
+      sq.volume += 1;
 
-  sq.keyon_flag = 1;
-
-  sleep 1000;
-
-  sq.volume += 12;
-
-  sleep 1000;
-
-  sq.volume += 12;
-
-  sleep 1000;
-
-  sq.volume += 12;
-
-  sleep 1000;
-
-  sq.volume += 12;
+      sleep 1000;
+    }
 }
 
 

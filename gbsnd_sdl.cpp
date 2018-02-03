@@ -153,6 +153,7 @@ main(int  argc, char**  argv)
 {
   script = gbsnd::script::build_from_file("../gb.snd.txt");
 
+script.print();
 
   constexpr int  w = 240;
   constexpr int  h = 240;
