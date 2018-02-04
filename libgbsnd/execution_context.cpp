@@ -14,6 +14,7 @@ frame
 {
   gbstd::string  routine_name;
 
+  stmt_list::const_iterator    begin;
   stmt_list::const_iterator  current;
   stmt_list::const_iterator      end;
 
@@ -23,6 +24,27 @@ frame
 
   const expr_element*  eval_it    ;
   const expr_element*  eval_it_end;
+
+  bool  jump(gbstd::string_view  label) noexcept
+  {
+    auto  it = begin;
+
+      while(it != end)
+      {
+          if(it->is_label() && (it->get_label() == label))
+          {
+            current = it;
+
+            return true;
+          }
+
+
+        ++it;
+      }
+
+
+    return false;
+  }
 
 };
 
@@ -121,6 +143,7 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
 
   auto&  ls = r->get_stmt_list();
 
+  frm.begin   = ls->begin();
   frm.current = ls->begin();
   frm.end     = ls->end();
 
@@ -326,10 +349,12 @@ run(millisecond  ms) noexcept
         {
           auto&  stmt = *frame.current;
 
-            if(stmt.is_return() ||
-               stmt.is_sleep()  ||
-               stmt.is_exit()   ||
-               stmt.is_print()  ||
+            if(stmt.is_return()           ||
+               stmt.is_sleep()            ||
+               stmt.is_exit()             ||
+               stmt.is_print()            ||
+               stmt.is_jump_if_zero()     ||
+               stmt.is_jump_if_not_zero() ||
                stmt.is_expression())
             {
               auto&  e = stmt.get_expr();
@@ -338,6 +363,20 @@ run(millisecond  ms) noexcept
               frame.eval_it_end = e.end();
 
               frame.data_stack.reset();
+            }
+
+          else
+            if(stmt.is_jump())
+            {
+              auto&  sv = stmt.get_label();
+
+                if(!frame.jump(sv))
+                {
+                  printf("jump error: %sというラベルが見つからない\n",sv.data());
+                }
+
+
+              ++frame.current;
             }
 
           else

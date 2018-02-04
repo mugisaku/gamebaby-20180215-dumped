@@ -40,7 +40,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(return_stmt(expr_array(cur)));
+              ls.emplace_back(stmt_kind::return_,expr_array(cur));
             }
 
           else
@@ -48,7 +48,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(sleep_stmt(expr_array(cur)));
+              ls.emplace_back(stmt_kind::sleep,expr_array(cur));
             }
 
           else
@@ -56,7 +56,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(print_stmt(expr_array(cur)));
+              ls.emplace_back(stmt_kind::print,expr_array(cur));
             }
 
           else
@@ -72,12 +72,12 @@ build(const char*  label_base,
                   gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
 
 
-                  ls.emplace_back(label_stmt(*begin_label));
+                  ls.emplace_back(stmt_kind::label,*begin_label);
 
 
                   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-                  ls.emplace_back(branch_stmt(expr_array(expr_cur),*end_label,false));
+                  ls.emplace_back(stmt_kind::jump_if_zero,expr_array(expr_cur),*end_label);
 
 
                   script_token_cursor  blk_cur(cur[1].get_token_string());
@@ -85,7 +85,7 @@ build(const char*  label_base,
                   build(*co_label_base,*end_label,*begin_label,ctx,blk_cur,ls);
 
 
-                  ls.emplace_back(label_stmt(*end_label));
+                  ls.emplace_back(stmt_kind::label,*end_label);
 
 
                   cur += 2;
@@ -116,7 +116,7 @@ build(const char*  label_base,
 
                   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-                  ls.emplace_back(branch_stmt(expr_array(expr_cur),*next_label,false));
+                  ls.emplace_back(stmt_kind::jump_if_zero,expr_array(expr_cur),*next_label);
 
 
                   script_token_cursor  blk_cur(cur[1].get_token_string());
@@ -124,7 +124,7 @@ build(const char*  label_base,
                   build(*co_label_base,break_label,continue_label,ctx,blk_cur,ls);
 
 
-                  ls.emplace_back(jump_stmt(*end_label));
+                  ls.emplace_back(stmt_kind::jump,*end_label);
 
 
                   cur += 2;
@@ -133,7 +133,7 @@ build(const char*  label_base,
                     {
                       cur += 1;
 
-                      ls.emplace_back(label_stmt(*next_label));
+                      ls.emplace_back(stmt_kind::label,*next_label);
 
                         if(cur[0].is_token_string('{','}'))
                         {
@@ -156,19 +156,19 @@ build(const char*  label_base,
 
                           expr_cur = script_token_cursor(cur[1].get_token_string());
 
-                          ls.emplace_back(branch_stmt(expr_array(expr_cur),*next_label,false));
+                          ls.emplace_back(stmt_kind::jump_if_zero,expr_array(expr_cur),*next_label);
 
 
                           blk_cur = script_token_cursor(cur[2].get_token_string());
 
-                          ls.emplace_back(jump_stmt(*end_label));
+                          ls.emplace_back(stmt_kind::jump,*end_label);
 
                           cur += 3;
                         }
                     }
 
 
-                  ls.emplace_back(label_stmt(*end_label));
+                  ls.emplace_back(stmt_kind::label,*end_label);
                 }
 
               else
@@ -197,12 +197,12 @@ build(const char*  label_base,
                   gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
 
 
-                  ls.emplace_back(label_stmt(*begin_label));
+                  ls.emplace_back(stmt_kind::label,*begin_label);
 
 
                   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-                  ls.emplace_back(branch_stmt(expr_array(expr_cur),*end_label,false));
+                  ls.emplace_back(stmt_kind::jump_if_zero,expr_array(expr_cur),*end_label);
 
 
                   script_token_cursor  blk_cur(cur[1].get_token_string());
@@ -210,7 +210,7 @@ build(const char*  label_base,
                   build(*co_label_base,*end_label,*begin_label,ctx,blk_cur,ls);
 
 
-                  ls.emplace_back(label_stmt(*end_label));
+                  ls.emplace_back(stmt_kind::label,*end_label);
 
 
                   cur += 2;
@@ -242,7 +242,7 @@ build(const char*  label_base,
                 }
 
 
-              ls.emplace_back(jump_stmt(cur->get_identifier().view()));
+              ls.emplace_back(stmt_kind::jump,cur->get_identifier().view());
 
               ++cur;
             }
@@ -258,7 +258,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(jump_stmt(break_label));
+              ls.emplace_back(stmt_kind::jump,break_label);
             }
 
           else
@@ -266,7 +266,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(jump_stmt(continue_label));
+              ls.emplace_back(stmt_kind::jump,continue_label);
             }
 
           else
