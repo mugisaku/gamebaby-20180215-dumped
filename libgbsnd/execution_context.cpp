@@ -338,6 +338,56 @@ run(millisecond  ms) noexcept
                 }
 
               else
+                if(stmt.is_jump_if_zero())
+                {
+                    if(stack.size())
+                    {
+                        if(stack.top().is_integer())
+                        {
+                            if(!stack.top().get_integer())
+                            {
+                              frame.jump(stmt.get_label());
+                            }
+                        }
+
+                      else
+                        {
+                          printf("jump if zero error: 演算結果が整数型ではない\n");
+                        }
+                    }
+
+                  else
+                    {
+                      printf("jump if zero error:評価する値がない\n");
+                    }
+                }
+
+              else
+                if(stmt.is_jump_if_not_zero())
+                {
+                    if(stack.size())
+                    {
+                        if(stack.top().is_integer())
+                        {
+                            if(stack.top().get_integer())
+                            {
+                              frame.jump(stmt.get_label());
+                            }
+                        }
+
+                      else
+                        {
+                          printf("jump if not zero error: 演算結果が整数型ではない\n");
+                        }
+                    }
+
+                  else
+                    {
+                      printf("jump if not zero error:評価する値がない\n");
+                    }
+                }
+
+              else
                 if(stmt.is_expression())
                 {
                 }

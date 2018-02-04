@@ -85,8 +85,8 @@ build(const char*  label_base,
                   build(*co_label_base,*end_label,*begin_label,ctx,blk_cur,ls);
 
 
-                  ls.emplace_back(stmt_kind::label,*end_label);
-
+                  ls.emplace_back(stmt_kind::jump ,*begin_label);
+                  ls.emplace_back(stmt_kind::label,  *end_label);
 
                   cur += 2;
                 }
@@ -111,7 +111,7 @@ build(const char*  label_base,
                 {
                   gbstd::tmpstr  co_label_base("IF%03d",ctx.if_count++);
                   gbstd::tmpstr      end_label("%s_END",*co_label_base);
-                  gbstd::tmpstr     next_label("%s_%03d",*co_label_base,++block_number);
+                  gbstd::tmpstr     next_label("%s_%03d",*co_label_base,block_number++);
 
 
                   script_token_cursor  expr_cur(cur[0].get_token_string());
@@ -124,16 +124,14 @@ build(const char*  label_base,
                   build(*co_label_base,break_label,continue_label,ctx,blk_cur,ls);
 
 
-                  ls.emplace_back(stmt_kind::jump,*end_label);
-
+                  ls.emplace_back(stmt_kind::jump , *end_label);
+                  ls.emplace_back(stmt_kind::label,*next_label);
 
                   cur += 2;
 
                     while(cur[0].is_identifier({gbstd::string_view("else")}))
                     {
                       cur += 1;
-
-                      ls.emplace_back(stmt_kind::label,*next_label);
 
                         if(cur[0].is_token_string('{','}'))
                         {
@@ -151,8 +149,7 @@ build(const char*  label_base,
                            cur[1].is_token_string('(',')') &&
                            cur[2].is_token_string('{','}'))
                         {
-                          next_label("%s_%03d",*co_label_base,++block_number);
-
+                          next_label("%s_%03d",*co_label_base,block_number++);
 
                           expr_cur = script_token_cursor(cur[1].get_token_string());
 
@@ -161,7 +158,10 @@ build(const char*  label_base,
 
                           blk_cur = script_token_cursor(cur[2].get_token_string());
 
-                          ls.emplace_back(stmt_kind::jump,*end_label);
+                          build(*co_label_base,break_label,continue_label,ctx,blk_cur,ls);
+
+                          ls.emplace_back(stmt_kind::jump , *end_label);
+                          ls.emplace_back(stmt_kind::label,*next_label);
 
                           cur += 3;
                         }

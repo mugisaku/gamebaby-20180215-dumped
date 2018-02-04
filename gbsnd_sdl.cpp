@@ -130,18 +130,9 @@ main_loop()
     }
 
 
-//  static uint32_t  last;
-
   auto  now = SDL_GetTicks();
 
   ctx.run(gbsnd::millisecond{now});
-
-/*
-    if(now >= last+1000)
-    {
-      last = now;
-    }
-*/
 }
 
 

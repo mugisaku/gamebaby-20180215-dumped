@@ -5,37 +5,32 @@ noise        no;
 routine
 main()
 {
-    while(1)
+  sq.frequency=440;
+  sq.volume=0;
+  sq.keyon_flag=1;
+
+    while(sq.volume < 30)
     {
-        if(1)
+        if(sq.volume < 10)
         {
-          break;
+          print 1;
         }
 
       else
-        if(1)
+        if(sq.volume < 20)
         {
-          break;
-        }
-
-      else
-        if(1)
-        {
-          break;
+          print 2;
         }
 
       else
         {
-          continue;
+          print 3;
         }
 
-
-      sq.frequency=440;
-      sq.volume=30;
 
       sq.volume += 1;
 
-      sleep 1000;
+      sleep 200;
     }
 }
 
