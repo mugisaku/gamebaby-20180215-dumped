@@ -254,6 +254,42 @@ build(const char*  label_base,
             }
 
           else
+            if(id == sv("label"))
+            {
+              ++cur;
+
+                if(!cur->is_identifier())
+                {
+                  printf("labelの後に識別子がない\n");
+
+                  break;
+                }
+
+
+              ls.emplace_back(stmt_kind::label,cur->get_identifier().view());
+
+              ++cur;
+            }
+
+          else
+            if(id == sv("goto"))
+            {
+              ++cur;
+
+                if(!cur->is_identifier())
+                {
+                  printf("gotoの後に識別子がない\n");
+
+                  break;
+                }
+
+
+              ls.emplace_back(stmt_kind::jump,cur->get_identifier().view());
+
+              ++cur;
+            }
+
+          else
             if(id == sv("break"))
             {
               ++cur;

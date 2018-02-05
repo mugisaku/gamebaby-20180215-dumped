@@ -2,39 +2,74 @@ square_wave  sq;
 noise        no;
 
 
+//引数、ローカル変数はすべて整数型です
+//変数宣言はありません
+//予約語以外の識別子があると、ローカル変数リストを探索し、
+//名前の一致する変数が無ければ、グローバル変数リストを探索し、
+//こちらにもなければ、その名前で新たなローカル変数を作成します
+
+
+//制御文として、C言語のような、if,while,for,switchが使えます
+//ただし、C言語と違って、実行部分は必ず複文（中括弧で囲む）でなければなりません
+//while(1) a += 1;ではなく、
+//while(1){ a += 1;}とする
+
+
+//*goto文
+//goto 識別子;
+//label文で設定された行き先へ、無条件ジャンプします
+
+
+//*break文
+//break;
+//while,for,switchを抜けます
+
+
+//*continue文
+//continue;
+//while,for,switchの先頭へ戻ります
+
+
+//*label文
+//label 識別子;
+//goto文の行き先を設定します
+
+
+//*sleep文
+//sleep [式];
+//スクリプト実行を中断して、ホストへ制御を戻します
+//式を伴った場合、式の評価結果が整数なら、そのミリ秒分、実行再開を遅延します
+
+
+//*print文
+//print 式;
+//式の評価結果を、標準出力へ書き出します
+
+
+//*return文
+//return [式];
+//ルーチンを抜けて、呼び出し元へ復帰します
+
+
+//*exit文
+//exit [式];
+//スクリプト実行を、終了します
+
+
 routine
 main()
 {
   sq.frequency=440;
-  sq.volume=0;
+  sq.volume=20;
   sq.keyon_flag=1;
 
-    while(sq.volume < 30)
-    {
-        if(sq.volume < 10)
-        {
-          print 1;
-        }
+  label R;
 
-      else
-        if(sq.volume < 20)
-        {
-          print 2;
-        }
+  sq.keyon_flag = !sq.keyon_flag;
 
-      else
-        {
-          print 3;
-        }
+  sleep 100;
 
-
-      sq.volume += 1;
-
-      sleep 200;
-    }
-
-
-  print 4;
+  goto R;
 }
 
 

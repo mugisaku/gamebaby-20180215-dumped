@@ -13,8 +13,23 @@ const value&
 data_stack::
 operate_prefix_unary(operator_word  opw, const execution_context*  ctx) noexcept
 {
-    if(opw == gbstd::string_view(""))
+  auto  i = top().to_rhs(ctx).get_integer_safely();
+
+    if(opw == gbstd::string_view("!"))
     {
+      top() = value(!i);
+    }
+
+  else
+    if(opw == gbstd::string_view("~"))
+    {
+      top() = value(~i);
+    }
+
+  else
+    if(opw == gbstd::string_view("-"))
+    {
+      top() = value(-i);
     }
 
 
