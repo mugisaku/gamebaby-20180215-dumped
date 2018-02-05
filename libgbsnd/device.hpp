@@ -62,7 +62,7 @@ public:
   uint32_t  get_time() const noexcept{return m_time;}
 
   void      set_number_of_cycles_per_seconds(double  n)       noexcept;
-  uint32_t  get_number_of_cycles_per_seconds(         ) const noexcept{return m_number_of_samples_per_cycles;}
+  uint32_t  get_number_of_cycles_per_seconds(         ) const noexcept{return m_number_of_cycles_per_seconds;}
 
   uint32_t  get_number_of_samples_per_cycles() const noexcept{return m_number_of_samples_per_cycles;}
 

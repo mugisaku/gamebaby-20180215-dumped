@@ -39,583 +39,90 @@ const value&
 data_stack::
 operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
 {
+  auto  rv = pop();
+  auto  lv = top();
+
     if(opw == gbstd::string_view("||"))
     {
-      auto  rv = pop().get_integer_value(ctx);
-
-        if(rv.get_integer())
+        if(lv.to_rhs(ctx).get_integer_safely())
         {
           top() = value(true);
         }
 
       else
         {
-          auto  lv = top().get_integer_value(ctx);
-
-          top() = value(lv.get_integer());
+          top() = value(rv.to_rhs(ctx).get_integer_safely());
         }
+
+
+      return top();
     }
 
   else
     if(opw == gbstd::string_view("&&"))
     {
-      auto  rv = pop().get_integer_value(ctx);
-
-        if(rv.get_integer())
+        if(lv.to_rhs(ctx).get_integer_safely())
         {
-          auto  lv = top().get_integer_value(ctx);
-
-          top() = value(lv.get_integer());
+          top() = value(rv.to_rhs(ctx).get_integer_safely());
         }
 
       else
         {
           top() = value(false);
         }
+
+
+      return top();
     }
 
 
 
 
-    if(opw == gbstd::string_view("+"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
+  auto  ri = rv.to_rhs(ctx).get_integer_safely();
+  auto  li = lv.to_rhs(ctx).get_integer_safely();
 
-      top() = value(lv.get_integer()+
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("-"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer()-
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("*"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer()*
-                    rv.get_integer());
-    }
-
+       if(opw == gbstd::string_view("+")){top() = value(li+ri);}
+  else if(opw == gbstd::string_view("-")){top() = value(li-ri);}
+  else if(opw == gbstd::string_view("*")){top() = value(li*ri);}
   else
     if(opw == gbstd::string_view("/"))
     {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      auto  i = rv.get_integer();
-
-        if(!i)
+        if(!ri)
         {
-          printf("ゼロ除算\n");
+          printf("div error: ゼロ除算\n");
         }
 
       else
         {
-          top() = value(lv.get_integer()/i);
+          top() = value(li/ri);
         }
     }
 
   else
     if(opw == gbstd::string_view("%"))
     {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      auto  i = rv.get_integer();
-
-        if(!i)
+        if(!ri)
         {
-          printf("ゼロ除算\n");
+          printf("rem error: ゼロ除算\n");
         }
 
       else
         {
-          top() = value(lv.get_integer()%i);
+          top() = value(li%ri);
         }
     }
 
-  else
-    if(opw == gbstd::string_view("<<"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer()<<
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view(">>"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer()>>
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("|"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer()|
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("&"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer()&
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("^"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer()^
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("=="))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer() ==
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("!="))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer() !=
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("<"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer() <
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("<="))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer() <=
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view(">"))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer() >
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view(">="))
-    {
-      auto  rv = pop().get_integer_value(ctx);
-      auto  lv = top().get_integer_value(ctx);
-
-      top() = value(lv.get_integer() >=
-                    rv.get_integer());
-    }
-
-  else
-    if(opw == gbstd::string_view("="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          lv.get_property().set(i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() = i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("+="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()+i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() += i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("-="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()-i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() -= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("*="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()*i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() *= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("/="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(!i)
-        {
-          printf("ゼロ除算\n");
-        }
-
-      else
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()/i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() /= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("%="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(!i)
-        {
-          printf("ゼロ除算\n");
-        }
-
-      else
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()%i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() %= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("<<="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()<<i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() <<= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view(">>="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()>>i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() >>= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("|="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()|i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() |= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("&="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()&i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() &= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("^="))
-    {
-      auto   rv = pop().get_integer_value(ctx);
-      auto&  lv = top();
-
-      int  i = rv.get_integer();
-
-        if(lv.is_property())
-        {
-          auto&  p = lv.get_property();
-
-          p.set(p.get()^i);
-        }
-
-      else
-        if(lv.is_reference())
-        {
-         auto&  obj = lv.get_reference()();
-
-            if(obj.is_integer())
-            {
-              obj.get_integer() ^= i;
-            }
-        }
-
-      else
-        {
-          printf("=, 左辺が参照でもプロパティでもない\n");
-        }
-    }
-
+  else if(opw == gbstd::string_view("<<")){top() = value(li<<ri);}
+  else if(opw == gbstd::string_view(">>")){top() = value(li>>ri);}
+  else if(opw == gbstd::string_view("|")) {top() = value(li|ri);}
+  else if(opw == gbstd::string_view("&")) {top() = value(li&ri);}
+  else if(opw == gbstd::string_view("^")) {top() = value(li^ri);}
+  else if(opw == gbstd::string_view("==")){top() = value(li == ri);}
+  else if(opw == gbstd::string_view("!=")){top() = value(li != ri);}
+  else if(opw == gbstd::string_view("<")) {top() = value(li <  ri);}
+  else if(opw == gbstd::string_view("<=")){top() = value(li <= ri);}
+  else if(opw == gbstd::string_view(">")) {top() = value(li >  ri);}
+  else if(opw == gbstd::string_view(">=")){top() = value(li >= ri);}
   else
     if(opw == gbstd::string_view("::"))
     {
@@ -624,8 +131,7 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
   else
     if(opw == gbstd::string_view("."))
     {
-      auto&  rv = pop();
-      auto   lv = top().get_reference_value(ctx);
+      lv = lv.to_rhs(ctx);
 
         if(!rv.is_identifier())
         {
@@ -656,6 +162,53 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
   else
     if(opw == gbstd::string_view(","))
     {
+    }
+
+  else
+    {
+        if(lv.is_property())
+        {
+          auto&  p = lv.get_property();
+
+               if(opw == gbstd::string_view(  "=")){p.set(   ri);}
+          else if(opw == gbstd::string_view( "+=")){p.set(li+ri);}
+          else if(opw == gbstd::string_view( "-=")){p.set(li-ri);}
+          else if(opw == gbstd::string_view( "*=")){p.set(li*ri);}
+          else if(opw == gbstd::string_view( "/=")){p.set(li/ri);}
+          else if(opw == gbstd::string_view( "%=")){p.set(li%ri);}
+          else if(opw == gbstd::string_view("<<=")){p.set(li<<ri);}
+          else if(opw == gbstd::string_view(">>=")){p.set(li>>ri);}
+          else if(opw == gbstd::string_view( "|=")){p.set(li|ri);}
+          else if(opw == gbstd::string_view( "&=")){p.set(li&ri);}
+          else if(opw == gbstd::string_view( "^=")){p.set(li^ri);}
+        }
+
+      else
+        {
+          lv = lv.to_rhs(ctx);
+
+            if(lv.is_reference())
+            {
+              auto&  objv = static_cast<value&>(lv.get_reference()());
+
+                   if(opw == gbstd::string_view(  "=")){objv = value(   ri);}
+              else if(opw == gbstd::string_view( "+=")){objv = value(li+ri);}
+              else if(opw == gbstd::string_view( "-=")){objv = value(li-ri);}
+              else if(opw == gbstd::string_view( "*=")){objv = value(li*ri);}
+              else if(opw == gbstd::string_view( "/=")){objv = value(li/ri);}
+              else if(opw == gbstd::string_view( "%=")){objv = value(li%ri);}
+              else if(opw == gbstd::string_view("<<=")){objv = value(li<<ri);}
+              else if(opw == gbstd::string_view(">>=")){objv = value(li>>ri);}
+              else if(opw == gbstd::string_view( "|=")){objv = value(li|ri);}
+              else if(opw == gbstd::string_view( "&=")){objv = value(li&ri);}
+              else if(opw == gbstd::string_view( "^=")){objv = value(li^ri);}
+            }
+
+          else
+            {
+              printf("assignment error: 左辺が参照でもプロパティでもない\n");
+            }
+        }
     }
 
 

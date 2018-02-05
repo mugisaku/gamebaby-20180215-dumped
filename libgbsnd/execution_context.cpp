@@ -190,7 +190,9 @@ get_value(gbstd::string_view  name) const noexcept
     }
 
 
-  return value();
+  frm.object_list.emplace_back(name);
+
+  return value(reference(frm.object_list.back()));
 }
 
 

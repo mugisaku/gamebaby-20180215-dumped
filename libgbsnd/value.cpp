@@ -241,87 +241,63 @@ clear() noexcept
 
 
 
-value
+int
 value::
-get_integer_value(const execution_context*  ctx) const noexcept
+get_integer_safely() const noexcept
 {
     switch(m_kind)
     {
   case(kind::integer):
-      return value(m_data.i);
+      return m_data.i;
       break;
   case(kind::reference):
-      return m_data.r().get_integer_value(ctx);
-      break;
-  case(kind::routine):
+      return m_data.r().get_integer_safely();
       break;
   case(kind::identifier):
-      return ctx? ctx->get_value(m_data.id.view()).get_integer_value(ctx):value();
+      printf("識別子は、直接には整数になれない");
+      break;
+  case(kind::routine):
+      printf("ルーチンは、直接には整数になれない");
       break;
   case(kind::property):
-      return m_data.pr.get();
+      printf("プロパティーは、直接には整数になれない");
       break;
     }
 
 
-  return value(0);
+  return 0;
 }
 
 
 value
 value::
-get_routine_value(const execution_context*  ctx) const noexcept
+to_rhs(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {
   case(kind::integer):
-      break;
-  case(kind::reference):
-      return m_data.r().get_routine_value(ctx);
-      break;
-  case(kind::identifier):
-      return ctx? ctx->get_value(m_data.id.view()).get_routine_value(ctx):value();
-      break;
-  case(kind::routine):
       return *this;
       break;
-  case(kind::property):
-      break;
-    }
-
-
-  return value(0);
-}
-
-
-value
-value::
-get_reference_value(const execution_context*  ctx) const noexcept
-{
-    switch(m_kind)
-    {
-  case(kind::integer):
-      printf("整数は参照になれない\n");
-      break;
   case(kind::reference):
-      return *this;
+      return m_data.r();
       break;
   case(kind::identifier):
       return ctx? ctx->get_value(m_data.id.view()):value();
       break;
   case(kind::routine):
-      printf("ルーチンは参照になれない\n");
+      return *this;
       break;
   case(kind::property):
-      printf("プロパティーは参照になれない\n");
+      return value(m_data.pr.get());
+      break;
+  default:
+      printf("to_rhs unknown value kind\n");
       break;
     }
 
 
-  return value(0);
+  return value();
 }
-
-
 
 
 void
@@ -340,6 +316,7 @@ print() const noexcept
       printf("reference");
       break;
   case(kind::routine):
+      printf("routine");
       m_data.rt->print();
       break;
   case(kind::property):
@@ -353,6 +330,9 @@ print() const noexcept
       break;
   case(kind::system):
       printf("system");
+      break;
+  default:
+      printf("unknown value kind\n");
       break;
     }
 }

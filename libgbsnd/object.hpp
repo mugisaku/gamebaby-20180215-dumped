@@ -131,7 +131,7 @@ public:
   bool  is_noise()       const noexcept{return m_kind == kind::noise;}
   bool  is_system()      const noexcept{return m_kind == kind::system;}
 
-  int&               get_integer()           noexcept{return m_data.i;}
+  int                get_integer()     const noexcept{return m_data.i;}
   reference          get_reference()   const noexcept{return m_data.r;}
   const routine&     get_routine()     const noexcept{return *m_data.rt;}
   const identifier&  get_identifier()  const noexcept{return m_data.id;}
@@ -139,9 +139,9 @@ public:
   square_wave&       get_square_wave() const noexcept{return *m_data.sq;}
   noise&             get_noise()       const noexcept{return *m_data.no;}
 
-  value  get_integer_value(const execution_context*  ctx) const noexcept;
-  value  get_routine_value(const execution_context*  ctx) const noexcept;
-  value  get_reference_value(const execution_context*  ctx) const noexcept;
+  int  get_integer_safely() const noexcept;
+
+  value  to_rhs(const execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
 
@@ -157,6 +157,7 @@ public:
   using value::value;
 
   object(value&&  v, gbstd::string_view  name) noexcept: value(std::move(v)), m_name(name){}
+  object(            gbstd::string_view  name) noexcept:                      m_name(name){}
 
   void                   set_name(gbstd::string_view  name)       noexcept{m_name = name;}
   const gbstd::string&   get_name(                        ) const noexcept{return m_name;}
