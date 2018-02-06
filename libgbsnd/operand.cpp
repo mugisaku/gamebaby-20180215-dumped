@@ -191,7 +191,7 @@ clear() noexcept
 
 value
 operand::
-evaluate(const execution_context&  ctx) const noexcept
+evaluate(const execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {

@@ -51,8 +51,6 @@ execution_context
   } m_state=state::not_ready;
 
 
-  void  step_evaluation(execution_context::frame&  frame) noexcept;
-
   void  return_(value  v) noexcept;
 
 public:

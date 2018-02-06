@@ -140,23 +140,26 @@ bool  operation::is_binary() const noexcept{return m_data->kind == operation_kin
 
 value
 operation::
-evaluate(const execution_context&  ctx) const noexcept
+evaluate(const execution_context*  ctx) const noexcept
 {
+  auto  lv =  m_data->first_operand.evaluate(ctx);
+  auto  rv = m_data->second_operand.evaluate(ctx);
+
     switch(m_data->kind)
     {
   case(operation_kind::prefix_unary):
-//      return devices::evaluate(m_data->word,m_data->first_operand);
+      operate_prefix_unary(lv,m_data->word,ctx);
       break;
   case(operation_kind::postfix_unary):
-//      return devices::evaluate(m_data->first_operand,m_data->word);
+      operate_postfix_unary(lv,m_data->word,ctx);
       break;
   case(operation_kind::binary):
-//      return devices::evaluate(m_data->first_operand,m_data->word,m_data->second_operand);
+      operate_binary(lv,rv,m_data->word,ctx);
       break;
     }
 
 
-  return value();
+  return std::move(lv);
 }
 
 

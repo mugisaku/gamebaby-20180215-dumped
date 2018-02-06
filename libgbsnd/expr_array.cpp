@@ -412,8 +412,20 @@ read(script_token_cursor&  cur) noexcept
 
 value
 expr_array::
-evaluate(const execution_context&  ctx) const noexcept
+evaluate(const execution_context*  ctx) const noexcept
 {
+  data_stack  stack;
+
+  auto  it     = begin();
+  auto  it_end =   end();
+
+    while(it != it_end)
+    {
+      operate_stack(stack,*it++,ctx);
+    }
+
+
+  return std::move(stack.top());
 }
 
 

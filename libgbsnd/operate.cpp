@@ -9,68 +9,56 @@ namespace devices{
 
 
 
-const value&
-data_stack::
-operate_prefix_unary(operator_word  opw, const execution_context*  ctx) noexcept
+void
+operate_prefix_unary(value&  v, operator_word  opw, const execution_context*  ctx) noexcept
 {
-  auto  i = top().to_rhs(ctx).get_integer_safely();
+  auto  i = v.to_rhs(ctx).get_integer_safely();
 
     if(opw == gbstd::string_view("!"))
     {
-      top() = value(!i);
+      v = value(!i);
     }
 
   else
     if(opw == gbstd::string_view("~"))
     {
-      top() = value(~i);
+      v = value(~i);
     }
 
   else
     if(opw == gbstd::string_view("-"))
     {
-      top() = value(-i);
+      v = value(-i);
     }
-
-
-  return top();
 }
 
 
-const value&
-data_stack::
-operate_postfix_unary(operator_word  opw, const execution_context*  ctx) noexcept
+void
+operate_postfix_unary(value&  v, operator_word  opw, const execution_context*  ctx) noexcept
 {
     if(opw == gbstd::string_view(""))
     {
     }
-
-
-  return top();
 }
 
 
-const value&
-data_stack::
-operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
+void
+operate_binary(value&  lv, value&  rv, operator_word  opw, const execution_context*  ctx) noexcept
 {
-  auto  rv = pop();
-  auto  lv = top();
-
     if(opw == gbstd::string_view("||"))
     {
         if(lv.to_rhs(ctx).get_integer_safely())
         {
-          top() = value(true);
+          lv = value(true);
         }
 
       else
         {
-          top() = value(rv.to_rhs(ctx).get_integer_safely());
+          lv = value(rv.to_rhs(ctx).get_integer_safely());
         }
 
 
-      return top();
+      return;
     }
 
   else
@@ -78,16 +66,16 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
     {
         if(lv.to_rhs(ctx).get_integer_safely())
         {
-          top() = value(rv.to_rhs(ctx).get_integer_safely());
+          lv = value(rv.to_rhs(ctx).get_integer_safely());
         }
 
       else
         {
-          top() = value(false);
+          lv = value(false);
         }
 
 
-      return top();
+      return;
     }
 
 
@@ -96,9 +84,9 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
   auto  ri = rv.to_rhs(ctx).get_integer_safely();
   auto  li = lv.to_rhs(ctx).get_integer_safely();
 
-       if(opw == gbstd::string_view("+")){top() = value(li+ri);}
-  else if(opw == gbstd::string_view("-")){top() = value(li-ri);}
-  else if(opw == gbstd::string_view("*")){top() = value(li*ri);}
+       if(opw == gbstd::string_view("+")){lv = value(li+ri);}
+  else if(opw == gbstd::string_view("-")){lv = value(li-ri);}
+  else if(opw == gbstd::string_view("*")){lv = value(li*ri);}
   else
     if(opw == gbstd::string_view("/"))
     {
@@ -109,7 +97,7 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
 
       else
         {
-          top() = value(li/ri);
+          lv = value(li/ri);
         }
     }
 
@@ -123,21 +111,21 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
 
       else
         {
-          top() = value(li%ri);
+          lv = value(li%ri);
         }
     }
 
-  else if(opw == gbstd::string_view("<<")){top() = value(li<<ri);}
-  else if(opw == gbstd::string_view(">>")){top() = value(li>>ri);}
-  else if(opw == gbstd::string_view("|")) {top() = value(li|ri);}
-  else if(opw == gbstd::string_view("&")) {top() = value(li&ri);}
-  else if(opw == gbstd::string_view("^")) {top() = value(li^ri);}
-  else if(opw == gbstd::string_view("==")){top() = value(li == ri);}
-  else if(opw == gbstd::string_view("!=")){top() = value(li != ri);}
-  else if(opw == gbstd::string_view("<")) {top() = value(li <  ri);}
-  else if(opw == gbstd::string_view("<=")){top() = value(li <= ri);}
-  else if(opw == gbstd::string_view(">")) {top() = value(li >  ri);}
-  else if(opw == gbstd::string_view(">=")){top() = value(li >= ri);}
+  else if(opw == gbstd::string_view("<<")){lv = value(li<<ri);}
+  else if(opw == gbstd::string_view(">>")){lv = value(li>>ri);}
+  else if(opw == gbstd::string_view("|")) {lv = value(li|ri);}
+  else if(opw == gbstd::string_view("&")) {lv = value(li&ri);}
+  else if(opw == gbstd::string_view("^")) {lv = value(li^ri);}
+  else if(opw == gbstd::string_view("==")){lv = value(li == ri);}
+  else if(opw == gbstd::string_view("!=")){lv = value(li != ri);}
+  else if(opw == gbstd::string_view("<")) {lv = value(li <  ri);}
+  else if(opw == gbstd::string_view("<=")){lv = value(li <= ri);}
+  else if(opw == gbstd::string_view(">")) {lv = value(li >  ri);}
+  else if(opw == gbstd::string_view(">=")){lv = value(li >= ri);}
   else
     if(opw == gbstd::string_view("::"))
     {
@@ -146,7 +134,7 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
   else
     if(opw == gbstd::string_view("."))
     {
-      lv = lv.to_rhs(ctx);
+      auto  rhs_lv = lv.to_rhs(ctx);
 
         if(!rv.is_identifier())
         {
@@ -154,18 +142,18 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
         }
 
       else
-        if(!lv.is_reference())
+        if(!rhs_lv.is_reference())
         {
           printf(".%s\n",rv.get_identifier().view().data());
 
           printf("左辺が参照ではない\n");
 
-          lv.print();
+          rhs_lv.print();
         }
 
       else
         {
-          top() = value(lv.get_reference().get_property(rv.get_identifier()));
+          lv = value(rhs_lv.get_reference().get_property(rv.get_identifier()));
         }
     }
 
@@ -200,11 +188,11 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
 
       else
         {
-          lv = lv.to_rhs(ctx);
+          auto  rhs_lv = lv.to_rhs(ctx);
 
-            if(lv.is_reference())
+            if(rhs_lv.is_reference())
             {
-              auto&  objv = static_cast<value&>(lv.get_reference()());
+              auto&  objv = static_cast<value&>(rhs_lv.get_reference()());
 
                    if(opw == gbstd::string_view(  "=")){objv = value(   ri);}
               else if(opw == gbstd::string_view( "+=")){objv = value(li+ri);}
@@ -225,9 +213,63 @@ operate_binary(operator_word  opw, const execution_context*  ctx) noexcept
             }
         }
     }
+}
 
 
-  return top();
+
+
+void
+operate_stack(data_stack&  stack, const expr_element&  e, const execution_context*  ctx) noexcept
+{
+    if(e.is_operand())
+    {
+      stack.push(e.get_operand().evaluate(ctx));
+    }
+
+  else
+    if(e.is_prefix_unary_operator())
+    {
+        if(stack.size() < 1)
+        {
+          printf("単項演算の演算項が足りない\n");
+
+          return;
+        }
+
+
+      operate_prefix_unary(stack.top(),e.get_operator_word(),ctx);
+    }
+
+  else
+    if(e.is_postfix_unary_operator())
+    {
+        if(stack.size() < 1)
+        {
+          printf("単項演算の演算項が足りない\n");
+
+          return;
+        }
+
+
+      operate_postfix_unary(stack.top(),e.get_operator_word(),ctx);
+    }
+
+  else
+    if(e.is_binary_operator())
+    {
+        if(stack.size() < 2)
+        {
+          printf("二項演算の演算項が足りない\n");
+
+          return;
+        }
+
+
+      auto&  rv = stack.pop();
+      auto&  lv = stack.top();
+
+      operate_binary(lv,rv,e.get_operator_word(),ctx);
+    }
 }
 
 

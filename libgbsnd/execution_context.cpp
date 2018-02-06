@@ -198,63 +198,6 @@ get_value(gbstd::string_view  name) const noexcept
 
 void
 execution_context::
-step_evaluation(execution_context::frame&  frame) noexcept
-{
-  auto&  stack = frame.data_stack;
-
-  auto&  e = *frame.eval_it++;
-
-    if(e.is_operand())
-    {
-      stack.push(e.get_operand().evaluate(*this));
-    }
-
-  else
-    if(e.is_prefix_unary_operator())
-    {
-        if(stack.size() < 1)
-        {
-          printf("単項演算の演算項が足りない\n");
-
-          return;
-        }
-
-
-      stack.operate_prefix_unary(e.get_operator_word(),this);
-    }
-
-  else
-    if(e.is_postfix_unary_operator())
-    {
-        if(stack.size() < 1)
-        {
-          printf("単項演算の演算項が足りない\n");
-
-          return;
-        }
-
-
-      stack.operate_postfix_unary(e.get_operator_word(),this);
-    }
-
-  else
-    if(e.is_binary_operator())
-    {
-        if(stack.size() < 2)
-        {
-          printf("二項演算の演算項が足りない\n");
-
-          return;
-        }
-
-
-      stack.operate_binary(e.get_operator_word(),this);
-    }
-}
-
-
-void
-execution_context::
 return_(value  v) noexcept
 {
     if(--m_number_of_frames)
@@ -282,15 +225,27 @@ run(millisecond  ms) noexcept
     }
 
 
+  constexpr size_t  count_limit = 10000;
+
+  size_t  count = 0;
+
     while(m_number_of_frames)
     {
+        if(++count >= count_limit)
+        {
+          printf("run error: カウンタ上限を越えた\n");
+
+          break;
+        }
+
+
       auto&  frame = m_frame_stack[m_number_of_frames-1];
 
         if(frame.eval_it)
         {
             if(frame.eval_it < frame.eval_it_end)
             {
-              step_evaluation(frame);
+              operate_stack(frame.data_stack,*frame.eval_it++,this);
             }
 
           else

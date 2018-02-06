@@ -16,6 +16,7 @@ class operand;
 class execution_context;
 class expr_element;
 class expr_array;
+class data_stack;
 
 
 
@@ -68,11 +69,17 @@ public:
   bool  is_postfix_unary() const noexcept;
   bool  is_binary() const noexcept;
 
-  value  evaluate(const execution_context&  ctx) const noexcept;
+  value  evaluate(const execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
 
 };
+
+
+void  operate_prefix_unary( value&  v, operator_word  opw, const execution_context*  ctx) noexcept;
+void  operate_postfix_unary(value&  v, operator_word  opw, const execution_context*  ctx) noexcept;
+void  operate_binary(       value&  lv, value&  rv, operator_word  opw, const execution_context*  ctx) noexcept;
+void  operate_stack(data_stack&  stack, const expr_element&  e, const execution_context*  ctx) noexcept;
 
 
 class
@@ -80,13 +87,22 @@ data_stack
 {
   static constexpr size_t  max_length = 32;
 
+  value  m_switch_value;
+
   value  m_values[max_length];
 
   size_t  m_length=0;
 
 public:
+
   void  push(value&&  v) noexcept{m_values[m_length++] = std::move(v);}
-  const value&  pop() noexcept{return m_values[--m_length];}
+
+  value&  pop() noexcept{return m_values[--m_length];}
+
+  void   load_switch_value() noexcept{push(value(m_switch_value));}
+  void  store_switch_value() noexcept{m_switch_value = pop();}
+
+  bool  compare_for_switch(const execution_context*  ctx) noexcept;
 
         value&  top()       noexcept{return m_values[m_length-1];}
   const value&  top() const noexcept{return m_values[m_length-1];}
@@ -94,10 +110,6 @@ public:
   void  reset() noexcept{m_length = 0;}
 
   size_t  size() const noexcept{return m_length;}
-
-  const value&  operate_prefix_unary( operator_word  opw, const execution_context*  ctx) noexcept;
-  const value&  operate_postfix_unary(operator_word  opw, const execution_context*  ctx) noexcept;
-  const value&  operate_binary(       operator_word  opw, const execution_context*  ctx) noexcept;
 
 };
 
@@ -126,7 +138,7 @@ public:
   expr_array&  operator=(const expr_array&   rhs) noexcept;
   expr_array&  operator=(      expr_array&&  rhs) noexcept;
 
-  value  evaluate(const execution_context&  ctx) const noexcept;
+  value  evaluate(const execution_context*  ctx) const noexcept;
 
   expr_element*  begin() const noexcept;
   expr_element*    end() const noexcept;
@@ -198,7 +210,7 @@ public:
   const expr_array&  get_expression_array() const noexcept{return m_data.ea;}
   const operation&   get_operation()        const noexcept{return m_data.op;}
 
-  value  evaluate(const execution_context&  ctx) const noexcept;
+  value  evaluate(const execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
 

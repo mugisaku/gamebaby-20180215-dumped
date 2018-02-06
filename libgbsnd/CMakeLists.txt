@@ -8,7 +8,7 @@ set(SOURCES
   build_stmt_list.cpp
   expr_element.cpp
   expr_array.cpp
-  data_stack.cpp
+  operate.cpp
   operation.cpp
   operand.cpp
   routine.cpp
