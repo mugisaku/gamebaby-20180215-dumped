@@ -91,7 +91,8 @@ build(const char*  label_base,
 
                   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-                  ls.emplace_back(stmt_kind::jump_if_zero,expr_array(expr_cur),*end_label);
+                  ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
+                  ls.emplace_back(stmt_kind::jump_by_condition,*end_label);
 
 
                   script_token_cursor  blk_cur(cur[1].get_token_string());
@@ -130,7 +131,8 @@ build(const char*  label_base,
 
                   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-                  ls.emplace_back(stmt_kind::jump_if_zero,expr_array(expr_cur),*next_label);
+                  ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
+                  ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
 
 
                   script_token_cursor  blk_cur(cur[1].get_token_string());
@@ -167,7 +169,8 @@ build(const char*  label_base,
 
                           expr_cur = script_token_cursor(cur[1].get_token_string());
 
-                          ls.emplace_back(stmt_kind::jump_if_zero,expr_array(expr_cur),*next_label);
+                          ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
+                          ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
 
 
                           blk_cur = script_token_cursor(cur[2].get_token_string());
@@ -229,7 +232,7 @@ build(const char*  label_base,
                     {
                       gbstd::tmpstr  dst_label("%s_CASE%03d",*co_label_base,i);
 
-                      ls.emplace_back(stmt_kind::jump_if_not_zero,*dst_label);
+//                      ls.emplace_back(stmt_kind::jump_if_not_zero,*dst_label);
                     }
 
 
@@ -355,7 +358,7 @@ build(const char*  label_base,
 
           else
             {
-              ls.emplace_back(expr_array(cur));
+              ls.emplace_back(stmt_kind::evaluate_and_dump,expr_array(cur));
             }
         }
 

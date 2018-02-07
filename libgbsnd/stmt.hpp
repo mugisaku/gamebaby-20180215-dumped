@@ -21,15 +21,19 @@ enum class
 stmt_kind
 {
   null,
-  expression,
+  evaluate_and_dump,
+  evaluate_and_save,
+  evaluate_and_zero,
+  evaluate_and_not_zero,
+  evaluate_and_equal,
+  evaluate_and_not_equal,
   label,
   sleep,
   print,
   return_,
   exit,
   jump,
-  jump_if_zero,
-  jump_if_not_zero,
+  jump_by_condition,
 
 };
 
@@ -45,24 +49,24 @@ stmt
 
 public:
   stmt() noexcept{}
-  stmt(expr_array&&  expr) noexcept: m_kind(stmt_kind::expression), m_expr(std::move(expr)){}
-  stmt(stmt_kind  k, expr_array&&  expr) noexcept: m_kind(k), m_expr(std::move(expr)){}
+  stmt(stmt_kind  k, expr_array&&  expr)        noexcept: m_kind(k), m_expr(std::move(expr)){}
   stmt(stmt_kind  k, gbstd::string_view  label) noexcept: m_kind(k), m_label(label){}
-  stmt(stmt_kind  k, expr_array&&  expr, gbstd::string_view  label) noexcept: m_kind(k),
-  m_expr(std::move(expr)),
-  m_label(label){}
 
   operator bool() const noexcept{return m_kind != stmt_kind::null;}
 
-  bool  is_expression() const noexcept{return m_kind == stmt_kind::expression;}
-  bool  is_return()     const noexcept{return m_kind == stmt_kind::return_;}
-  bool  is_label()      const noexcept{return m_kind == stmt_kind::label;}
-  bool  is_sleep()      const noexcept{return m_kind == stmt_kind::sleep;}
-  bool  is_print()      const noexcept{return m_kind == stmt_kind::print;}
-  bool  is_exit()       const noexcept{return m_kind == stmt_kind::exit;}
-  bool  is_jump()       const noexcept{return m_kind == stmt_kind::jump;}
-  bool  is_jump_if_zero()     const noexcept{return m_kind == stmt_kind::jump_if_zero;}
-  bool  is_jump_if_not_zero() const noexcept{return m_kind == stmt_kind::jump_if_not_zero;}
+  bool  is_evaluate_and_dump()      const noexcept{return m_kind == stmt_kind::evaluate_and_dump;}
+  bool  is_evaluate_and_save()      const noexcept{return m_kind == stmt_kind::evaluate_and_save;}
+  bool  is_evaluate_and_zero()      const noexcept{return m_kind == stmt_kind::evaluate_and_zero;}
+  bool  is_evaluate_and_not_zero()  const noexcept{return m_kind == stmt_kind::evaluate_and_not_zero;}
+  bool  is_evaluate_and_equal()     const noexcept{return m_kind == stmt_kind::evaluate_and_equal;}
+  bool  is_evaluate_and_not_equal() const noexcept{return m_kind == stmt_kind::evaluate_and_not_equal;}
+  bool  is_return()                 const noexcept{return m_kind == stmt_kind::return_;}
+  bool  is_label()                  const noexcept{return m_kind == stmt_kind::label;}
+  bool  is_sleep()                  const noexcept{return m_kind == stmt_kind::sleep;}
+  bool  is_print()                  const noexcept{return m_kind == stmt_kind::print;}
+  bool  is_exit()                   const noexcept{return m_kind == stmt_kind::exit;}
+  bool  is_jump()                   const noexcept{return m_kind == stmt_kind::jump;}
+  bool  is_jump_by_condition()      const noexcept{return m_kind == stmt_kind::jump_by_condition;}
 
   const expr_array&     get_expr()  const noexcept{return m_expr;}
   const gbstd::string&  get_label() const noexcept{return m_label;}

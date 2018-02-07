@@ -61,9 +61,11 @@ main()
 {
   num = 0;
 
+/*
   sq.frequency=440;
-  sq.volume=num;
+  sq.volume=32;
   sq.keyon_flag=1;
+*/
 
     switch(0)
     {
@@ -83,7 +85,6 @@ main()
       print 4;
       break;
     }
-
 }
 
 

@@ -87,8 +87,6 @@ data_stack
 {
   static constexpr size_t  max_length = 32;
 
-  value  m_switch_value;
-
   value  m_values[max_length];
 
   size_t  m_length=0;
@@ -98,11 +96,6 @@ public:
   void  push(value&&  v) noexcept{m_values[m_length++] = std::move(v);}
 
   value&  pop() noexcept{return m_values[--m_length];}
-
-  void   load_switch_value() noexcept{push(value(m_switch_value));}
-  void  store_switch_value() noexcept{m_switch_value = pop();}
-
-  bool  compare_for_switch(const execution_context*  ctx) noexcept;
 
         value&  top()       noexcept{return m_values[m_length-1];}
   const value&  top() const noexcept{return m_values[m_length-1];}

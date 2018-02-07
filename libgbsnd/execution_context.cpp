@@ -20,12 +20,16 @@ frame
 
   std::list<object>  object_list;
 
+  int  saved_value;
+
+  bool  condition;
+
   devices::data_stack  data_stack;
 
   const expr_element*  eval_it    ;
   const expr_element*  eval_it_end;
 
-  bool  jump(gbstd::string_view  label) noexcept
+  void  jump(gbstd::string_view  label) noexcept
   {
     auto  it = begin;
 
@@ -35,7 +39,7 @@ frame
           {
             current = it;
 
-            return true;
+            return;
           }
 
 
@@ -43,7 +47,7 @@ frame
       }
 
 
-    return false;
+    printf("jump error: %sというラベルが見つからない\n",label.data());
   }
 
 };
@@ -225,7 +229,7 @@ run(millisecond  ms) noexcept
     }
 
 
-  constexpr size_t  count_limit = 10000;
+  constexpr size_t  count_limit = 1000;
 
   size_t  count = 0;
 
@@ -295,58 +299,51 @@ run(millisecond  ms) noexcept
                 }
 
               else
-                if(stmt.is_jump_if_zero())
                 {
-                    if(stack.size())
+                    if(!stack.size())
                     {
-                        if(stack.top().is_integer())
-                        {
-                            if(!stack.top().get_integer())
-                            {
-                              frame.jump(stmt.get_label());
-                            }
-                        }
+                      printf("store to a error:評価する値がない\n");
 
-                      else
-                        {
-                          printf("jump if zero error: 演算結果が整数型ではない\n");
-                        }
                     }
 
                   else
                     {
-                      printf("jump if zero error:評価する値がない\n");
-                    }
-                }
+                      auto  i = stack.top().get_integer_safely();
 
-              else
-                if(stmt.is_jump_if_not_zero())
-                {
-                    if(stack.size())
-                    {
-                        if(stack.top().is_integer())
+                        if(stmt.is_evaluate_and_dump())
                         {
-                            if(stack.top().get_integer())
-                            {
-                              frame.jump(stmt.get_label());
-                            }
                         }
 
                       else
+                        if(stmt.is_evaluate_and_save())
                         {
-                          printf("jump if not zero error: 演算結果が整数型ではない\n");
+                          frame.saved_value = i;
+                        }
+
+                      else
+                        if(stmt.is_evaluate_and_zero())
+                        {
+                          frame.condition = !i;
+                        }
+
+                      else
+                        if(stmt.is_evaluate_and_not_zero())
+                        {
+                          frame.condition = i;
+                        }
+
+                      else
+                        if(stmt.is_evaluate_and_equal())
+                        {
+                          frame.condition = (frame.saved_value == i);
+                        }
+
+                      else
+                        if(stmt.is_evaluate_and_not_equal())
+                        {
+                          frame.condition = (frame.saved_value != i);
                         }
                     }
-
-                  else
-                    {
-                      printf("jump if not zero error:評価する値がない\n");
-                    }
-                }
-
-              else
-                if(stmt.is_expression())
-                {
                 }
             }
         }
@@ -356,13 +353,16 @@ run(millisecond  ms) noexcept
         {
           auto&  stmt = *frame.current;
 
-            if(stmt.is_return()           ||
-               stmt.is_sleep()            ||
-               stmt.is_exit()             ||
-               stmt.is_print()            ||
-               stmt.is_jump_if_zero()     ||
-               stmt.is_jump_if_not_zero() ||
-               stmt.is_expression())
+            if(stmt.is_return()                ||
+               stmt.is_sleep()                 ||
+               stmt.is_exit()                  ||
+               stmt.is_print()                 ||
+               stmt.is_evaluate_and_dump()     ||
+               stmt.is_evaluate_and_save()     ||
+               stmt.is_evaluate_and_zero()     ||
+               stmt.is_evaluate_and_not_zero() ||
+               stmt.is_evaluate_and_equal()    ||
+               stmt.is_evaluate_and_not_equal())
             {
               auto&  e = stmt.get_expr();
 
@@ -375,11 +375,17 @@ run(millisecond  ms) noexcept
           else
             if(stmt.is_jump())
             {
-              auto&  sv = stmt.get_label();
+              frame.jump(stmt.get_label());
 
-                if(!frame.jump(sv))
+              ++frame.current;
+            }
+
+          else
+            if(stmt.is_jump_by_condition())
+            {
+                if(frame.condition)
                 {
-                  printf("jump error: %sというラベルが見つからない\n",sv.data());
+                  frame.jump(stmt.get_label());
                 }
 
 
