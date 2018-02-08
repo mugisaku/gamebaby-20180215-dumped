@@ -254,13 +254,13 @@ get_integer_safely() const noexcept
       return m_data.r().get_integer_safely();
       break;
   case(kind::identifier):
-      printf("識別子は、直接には整数になれない");
+      printf("%s 識別子は、直接には整数になれない\n",m_data.id.data());
       break;
   case(kind::routine):
-      printf("ルーチンは、直接には整数になれない");
+      printf("ルーチンは、直接には整数になれない\n");
       break;
   case(kind::property):
-      printf("プロパティーは、直接には整数になれない");
+      printf("プロパティーは、直接には整数になれない\n");
       break;
     }
 

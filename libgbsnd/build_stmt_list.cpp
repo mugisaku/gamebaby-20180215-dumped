@@ -29,7 +29,8 @@ switch_data
 {
   const char*  label_base="";
 
-  int  number_of_cases=0;
+  std::vector<expr_array>  case_exprs;
+
   int  number_of_defaults=0;
 
 };
@@ -228,13 +229,28 @@ build(const char*  label_base,
 
                   build(*co_label_base,*end_label,*begin_label,new_swdat,ctx,blk_cur,tmp_ls);
 
-                    for(int  i = 0;  i < new_swdat.number_of_cases;  ++i)
+
+                  ls.emplace_back(stmt_kind::evaluate_and_save,expr_array(expr_cur));
+
+                    for(int  i = 0;  i < new_swdat.case_exprs.size();  ++i)
                     {
                       gbstd::tmpstr  dst_label("%s_CASE%03d",*co_label_base,i);
 
-//                      ls.emplace_back(stmt_kind::jump_if_not_zero,*dst_label);
+                      ls.emplace_back(stmt_kind::evaluate_and_equal,expr_array(new_swdat.case_exprs[i]));
+
+                      ls.emplace_back(stmt_kind::jump_by_condition,*dst_label);
                     }
 
+
+                    if(new_swdat.number_of_defaults)
+                    {
+                      gbstd::tmpstr  dst_label("%s_DEFAULT",*co_label_base);
+
+                      ls.emplace_back(stmt_kind::jump,*dst_label);
+                    }
+
+
+                  ls.emplace_back(stmt_kind::jump,*end_label);
 
                     for(auto&&  stmt: tmp_ls)
                     {
@@ -243,7 +259,6 @@ build(const char*  label_base,
 
 
                   ls.emplace_back(stmt_kind::label,*end_label);
-
 
                   cur += 2;
                 }
@@ -261,9 +276,26 @@ build(const char*  label_base,
             {
               ++cur;
 
-              gbstd::tmpstr  label("%s_CASE%03d",swdat.label_base,swdat.number_of_cases++);
+                if(cur->is_token_string('(',')'))
+                {
+                  gbstd::tmpstr  label("%s_CASE%03d",swdat.label_base,swdat.case_exprs.size());
 
-              ls.emplace_back(stmt_kind::label,*label);
+
+                  script_token_cursor  expr_cur(cur->get_token_string());
+
+                  swdat.case_exprs.emplace_back(expr_array(expr_cur));
+
+
+                  ls.emplace_back(stmt_kind::label,*label);
+
+
+                  ++cur;
+                }
+
+              else
+                {
+                  printf("case文に式が付いていない\n");
+                }
             }
 
           else
@@ -271,9 +303,9 @@ build(const char*  label_base,
             {
               ++cur;
 
-                if(!swdat.number_of_cases)
+                if(!swdat.number_of_defaults)
                 {
-                  swdat.number_of_cases = 1;
+                  swdat.number_of_defaults = 1;
 
                   gbstd::tmpstr  label("%s_DEFAULT",swdat.label_base);
 
