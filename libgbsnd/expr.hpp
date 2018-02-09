@@ -131,6 +131,10 @@ public:
   expr_array&  operator=(const expr_array&   rhs) noexcept;
   expr_array&  operator=(      expr_array&&  rhs) noexcept;
 
+  operator bool() const noexcept;
+
+  size_t  size() const noexcept;
+
   value  evaluate(const execution_context*  ctx) const noexcept;
 
   expr_element*  begin() const noexcept;

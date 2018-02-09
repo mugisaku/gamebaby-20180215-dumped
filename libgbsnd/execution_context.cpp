@@ -308,7 +308,7 @@ run(millisecond  ms) noexcept
 
                   else
                     {
-                      auto  i = stack.top().get_integer_safely();
+                      auto  i = stack.top().to_rhs(this).get_integer_safely();
 
                         if(stmt.is_evaluate_and_dump())
                         {

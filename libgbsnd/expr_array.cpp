@@ -410,6 +410,21 @@ read(script_token_cursor&  cur) noexcept
 
 
 
+expr_array::
+operator bool() const noexcept
+{
+  return m_data && m_data->number_of_elements;
+}
+
+
+size_t
+expr_array::
+size() const noexcept
+{
+  return m_data->number_of_elements;
+}
+
+
 value
 expr_array::
 evaluate(const execution_context*  ctx) const noexcept

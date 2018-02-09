@@ -41,6 +41,227 @@ void
 build(const char*  label_base,
       const char*     break_label,
       const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
+      stmt_list&  ls) noexcept;
+
+
+void
+build_for(const char*  label_base,
+      const char*     break_label,
+      const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
+      stmt_list&  ls) noexcept
+{
+  gbstd::tmpstr  co_label_base("FOR%03d",ctx.for_count++);
+  gbstd::tmpstr    begin_label("%s_BEGIN"   ,*co_label_base);
+  gbstd::tmpstr      end_label("%s_END"     ,*co_label_base);
+  gbstd::tmpstr    conti_label("%s_CONTINUE",*co_label_base);
+
+
+  script_token_cursor  para_cur(cur[0].get_token_string());
+
+  expr_array  init_expr(para_cur);
+  expr_array  cond_expr(para_cur);
+  expr_array   mod_expr(para_cur);
+
+    if(init_expr)
+    {
+      ls.emplace_back(stmt_kind::evaluate_and_dump,expr_array(init_expr));
+    }
+
+
+  ls.emplace_back(stmt_kind::label,*begin_label);
+
+    if(cond_expr)
+    {
+      ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(cond_expr));
+      ls.emplace_back(stmt_kind::jump_by_condition,*end_label);
+    }
+
+
+  script_token_cursor  blk_cur(cur[1].get_token_string());
+
+  build(*co_label_base,*end_label,*conti_label,swdat,ctx,blk_cur,ls);
+
+
+  ls.emplace_back(stmt_kind::label,*conti_label);
+
+  ls.emplace_back(stmt_kind::evaluate_and_dump,expr_array(mod_expr));
+
+  ls.emplace_back(stmt_kind::jump ,*begin_label);
+  ls.emplace_back(stmt_kind::label,  *end_label);
+
+  cur += 2;
+}
+
+
+void
+build_while(const char*  label_base,
+      const char*     break_label,
+      const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
+      stmt_list&  ls) noexcept
+{
+  gbstd::tmpstr  co_label_base("WHILE%03d",ctx.while_count++);
+  gbstd::tmpstr    begin_label("%s_BEGIN" ,*co_label_base);
+  gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
+
+
+  ls.emplace_back(stmt_kind::label,*begin_label);
+
+
+  script_token_cursor  expr_cur(cur[0].get_token_string());
+
+  ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
+  ls.emplace_back(stmt_kind::jump_by_condition,*end_label);
+
+
+  script_token_cursor  blk_cur(cur[1].get_token_string());
+
+  build(*co_label_base,*end_label,*begin_label,swdat,ctx,blk_cur,ls);
+
+
+  ls.emplace_back(stmt_kind::jump ,*begin_label);
+  ls.emplace_back(stmt_kind::label,  *end_label);
+
+  cur += 2;
+}
+
+
+void
+build_if(const char*  label_base,
+      const char*     break_label,
+      const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
+      stmt_list&  ls) noexcept
+{
+  int  block_number = 0;
+
+  gbstd::tmpstr  co_label_base("IF%03d",ctx.if_count++);
+  gbstd::tmpstr      end_label("%s_END",*co_label_base);
+  gbstd::tmpstr     next_label("%s_%03d",*co_label_base,block_number++);
+
+
+  script_token_cursor  expr_cur(cur[0].get_token_string());
+
+  ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
+  ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
+
+
+  script_token_cursor  blk_cur(cur[1].get_token_string());
+
+  build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
+
+
+  ls.emplace_back(stmt_kind::jump , *end_label);
+  ls.emplace_back(stmt_kind::label,*next_label);
+
+  cur += 2;
+
+    while(cur[0].is_identifier({gbstd::string_view("else")}))
+    {
+      cur += 1;
+
+        if(cur[0].is_token_string('{','}'))
+        {
+          blk_cur = script_token_cursor(cur[0].get_token_string());
+
+          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
+
+          cur += 1;
+
+          break;
+        }
+
+      else
+        if(cur[0].is_identifier({gbstd::string_view("if")}) &&
+           cur[1].is_token_string('(',')') &&
+           cur[2].is_token_string('{','}'))
+        {
+          next_label("%s_%03d",*co_label_base,block_number++);
+
+          expr_cur = script_token_cursor(cur[1].get_token_string());
+
+          ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
+          ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
+
+
+          blk_cur = script_token_cursor(cur[2].get_token_string());
+
+          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
+
+          ls.emplace_back(stmt_kind::jump , *end_label);
+          ls.emplace_back(stmt_kind::label,*next_label);
+
+          cur += 3;
+        }
+    }
+
+
+  ls.emplace_back(stmt_kind::label,*end_label);
+}
+
+
+void
+build_switch(const char*  label_base,
+      const char*     break_label,
+      const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
+      stmt_list&  ls) noexcept
+{
+  types::switch_data  new_swdat;
+
+  gbstd::tmpstr  co_label_base("SWITCH%03d",ctx.switch_count++);
+  gbstd::tmpstr    begin_label("%s_BEGIN" ,*co_label_base);
+  gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
+
+  new_swdat.label_base = *co_label_base;
+
+  ls.emplace_back(stmt_kind::label,*begin_label);
+
+
+  script_token_cursor  expr_cur(cur[0].get_token_string());
+  script_token_cursor   blk_cur(cur[1].get_token_string());
+
+
+  stmt_list  tmp_ls;
+
+  build(*co_label_base,*end_label,*begin_label,new_swdat,ctx,blk_cur,tmp_ls);
+
+
+  ls.emplace_back(stmt_kind::evaluate_and_save,expr_array(expr_cur));
+
+    for(int  i = 0;  i < new_swdat.case_exprs.size();  ++i)
+    {
+      gbstd::tmpstr  dst_label("%s_CASE%03d",*co_label_base,i);
+
+      ls.emplace_back(stmt_kind::evaluate_and_equal,expr_array(new_swdat.case_exprs[i]));
+
+      ls.emplace_back(stmt_kind::jump_by_condition,*dst_label);
+    }
+
+
+    if(new_swdat.number_of_defaults)
+    {
+      gbstd::tmpstr  dst_label("%s_DEFAULT",*co_label_base);
+
+      ls.emplace_back(stmt_kind::jump,*dst_label);
+    }
+
+
+  ls.emplace_back(stmt_kind::jump,*end_label);
+
+    for(auto&&  stmt: tmp_ls)
+    {
+      ls.emplace_back(std::move(stmt));
+    }
+
+
+  ls.emplace_back(stmt_kind::label,*end_label);
+
+  cur += 2;
+}
+
+
+void
+build(const char*  label_base,
+      const char*     break_label,
+      const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
       stmt_list&  ls) noexcept
 {
     while(cur)
@@ -77,197 +298,68 @@ build(const char*  label_base,
           else
             if(id == sv("while"))
             {
-              cur += 1;
+              ++cur;
 
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  gbstd::tmpstr  co_label_base("WHILE%03d",ctx.while_count++);
-                  gbstd::tmpstr    begin_label("%s_BEGIN" ,*co_label_base);
-                  gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
-
-
-                  ls.emplace_back(stmt_kind::label,*begin_label);
-
-
-                  script_token_cursor  expr_cur(cur[0].get_token_string());
-
-                  ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
-                  ls.emplace_back(stmt_kind::jump_by_condition,*end_label);
-
-
-                  script_token_cursor  blk_cur(cur[1].get_token_string());
-
-                  build(*co_label_base,*end_label,*begin_label,swdat,ctx,blk_cur,ls);
-
-
-                  ls.emplace_back(stmt_kind::jump ,*begin_label);
-                  ls.emplace_back(stmt_kind::label,  *end_label);
-
-                  cur += 2;
+                  build_while(label_base,break_label,continue_label,swdat,ctx,cur,ls);
                 }
 
               else
                 {
                   printf("while構文が不正\n");
-
-                  break;
                 }
             }
 
           else
             if(id == sv("if"))
             {
-              cur += 1;
-
-              int  block_number = 0;
+              ++cur;
 
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  gbstd::tmpstr  co_label_base("IF%03d",ctx.if_count++);
-                  gbstd::tmpstr      end_label("%s_END",*co_label_base);
-                  gbstd::tmpstr     next_label("%s_%03d",*co_label_base,block_number++);
-
-
-                  script_token_cursor  expr_cur(cur[0].get_token_string());
-
-                  ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
-                  ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
-
-
-                  script_token_cursor  blk_cur(cur[1].get_token_string());
-
-                  build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
-
-
-                  ls.emplace_back(stmt_kind::jump , *end_label);
-                  ls.emplace_back(stmt_kind::label,*next_label);
-
-                  cur += 2;
-
-                    while(cur[0].is_identifier({gbstd::string_view("else")}))
-                    {
-                      cur += 1;
-
-                        if(cur[0].is_token_string('{','}'))
-                        {
-                          blk_cur = script_token_cursor(cur[0].get_token_string());
-
-                          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
-
-                          cur += 1;
-
-                          break;
-                        }
-
-                      else
-                        if(cur[0].is_identifier({gbstd::string_view("if")}) &&
-                           cur[1].is_token_string('(',')') &&
-                           cur[2].is_token_string('{','}'))
-                        {
-                          next_label("%s_%03d",*co_label_base,block_number++);
-
-                          expr_cur = script_token_cursor(cur[1].get_token_string());
-
-                          ls.emplace_back(stmt_kind::evaluate_and_zero,expr_array(expr_cur));
-                          ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
-
-
-                          blk_cur = script_token_cursor(cur[2].get_token_string());
-
-                          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
-
-                          ls.emplace_back(stmt_kind::jump , *end_label);
-                          ls.emplace_back(stmt_kind::label,*next_label);
-
-                          cur += 3;
-                        }
-                    }
-
-
-                  ls.emplace_back(stmt_kind::label,*end_label);
+                  build_if(label_base,break_label,continue_label,swdat,ctx,cur,ls);
                 }
 
               else
                 {
                   printf("if構文が不正\n");
-
-                  break;
                 }
             }
 
           else
             if(id == sv("for"))
             {
+              ++cur;
+
+                if(cur[0].is_token_string('(',')') &&
+                   cur[1].is_token_string('{','}'))
+                {
+                  build_for(label_base,break_label,continue_label,swdat,ctx,cur,ls);
+                }
+
+              else
+                {
+                  printf("for構文が不正\n");
+                }
             }
 
           else
             if(id == sv("switch"))
             {
-              cur += 1;
+              ++cur;
 
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  types::switch_data  new_swdat;
-
-                  gbstd::tmpstr  co_label_base("SWITCH%03d",ctx.switch_count++);
-                  gbstd::tmpstr    begin_label("%s_BEGIN" ,*co_label_base);
-                  gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
-
-                  new_swdat.label_base = *co_label_base;
-
-                  ls.emplace_back(stmt_kind::label,*begin_label);
-
-
-                  script_token_cursor  expr_cur(cur[0].get_token_string());
-                  script_token_cursor   blk_cur(cur[1].get_token_string());
-
-
-                  stmt_list  tmp_ls;
-
-                  build(*co_label_base,*end_label,*begin_label,new_swdat,ctx,blk_cur,tmp_ls);
-
-
-                  ls.emplace_back(stmt_kind::evaluate_and_save,expr_array(expr_cur));
-
-                    for(int  i = 0;  i < new_swdat.case_exprs.size();  ++i)
-                    {
-                      gbstd::tmpstr  dst_label("%s_CASE%03d",*co_label_base,i);
-
-                      ls.emplace_back(stmt_kind::evaluate_and_equal,expr_array(new_swdat.case_exprs[i]));
-
-                      ls.emplace_back(stmt_kind::jump_by_condition,*dst_label);
-                    }
-
-
-                    if(new_swdat.number_of_defaults)
-                    {
-                      gbstd::tmpstr  dst_label("%s_DEFAULT",*co_label_base);
-
-                      ls.emplace_back(stmt_kind::jump,*dst_label);
-                    }
-
-
-                  ls.emplace_back(stmt_kind::jump,*end_label);
-
-                    for(auto&&  stmt: tmp_ls)
-                    {
-                      ls.emplace_back(std::move(stmt));
-                    }
-
-
-                  ls.emplace_back(stmt_kind::label,*end_label);
-
-                  cur += 2;
+                  build_switch(label_base,break_label,continue_label,swdat,ctx,cur,ls);
                 }
 
               else
                 {
                   printf("switch構文が不正\n");
-
-                  break;
                 }
             }
 
@@ -397,7 +489,7 @@ build(const char*  label_base,
       else
         if(cur[0].is_semicolon())
         {
-          cur += 1;
+          ++cur;
         }
 
       else
