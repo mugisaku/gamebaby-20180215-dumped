@@ -6,6 +6,7 @@
 
 #include<SDL.h>
 #include<cstdlib>
+#include<cstring>
 
 
 
@@ -136,15 +137,74 @@ main_loop()
 }
 
 
+void
+show_usage() noexcept
+{
+  printf("使い方: gbsnd_sdl [オプション] ファイルパス\n");
+  printf("-asm        スクリプトの詳細を標準出力へ書き出す\n");
+}
+
+
 }
 
 
 int
 main(int  argc, char**  argv)
 {
-  script = gbsnd::script::build_from_file("../gb.snd.txt");
+    if((argc == 1) || (argc >= 4))
+    {
+      show_usage();
 
-script.print();
+      return 0;
+    }
+
+
+  const char*  file_path;
+
+  bool  asm_output = false;
+
+    if(argc == 2)
+    {
+      file_path = argv[1];
+    }
+
+  else
+    if(argc == 3)
+    {
+        if(std::strcmp(argv[1],"-asm") == 0)
+        {
+          asm_output = true;
+        }
+
+      else
+        {
+          show_usage();
+
+          return 0;
+        }
+
+
+      file_path = argv[2];
+    }
+
+
+  auto  f = fopen(file_path,"rb");
+
+    if(!f)
+    {
+      printf("%sが開けません\n",file_path);
+
+      return 0;
+    }
+
+
+  script = gbsnd::script::build_from_file(f,file_path);
+
+    if(asm_output)
+    {
+      script.print();
+    }
+
 
   constexpr int  w = 240;
   constexpr int  h = 240;

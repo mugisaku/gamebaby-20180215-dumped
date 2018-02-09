@@ -299,50 +299,42 @@ run(millisecond  ms) noexcept
                 }
 
               else
+                if(stack.size())
                 {
-                    if(!stack.size())
-                    {
-                      printf("store to a error:評価する値がない\n");
+                  auto  i = stack.top().to_rhs(this).get_integer_safely();
 
+                    if(stmt.is_evaluate_and_dump())
+                    {
                     }
 
                   else
+                    if(stmt.is_evaluate_and_save())
                     {
-                      auto  i = stack.top().to_rhs(this).get_integer_safely();
+                      frame.saved_value = i;
+                    }
 
-                        if(stmt.is_evaluate_and_dump())
-                        {
-                        }
+                  else
+                    if(stmt.is_evaluate_and_zero())
+                    {
+                      frame.condition = !i;
+                    }
 
-                      else
-                        if(stmt.is_evaluate_and_save())
-                        {
-                          frame.saved_value = i;
-                        }
+                  else
+                    if(stmt.is_evaluate_and_not_zero())
+                    {
+                      frame.condition = i;
+                    }
 
-                      else
-                        if(stmt.is_evaluate_and_zero())
-                        {
-                          frame.condition = !i;
-                        }
+                  else
+                    if(stmt.is_evaluate_and_equal())
+                    {
+                      frame.condition = (frame.saved_value == i);
+                    }
 
-                      else
-                        if(stmt.is_evaluate_and_not_zero())
-                        {
-                          frame.condition = i;
-                        }
-
-                      else
-                        if(stmt.is_evaluate_and_equal())
-                        {
-                          frame.condition = (frame.saved_value == i);
-                        }
-
-                      else
-                        if(stmt.is_evaluate_and_not_equal())
-                        {
-                          frame.condition = (frame.saved_value != i);
-                        }
+                  else
+                    if(stmt.is_evaluate_and_not_equal())
+                    {
+                      frame.condition = (frame.saved_value != i);
                     }
                 }
             }

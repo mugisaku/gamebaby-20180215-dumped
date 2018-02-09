@@ -12,7 +12,7 @@ namespace gbsnd{
 namespace devices{
 
 
-constexpr int  number_of_samples_per_seconds = 8000;//1秒あたりのサンプル数
+constexpr int  number_of_samples_per_seconds = 24000;//1秒あたりのサンプル数
 
 
 enum class

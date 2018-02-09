@@ -1,5 +1,8 @@
+//音源オブジェクトは、グローバル空間でのみ宣言可能
+//これらが持つプロパティーにアクセスすることで、音を変化させます
 square_wave  sq;
 noise        no;
+//どんな名前のプロパティーが存在するかは、libgbsnd/reference.cpp内のget_propertyを参照してください
 
 
 //引数、ローカル変数はすべて整数型です
@@ -56,18 +59,54 @@ noise        no;
 //スクリプト実行を終了します
 
 
+//C言語で言う関数は、ここではルーチンと言います
+//スクリプトの実行はmainという名のルーチン（これをメインルーチンと呼び、
+//これ以外のルーチンはサブルーチンと呼ぶ）から始められます
+//
+//サブルーチン呼び出しは未実装
+
+
+
+
 routine
 main()
 {
-  sq.frequency=440;
+  sq.frequency=0;
   sq.volume=32;
   sq.keyon_flag=1;
 
-    for(n = 0;  ;  n += 1)
-    {
-      print sq.frequency+=110;
+  b = 0;
 
-      sleep 1000;
+    for(;;)
+    {
+        if(!b)
+        {
+            if(sq.frequency < 800)
+            {
+              sq.frequency += 10;
+            }
+
+          else
+            {
+              b = 1;
+            }
+        }
+
+      else
+        {
+            if(sq.frequency > 20)
+            {
+              sq.frequency -= 10;
+            }
+
+          else
+          {
+            b = 0;
+          }
+        }
+
+
+      sleep 40;
     }
 }
 

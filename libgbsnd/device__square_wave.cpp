@@ -34,7 +34,8 @@ update_parameters() noexcept
       m_constant_of_high_part_samples = high_part_samples;
       m_constant_of_low_part_samples  = (m_number_of_samples_per_cycles-high_part_samples);
 
-//printf("%d %d\n",m_constant_of_high_part_samples,m_constant_of_low_part_samples);
+//printf("%8d %8d\n",m_constant_of_high_part_samples,
+//          m_constant_of_low_part_samples);
 
       auto  rem = m_time%static_cast<uint32_t>(m_number_of_samples_per_cycles);
 
