@@ -440,7 +440,7 @@ evaluate(const execution_context*  ctx) const noexcept
     }
 
 
-  return std::move(stack.top());
+  return stack.top().evaluate(ctx);
 }
 
 

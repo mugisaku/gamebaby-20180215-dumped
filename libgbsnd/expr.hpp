@@ -76,35 +76,10 @@ public:
 };
 
 
-void  operate_prefix_unary( value&  v, operator_word  opw, const execution_context*  ctx) noexcept;
-void  operate_postfix_unary(value&  v, operator_word  opw, const execution_context*  ctx) noexcept;
-void  operate_binary(       value&  lv, value&  rv, operator_word  opw, const execution_context*  ctx) noexcept;
+void  operate_prefix_unary( operand&  o, operator_word  opw, const execution_context*  ctx) noexcept;
+void  operate_postfix_unary(operand&  o, operator_word  opw, const execution_context*  ctx) noexcept;
+void  operate_binary(       operand&  lo, operand&  ro, operator_word  opw, const execution_context*  ctx) noexcept;
 void  operate_stack(data_stack&  stack, const expr_element&  e, const execution_context*  ctx) noexcept;
-
-
-class
-data_stack
-{
-  static constexpr size_t  max_length = 32;
-
-  value  m_values[max_length];
-
-  size_t  m_length=0;
-
-public:
-
-  void  push(value&&  v) noexcept{m_values[m_length++] = std::move(v);}
-
-  value&  pop() noexcept{return m_values[--m_length];}
-
-        value&  top()       noexcept{return m_values[m_length-1];}
-  const value&  top() const noexcept{return m_values[m_length-1];}
-
-  void  reset() noexcept{m_length = 0;}
-
-  size_t  size() const noexcept{return m_length;}
-
-};
 
 
 class
@@ -155,6 +130,9 @@ operand
     identifier,
     expression_array,
     operation,
+
+    value,
+
   } m_kind=kind::null; 
 
   union data{
@@ -168,6 +146,8 @@ operand
 
     operation  op;
 
+    value  v;
+
     data(){}
    ~data(){}
 
@@ -180,6 +160,7 @@ public:
   operand(const identifier&  id) noexcept{*this = std::move(id);}
   operand(const expr_array&  e) noexcept{*this = e;}
   operand(const operation&  op) noexcept{*this = op;}
+  operand(const value&  v) noexcept{*this = v;}
   operand(const operand&   rhs) noexcept{*this = rhs;}
   operand(      operand&&  rhs) noexcept{*this = std::move(rhs);}
  ~operand(){clear();}
@@ -189,6 +170,7 @@ public:
   operand&  operator=(const identifier&  id) noexcept;
   operand&  operator=(const expr_array&  e) noexcept;
   operand&  operator=(const operation&  op) noexcept;
+  operand&  operator=(const value&  v) noexcept;
   operand&  operator=(const operand&   rhs) noexcept;
   operand&  operator=(      operand&&  rhs) noexcept;
 
@@ -200,16 +182,45 @@ public:
   bool  is_identifier()        const noexcept{return m_kind == kind::identifier;}
   bool  is_expression_array()  const noexcept{return m_kind == kind::expression_array;}
   bool  is_operation()         const noexcept{return m_kind == kind::operation;}
+  bool  is_value()             const noexcept{return m_kind == kind::value;}
 
   bool               get_boolean_literal()  const noexcept{return m_data.b;}
   uint64_t           get_integer_literal()  const noexcept{return m_data.i;}
   const identifier&  get_identifier()       const noexcept{return m_data.id;}
   const expr_array&  get_expression_array() const noexcept{return m_data.ea;}
   const operation&   get_operation()        const noexcept{return m_data.op;}
+  const value&       get_value()            const noexcept{return m_data.v;}
 
   value  evaluate(const execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
+
+};
+
+
+class
+data_stack
+{
+  static constexpr size_t  max_length = 32;
+
+  operand  m_operands[max_length];
+
+  size_t  m_length=0;
+
+public:
+  void  push(const operand&  o) noexcept{m_operands[m_length++] = o;}
+
+  operand&  pop() noexcept{return m_operands[--m_length];}
+
+        operand&  top()       noexcept{return m_operands[m_length-1];}
+  const operand&  top() const noexcept{return m_operands[m_length-1];}
+
+  void  reset() noexcept{m_length = 0;}
+
+  size_t  size() const noexcept{return m_length;}
+
+  const operand*  begin() const noexcept{return m_operands         ;}
+  const operand*    end() const noexcept{return m_operands+m_length;}
 
 };
 

@@ -96,6 +96,20 @@ operator=(const operation&  op) noexcept
 
 operand&
 operand::
+operator=(const value&  v) noexcept
+{
+  clear();
+
+  m_kind = kind::value;
+
+  new(&m_data) value(v);
+
+  return *this;
+}
+
+
+operand&
+operand::
 operator=(const operand&  rhs) noexcept
 {
     if(this != &rhs)
@@ -120,6 +134,9 @@ operator=(const operand&  rhs) noexcept
           break;
       case(kind::operation):
           new(&m_data) operation(rhs.m_data.op);
+          break;
+      case(kind::value):
+          new(&m_data) value(rhs.m_data.v);
           break;
         }
     }
@@ -156,6 +173,9 @@ operator=(operand&&  rhs) noexcept
       case(kind::operation):
           new(&m_data) operation(std::move(rhs.m_data.op));
           break;
+      case(kind::value):
+          new(&m_data) value(std::move(rhs.m_data.v));
+          break;
         }
     }
 
@@ -182,6 +202,9 @@ clear() noexcept
   case(kind::operation):
       gbstd::destruct(m_data.op);
       break;
+  case(kind::value):
+      gbstd::destruct(m_data.v);
+      break;
     }
 
 
@@ -202,13 +225,16 @@ evaluate(const execution_context*  ctx) const noexcept
       return value(static_cast<int>(m_data.i));
       break;
   case(kind::identifier):
-      return value(m_data.id);
+      return ctx? ctx->get_value(m_data.id.view()):value();
       break;
   case(kind::expression_array):
       return m_data.ea.evaluate(ctx);
       break;
   case(kind::operation):
       return m_data.op.evaluate(ctx);
+      break;
+  case(kind::value):
+      return m_data.v;
       break;
     }
 
@@ -237,6 +263,9 @@ print() const noexcept
       break;
   case(kind::operation):
       m_data.op.print();
+      break;
+  case(kind::value):
+      m_data.v.print();
       break;
     }
 }

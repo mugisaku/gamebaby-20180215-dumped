@@ -69,8 +69,17 @@ noise        no;
 
 
 routine
+ret()
+{
+  return 9;
+}
+
+
+routine
 main()
 {
+  print x = (1,2,3,4,5,6);
+
   sq.frequency=0;
   sq.volume=32;
   sq.keyon_flag=1;

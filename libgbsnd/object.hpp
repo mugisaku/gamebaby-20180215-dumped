@@ -67,7 +67,6 @@ value
   enum class kind{
     null,
     integer,
-    identifier,
     reference,
     routine,
     property,
@@ -81,7 +80,6 @@ value
     int              i;
     reference        r;
     const routine*  rt;
-    identifier      id;
     property        pr;
     square_wave*    sq;
     noise*          no;
@@ -97,7 +95,6 @@ public:
   value(int  i) noexcept{*this = i;}
   value(reference  r) noexcept{*this = r;}
   value(const routine&  rt) noexcept{*this = rt;}
-  value(const identifier&  id) noexcept{*this = id;}
   value(const property&  pr) noexcept{*this = pr;}
   value(square_wave&  sq) noexcept{*this = sq;}
   value(noise&  no) noexcept{*this = no;}
@@ -110,7 +107,6 @@ public:
   value&  operator=(int  i) noexcept;
   value&  operator=(reference  r) noexcept;
   value&  operator=(const routine&  rt) noexcept;
-  value&  operator=(const identifier&  id) noexcept;
   value&  operator=(const property&  pr) noexcept;
   value&  operator=(square_wave&  sq) noexcept;
   value&  operator=(noise&  no) noexcept;
@@ -125,7 +121,6 @@ public:
   bool  is_reference()   const noexcept{return m_kind == kind::reference;}
   bool  is_integer()     const noexcept{return m_kind == kind::integer;}
   bool  is_routine()     const noexcept{return m_kind == kind::routine;}
-  bool  is_identifier()  const noexcept{return m_kind == kind::identifier;}
   bool  is_property()    const noexcept{return m_kind == kind::property;}
   bool  is_square_wave() const noexcept{return m_kind == kind::square_wave;}
   bool  is_noise()       const noexcept{return m_kind == kind::noise;}
@@ -134,14 +129,13 @@ public:
   int                get_integer()     const noexcept{return m_data.i;}
   reference          get_reference()   const noexcept{return m_data.r;}
   const routine&     get_routine()     const noexcept{return *m_data.rt;}
-  const identifier&  get_identifier()  const noexcept{return m_data.id;}
   const property&    get_property()    const noexcept{return m_data.pr;}
   square_wave&       get_square_wave() const noexcept{return *m_data.sq;}
   noise&             get_noise()       const noexcept{return *m_data.no;}
 
   int  get_integer_safely() const noexcept;
 
-  value  to_rhs(const execution_context*  ctx) const noexcept;
+//  value  to_rhs() const noexcept;
 
   void  print() const noexcept;
 

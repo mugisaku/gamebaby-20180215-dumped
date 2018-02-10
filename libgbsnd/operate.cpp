@@ -10,31 +10,31 @@ namespace devices{
 
 
 void
-operate_prefix_unary(value&  v, operator_word  opw, const execution_context*  ctx) noexcept
+operate_prefix_unary(operand&  o, operator_word  opw, const execution_context*  ctx) noexcept
 {
-  auto  i = v.to_rhs(ctx).get_integer_safely();
+  auto  i = o.evaluate(ctx).get_integer_safely();
 
     if(opw == gbstd::string_view("!"))
     {
-      v = value(!i);
+      o = operand(value(!i));
     }
 
   else
     if(opw == gbstd::string_view("~"))
     {
-      v = value(~i);
+      o = operand(value(~i));
     }
 
   else
     if(opw == gbstd::string_view("-"))
     {
-      v = value(-i);
+      o = operand(value(-i));
     }
 }
 
 
 void
-operate_postfix_unary(value&  v, operator_word  opw, const execution_context*  ctx) noexcept
+operate_postfix_unary(operand&  o, operator_word  opw, const execution_context*  ctx) noexcept
 {
     if(opw == gbstd::string_view(""))
     {
@@ -43,18 +43,20 @@ operate_postfix_unary(value&  v, operator_word  opw, const execution_context*  c
 
 
 void
-operate_binary(value&  lv, value&  rv, operator_word  opw, const execution_context*  ctx) noexcept
+operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_context*  ctx) noexcept
 {
+  auto  lv = lo.evaluate(ctx);
+
     if(opw == gbstd::string_view("||"))
     {
-        if(lv.to_rhs(ctx).get_integer_safely())
+        if(lv.get_integer_safely())
         {
-          lv = value(true);
+          lo = operand(value(true));
         }
 
       else
         {
-          lv = value(rv.to_rhs(ctx).get_integer_safely());
+          lo = operand(value(ro.evaluate(ctx).get_integer_safely()));
         }
 
 
@@ -64,14 +66,14 @@ operate_binary(value&  lv, value&  rv, operator_word  opw, const execution_conte
   else
     if(opw == gbstd::string_view("&&"))
     {
-        if(lv.to_rhs(ctx).get_integer_safely())
+        if(lv.get_integer_safely())
         {
-          lv = value(rv.to_rhs(ctx).get_integer_safely());
+          lo = operand(value(ro.evaluate(ctx).get_integer_safely()));
         }
 
       else
         {
-          lv = value(false);
+          lo = operand(value(false));
         }
 
 
@@ -80,94 +82,54 @@ operate_binary(value&  lv, value&  rv, operator_word  opw, const execution_conte
 
 
 
-
-  auto  ri = rv.to_rhs(ctx).get_integer_safely();
-  auto  li = lv.to_rhs(ctx).get_integer_safely();
-
-       if(opw == gbstd::string_view("+")){lv = value(li+ri);}
-  else if(opw == gbstd::string_view("-")){lv = value(li-ri);}
-  else if(opw == gbstd::string_view("*")){lv = value(li*ri);}
-  else
-    if(opw == gbstd::string_view("/"))
-    {
-        if(!ri)
-        {
-          printf("div error: ゼロ除算\n");
-        }
-
-      else
-        {
-          lv = value(li/ri);
-        }
-    }
-
-  else
-    if(opw == gbstd::string_view("%"))
-    {
-        if(!ri)
-        {
-          printf("rem error: ゼロ除算\n");
-        }
-
-      else
-        {
-          lv = value(li%ri);
-        }
-    }
-
-  else if(opw == gbstd::string_view("<<")){lv = value(li<<ri);}
-  else if(opw == gbstd::string_view(">>")){lv = value(li>>ri);}
-  else if(opw == gbstd::string_view("|")) {lv = value(li|ri);}
-  else if(opw == gbstd::string_view("&")) {lv = value(li&ri);}
-  else if(opw == gbstd::string_view("^")) {lv = value(li^ri);}
-  else if(opw == gbstd::string_view("==")){lv = value(li == ri);}
-  else if(opw == gbstd::string_view("!=")){lv = value(li != ri);}
-  else if(opw == gbstd::string_view("<")) {lv = value(li <  ri);}
-  else if(opw == gbstd::string_view("<=")){lv = value(li <= ri);}
-  else if(opw == gbstd::string_view(">")) {lv = value(li >  ri);}
-  else if(opw == gbstd::string_view(">=")){lv = value(li >= ri);}
-  else
-    if(opw == gbstd::string_view("::"))
-    {
-    }
-
-  else
     if(opw == gbstd::string_view("."))
     {
-      auto  rhs_lv = lv.to_rhs(ctx);
-
-        if(!rv.is_identifier())
+        if(!ro.is_identifier())
         {
           printf("右辺が識別子ではない\n");
         }
 
       else
-        if(!rhs_lv.is_reference())
+        if(!lv.is_reference())
         {
-          printf(".%s\n",rv.get_identifier().view().data());
+          printf(".%s\n",ro.get_identifier().view().data());
 
           printf("左辺が参照ではない\n");
 
-          rhs_lv.print();
+          lv.print();
         }
 
       else
         {
-          lv = value(rhs_lv.get_reference().get_property(rv.get_identifier()));
+          lo = operand(value(lv.get_reference().get_property(ro.get_identifier())));
         }
+
+
+      return;
     }
 
   else
     if(opw == gbstd::string_view("->"))
     {
+      return;
     }
 
-  else
-    if(opw == gbstd::string_view(","))
-    {
-    }
 
-  else
+
+  auto  ri = ro.evaluate(ctx).get_integer_safely();
+  auto  li =               lv.get_integer_safely();
+
+    if((opw == gbstd::string_view(  "=")) ||
+       (opw == gbstd::string_view( "+=")) ||
+       (opw == gbstd::string_view( "-=")) ||
+       (opw == gbstd::string_view( "*=")) ||
+       (opw == gbstd::string_view( "/=")) ||
+       (opw == gbstd::string_view( "%=")) ||
+       (opw == gbstd::string_view("<<=")) ||
+       (opw == gbstd::string_view(">>=")) ||
+       (opw == gbstd::string_view( "|=")) ||
+       (opw == gbstd::string_view( "&=")) ||
+       (opw == gbstd::string_view( "^=")))
     {
         if(lv.is_property())
         {
@@ -184,34 +146,90 @@ operate_binary(value&  lv, value&  rv, operator_word  opw, const execution_conte
           else if(opw == gbstd::string_view( "|=")){p.set(li|ri);}
           else if(opw == gbstd::string_view( "&=")){p.set(li&ri);}
           else if(opw == gbstd::string_view( "^=")){p.set(li^ri);}
+          else {printf("プロパティーに対する不正な演算 %s\n",short_string(opw).data());}
+        }
+
+      else
+        if(lv.is_reference())
+        {
+          auto&  objv = static_cast<value&>(lv.get_reference()());
+
+               if(opw == gbstd::string_view(  "=")){objv = value(   ri);}
+          else if(opw == gbstd::string_view( "+=")){objv = value(li+ri);}
+          else if(opw == gbstd::string_view( "-=")){objv = value(li-ri);}
+          else if(opw == gbstd::string_view( "*=")){objv = value(li*ri);}
+          else if(opw == gbstd::string_view( "/=")){objv = value(li/ri);}
+          else if(opw == gbstd::string_view( "%=")){objv = value(li%ri);}
+          else if(opw == gbstd::string_view("<<=")){objv = value(li<<ri);}
+          else if(opw == gbstd::string_view(">>=")){objv = value(li>>ri);}
+          else if(opw == gbstd::string_view( "|=")){objv = value(li|ri);}
+          else if(opw == gbstd::string_view( "&=")){objv = value(li&ri);}
+          else if(opw == gbstd::string_view( "^=")){objv = value(li^ri);}
+          else {printf("参照に対する不正な演算\n");}
+        }
+
+
+      return;
+    }
+
+
+
+
+       if(opw == gbstd::string_view("+")){lo = operand(value(li+ri));}
+  else if(opw == gbstd::string_view("-")){lo = operand(value(li-ri));}
+  else if(opw == gbstd::string_view("*")){lo = operand(value(li*ri));}
+  else
+    if(opw == gbstd::string_view("/"))
+    {
+        if(!ri)
+        {
+          printf("div error: ゼロ除算\n");
         }
 
       else
         {
-          auto  rhs_lv = lv.to_rhs(ctx);
-
-            if(rhs_lv.is_reference())
-            {
-              auto&  objv = static_cast<value&>(rhs_lv.get_reference()());
-
-                   if(opw == gbstd::string_view(  "=")){objv = value(   ri);}
-              else if(opw == gbstd::string_view( "+=")){objv = value(li+ri);}
-              else if(opw == gbstd::string_view( "-=")){objv = value(li-ri);}
-              else if(opw == gbstd::string_view( "*=")){objv = value(li*ri);}
-              else if(opw == gbstd::string_view( "/=")){objv = value(li/ri);}
-              else if(opw == gbstd::string_view( "%=")){objv = value(li%ri);}
-              else if(opw == gbstd::string_view("<<=")){objv = value(li<<ri);}
-              else if(opw == gbstd::string_view(">>=")){objv = value(li>>ri);}
-              else if(opw == gbstd::string_view( "|=")){objv = value(li|ri);}
-              else if(opw == gbstd::string_view( "&=")){objv = value(li&ri);}
-              else if(opw == gbstd::string_view( "^=")){objv = value(li^ri);}
-            }
-
-          else
-            {
-              printf("assignment error: 左辺が参照でもプロパティでもない\n");
-            }
+          lo = operand(value(li/ri));
         }
+    }
+
+  else
+    if(opw == gbstd::string_view("%"))
+    {
+        if(!ri)
+        {
+          printf("rem error: ゼロ除算\n");
+        }
+
+      else
+        {
+          lo = operand(value(li%ri));
+        }
+    }
+
+  else if(opw == gbstd::string_view("<<")){lo = operand(value(li<<ri));}
+  else if(opw == gbstd::string_view(">>")){lo = operand(value(li>>ri));}
+  else if(opw == gbstd::string_view("|")) {lo = operand(value(li|ri));}
+  else if(opw == gbstd::string_view("&")) {lo = operand(value(li&ri));}
+  else if(opw == gbstd::string_view("^")) {lo = operand(value(li^ri));}
+  else if(opw == gbstd::string_view("==")){lo = operand(value(li == ri));}
+  else if(opw == gbstd::string_view("!=")){lo = operand(value(li != ri));}
+  else if(opw == gbstd::string_view("<")) {lo = operand(value(li <  ri));}
+  else if(opw == gbstd::string_view("<=")){lo = operand(value(li <= ri));}
+  else if(opw == gbstd::string_view(">")) {lo = operand(value(li >  ri));}
+  else if(opw == gbstd::string_view(">=")){lo = operand(value(li >= ri));}
+  else
+    if(opw == gbstd::string_view("::"))
+    {
+    }
+
+  else
+    if(opw == gbstd::string_view("()"))
+    {
+    }
+
+  else
+    if(opw == gbstd::string_view(","))
+    {
     }
 }
 
@@ -223,7 +241,7 @@ operate_stack(data_stack&  stack, const expr_element&  e, const execution_contex
 {
     if(e.is_operand())
     {
-      stack.push(e.get_operand().evaluate(ctx));
+      stack.push(e.get_operand());
     }
 
   else
@@ -265,10 +283,10 @@ operate_stack(data_stack&  stack, const expr_element&  e, const execution_contex
         }
 
 
-      auto&  rv = stack.pop();
-      auto&  lv = stack.top();
+      auto&  ro = stack.pop();
+      auto&  lo = stack.top();
 
-      operate_binary(lv,rv,e.get_operator_word(),ctx);
+      operate_binary(lo,ro,e.get_operator_word(),ctx);
     }
 }
 

@@ -142,24 +142,24 @@ value
 operation::
 evaluate(const execution_context*  ctx) const noexcept
 {
-  auto  lv =  m_data->first_operand.evaluate(ctx);
-  auto  rv = m_data->second_operand.evaluate(ctx);
+  auto&  lo =  m_data->first_operand;
+  auto&  ro = m_data->second_operand;
 
     switch(m_data->kind)
     {
   case(operation_kind::prefix_unary):
-      operate_prefix_unary(lv,m_data->word,ctx);
+      operate_prefix_unary(lo,m_data->word,ctx);
       break;
   case(operation_kind::postfix_unary):
-      operate_postfix_unary(lv,m_data->word,ctx);
+      operate_postfix_unary(lo,m_data->word,ctx);
       break;
   case(operation_kind::binary):
-      operate_binary(lv,rv,m_data->word,ctx);
+      operate_binary(lo,ro,m_data->word,ctx);
       break;
     }
 
 
-  return std::move(lv);
+  return lo.evaluate(ctx);
 }
 
 

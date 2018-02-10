@@ -262,13 +262,13 @@ run(millisecond  ms) noexcept
 
                 if(stmt.is_return())
                 {
-                  return_(stack.size()? stack.top():value());
+                  return_(stack.size()? stack.top().evaluate(this):value());
                 }
 
               else
                 if(stmt.is_sleep())
                 {
-                  m_rising_time = ms.value+(stack.size()? stack.top().get_integer():0);
+                  m_rising_time = ms.value+(stack.size()? stack.top().evaluate(this).get_integer():0);
 
                   m_state = state::sleeping;
 
@@ -278,7 +278,7 @@ run(millisecond  ms) noexcept
               else
                 if(stmt.is_exit())
                 {
-                  m_returned_value = stack.size()? stack.top():value();
+                  m_returned_value = stack.size()? stack.top().evaluate(this):value();
 
                   m_state = state::exited;
 
@@ -292,7 +292,7 @@ run(millisecond  ms) noexcept
                     {
                       printf("PRINT: ");
 
-                      stack.top().print();
+                      stack.top().evaluate(this).print();
 
                       printf("\n");
                     }
@@ -301,7 +301,7 @@ run(millisecond  ms) noexcept
               else
                 if(stack.size())
                 {
-                  auto  i = stack.top().to_rhs(this).get_integer_safely();
+                  auto  i = stack.top().evaluate(this).get_integer_safely();
 
                     if(stmt.is_evaluate_and_dump())
                     {
