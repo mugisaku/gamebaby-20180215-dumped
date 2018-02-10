@@ -15,7 +15,7 @@ namespace devices{
 class operand;
 class execution_context;
 class expr_element;
-class expr_array;
+class expr;
 class data_stack;
 
 
@@ -59,7 +59,7 @@ public:
   operation(postfix_unary_operator  op, operand&&  o) noexcept;
   operation(binary_operator  op, operand&&  o1, operand&&  o2) noexcept;
   operation(const operation&   rhs) noexcept{*this = rhs;}
-  operation(      operation&  rhs) noexcept{*this = std::move(rhs);}
+  operation(      operation&&  rhs) noexcept{*this = std::move(rhs);}
  ~operation(){unrefer();}
 
   operation&  operator=(const operation&   rhs) noexcept;
@@ -83,7 +83,7 @@ void  operate_stack(data_stack&  stack, const expr_element&  e, const execution_
 
 
 class
-expr_array
+expr
 {
   class maker;
 
@@ -96,15 +96,15 @@ expr_array
   void  unrefer() noexcept;
 
 public:
-  expr_array() noexcept{}
-  expr_array(gbstd::string_view  sv) noexcept;
-  expr_array(script_token_cursor&  cur) noexcept{read(cur);}
-  expr_array(const expr_array&   rhs) noexcept{*this = rhs;}
-  expr_array(      expr_array&  rhs) noexcept{*this = std::move(rhs);}
- ~expr_array(){unrefer();}
+  expr() noexcept{}
+  expr(gbstd::string_view  sv) noexcept;
+  expr(script_token_cursor&  cur) noexcept{read(cur);}
+  expr(const expr&   rhs) noexcept{*this = rhs;}
+  expr(      expr&&  rhs) noexcept{*this = std::move(rhs);}
+ ~expr(){unrefer();}
 
-  expr_array&  operator=(const expr_array&   rhs) noexcept;
-  expr_array&  operator=(      expr_array&&  rhs) noexcept;
+  expr&  operator=(const expr&   rhs) noexcept;
+  expr&  operator=(      expr&&  rhs) noexcept;
 
   operator bool() const noexcept;
 
@@ -118,6 +118,9 @@ public:
   void  print() const noexcept;
 
 };
+
+
+using expr_list = std::vector<expr>;
 
 
 class
@@ -142,7 +145,7 @@ operand
 
     identifier  id;
 
-    expr_array  ea;
+    expr  ea;
 
     operation  op;
 
@@ -158,7 +161,7 @@ public:
   operand(bool  b) noexcept{*this = b;}
   operand(uint64_t  i) noexcept{*this = i;}
   operand(const identifier&  id) noexcept{*this = std::move(id);}
-  operand(const expr_array&  e) noexcept{*this = e;}
+  operand(const expr&  e) noexcept{*this = e;}
   operand(const operation&  op) noexcept{*this = op;}
   operand(const value&  v) noexcept{*this = v;}
   operand(const operand&   rhs) noexcept{*this = rhs;}
@@ -168,7 +171,7 @@ public:
   operand&  operator=(bool  b) noexcept;
   operand&  operator=(uint64_t  i) noexcept;
   operand&  operator=(const identifier&  id) noexcept;
-  operand&  operator=(const expr_array&  e) noexcept;
+  operand&  operator=(const expr&  e) noexcept;
   operand&  operator=(const operation&  op) noexcept;
   operand&  operator=(const value&  v) noexcept;
   operand&  operator=(const operand&   rhs) noexcept;
@@ -187,7 +190,7 @@ public:
   bool               get_boolean_literal()  const noexcept{return m_data.b;}
   uint64_t           get_integer_literal()  const noexcept{return m_data.i;}
   const identifier&  get_identifier()       const noexcept{return m_data.id;}
-  const expr_array&  get_expression_array() const noexcept{return m_data.ea;}
+  const expr&  get_expression_array() const noexcept{return m_data.ea;}
   const operation&   get_operation()        const noexcept{return m_data.op;}
   const value&       get_value()            const noexcept{return m_data.v;}
 
@@ -276,7 +279,7 @@ public:
 
 
 using devices::expr_element;
-using devices::expr_array;
+using devices::expr;
 using devices::operation;
 
 

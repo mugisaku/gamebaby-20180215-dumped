@@ -230,6 +230,7 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_c
   else
     if(opw == gbstd::string_view(","))
     {
+      lo = ro;
     }
 }
 

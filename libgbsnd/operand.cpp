@@ -68,13 +68,13 @@ operator=(const identifier&  id) noexcept
 
 operand&
 operand::
-operator=(const expr_array&  e) noexcept
+operator=(const expr&  e) noexcept
 {
   clear();
 
   m_kind = kind::expression_array;
 
-  new(&m_data) expr_array(e);
+  new(&m_data) expr(e);
 
   return *this;
 }
@@ -130,7 +130,7 @@ operator=(const operand&  rhs) noexcept
           new(&m_data) identifier(rhs.m_data.id);
           break;
       case(kind::expression_array):
-          new(&m_data) expr_array(rhs.m_data.ea);
+          new(&m_data) expr(rhs.m_data.ea);
           break;
       case(kind::operation):
           new(&m_data) operation(rhs.m_data.op);
@@ -168,7 +168,7 @@ operator=(operand&&  rhs) noexcept
           new(&m_data) identifier(std::move(rhs.m_data.id));
           break;
       case(kind::expression_array):
-          new(&m_data) expr_array(std::move(rhs.m_data.ea));
+          new(&m_data) expr(std::move(rhs.m_data.ea));
           break;
       case(kind::operation):
           new(&m_data) operation(std::move(rhs.m_data.op));

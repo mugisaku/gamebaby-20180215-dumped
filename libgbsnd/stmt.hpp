@@ -43,13 +43,13 @@ stmt
 {
   stmt_kind  m_kind=stmt_kind::null;
 
-  expr_array  m_expr;
+  expr  m_expr;
 
   gbstd::string  m_label;
 
 public:
   stmt() noexcept{}
-  stmt(stmt_kind  k, expr_array&&  expr)        noexcept: m_kind(k), m_expr(std::move(expr)){}
+  stmt(stmt_kind  k, expr&&  expr)        noexcept: m_kind(k), m_expr(std::move(expr)){}
   stmt(stmt_kind  k, gbstd::string_view  label) noexcept: m_kind(k), m_label(label){}
 
   operator bool() const noexcept{return m_kind != stmt_kind::null;}
@@ -68,7 +68,7 @@ public:
   bool  is_jump()                   const noexcept{return m_kind == stmt_kind::jump;}
   bool  is_jump_by_condition()      const noexcept{return m_kind == stmt_kind::jump_by_condition;}
 
-  const expr_array&     get_expr()  const noexcept{return m_expr;}
+  const expr&     get_expr()  const noexcept{return m_expr;}
   const gbstd::string&  get_label() const noexcept{return m_label;}
 
   void  print() const noexcept;

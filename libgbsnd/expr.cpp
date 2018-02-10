@@ -10,7 +10,7 @@ namespace devices{
 
 
 struct
-expr_array::
+expr::
 data
 {
   size_t  reference_count;
@@ -22,8 +22,8 @@ data
 };
 
 
-expr_array::
-expr_array(gbstd::string_view  sv) noexcept
+expr::
+expr(gbstd::string_view  sv) noexcept
 {
   tok::stream_reader  r(sv);
 
@@ -37,9 +37,9 @@ expr_array(gbstd::string_view  sv) noexcept
 
 
 
-expr_array&
-expr_array::
-operator=(const expr_array&  rhs) noexcept
+expr&
+expr::
+operator=(const expr&  rhs) noexcept
 {
     if(this != &rhs)
     {
@@ -58,9 +58,9 @@ operator=(const expr_array&  rhs) noexcept
 }
 
 
-expr_array&
-expr_array::
-operator=(expr_array&&  rhs) noexcept
+expr&
+expr::
+operator=(expr&&  rhs) noexcept
 {
     if(this != &rhs)
     {
@@ -77,7 +77,7 @@ operator=(expr_array&&  rhs) noexcept
 
 
 void
-expr_array::
+expr::
 unrefer() noexcept
 {
     if(m_data)
@@ -97,8 +97,8 @@ unrefer() noexcept
 }
 
 
-expr_element*  expr_array::begin() const noexcept{return &m_data->elements[0];}
-expr_element*    expr_array::end() const noexcept{return begin()+m_data->number_of_elements;}
+expr_element*  expr::begin() const noexcept{return &m_data->elements[0];}
+expr_element*    expr::end() const noexcept{return begin()+m_data->number_of_elements;}
 
 
 
@@ -182,7 +182,7 @@ public:
 
 
 class
-expr_array::
+expr::
 maker
 {
   last  m_last;
@@ -241,7 +241,7 @@ public:
   }
 
 
-  expr_array::data*  output() noexcept
+  expr::data*  output() noexcept
   {
       while(m_operator_stack.size())
       {
@@ -249,9 +249,9 @@ public:
       }
 
 
-    size_t  size = sizeof(expr_array::data)+(sizeof(expr_element)*m_element_stack.size());
+    size_t  size = sizeof(expr::data)+(sizeof(expr_element)*m_element_stack.size());
 
-    auto  ptr = static_cast<expr_array::data*>(malloc(size));
+    auto  ptr = static_cast<expr::data*>(malloc(size));
 
     ptr->reference_count    = 1;
     ptr->number_of_elements = m_element_stack.size();
@@ -271,7 +271,7 @@ public:
 
 
 void
-expr_array::
+expr::
 read(script_token_cursor&  cur) noexcept
 {
   maker  mk;
@@ -381,7 +381,7 @@ read(script_token_cursor&  cur) noexcept
             {
               script_token_cursor  cocur(toks);
 
-              mk.push(operand(expr_array(cocur)));
+              mk.push(operand(expr(cocur)));
             }
 
           else
@@ -410,7 +410,7 @@ read(script_token_cursor&  cur) noexcept
 
 
 
-expr_array::
+expr::
 operator bool() const noexcept
 {
   return m_data && m_data->number_of_elements;
@@ -418,7 +418,7 @@ operator bool() const noexcept
 
 
 size_t
-expr_array::
+expr::
 size() const noexcept
 {
   return m_data->number_of_elements;
@@ -426,7 +426,7 @@ size() const noexcept
 
 
 value
-expr_array::
+expr::
 evaluate(const execution_context*  ctx) const noexcept
 {
   data_stack  stack;
@@ -445,7 +445,7 @@ evaluate(const execution_context*  ctx) const noexcept
 
 
 void
-expr_array::
+expr::
 print() const noexcept
 {
     if(!m_data->number_of_elements)
