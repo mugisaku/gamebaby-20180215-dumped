@@ -8,6 +8,7 @@ set(SOURCES
   build_stmt_list.cpp
   expr_element.cpp
   expr.cpp
+  make_expr.cpp
   operate.cpp
   operation.cpp
   operand.cpp

@@ -58,6 +58,7 @@ public:
   operation(prefix_unary_operator  op, operand&&  o) noexcept;
   operation(postfix_unary_operator  op, operand&&  o) noexcept;
   operation(binary_operator  op, operand&&  o1, operand&&  o2) noexcept;
+  operation(operand&&  o1, operand&&  o2, operand&&  o3) noexcept;
   operation(const operation&   rhs) noexcept{*this = rhs;}
   operation(      operation&&  rhs) noexcept{*this = std::move(rhs);}
  ~operation(){unrefer();}
@@ -68,6 +69,7 @@ public:
   bool  is_prefix_unary() const noexcept;
   bool  is_postfix_unary() const noexcept;
   bool  is_binary() const noexcept;
+  bool  is_conditional() const noexcept;
 
   value  evaluate(const execution_context*  ctx) const noexcept;
 
@@ -79,26 +81,23 @@ public:
 void  operate_prefix_unary( operand&  o, operator_word  opw, const execution_context*  ctx) noexcept;
 void  operate_postfix_unary(operand&  o, operator_word  opw, const execution_context*  ctx) noexcept;
 void  operate_binary(       operand&  lo, operand&  ro, operator_word  opw, const execution_context*  ctx) noexcept;
+void  operate_conditional(operand&  o1, operand&  o2, operand&  o3, const execution_context*  ctx) noexcept;
 void  operate_stack(data_stack&  stack, const expr_element&  e, const execution_context*  ctx) noexcept;
 
 
 class
 expr
 {
-  class maker;
-
   struct data;
 
   data*  m_data=nullptr;
-
-  void  read(script_token_cursor&  cur) noexcept;
 
   void  unrefer() noexcept;
 
 public:
   expr() noexcept{}
+  expr(const expr_element*  e, size_t  n) noexcept{assign(e,n);}
   expr(gbstd::string_view  sv) noexcept;
-  expr(script_token_cursor&  cur) noexcept{read(cur);}
   expr(const expr&   rhs) noexcept{*this = rhs;}
   expr(      expr&&  rhs) noexcept{*this = std::move(rhs);}
  ~expr(){unrefer();}
@@ -107,6 +106,8 @@ public:
   expr&  operator=(      expr&&  rhs) noexcept;
 
   operator bool() const noexcept;
+
+  void  assign(const expr_element*  e, size_t  n) noexcept;
 
   size_t  size() const noexcept;
 
@@ -123,6 +124,27 @@ public:
 using expr_list = std::vector<expr>;
 
 
+expr       make_expr(gbstd::string_view  sv) noexcept;
+expr       make_expr(     script_token_cursor&  cur) noexcept;
+expr_list  make_expr_list(script_token_cursor&  cur) noexcept;
+
+
+class
+paired_expr
+{
+  expr  m_left;
+  expr  m_right;
+
+public:
+  paired_expr(const expr&  l, const expr&  r) noexcept:
+  m_left(l), m_right(r){}
+
+  const expr&  get_left()  const noexcept{return m_left;}
+  const expr&  get_right() const noexcept{return m_right;}
+
+};
+
+
 class
 operand
 {
@@ -131,8 +153,11 @@ operand
     boolean_literal,
     integer_literal,
     identifier,
-    expression_array,
+    expression,
+    expression_list,
     operation,
+
+    paired_expression,
 
     value,
 
@@ -145,7 +170,10 @@ operand
 
     identifier  id;
 
-    expr  ea;
+    expr       e;
+    expr_list  els;
+
+    paired_expr  pe;
 
     operation  op;
 
@@ -162,6 +190,8 @@ public:
   operand(uint64_t  i) noexcept{*this = i;}
   operand(const identifier&  id) noexcept{*this = std::move(id);}
   operand(const expr&  e) noexcept{*this = e;}
+  operand(expr_list&&  els) noexcept{*this = std::move(els);}
+  operand(paired_expr&&  pe) noexcept{*this = std::move(pe);}
   operand(const operation&  op) noexcept{*this = op;}
   operand(const value&  v) noexcept{*this = v;}
   operand(const operand&   rhs) noexcept{*this = rhs;}
@@ -172,6 +202,8 @@ public:
   operand&  operator=(uint64_t  i) noexcept;
   operand&  operator=(const identifier&  id) noexcept;
   operand&  operator=(const expr&  e) noexcept;
+  operand&  operator=(expr_list&&  els) noexcept;
+  operand&  operator=(paired_expr&&  pe) noexcept;
   operand&  operator=(const operation&  op) noexcept;
   operand&  operator=(const value&  v) noexcept;
   operand&  operator=(const operand&   rhs) noexcept;
@@ -183,16 +215,20 @@ public:
   bool  is_boolean_literal()   const noexcept{return m_kind == kind::boolean_literal;}
   bool  is_integer_literal()   const noexcept{return m_kind == kind::integer_literal;}
   bool  is_identifier()        const noexcept{return m_kind == kind::identifier;}
-  bool  is_expression_array()  const noexcept{return m_kind == kind::expression_array;}
+  bool  is_expression()        const noexcept{return m_kind == kind::expression;}
+  bool  is_expression_list()   const noexcept{return m_kind == kind::expression_list;}
+  bool  is_paired_expression() const noexcept{return m_kind == kind::paired_expression;}
   bool  is_operation()         const noexcept{return m_kind == kind::operation;}
   bool  is_value()             const noexcept{return m_kind == kind::value;}
 
-  bool               get_boolean_literal()  const noexcept{return m_data.b;}
-  uint64_t           get_integer_literal()  const noexcept{return m_data.i;}
-  const identifier&  get_identifier()       const noexcept{return m_data.id;}
-  const expr&  get_expression_array() const noexcept{return m_data.ea;}
-  const operation&   get_operation()        const noexcept{return m_data.op;}
-  const value&       get_value()            const noexcept{return m_data.v;}
+  bool                get_boolean_literal()   const noexcept{return m_data.b;}
+  uint64_t            get_integer_literal()   const noexcept{return m_data.i;}
+  const identifier&   get_identifier()        const noexcept{return m_data.id;}
+  const expr&         get_expression()        const noexcept{return m_data.e;}
+  const expr_list&    get_expression_list()   const noexcept{return m_data.els;}
+  const paired_expr&  get_paired_expression() const noexcept{return m_data.pe;}
+  const operation&    get_operation()         const noexcept{return m_data.op;}
+  const value&        get_value()             const noexcept{return m_data.v;}
 
   value  evaluate(const execution_context*  ctx) const noexcept;
 

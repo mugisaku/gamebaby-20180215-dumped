@@ -114,6 +114,29 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_c
       return;
     }
 
+  else
+    if(opw == gbstd::string_view("?"))
+    {
+        if(!ro.is_paired_expression())
+        {
+          printf("右辺がpaired_expressionではない\n");
+        }
+
+      else
+        {
+          auto  cond = lv.get_integer_safely();
+
+          auto&  pe = ro.get_paired_expression();
+
+          auto  result = (cond? pe.get_left():pe.get_right()).evaluate(ctx);
+
+          lo = operand(std::move(result));
+        }
+
+
+      return;
+    }
+
 
 
   auto  ri = ro.evaluate(ctx).get_integer_safely();
@@ -235,6 +258,13 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_c
 }
 
 
+void
+operate_conditional(operand&  o1, operand&  o2, operand&  o3, const execution_context*  ctx) noexcept
+{
+  auto  cond = o1.evaluate(ctx).get_integer_safely();
+
+  o1 = operand((cond? o2:o3).evaluate(ctx));
+}
 
 
 void

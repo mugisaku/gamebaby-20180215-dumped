@@ -58,9 +58,9 @@ build_for(const char*  label_base,
 
   script_token_cursor  para_cur(cur[0].get_token_string());
 
-  expr  init_expr(para_cur);
-  expr  cond_expr(para_cur);
-  expr   mod_expr(para_cur);
+  expr  init_expr = make_expr(para_cur);
+  expr  cond_expr = make_expr(para_cur);
+  expr   mod_expr = make_expr(para_cur);
 
     if(init_expr)
     {
@@ -109,7 +109,7 @@ build_while(const char*  label_base,
 
   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-  ls.emplace_back(stmt_kind::evaluate_and_zero,expr(expr_cur));
+  ls.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
   ls.emplace_back(stmt_kind::jump_by_condition,*end_label);
 
 
@@ -140,7 +140,7 @@ build_if(const char*  label_base,
 
   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-  ls.emplace_back(stmt_kind::evaluate_and_zero,expr(expr_cur));
+  ls.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
   ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
 
 
@@ -178,7 +178,7 @@ build_if(const char*  label_base,
 
           expr_cur = script_token_cursor(cur[1].get_token_string());
 
-          ls.emplace_back(stmt_kind::evaluate_and_zero,expr(expr_cur));
+          ls.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
           ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
 
 
@@ -224,7 +224,7 @@ build_switch(const char*  label_base,
   build(*co_label_base,*end_label,*begin_label,new_swdat,ctx,blk_cur,tmp_ls);
 
 
-  ls.emplace_back(stmt_kind::evaluate_and_save,expr(expr_cur));
+  ls.emplace_back(stmt_kind::evaluate_and_save,make_expr(expr_cur));
 
     for(int  i = 0;  i < new_swdat.case_exprs.size();  ++i)
     {
@@ -276,7 +276,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::return_,expr(cur));
+              ls.emplace_back(stmt_kind::return_,make_expr(cur));
             }
 
           else
@@ -284,7 +284,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::sleep,expr(cur));
+              ls.emplace_back(stmt_kind::sleep,make_expr(cur));
             }
 
           else
@@ -292,7 +292,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::print,expr(cur));
+              ls.emplace_back(stmt_kind::print,make_expr(cur));
             }
 
           else
@@ -375,7 +375,7 @@ build(const char*  label_base,
 
                   script_token_cursor  expr_cur(cur->get_token_string());
 
-                  swdat.case_exprs.emplace_back(expr(expr_cur));
+                  swdat.case_exprs.emplace_back(make_expr(expr_cur));
 
 
                   ls.emplace_back(stmt_kind::label,*label);
@@ -482,7 +482,7 @@ build(const char*  label_base,
 
           else
             {
-              ls.emplace_back(stmt_kind::evaluate_and_dump,expr(cur));
+              ls.emplace_back(stmt_kind::evaluate_and_dump,make_expr(cur));
             }
         }
 

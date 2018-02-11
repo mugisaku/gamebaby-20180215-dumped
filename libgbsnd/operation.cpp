@@ -15,6 +15,7 @@ operation_kind
   prefix_unary,
   postfix_unary,
   binary,
+  conditional,
 };
 
 
@@ -30,6 +31,7 @@ data
 
   operand   first_operand;
   operand  second_operand;
+  operand   third_operand;
 
 };
 
@@ -70,6 +72,18 @@ m_data(new data)
 
   m_data->first_operand  = std::move(o1);
   m_data->second_operand = std::move(o2);
+}
+
+
+operation::
+operation(operand&&  o1, operand&&  o2, operand&&  o3) noexcept:
+m_data(new data)
+{
+  m_data->kind = operation_kind::conditional;
+
+  m_data->first_operand  = std::move(o1);
+  m_data->second_operand = std::move(o2);
+  m_data->third_operand  = std::move(o3);
 }
 
 
@@ -134,6 +148,7 @@ unrefer() noexcept
 bool  operation::is_prefix_unary() const noexcept{return m_data->kind == operation_kind::prefix_unary;}
 bool  operation::is_postfix_unary() const noexcept{return m_data->kind == operation_kind::postfix_unary;}
 bool  operation::is_binary() const noexcept{return m_data->kind == operation_kind::binary;}
+bool  operation::is_conditional() const noexcept{return m_data->kind == operation_kind::conditional;}
 
 
 
@@ -155,6 +170,11 @@ evaluate(const execution_context*  ctx) const noexcept
       break;
   case(operation_kind::binary):
       operate_binary(lo,ro,m_data->word,ctx);
+      break;
+  case(operation_kind::conditional):
+      operate_conditional(m_data->first_operand,
+                          m_data->second_operand,
+                          m_data->third_operand,ctx);
       break;
     }
 
@@ -185,6 +205,13 @@ print() const noexcept
       printf("%s",ss.data());
       m_data->second_operand.print();
       printf(")");
+      break;
+  case(operation_kind::conditional):
+      m_data->first_operand.print();
+      printf("? ");
+      m_data->second_operand.print();
+      printf(":");
+      m_data->third_operand.print();
       break;
     }
 }
