@@ -1,16 +1,17 @@
 #include"libgbsnd/expr.hpp"
 #include"libgbsnd/script.hpp"
+#include"libgbsnd/execution.hpp"
 #include<new>
 
 
 namespace gbsnd{
-namespace devices{
+namespace exprs{
 
 
 
 
 void
-operate_prefix_unary(operand&  o, operator_word  opw, const execution_context*  ctx) noexcept
+operate_prefix_unary(operand&  o, operator_word  opw, execution_context*  ctx) noexcept
 {
   auto  i = o.evaluate(ctx).get_integer_safely();
 
@@ -34,7 +35,7 @@ operate_prefix_unary(operand&  o, operator_word  opw, const execution_context*  
 
 
 void
-operate_postfix_unary(operand&  o, operator_word  opw, const execution_context*  ctx) noexcept
+operate_postfix_unary(operand&  o, operator_word  opw, execution_context*  ctx) noexcept
 {
     if(opw == gbstd::string_view(""))
     {
@@ -43,7 +44,7 @@ operate_postfix_unary(operand&  o, operator_word  opw, const execution_context* 
 
 
 void
-operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_context*  ctx) noexcept
+operate_binary(operand&  lo, operand&  ro, operator_word  opw, execution_context*  ctx) noexcept
 {
   auto  lv = lo.evaluate(ctx);
 
@@ -111,6 +112,8 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_c
   else
     if(opw == gbstd::string_view("->"))
     {
+      printf("->演算は未実装\n");
+
       return;
     }
 
@@ -133,6 +136,38 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_c
           lo = operand(std::move(result));
         }
 
+
+      return;
+    }
+
+  else
+    if(opw == gbstd::string_view("()"))
+    {
+        if(!ro.is_expression_list())
+        {
+          printf("右辺がexpression_listではない\n");
+
+          return;
+        }
+
+
+        if(!lv.is_routine())
+        {
+          printf("左辺がroutineではない\n");
+
+          return;
+        }
+
+
+      ctx->call("",lv.get_routine(),ro.get_expression_list());
+
+      return;
+    }
+
+  else
+    if(opw == gbstd::string_view("[]"))
+    {
+      printf("[]演算は未実装\n");
 
       return;
     }
@@ -243,11 +278,7 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_c
   else
     if(opw == gbstd::string_view("::"))
     {
-    }
-
-  else
-    if(opw == gbstd::string_view("()"))
-    {
+      printf("::演算は未実装\n");
     }
 
   else
@@ -259,7 +290,7 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, const execution_c
 
 
 void
-operate_conditional(operand&  o1, operand&  o2, operand&  o3, const execution_context*  ctx) noexcept
+operate_conditional(operand&  o1, operand&  o2, operand&  o3, execution_context*  ctx) noexcept
 {
   auto  cond = o1.evaluate(ctx).get_integer_safely();
 
@@ -268,7 +299,7 @@ operate_conditional(operand&  o1, operand&  o2, operand&  o3, const execution_co
 
 
 void
-operate_stack(data_stack&  stack, const expr_element&  e, const execution_context*  ctx) noexcept
+operate_stack(operand_stack&  stack, const expr_element&  e, execution_context*  ctx) noexcept
 {
     if(e.is_operand())
     {

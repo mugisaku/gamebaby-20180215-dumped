@@ -1,5 +1,4 @@
 #include"libgbsnd/device.hpp"
-#include"libgbsnd/object.hpp"
 
 
 namespace gbsnd{

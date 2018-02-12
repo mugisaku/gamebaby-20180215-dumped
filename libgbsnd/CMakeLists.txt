@@ -1,27 +1,28 @@
 
 
 set(SOURCES
-  device.cpp
-  device__square_wave.cpp
-  device__noise.cpp
-  stmt.cpp
-  build_stmt_list.cpp
-  expr_element.cpp
-  expr.cpp
-  make_expr.cpp
-  operate.cpp
-  operation.cpp
-  operand.cpp
-  routine.cpp
+  devices/device.cpp
+  devices/device__square_wave.cpp
+  devices/device__noise.cpp
+  exprs/expr_element.cpp
+  exprs/expr_queue.cpp
+  exprs/expr.cpp
+  exprs/make_expr.cpp
+  exprs/operate.cpp
+  exprs/operation.cpp
+  exprs/operand.cpp
+  stmts/stmt.cpp
+  stmts/stmt_list.cpp
+  stmts/routine.cpp
+  objects/reference.cpp
+  objects/property.cpp
+  objects/value.cpp
+  scripts/script.cpp
+  scripts/script_token.cpp
+  scripts/script_token_string.cpp
+  scripts/script_token_cursor.cpp
   execution_context.cpp
-  reference.cpp
-  property.cpp
-  value.cpp
   shared_string.cpp
-  script.cpp
-  script_token.cpp
-  script_token_string.cpp
-  script_token_cursor.cpp
 )
 
 

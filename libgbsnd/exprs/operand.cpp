@@ -4,7 +4,7 @@
 
 
 namespace gbsnd{
-namespace devices{
+namespace exprs{
 
 
 
@@ -260,7 +260,7 @@ clear() noexcept
 
 value
 operand::
-evaluate(const execution_context*  ctx) const noexcept
+evaluate(execution_context*  ctx) const noexcept
 {
     switch(m_kind)
     {

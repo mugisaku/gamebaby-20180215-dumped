@@ -1,11 +1,11 @@
 #include"libgbsnd/object.hpp"
 #include"libgbsnd/execution.hpp"
-#include"libgbsnd/routine.hpp"
+#include"libgbsnd/stmt.hpp"
 #include<new>
 
 
 namespace gbsnd{
-namespace devices{
+namespace objects{
 
 
 
@@ -54,7 +54,7 @@ operator=(reference  r) noexcept
 
 value&
 value::
-operator=(const routine&  rt) noexcept
+operator=(const stmts::routine&  rt) noexcept
 {
   clear();
 
@@ -216,6 +216,12 @@ clear() noexcept
 }
 
 
+const stmts::routine&
+value::
+get_routine() const noexcept
+{
+  return *m_data.rt;
+}
 
 
 int
@@ -241,33 +247,6 @@ get_integer_safely() const noexcept
 
   return 0;
 }
-
-
-/*
-value
-value::
-to_rhs() const noexcept
-{
-    switch(m_kind)
-    {
-  case(kind::integer):
-      return *this;
-      break;
-  case(kind::reference):
-      return m_data.r();
-      break;
-  case(kind::routine):
-      return *this;
-      break;
-  case(kind::property):
-      return value(m_data.pr.get());
-      break;
-    }
-
-
-  return value();
-}
-*/
 
 
 

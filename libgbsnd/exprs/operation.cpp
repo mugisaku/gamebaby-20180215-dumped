@@ -4,7 +4,7 @@
 
 
 namespace gbsnd{
-namespace devices{
+namespace exprs{
 
 
 
@@ -155,7 +155,7 @@ bool  operation::is_conditional() const noexcept{return m_data->kind == operatio
 
 value
 operation::
-evaluate(const execution_context*  ctx) const noexcept
+evaluate(execution_context*  ctx) const noexcept
 {
   auto&  lo =  m_data->first_operand;
   auto&  ro = m_data->second_operand;
@@ -200,11 +200,31 @@ print() const noexcept
       printf("%s",ss.data());
       break;
   case(operation_kind::binary):
-      printf("(");
-      m_data->first_operand.print();
-      printf("%s",ss.data());
-      m_data->second_operand.print();
-      printf(")");
+        if(m_data->word == operator_word("()"))
+        {
+          m_data->first_operand.print();
+          printf("(");
+          m_data->second_operand.print();
+          printf(")");
+        }
+
+      else
+        if(m_data->word == operator_word("[]"))
+        {
+          m_data->first_operand.print();
+          printf("[");
+          m_data->second_operand.print();
+          printf("]");
+        }
+
+      else
+        {
+          printf("(");
+          m_data->first_operand.print();
+          printf("%s",ss.data());
+          m_data->second_operand.print();
+          printf(")");
+        }
       break;
   case(operation_kind::conditional):
       m_data->first_operand.print();

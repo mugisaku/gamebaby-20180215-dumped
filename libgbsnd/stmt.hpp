@@ -3,16 +3,18 @@
 
 
 #include"libgbsnd/expr.hpp"
-#include<vector>
-#include<cstdarg>
 
 
 namespace gbsnd{
-namespace devices{
 
 
-class stmt;
+namespace scripts{
 class script_token_string;
+class script_token_cursor;
+}
+
+
+namespace stmts{
 
 
 
@@ -76,15 +78,51 @@ public:
 };
 
 
-using stmt_list = std::vector<stmt>;
+class
+stmt_list: public list<stmt>
+{
+public:
+  using list::list;
 
-stmt_list*  build_stmt_list(const script_token_string&  toks) noexcept;
+  stmt_list(const scripts::script_token_string&  toks) noexcept;
+
+};
+
+
+class
+parameter_list: public list<gbstd::string>
+{
+public:
+  using list::list;
+};
+
+
+class
+routine
+{
+  parameter_list  m_parameter_list;
+  stmt_list            m_stmt_list;
+
+public:
+  routine() noexcept{}
+  routine(const scripts::script_token_string&  parals_src,
+          const scripts::script_token_string&  blk_src) noexcept;
+
+  const parameter_list&  get_parameter_list() const noexcept{return m_parameter_list;}
+  const stmt_list&            get_stmt_list() const noexcept{return m_stmt_list;}
+
+  void  print() const noexcept;
+
+};
 
 
 }
 
 
-using devices::stmt;
+using stmts::stmt;
+using stmts::stmt_list;
+using stmts::parameter_list;
+using stmts::routine;
 
 
 }

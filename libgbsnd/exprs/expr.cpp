@@ -4,7 +4,7 @@
 
 
 namespace gbsnd{
-namespace devices{
+namespace exprs{
 
 
 
@@ -132,9 +132,9 @@ size() const noexcept
 
 value
 expr::
-evaluate(const execution_context*  ctx) const noexcept
+evaluate(execution_context*  ctx) const noexcept
 {
-  data_stack  stack;
+  operand_stack  stack;
 
   auto  it     = begin();
   auto  it_end =   end();

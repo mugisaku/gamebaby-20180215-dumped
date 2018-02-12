@@ -1,22 +1,22 @@
 #include"libgbsnd/execution.hpp"
 #include"libgbsnd/object.hpp"
 #include"libgbsnd/stmt.hpp"
-#include"libgbsnd/routine.hpp"
 
 
 namespace gbsnd{
-namespace devices{
 
 
 struct
 execution_context::
 frame
 {
+  frame*  previous=nullptr;
+
   gbstd::string  routine_name;
 
-  stmt_list::const_iterator    begin;
-  stmt_list::const_iterator  current;
-  stmt_list::const_iterator      end;
+  const stmt*    begin;
+  const stmt*  current;
+  const stmt*      end;
 
   std::list<object>  object_list;
 
@@ -24,10 +24,9 @@ frame
 
   bool  condition;
 
-  devices::data_stack  data_stack;
+  exprs::operand_stack  operand_stack;
 
-  const expr_element*  eval_it    ;
-  const expr_element*  eval_it_end;
+  exprs::expr_queue  expr_queue;
 
   void  jump(gbstd::string_view  label) noexcept
   {
@@ -59,11 +58,9 @@ void
 execution_context::
 reset(const script&  scr) noexcept
 {
+  clear();
+
   m_script = scr;
-
-  resize(80);
-
-  m_state = state::not_ready;
 }
 
 
@@ -73,11 +70,20 @@ void
 execution_context::
 clear() noexcept
 {
-  delete[] m_frame_stack          ;
-           m_frame_stack = nullptr;
+  auto  current = m_top_frame;
 
-  m_max_number_of_frames = 0;
-  m_number_of_frames     = 0;
+    while(current)
+    {
+      auto  previous = current->previous;
+
+      delete current           ;
+             current = previous;
+    }
+
+
+  m_top_frame = nullptr;
+
+  m_number_of_frames = 0;
 
   m_state = state::not_ready;
 }
@@ -85,27 +91,82 @@ clear() noexcept
 
 void
 execution_context::
-resize(size_t  n) noexcept
+call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list) noexcept
 {
-  auto  new_ptr = new frame[n];
+  gbstd::string_copy  sc(routine_name);
 
-    for(int  i = 0;  i < m_number_of_frames;  ++i)
+
+  auto  r = m_script.find_routine(routine_name);
+
+    if(!r)
     {
-      new_ptr[i] = std::move(m_frame_stack[i]);
+      printf("%sというルーチンが見つからない",sc.data());
+
+      m_state = state::not_ready;
+
+      return;
     }
 
 
-  delete[] m_frame_stack          ;
-           m_frame_stack = new_ptr;
+    if(r->get_parameter_list().size() != argument_list.size())
+    {
+      printf("引数の数が一致しない\n");
 
-  m_max_number_of_frames = n;
+      m_state = state::not_ready;
+
+      return;
+    }
+
+
+    if(!m_top_frame)
+    {
+      m_top_frame = new frame;
+    }
+
+  else
+    {
+      auto  previous = m_top_frame            ;
+                       m_top_frame = new frame;
+
+      m_top_frame->previous = previous;
+    }
+
+
+  ++m_number_of_frames;
+
+
+  auto&  frm = *m_top_frame;
+
+  frm.routine_name = routine_name;
+
+
+  auto&  ls = r->get_stmt_list();
+
+  frm.begin   = ls.begin();
+  frm.current = ls.begin();
+  frm.end     = ls.end();
+
+  frm.object_list.clear();
+
+  auto  arg_it = argument_list.crbegin();
+
+    for(auto&  p: r->get_parameter_list())
+    {
+      frm.object_list.emplace_back(*arg_it++);
+
+      frm.object_list.back().set_name(p);
+    }
+
+
+  m_state = state::ready;
 }
 
 
 void
 execution_context::
-call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list) noexcept
+call(gbstd::string_view  routine_name, const routine&  routine, const expr_list&  argument_list) noexcept
 {
+/*
   gbstd::string_copy  sc(routine_name);
 
     if(!test_capacity())
@@ -167,6 +228,7 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
 
 
   m_state = state::ready;
+*/
 }
 
 
@@ -174,7 +236,7 @@ value
 execution_context::
 get_value(gbstd::string_view  name) const noexcept
 {
-  auto&  frm = m_frame_stack[m_number_of_frames-1];
+  auto&  frm = *m_top_frame;
 
     for(auto&  obj: frm.object_list)
     {
@@ -206,9 +268,9 @@ return_(value  v) noexcept
 {
     if(--m_number_of_frames)
     {
-      auto&  frame = m_frame_stack[m_number_of_frames-1];
+//      auto&  frame = m_frame_stack[m_number_of_frames-1];
 
-      frame.data_stack.push(std::move(v));
+//      m_frame.data_stack.push(std::move(v));
     }
 }
 
@@ -243,99 +305,95 @@ run(millisecond  ms) noexcept
         }
 
 
-      auto&  frame = m_frame_stack[m_number_of_frames-1];
+      auto&  frame = *m_top_frame;
 
-        if(frame.eval_it)
+        if(frame.expr_queue)
         {
-            if(frame.eval_it < frame.eval_it_end)
+          operate_stack(frame.operand_stack,frame.expr_queue.pop(),this);
+        }
+
+
+        if(frame.expr_queue)
+        {
+          auto&  stack = frame.operand_stack;
+
+          auto&  stmt = *frame.current++;
+
+            if(stmt.is_return())
             {
-              operate_stack(frame.data_stack,*frame.eval_it++,this);
+              return_(stack.size()? stack.top().evaluate(this):value());
             }
 
           else
+            if(stmt.is_sleep())
             {
-              auto&  stack = frame.data_stack;
+              m_rising_time = ms.value+(stack.size()? stack.top().evaluate(this).get_integer():0);
 
-              frame.eval_it = nullptr;
+              m_state = state::sleeping;
 
-              auto&  stmt = *frame.current++;
+              return;
+            }
 
-                if(stmt.is_return())
-                {
-                  return_(stack.size()? stack.top().evaluate(this):value());
-                }
+          else
+            if(stmt.is_exit())
+            {
+              m_returned_value = stack.size()? stack.top().evaluate(this):value();
 
-              else
-                if(stmt.is_sleep())
-                {
-                  m_rising_time = ms.value+(stack.size()? stack.top().evaluate(this).get_integer():0);
+              m_state = state::exited;
 
-                  m_state = state::sleeping;
+              return;
+            }
 
-                  return;
-                }
-
-              else
-                if(stmt.is_exit())
-                {
-                  m_returned_value = stack.size()? stack.top().evaluate(this):value();
-
-                  m_state = state::exited;
-
-                  return;
-                }
-
-              else
-                if(stmt.is_print())
-                {
-                    if(stack.size())
-                    {
-                      printf("PRINT: ");
-
-                      stack.top().evaluate(this).print();
-
-                      printf("\n");
-                    }
-                }
-
-              else
+          else
+            if(stmt.is_print())
+            {
                 if(stack.size())
                 {
-                  auto  i = stack.top().evaluate(this).get_integer_safely();
+                  printf("PRINT: ");
 
-                    if(stmt.is_evaluate_and_dump())
-                    {
-                    }
+                  stack.top().evaluate(this).print();
 
-                  else
-                    if(stmt.is_evaluate_and_save())
-                    {
-                      frame.saved_value = i;
-                    }
+                  printf("\n");
+                }
+            }
 
-                  else
-                    if(stmt.is_evaluate_and_zero())
-                    {
-                      frame.condition = !i;
-                    }
+          else
+            if(stack.size())
+            {
+              auto  i = stack.top().evaluate(this).get_integer_safely();
 
-                  else
-                    if(stmt.is_evaluate_and_not_zero())
-                    {
-                      frame.condition = i;
-                    }
+                if(stmt.is_evaluate_and_dump())
+                {
+                }
 
-                  else
-                    if(stmt.is_evaluate_and_equal())
-                    {
-                      frame.condition = (frame.saved_value == i);
-                    }
+              else
+                if(stmt.is_evaluate_and_save())
+                {
+                  frame.saved_value = i;
+                }
 
-                  else
-                    if(stmt.is_evaluate_and_not_equal())
-                    {
-                      frame.condition = (frame.saved_value != i);
-                    }
+              else
+                if(stmt.is_evaluate_and_zero())
+                {
+                  frame.condition = !i;
+                }
+
+              else
+                if(stmt.is_evaluate_and_not_zero())
+                {
+                  frame.condition = i;
+                }
+
+              else
+                if(stmt.is_evaluate_and_equal())
+                {
+                  frame.condition = (frame.saved_value == i);
+                }
+
+              else
+                if(stmt.is_evaluate_and_not_equal())
+                {
+                  frame.condition = (frame.saved_value != i);
                 }
             }
         }
@@ -356,12 +414,9 @@ run(millisecond  ms) noexcept
                stmt.is_evaluate_and_equal()    ||
                stmt.is_evaluate_and_not_equal())
             {
-              auto&  e = stmt.get_expr();
+              frame.expr_queue.push(stmt.get_expr());
 
-              frame.eval_it     = e.begin();
-              frame.eval_it_end = e.end();
-
-              frame.data_stack.reset();
+              frame.operand_stack.reset();
             }
 
           else
@@ -401,7 +456,7 @@ run(millisecond  ms) noexcept
 }
 
 
-}}
+}
 
 
 

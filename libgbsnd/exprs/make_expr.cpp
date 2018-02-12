@@ -3,7 +3,7 @@
 
 
 namespace gbsnd{
-namespace devices{
+namespace exprs{
 
 
 
@@ -187,6 +187,12 @@ result
 result
 read(script_token_cursor&  cur, maker&  mk) noexcept
 {
+  using  oe = operator_egg;
+
+  using  preunop = prefix_unary_operator;
+  using  posunop = postfix_unary_operator;
+  using    binop = binary_operator;
+
     while(cur)
     {
       auto&  tok = *cur;
@@ -209,12 +215,6 @@ read(script_token_cursor&  cur, maker&  mk) noexcept
       else
         if(tok.is_operator_word())
         {
-          using  oe = operator_egg;
-
-          using  preunop = prefix_unary_operator;
-          using  posunop = postfix_unary_operator;
-          using    binop = binary_operator;
-
           auto  opw = tok.get_operator_word();
 
             if(opw == operator_word("++"))
@@ -340,13 +340,38 @@ read(script_token_cursor&  cur, maker&  mk) noexcept
             {
               script_token_cursor  cocur(toks);
 
-//              mk.push(operand(expr(cocur,true)));
+                if(mk.get_last().is_operand())
+                {
+                  mk.push(oe(binop{operator_word("()")},1));
+
+                  mk.push(operand(make_expr_list(cocur)));
+                }
+
+              else
+                {
+                  mk.push(operand(make_expr(cocur)));
+                }
             }
 
           else
             if((toks.get_open()  == '[') &&
                (toks.get_close() == ']'))
             {
+              script_token_cursor  cocur(toks);
+
+                if(mk.get_last().is_operand())
+                {
+                  mk.push(oe(binop{operator_word("[]")},1));
+
+                  mk.push(operand(make_expr(cocur)));
+                }
+
+              else
+                {
+                  printf("不正なサブスクリプト\n");
+
+                  return result::got_error;
+                }
             }
 
           else
@@ -428,7 +453,7 @@ QUIT:
 expr_list
 make_expr_list(script_token_cursor&  cur) noexcept
 {
-  expr_list  ls;
+  std::vector<expr>  buf;
 
     for(;;)
     {
@@ -437,7 +462,7 @@ make_expr_list(script_token_cursor&  cur) noexcept
         switch(read(cur,mk))
         {
       case(result::got_end):
-          ls.emplace_back(mk.output());
+          buf.emplace_back(mk.output());
           goto QUIT;
           break;
       case(result::got_colon):
@@ -449,7 +474,7 @@ make_expr_list(script_token_cursor&  cur) noexcept
           goto QUIT;
           break;
       case(result::got_comma):
-          ls.emplace_back(mk.output());
+          buf.emplace_back(mk.output());
           mk.clear();
           break;
       case(result::got_error):
@@ -461,7 +486,7 @@ make_expr_list(script_token_cursor&  cur) noexcept
 
 
 QUIT:
-  return std::move(ls);
+  return expr_list(buf.data(),buf.size());
 }
 
 

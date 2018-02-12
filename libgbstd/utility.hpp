@@ -3,7 +3,9 @@
 
 
 #include<cstdarg>
+#include<cstdlib>
 #include<cstdio>
+#include<new>
 
 
 #ifndef report
@@ -24,9 +26,41 @@ destruct(T&  t) noexcept
 
 template<typename  T>
 inline T*
-duplicate(T*  src) noexcept
+duplicate(const T*  src) noexcept
 {
   return src? new T(*src):nullptr;
+}
+
+
+template<typename  T>
+inline T*
+allocate(size_t  n) noexcept
+{
+  return static_cast<T*>(malloc(sizeof(T)*n));
+}
+
+
+template<typename  T>
+inline T*
+duplicate(const T*  src, size_t  n) noexcept
+{
+    if(src)
+    {
+      auto  p = allocate<T>(n);
+
+      auto  dst = p;
+
+        while(n--)
+        {
+          new(dst++) T(*src++);
+        }
+
+
+      return p;
+    }
+
+
+  return nullptr;
 }
 
 

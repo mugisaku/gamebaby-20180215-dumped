@@ -5,7 +5,6 @@
 #include<cstdint>
 #include<cstdio>
 #include"libgbstd/string.hpp"
-#include"libgbsnd/object.hpp"
 
 
 namespace gbsnd{

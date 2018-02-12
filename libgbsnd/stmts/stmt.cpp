@@ -1,9 +1,8 @@
 #include"libgbsnd/stmt.hpp"
-#include<new>
 
 
 namespace gbsnd{
-namespace devices{
+namespace stmts{
 
 
 

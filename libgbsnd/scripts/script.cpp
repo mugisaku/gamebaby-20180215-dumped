@@ -1,11 +1,11 @@
 #include"libgbsnd/script.hpp"
 #include"libtok/stream_reader.hpp"
-#include"libgbsnd/routine.hpp"
+#include"libgbsnd/stmt.hpp"
 #include<memory>
 
 
 namespace gbsnd{
-namespace devices{
+namespace scripts{
 
 
 
@@ -35,7 +35,7 @@ m_data(new data)
 
   script_token_cursor  cur(toks.begin(),toks.end());
 
-  m_data->object_list.emplace_back(value(system{}),"system");
+//  m_data->object_list.emplace_back(value(system{}),"system");
 
     while(cur)
     {

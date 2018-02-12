@@ -4,7 +4,7 @@
 
 
 namespace gbsnd{
-namespace devices{
+namespace stmts{
 
 
 
@@ -21,6 +21,9 @@ context
   int  switch_count;
 
 };
+
+
+using buffer_type = std::vector<stmt>;
 
 
 namespace types{
@@ -41,14 +44,14 @@ void
 build(const char*  label_base,
       const char*     break_label,
       const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
-      stmt_list&  ls) noexcept;
+      buffer_type&  buf) noexcept;
 
 
 void
 build_for(const char*  label_base,
       const char*     break_label,
       const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
-      stmt_list&  ls) noexcept
+      buffer_type&  buf) noexcept
 {
   gbstd::tmpstr  co_label_base("FOR%03d",ctx.for_count++);
   gbstd::tmpstr    begin_label("%s_BEGIN"   ,*co_label_base);
@@ -64,30 +67,30 @@ build_for(const char*  label_base,
 
     if(init_expr)
     {
-      ls.emplace_back(stmt_kind::evaluate_and_dump,expr(init_expr));
+      buf.emplace_back(stmt_kind::evaluate_and_dump,expr(init_expr));
     }
 
 
-  ls.emplace_back(stmt_kind::label,*begin_label);
+  buf.emplace_back(stmt_kind::label,*begin_label);
 
     if(cond_expr)
     {
-      ls.emplace_back(stmt_kind::evaluate_and_zero,expr(cond_expr));
-      ls.emplace_back(stmt_kind::jump_by_condition,*end_label);
+      buf.emplace_back(stmt_kind::evaluate_and_zero,expr(cond_expr));
+      buf.emplace_back(stmt_kind::jump_by_condition,*end_label);
     }
 
 
   script_token_cursor  blk_cur(cur[1].get_token_string());
 
-  build(*co_label_base,*end_label,*conti_label,swdat,ctx,blk_cur,ls);
+  build(*co_label_base,*end_label,*conti_label,swdat,ctx,blk_cur,buf);
 
 
-  ls.emplace_back(stmt_kind::label,*conti_label);
+  buf.emplace_back(stmt_kind::label,*conti_label);
 
-  ls.emplace_back(stmt_kind::evaluate_and_dump,expr(mod_expr));
+  buf.emplace_back(stmt_kind::evaluate_and_dump,expr(mod_expr));
 
-  ls.emplace_back(stmt_kind::jump ,*begin_label);
-  ls.emplace_back(stmt_kind::label,  *end_label);
+  buf.emplace_back(stmt_kind::jump ,*begin_label);
+  buf.emplace_back(stmt_kind::label,  *end_label);
 
   cur += 2;
 }
@@ -97,29 +100,29 @@ void
 build_while(const char*  label_base,
       const char*     break_label,
       const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
-      stmt_list&  ls) noexcept
+      buffer_type&  buf) noexcept
 {
   gbstd::tmpstr  co_label_base("WHILE%03d",ctx.while_count++);
   gbstd::tmpstr    begin_label("%s_BEGIN" ,*co_label_base);
   gbstd::tmpstr      end_label("%s_END"   ,*co_label_base);
 
 
-  ls.emplace_back(stmt_kind::label,*begin_label);
+  buf.emplace_back(stmt_kind::label,*begin_label);
 
 
   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-  ls.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
-  ls.emplace_back(stmt_kind::jump_by_condition,*end_label);
+  buf.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
+  buf.emplace_back(stmt_kind::jump_by_condition,*end_label);
 
 
   script_token_cursor  blk_cur(cur[1].get_token_string());
 
-  build(*co_label_base,*end_label,*begin_label,swdat,ctx,blk_cur,ls);
+  build(*co_label_base,*end_label,*begin_label,swdat,ctx,blk_cur,buf);
 
 
-  ls.emplace_back(stmt_kind::jump ,*begin_label);
-  ls.emplace_back(stmt_kind::label,  *end_label);
+  buf.emplace_back(stmt_kind::jump ,*begin_label);
+  buf.emplace_back(stmt_kind::label,  *end_label);
 
   cur += 2;
 }
@@ -129,7 +132,7 @@ void
 build_if(const char*  label_base,
       const char*     break_label,
       const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
-      stmt_list&  ls) noexcept
+      buffer_type&  buf) noexcept
 {
   int  block_number = 0;
 
@@ -140,21 +143,21 @@ build_if(const char*  label_base,
 
   script_token_cursor  expr_cur(cur[0].get_token_string());
 
-  ls.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
-  ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
+  buf.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
+  buf.emplace_back(stmt_kind::jump_by_condition,*next_label);
 
 
   script_token_cursor  blk_cur(cur[1].get_token_string());
 
-  build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
+  build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,buf);
 
 
-  ls.emplace_back(stmt_kind::jump , *end_label);
-  ls.emplace_back(stmt_kind::label,*next_label);
+  buf.emplace_back(stmt_kind::jump , *end_label);
+  buf.emplace_back(stmt_kind::label,*next_label);
 
   cur += 2;
 
-    while(cur[0].is_identifier({gbstd::string_view("else")}))
+    while(cur[0].is_identifier({gbstd::string_view("ebufe")}))
     {
       cur += 1;
 
@@ -162,7 +165,7 @@ build_if(const char*  label_base,
         {
           blk_cur = script_token_cursor(cur[0].get_token_string());
 
-          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
+          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,buf);
 
           cur += 1;
 
@@ -178,23 +181,23 @@ build_if(const char*  label_base,
 
           expr_cur = script_token_cursor(cur[1].get_token_string());
 
-          ls.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
-          ls.emplace_back(stmt_kind::jump_by_condition,*next_label);
+          buf.emplace_back(stmt_kind::evaluate_and_zero,make_expr(expr_cur));
+          buf.emplace_back(stmt_kind::jump_by_condition,*next_label);
 
 
           blk_cur = script_token_cursor(cur[2].get_token_string());
 
-          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,ls);
+          build(*co_label_base,break_label,continue_label,swdat,ctx,blk_cur,buf);
 
-          ls.emplace_back(stmt_kind::jump , *end_label);
-          ls.emplace_back(stmt_kind::label,*next_label);
+          buf.emplace_back(stmt_kind::jump , *end_label);
+          buf.emplace_back(stmt_kind::label,*next_label);
 
           cur += 3;
         }
     }
 
 
-  ls.emplace_back(stmt_kind::label,*end_label);
+  buf.emplace_back(stmt_kind::label,*end_label);
 }
 
 
@@ -202,7 +205,7 @@ void
 build_switch(const char*  label_base,
       const char*     break_label,
       const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
-      stmt_list&  ls) noexcept
+      buffer_type&  buf) noexcept
 {
   types::switch_data  new_swdat;
 
@@ -212,27 +215,27 @@ build_switch(const char*  label_base,
 
   new_swdat.label_base = *co_label_base;
 
-  ls.emplace_back(stmt_kind::label,*begin_label);
+  buf.emplace_back(stmt_kind::label,*begin_label);
 
 
   script_token_cursor  expr_cur(cur[0].get_token_string());
   script_token_cursor   blk_cur(cur[1].get_token_string());
 
 
-  stmt_list  tmp_ls;
+  buffer_type  tmp_buf;
 
-  build(*co_label_base,*end_label,*begin_label,new_swdat,ctx,blk_cur,tmp_ls);
+  build(*co_label_base,*end_label,*begin_label,new_swdat,ctx,blk_cur,tmp_buf);
 
 
-  ls.emplace_back(stmt_kind::evaluate_and_save,make_expr(expr_cur));
+  buf.emplace_back(stmt_kind::evaluate_and_save,make_expr(expr_cur));
 
     for(int  i = 0;  i < new_swdat.case_exprs.size();  ++i)
     {
       gbstd::tmpstr  dst_label("%s_CASE%03d",*co_label_base,i);
 
-      ls.emplace_back(stmt_kind::evaluate_and_equal,expr(new_swdat.case_exprs[i]));
+      buf.emplace_back(stmt_kind::evaluate_and_equal,expr(new_swdat.case_exprs[i]));
 
-      ls.emplace_back(stmt_kind::jump_by_condition,*dst_label);
+      buf.emplace_back(stmt_kind::jump_by_condition,*dst_label);
     }
 
 
@@ -240,19 +243,19 @@ build_switch(const char*  label_base,
     {
       gbstd::tmpstr  dst_label("%s_DEFAULT",*co_label_base);
 
-      ls.emplace_back(stmt_kind::jump,*dst_label);
+      buf.emplace_back(stmt_kind::jump,*dst_label);
     }
 
 
-  ls.emplace_back(stmt_kind::jump,*end_label);
+  buf.emplace_back(stmt_kind::jump,*end_label);
 
-    for(auto&&  stmt: tmp_ls)
+    for(auto&&  stmt: tmp_buf)
     {
-      ls.emplace_back(std::move(stmt));
+      buf.emplace_back(std::move(stmt));
     }
 
 
-  ls.emplace_back(stmt_kind::label,*end_label);
+  buf.emplace_back(stmt_kind::label,*end_label);
 
   cur += 2;
 }
@@ -262,7 +265,7 @@ void
 build(const char*  label_base,
       const char*     break_label,
       const char*  continue_label, types::switch_data&  swdat, context&  ctx, script_token_cursor&  cur,
-      stmt_list&  ls) noexcept
+      buffer_type&  buf) noexcept
 {
     while(cur)
     {
@@ -276,7 +279,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::return_,make_expr(cur));
+              buf.emplace_back(stmt_kind::return_,make_expr(cur));
             }
 
           else
@@ -284,7 +287,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::sleep,make_expr(cur));
+              buf.emplace_back(stmt_kind::sleep,make_expr(cur));
             }
 
           else
@@ -292,7 +295,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::print,make_expr(cur));
+              buf.emplace_back(stmt_kind::print,make_expr(cur));
             }
 
           else
@@ -303,7 +306,7 @@ build(const char*  label_base,
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  build_while(label_base,break_label,continue_label,swdat,ctx,cur,ls);
+                  build_while(label_base,break_label,continue_label,swdat,ctx,cur,buf);
                 }
 
               else
@@ -320,7 +323,7 @@ build(const char*  label_base,
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  build_if(label_base,break_label,continue_label,swdat,ctx,cur,ls);
+                  build_if(label_base,break_label,continue_label,swdat,ctx,cur,buf);
                 }
 
               else
@@ -337,7 +340,7 @@ build(const char*  label_base,
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  build_for(label_base,break_label,continue_label,swdat,ctx,cur,ls);
+                  build_for(label_base,break_label,continue_label,swdat,ctx,cur,buf);
                 }
 
               else
@@ -354,7 +357,7 @@ build(const char*  label_base,
                 if(cur[0].is_token_string('(',')') &&
                    cur[1].is_token_string('{','}'))
                 {
-                  build_switch(label_base,break_label,continue_label,swdat,ctx,cur,ls);
+                  build_switch(label_base,break_label,continue_label,swdat,ctx,cur,buf);
                 }
 
               else
@@ -378,7 +381,7 @@ build(const char*  label_base,
                   swdat.case_exprs.emplace_back(make_expr(expr_cur));
 
 
-                  ls.emplace_back(stmt_kind::label,*label);
+                  buf.emplace_back(stmt_kind::label,*label);
 
 
                   ++cur;
@@ -401,7 +404,7 @@ build(const char*  label_base,
 
                   gbstd::tmpstr  label("%s_DEFAULT",swdat.label_base);
 
-                  ls.emplace_back(stmt_kind::label,*label);
+                  buf.emplace_back(stmt_kind::label,*label);
                 }
 
               else
@@ -423,7 +426,7 @@ build(const char*  label_base,
                 }
 
 
-              ls.emplace_back(stmt_kind::jump,cur->get_identifier().view());
+              buf.emplace_back(stmt_kind::jump,cur->get_identifier().view());
 
               ++cur;
             }
@@ -441,7 +444,7 @@ build(const char*  label_base,
                 }
 
 
-              ls.emplace_back(stmt_kind::label,cur->get_identifier().view());
+              buf.emplace_back(stmt_kind::label,cur->get_identifier().view());
 
               ++cur;
             }
@@ -459,7 +462,7 @@ build(const char*  label_base,
                 }
 
 
-              ls.emplace_back(stmt_kind::jump,cur->get_identifier().view());
+              buf.emplace_back(stmt_kind::jump,cur->get_identifier().view());
 
               ++cur;
             }
@@ -469,7 +472,7 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::jump,break_label);
+              buf.emplace_back(stmt_kind::jump,break_label);
             }
 
           else
@@ -477,12 +480,12 @@ build(const char*  label_base,
             {
               ++cur;
 
-              ls.emplace_back(stmt_kind::jump,continue_label);
+              buf.emplace_back(stmt_kind::jump,continue_label);
             }
 
           else
             {
-              ls.emplace_back(stmt_kind::evaluate_and_dump,make_expr(cur));
+              buf.emplace_back(stmt_kind::evaluate_and_dump,make_expr(cur));
             }
         }
 
@@ -503,10 +506,10 @@ build(const char*  label_base,
 }
 
 
-stmt_list*
-build_stmt_list(const script_token_string&  toks) noexcept
+stmt_list::
+stmt_list(const script_token_string&  toks) noexcept
 {
-  auto  ls = new stmt_list;
+  buffer_type  buf;
 
   script_token_cursor  cur(toks);
 
@@ -514,9 +517,10 @@ build_stmt_list(const script_token_string&  toks) noexcept
 
   types::switch_data  swdat;
 
-  build("","","",swdat,ctx,cur,*ls);
+  build("","","",swdat,ctx,cur,buf);
 
-  return ls;
+
+  assign(buf.data(),buf.size());
 }
 
 

@@ -4,20 +4,34 @@
 
 #include<cstdint>
 #include<cstdio>
+#include<memory>
 #include"libgbstd/string.hpp"
 #include"libgbsnd/shared_string.hpp"
+#include"libgbsnd/device.hpp"
+#include"libgbsnd/list.hpp"
 
 
 namespace gbsnd{
-namespace devices{
+
+
+class execution_context;
+
+
+namespace stmts{
+class stmt;
+class stmt_list;
+class routine;
+}
+
+
+namespace objects{
+
+
 
 
 class object;
 class routine;
 class value;
-class square_wave;
-class noise;
-class execution_context;
 
 
 class
@@ -79,7 +93,7 @@ value
   union data{
     int              i;
     reference        r;
-    const routine*  rt;
+    const stmts::routine*  rt;
     property        pr;
     square_wave*    sq;
     noise*          no;
@@ -94,7 +108,7 @@ public:
   value(bool  b) noexcept{*this = b;}
   value(int  i) noexcept{*this = i;}
   value(reference  r) noexcept{*this = r;}
-  value(const routine&  rt) noexcept{*this = rt;}
+  value(const stmts::routine&  rt) noexcept{*this = rt;}
   value(const property&  pr) noexcept{*this = pr;}
   value(square_wave&  sq) noexcept{*this = sq;}
   value(noise&  no) noexcept{*this = no;}
@@ -106,7 +120,7 @@ public:
   value&  operator=(bool  b) noexcept;
   value&  operator=(int  i) noexcept;
   value&  operator=(reference  r) noexcept;
-  value&  operator=(const routine&  rt) noexcept;
+  value&  operator=(const stmts::routine&  rt) noexcept;
   value&  operator=(const property&  pr) noexcept;
   value&  operator=(square_wave&  sq) noexcept;
   value&  operator=(noise&  no) noexcept;
@@ -128,14 +142,12 @@ public:
 
   int                get_integer()     const noexcept{return m_data.i;}
   reference          get_reference()   const noexcept{return m_data.r;}
-  const routine&     get_routine()     const noexcept{return *m_data.rt;}
+  const stmts::routine&  get_routine()     const noexcept;
   const property&    get_property()    const noexcept{return m_data.pr;}
   square_wave&       get_square_wave() const noexcept{return *m_data.sq;}
   noise&             get_noise()       const noexcept{return *m_data.no;}
 
   int  get_integer_safely() const noexcept;
-
-//  value  to_rhs() const noexcept;
 
   void  print() const noexcept;
 
@@ -169,10 +181,10 @@ public:
 }
 
 
-using devices::reference;
-using devices::value;
-using devices::object;
-using devices::property;
+using objects::reference;
+using objects::value;
+using objects::object;
+using objects::property;
 
 
 }

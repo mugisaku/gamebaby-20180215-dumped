@@ -4,7 +4,6 @@
 
 
 namespace gbsnd{
-namespace devices{
 
 
 struct
@@ -135,7 +134,7 @@ view() const noexcept
 
 
 
-}}
+}
 
 
 

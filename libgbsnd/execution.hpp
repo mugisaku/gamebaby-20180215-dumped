@@ -4,13 +4,13 @@
 
 #include"libgbstd/string.hpp"
 #include"libgbsnd/script.hpp"
+#include"libgbsnd/expr.hpp"
 #include<list>
 #include<cstdint>
 #include<vector>
 
 
 namespace gbsnd{
-namespace devices{
 
 
 class stmt;
@@ -31,12 +31,11 @@ execution_context
 {
   script  m_script;
 
-  size_t  m_max_number_of_frames=0;
-  size_t      m_number_of_frames=0;
+  size_t  m_number_of_frames=0;
 
   struct frame;
 
-  frame*  m_frame_stack=nullptr;
+  frame*  m_top_frame=nullptr;
 
   value  m_returned_value;
 
@@ -62,12 +61,10 @@ public:
 
   void  reset(const script&  scr) noexcept;
 
-  bool  test_capacity() const noexcept{return m_number_of_frames < m_max_number_of_frames;}
-
   void  call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list) noexcept;
+  void  call(gbstd::string_view  routine_name, const routine&  routine, const expr_list&  argument_list) noexcept;
 
-  size_t  get_max_number_of_frames() const noexcept{return m_max_number_of_frames;}
-  size_t      get_number_of_frames() const noexcept{return     m_number_of_frames;}
+  size_t  get_number_of_frames() const noexcept{return m_number_of_frames;}
 
   void  resize(size_t  n) noexcept;
 
@@ -83,13 +80,6 @@ public:
   void  run(millisecond  ms) noexcept;
 
 };
-
-
-}
-
-
-using devices::execution_context;
-using devices::millisecond;
 
 
 }

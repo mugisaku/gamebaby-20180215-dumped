@@ -3,20 +3,30 @@
 
 
 #include"libgbsnd/object.hpp"
-#include"libgbsnd/script.hpp"
 #include"libgbstd/utility.hpp"
+#include"libgbsnd/short_string.hpp"
+#include"libgbsnd/list.hpp"
 #include<memory>
 
 
 namespace gbsnd{
-namespace devices{
+
+
+class execution_context;
+
+
+namespace scripts{
+class script_token_string;
+class script_token_cursor;
+}
+
+namespace exprs{
 
 
 class operand;
-class execution_context;
 class expr_element;
 class expr;
-class data_stack;
+class operand_stack;
 
 
 
@@ -71,18 +81,18 @@ public:
   bool  is_binary() const noexcept;
   bool  is_conditional() const noexcept;
 
-  value  evaluate(const execution_context*  ctx) const noexcept;
+  value  evaluate(execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
 
 };
 
 
-void  operate_prefix_unary( operand&  o, operator_word  opw, const execution_context*  ctx) noexcept;
-void  operate_postfix_unary(operand&  o, operator_word  opw, const execution_context*  ctx) noexcept;
-void  operate_binary(       operand&  lo, operand&  ro, operator_word  opw, const execution_context*  ctx) noexcept;
-void  operate_conditional(operand&  o1, operand&  o2, operand&  o3, const execution_context*  ctx) noexcept;
-void  operate_stack(data_stack&  stack, const expr_element&  e, const execution_context*  ctx) noexcept;
+void  operate_prefix_unary( operand&  o, operator_word  opw, execution_context*  ctx) noexcept;
+void  operate_postfix_unary(operand&  o, operator_word  opw, execution_context*  ctx) noexcept;
+void  operate_binary(       operand&  lo, operand&  ro, operator_word  opw, execution_context*  ctx) noexcept;
+void  operate_conditional(operand&  o1, operand&  o2, operand&  o3, execution_context*  ctx) noexcept;
+void  operate_stack(operand_stack&  stack, const expr_element&  e, execution_context*  ctx) noexcept;
 
 
 class
@@ -111,7 +121,7 @@ public:
 
   size_t  size() const noexcept;
 
-  value  evaluate(const execution_context*  ctx) const noexcept;
+  value  evaluate(execution_context*  ctx) const noexcept;
 
   expr_element*  begin() const noexcept;
   expr_element*    end() const noexcept;
@@ -121,12 +131,17 @@ public:
 };
 
 
-using expr_list = std::vector<expr>;
+class
+expr_list: public list<expr>
+{
+public:
+  using list::list;
+};
 
 
 expr       make_expr(gbstd::string_view  sv) noexcept;
-expr       make_expr(     script_token_cursor&  cur) noexcept;
-expr_list  make_expr_list(script_token_cursor&  cur) noexcept;
+expr       make_expr(     scripts::script_token_cursor&  cur) noexcept;
+expr_list  make_expr_list(scripts::script_token_cursor&  cur) noexcept;
 
 
 class
@@ -230,7 +245,7 @@ public:
   const operation&    get_operation()         const noexcept{return m_data.op;}
   const value&        get_value()             const noexcept{return m_data.v;}
 
-  value  evaluate(const execution_context*  ctx) const noexcept;
+  value  evaluate(execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
 
@@ -238,7 +253,7 @@ public:
 
 
 class
-data_stack
+operand_stack
 {
   static constexpr size_t  max_length = 32;
 
@@ -311,12 +326,43 @@ public:
 };
 
 
+class
+expr_queue
+{
+//  std::vector<expr>  m_expr_list;
+
+  const expr_element*  m_current=nullptr;
+  const expr_element*  m_end=nullptr;
+
+  size_t  m_index=0;
+
+public:
+  operator bool() const noexcept{return m_current;}
+
+  void  push(const expr&  e) noexcept;
+  const expr_element&  pop() noexcept;
+
+};
+
+
 }
 
 
-using devices::expr_element;
-using devices::expr;
-using devices::operation;
+using exprs::expr_element;
+using exprs::expr;
+using exprs::expr_list;
+using exprs::paired_expr;
+using exprs::operation;
+using exprs::operand;
+using exprs::expr_queue;
+using exprs::operand_stack;
+using exprs::make_expr;
+using exprs::make_expr_list;
+using exprs::operate_prefix_unary;
+using exprs::operate_postfix_unary;
+using exprs::operate_binary;
+using exprs::operate_conditional;
+using exprs::operate_stack;
 
 
 }

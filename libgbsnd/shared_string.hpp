@@ -6,7 +6,6 @@
 
 
 namespace gbsnd{
-namespace devices{
 
 
 class
@@ -40,12 +39,6 @@ public:
 
 
 using identifier = shared_string;
-
-
-}
-
-
-using devices::shared_string;
 
 
 }

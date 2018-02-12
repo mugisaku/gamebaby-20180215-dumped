@@ -78,8 +78,8 @@ ret()
 routine
 main()
 {
-//  print x = (1,2,3,4,5,6);
-  print x = 0? 10:20;
+  print x = (1,2,3,4,5,6);
+//  print x = 0? 10:20;
 
   sq.frequency=0;
   sq.volume=32;

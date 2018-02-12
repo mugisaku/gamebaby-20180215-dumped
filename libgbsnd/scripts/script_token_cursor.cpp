@@ -2,7 +2,7 @@
 
 
 namespace gbsnd{
-namespace devices{
+namespace scripts{
 
 
 const script_token

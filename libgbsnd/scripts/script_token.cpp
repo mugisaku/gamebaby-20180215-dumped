@@ -3,7 +3,7 @@
 
 
 namespace gbsnd{
-namespace devices{
+namespace scripts{
 
 
 
