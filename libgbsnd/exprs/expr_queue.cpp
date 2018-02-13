@@ -5,13 +5,23 @@ namespace gbsnd{
 namespace exprs{
 
 
+struct
+expr_queue::
+node
+{
+  exprs::expr  expr;;
+
+  node*  next;
+
+};
 
 
 void
 expr_queue::
 push(const expr&  e) noexcept
 {
-//  m_expr_list.emplace_back(e);
+    if()
+  m_expr_list.emplace_back(e);
 
     if(!m_current)
     {

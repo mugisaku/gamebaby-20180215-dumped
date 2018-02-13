@@ -85,6 +85,7 @@ operator=(const script_token&  rhs) noexcept
       clear();
 
       m_kind = rhs.m_kind;
+      m_stream_context = rhs.m_stream_context;
 
         switch(m_kind)
         {
@@ -117,6 +118,7 @@ operator=(script_token&&  rhs) noexcept
       clear();
 
       std::swap(m_kind,rhs.m_kind);
+      std::swap(m_stream_context,rhs.m_stream_context);
 
         switch(m_kind)
         {

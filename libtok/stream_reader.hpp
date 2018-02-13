@@ -17,13 +17,15 @@ class
 stream_context
 {
 protected:
-  const char*  m_line_start;
-  const char*  m_pointer;
-  const char*  m_end;
+  const char*  m_line_start=nullptr;
+  const char*  m_pointer=nullptr;
+  const char*  m_end=nullptr;
 
   size_t  m_line_number=1;
 
 public:
+  stream_context() noexcept{}
+
   stream_context(gbstd::string_view  sv) noexcept:
   m_line_start(sv.data()),
   m_pointer(sv.data()),
@@ -34,20 +36,7 @@ public:
 
   size_t  get_line_number() const noexcept{return m_line_number;}
 
-  void  print() const noexcept
-  {
-    printf("[tok stream %4d行]\n",m_line_number);
-
-    auto  p = m_line_start;
-
-      while(p < m_pointer)
-      {
-        printf("%c",*p++);
-      }
-
-
-    printf("[_]\n");
-  }
+  void  print() const noexcept;
 
 };
 

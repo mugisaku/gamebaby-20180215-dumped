@@ -157,7 +157,7 @@ build_if(const char*  label_base,
 
   cur += 2;
 
-    while(cur[0].is_identifier({gbstd::string_view("ebufe")}))
+    while(cur[0].is_identifier({gbstd::string_view("else")}))
     {
       cur += 1;
 

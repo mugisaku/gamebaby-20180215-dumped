@@ -6,7 +6,6 @@
 #include"libgbstd/utility.hpp"
 #include"libgbsnd/short_string.hpp"
 #include"libgbsnd/list.hpp"
-#include<memory>
 
 
 namespace gbsnd{
@@ -326,25 +325,6 @@ public:
 };
 
 
-class
-expr_queue
-{
-//  std::vector<expr>  m_expr_list;
-
-  const expr_element*  m_current=nullptr;
-  const expr_element*  m_end=nullptr;
-
-  size_t  m_index=0;
-
-public:
-  operator bool() const noexcept{return m_current;}
-
-  void  push(const expr&  e) noexcept;
-  const expr_element&  pop() noexcept;
-
-};
-
-
 }
 
 
@@ -354,7 +334,6 @@ using exprs::expr_list;
 using exprs::paired_expr;
 using exprs::operation;
 using exprs::operand;
-using exprs::expr_queue;
 using exprs::operand_stack;
 using exprs::make_expr;
 using exprs::make_expr_list;

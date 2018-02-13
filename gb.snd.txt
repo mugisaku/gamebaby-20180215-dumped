@@ -78,10 +78,10 @@ ret()
 routine
 main()
 {
-  print x = (1,2,3,4,5,6);
+//  print x = (1,2,3,4,5,6);
 //  print x = 0? 10:20;
 
-  sq.frequency=0;
+  sq.frequency=32;
   sq.volume=32;
   sq.keyon_flag=1;
 
@@ -110,9 +110,9 @@ main()
             }
 
           else
-          {
-            b = 0;
-          }
+            {
+              b = 0;
+            }
         }
 
 

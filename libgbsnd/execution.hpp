@@ -50,6 +50,8 @@ execution_context
   } m_state=state::not_ready;
 
 
+  void  finish_stmt(millisecond  ms) noexcept;
+
   void  return_(value  v) noexcept;
 
 public:

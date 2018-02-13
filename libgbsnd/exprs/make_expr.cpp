@@ -378,6 +378,8 @@ read(script_token_cursor&  cur, maker&  mk) noexcept
             {
               printf("不明な字句列\n");
 
+              toks.print(stdout,0);
+
               return result::got_error;
             }
 
@@ -422,6 +424,8 @@ make_expr(script_token_cursor&  cur) noexcept
 
     for(;;)
     {
+      auto  ctx = cur->get_stream_context();
+
         switch(read(cur,mk))
         {
       case(result::got_end):
@@ -430,6 +434,8 @@ make_expr(script_token_cursor&  cur) noexcept
           break;
       case(result::got_colon):
           printf("処理できない\':\'\n");
+
+          ctx.print();
           goto QUIT;
           break;
       case(result::got_comma):
@@ -438,7 +444,9 @@ make_expr(script_token_cursor&  cur) noexcept
           ++cur;
           break;
       case(result::got_error):
-          printf("make_expr_list error\n");
+          printf("make_expr error\n");
+
+          ctx.print();
           goto QUIT;
           break;
         }
@@ -459,6 +467,8 @@ make_expr_list(script_token_cursor&  cur) noexcept
     {
       maker  mk;
 
+      auto  ctx = cur->get_stream_context();
+
         switch(read(cur,mk))
         {
       case(result::got_end):
@@ -467,10 +477,14 @@ make_expr_list(script_token_cursor&  cur) noexcept
           break;
       case(result::got_colon):
           printf("処理できない\':\'\n");
+
+          ctx.print();
           goto QUIT;
           break;
       case(result::got_semicolon):
           printf("処理できない\';\'\n");
+
+          ctx.print();
           goto QUIT;
           break;
       case(result::got_comma):
@@ -479,6 +493,8 @@ make_expr_list(script_token_cursor&  cur) noexcept
           break;
       case(result::got_error):
           printf("make_expr_list error\n");
+
+          ctx.print();
           goto QUIT;
           break;
         }

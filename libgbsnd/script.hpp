@@ -87,6 +87,9 @@ script_token
    ~data(){}
   } m_data;
 
+
+  tok::stream_context  m_stream_context;
+
 public:
   script_token() noexcept{}
   script_token(uint64_t  i) noexcept{*this = i;}
@@ -107,6 +110,9 @@ public:
   script_token&  operator=(      script_token&&  rhs) noexcept;
 
   void  clear() noexcept;
+
+  void  set_stream_context(const tok::stream_context&  sctx) noexcept{m_stream_context = sctx;}
+  const tok::stream_context&  get_stream_context() const noexcept{return m_stream_context;}
 
   bool  is_integer_literal()  const noexcept{return m_kind == kind::integer_literal;}
   bool  is_identifier()       const noexcept{return m_kind == kind::identifier;}

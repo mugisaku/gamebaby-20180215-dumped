@@ -26,7 +26,8 @@ frame
 
   exprs::operand_stack  operand_stack;
 
-  exprs::expr_queue  expr_queue;
+  const expr_element*  eval_it;
+  const expr_element*  eval_it_end;
 
   void  jump(gbstd::string_view  label) noexcept
   {
@@ -121,6 +122,8 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
     if(!m_top_frame)
     {
       m_top_frame = new frame;
+
+      m_top_frame->previous = nullptr;
     }
 
   else
@@ -139,14 +142,13 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
 
   frm.routine_name = routine_name;
 
+  frm.eval_it = nullptr;
 
   auto&  ls = r->get_stmt_list();
 
   frm.begin   = ls.begin();
   frm.current = ls.begin();
   frm.end     = ls.end();
-
-  frm.object_list.clear();
 
   auto  arg_it = argument_list.crbegin();
 
@@ -264,13 +266,107 @@ get_value(gbstd::string_view  name) const noexcept
 
 void
 execution_context::
+finish_stmt(millisecond  ms) noexcept
+{
+  auto&  frame = *m_top_frame;
+
+  auto&  stack = frame.operand_stack;
+
+  auto&  stmt = *frame.current++;
+
+    if(stmt.is_return())
+    {
+      return_(stack.size()? stack.top().evaluate(this):value());
+    }
+
+  else
+    if(stmt.is_sleep())
+    {
+      m_rising_time = ms.value+(stack.size()? stack.top().evaluate(this).get_integer():0);
+
+      m_state = state::sleeping;
+    }
+
+  else
+    if(stmt.is_exit())
+    {
+      m_returned_value = stack.size()? stack.top().evaluate(this):value();
+
+      m_state = state::exited;
+    }
+
+  else
+    if(stmt.is_print())
+    {
+        if(stack.size())
+        {
+          printf("PRINT: ");
+
+          stack.top().evaluate(this).print();
+
+          printf("\n");
+        }
+    }
+
+  else
+    if(stack.size())
+    {
+      auto  i = stack.top().evaluate(this).get_integer_safely();
+
+        if(stmt.is_evaluate_and_dump())
+        {
+        }
+
+      else
+        if(stmt.is_evaluate_and_save())
+        {
+          frame.saved_value = i;
+        }
+
+      else
+        if(stmt.is_evaluate_and_zero())
+        {
+          frame.condition = !i;
+        }
+
+      else
+        if(stmt.is_evaluate_and_not_zero())
+        {
+          frame.condition = i;
+        }
+
+      else
+        if(stmt.is_evaluate_and_equal())
+        {
+          frame.condition = (frame.saved_value == i);
+        }
+
+      else
+        if(stmt.is_evaluate_and_not_equal())
+        {
+          frame.condition = (frame.saved_value != i);
+        }
+    }
+}
+
+
+void
+execution_context::
 return_(value  v) noexcept
 {
-    if(--m_number_of_frames)
+    if(m_top_frame)
     {
-//      auto&  frame = m_frame_stack[m_number_of_frames-1];
+      auto  previous = m_top_frame->previous;
 
-//      m_frame.data_stack.push(std::move(v));
+      delete m_top_frame           ;
+             m_top_frame = previous;
+
+      --m_number_of_frames;
+
+        if(m_top_frame)
+        {
+          m_top_frame->operand_stack.push(std::move(v));
+        }
     }
 }
 
@@ -307,93 +403,22 @@ run(millisecond  ms) noexcept
 
       auto&  frame = *m_top_frame;
 
-        if(frame.expr_queue)
+        if(frame.eval_it)
         {
-          operate_stack(frame.operand_stack,frame.expr_queue.pop(),this);
-        }
-
-
-        if(frame.expr_queue)
-        {
-          auto&  stack = frame.operand_stack;
-
-          auto&  stmt = *frame.current++;
-
-            if(stmt.is_return())
+            if(frame.eval_it != frame.eval_it_end)
             {
-              return_(stack.size()? stack.top().evaluate(this):value());
+              operate_stack(frame.operand_stack,*frame.eval_it++,this);
             }
 
           else
-            if(stmt.is_sleep())
             {
-              m_rising_time = ms.value+(stack.size()? stack.top().evaluate(this).get_integer():0);
+              finish_stmt(ms);
 
-              m_state = state::sleeping;
+              frame.eval_it = nullptr;
 
-              return;
-            }
-
-          else
-            if(stmt.is_exit())
-            {
-              m_returned_value = stack.size()? stack.top().evaluate(this):value();
-
-              m_state = state::exited;
-
-              return;
-            }
-
-          else
-            if(stmt.is_print())
-            {
-                if(stack.size())
+                if(is_exited() || is_sleeping())
                 {
-                  printf("PRINT: ");
-
-                  stack.top().evaluate(this).print();
-
-                  printf("\n");
-                }
-            }
-
-          else
-            if(stack.size())
-            {
-              auto  i = stack.top().evaluate(this).get_integer_safely();
-
-                if(stmt.is_evaluate_and_dump())
-                {
-                }
-
-              else
-                if(stmt.is_evaluate_and_save())
-                {
-                  frame.saved_value = i;
-                }
-
-              else
-                if(stmt.is_evaluate_and_zero())
-                {
-                  frame.condition = !i;
-                }
-
-              else
-                if(stmt.is_evaluate_and_not_zero())
-                {
-                  frame.condition = i;
-                }
-
-              else
-                if(stmt.is_evaluate_and_equal())
-                {
-                  frame.condition = (frame.saved_value == i);
-                }
-
-              else
-                if(stmt.is_evaluate_and_not_equal())
-                {
-                  frame.condition = (frame.saved_value != i);
+                  return;
                 }
             }
         }
@@ -414,7 +439,10 @@ run(millisecond  ms) noexcept
                stmt.is_evaluate_and_equal()    ||
                stmt.is_evaluate_and_not_equal())
             {
-              frame.expr_queue.push(stmt.get_expr());
+              auto&  e = stmt.get_expr();
+
+              frame.eval_it     = e.begin();
+              frame.eval_it_end = e.end();
 
               frame.operand_stack.reset();
             }

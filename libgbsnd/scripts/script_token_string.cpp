@@ -52,6 +52,8 @@ m_close(close)
 
       auto  c = r.get_char();
 
+      const auto  sctx = r.get_context();
+
         if(c == close)
         {
           r.advance();
@@ -158,6 +160,9 @@ m_close(close)
 
           break;
         }
+
+
+      buffer.back().set_stream_context(sctx);
     }
 
 

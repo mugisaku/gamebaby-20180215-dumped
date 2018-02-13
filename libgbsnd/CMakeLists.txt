@@ -5,7 +5,6 @@ set(SOURCES
   devices/device__square_wave.cpp
   devices/device__noise.cpp
   exprs/expr_element.cpp
-  exprs/expr_queue.cpp
   exprs/expr.cpp
   exprs/make_expr.cpp
   exprs/operate.cpp
