@@ -3,6 +3,7 @@
 
 
 #include<cstddef>
+#include<initializer_list>
 #include"libgbstd/utility.hpp"
 
 
@@ -19,6 +20,7 @@ list
 
 public:
   list() noexcept{}
+  list(std::initializer_list<T>  ls) noexcept{assign(ls.data(),ls.size());}
   list(const T*  src, size_t  n) noexcept{assign(src,n);}
   list(const list&   rhs) noexcept{*this = rhs;}
   list(      list&&  rhs) noexcept{*this = std::move(rhs);}

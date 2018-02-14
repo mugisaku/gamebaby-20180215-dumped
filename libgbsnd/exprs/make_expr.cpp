@@ -105,6 +105,7 @@ maker
     m_operator_stack.pop_back();
   }
 
+
 public:
   void  clear() noexcept
   {
@@ -166,7 +167,9 @@ public:
       }
 
 
-    return expr(m_element_stack.data(),m_element_stack.size());
+    expr  e(m_element_stack.data(),m_element_stack.size());
+
+    return std::move(e);
   }
 
 };
@@ -344,12 +347,17 @@ read(script_token_cursor&  cur, maker&  mk) noexcept
                 {
                   mk.push(oe(binop{operator_word("()")},1));
 
-                  mk.push(operand(make_expr_list(cocur)));
+
+                  auto  els = make_expr_list(cocur);
+
+                  mk.push(operand(std::move(els)));
                 }
 
               else
                 {
-                  mk.push(operand(make_expr(cocur)));
+                  auto  e = make_expr(cocur);
+
+                  mk.push(operand(std::move(e)));
                 }
             }
 
@@ -463,16 +471,23 @@ make_expr_list(script_token_cursor&  cur) noexcept
 {
   std::vector<expr>  buf;
 
+  maker  mk;
+
+  expr  e;
+
     for(;;)
     {
-      maker  mk;
-
       auto  ctx = cur->get_stream_context();
 
         switch(read(cur,mk))
         {
       case(result::got_end):
-          buf.emplace_back(mk.output());
+          e = mk.output();
+
+            if(e)
+            {
+              buf.emplace_back(std::move(e));
+            }
           goto QUIT;
           break;
       case(result::got_colon):
@@ -488,7 +503,16 @@ make_expr_list(script_token_cursor&  cur) noexcept
           goto QUIT;
           break;
       case(result::got_comma):
-          buf.emplace_back(mk.output());
+          e = mk.output();
+
+            if(e)
+            {
+              buf.emplace_back(std::move(e));
+
+              goto QUIT;
+            }
+
+
           mk.clear();
           break;
       case(result::got_error):
@@ -500,7 +524,10 @@ make_expr_list(script_token_cursor&  cur) noexcept
         }
     }
 
-
+for(auto&  e: buf)
+{
+e.print();
+}
 QUIT:
   return expr_list(buf.data(),buf.size());
 }

@@ -71,7 +71,7 @@ noise        no;
 routine
 ret()
 {
-  return 9;
+  print 9;
 }
 
 
@@ -82,7 +82,7 @@ main()
 //  print x = 0? 10:20;
 
   sq.frequency=32;
-  sq.volume=32;
+  sq.volume=8;
   sq.keyon_flag=1;
 
   b = 0;
@@ -91,6 +91,7 @@ main()
     {
         if(!b)
         {
+ret();
             if(sq.frequency < 800)
             {
               sq.frequency += 10;

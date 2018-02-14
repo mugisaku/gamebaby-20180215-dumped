@@ -7,10 +7,34 @@ namespace gbsnd{
 
 
 struct
+calling_preparation
+{
+  calling_preparation*  previous;
+
+  const stmts::routine*  routine;
+
+  exprs::operand_stack  operand_stack;
+
+  exprs::expr_list  expr_list;
+
+  const expr*  expr_it;
+  const expr*  expr_it_end;
+
+  const expr_element*  eval_it;
+  const expr_element*  eval_it_end;
+
+  value*  return_value;
+
+};
+
+
+struct
 execution_context::
 frame
 {
-  frame*  previous=nullptr;
+  frame*  previous;
+
+  calling_preparation*  calling;
 
   gbstd::string  routine_name;
 
@@ -28,6 +52,8 @@ frame
 
   const expr_element*  eval_it;
   const expr_element*  eval_it_end;
+
+  value*  return_value;
 
   void  jump(gbstd::string_view  label) noexcept
   {
@@ -77,6 +103,17 @@ clear() noexcept
     {
       auto  previous = current->previous;
 
+      auto  c = current->calling;
+
+        while(c)
+        {
+          auto  c_previous = c->previous;
+
+          delete c             ;
+                 c = c_previous;
+        }
+
+
       delete current           ;
              current = previous;
     }
@@ -92,24 +129,9 @@ clear() noexcept
 
 void
 execution_context::
-call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list) noexcept
+call(const stmts::routine&  routine, const value_list&  argument_list, value*  return_value) noexcept
 {
-  gbstd::string_copy  sc(routine_name);
-
-
-  auto  r = m_script.find_routine(routine_name);
-
-    if(!r)
-    {
-      printf("%sというルーチンが見つからない",sc.data());
-
-      m_state = state::not_ready;
-
-      return;
-    }
-
-
-    if(r->get_parameter_list().size() != argument_list.size())
+    if(routine.get_parameter_list().size() != argument_list.size())
     {
       printf("引数の数が一致しない\n");
 
@@ -137,22 +159,24 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
 
   ++m_number_of_frames;
 
+//  printf("number of frames %d\n,",m_number_of_frames);
+
 
   auto&  frm = *m_top_frame;
 
-  frm.routine_name = routine_name;
+  frm.calling      = nullptr;
+  frm.eval_it      = nullptr;
+  frm.return_value = return_value;
 
-  frm.eval_it = nullptr;
-
-  auto&  ls = r->get_stmt_list();
+  auto&  ls = routine.get_stmt_list();
 
   frm.begin   = ls.begin();
   frm.current = ls.begin();
   frm.end     = ls.end();
 
-  auto  arg_it = argument_list.crbegin();
+  auto  arg_it = argument_list.begin();
 
-    for(auto&  p: r->get_parameter_list())
+    for(auto&  p: routine.get_parameter_list())
     {
       frm.object_list.emplace_back(*arg_it++);
 
@@ -166,19 +190,9 @@ call(gbstd::string_view  routine_name, const std::vector<value>&  argument_list)
 
 void
 execution_context::
-call(gbstd::string_view  routine_name, const routine&  routine, const expr_list&  argument_list) noexcept
+call(gbstd::string_view  routine_name, const value_list&  argument_list, value*  return_value) noexcept
 {
-/*
   gbstd::string_copy  sc(routine_name);
-
-    if(!test_capacity())
-    {
-      printf("フレームスタックがいっぱいで、%sは実行できない",sc.data());
-
-      m_state = state::not_ready;
-
-      return;
-    }
 
 
   auto  r = m_script.find_routine(routine_name);
@@ -193,44 +207,54 @@ call(gbstd::string_view  routine_name, const routine&  routine, const expr_list&
     }
 
 
-    if(r->get_parameter_list().size() != argument_list.size())
+  call(*r,argument_list,return_value);
+}
+
+
+void
+execution_context::
+prepare_call(const routine&  routine, const expr_list&  argument_list, value*  return_value) noexcept
+{
+    if(m_top_frame)
     {
-      printf("引数の数が一致しない\n");
+      auto&  frm = *m_top_frame;
 
-      m_state = state::not_ready;
+        if(argument_list.size())
+        {
+            if(!frm.calling)
+            {
+              frm.calling = new calling_preparation;
 
-      return;
+              frm.calling->previous = nullptr;
+            }
+
+          else
+            {
+              auto  previous = frm.calling                          ;
+                               frm.calling = new calling_preparation;
+
+              frm.calling->previous = previous;
+            }
+
+
+          frm.calling->routine = &routine;
+
+          frm.calling->expr_list = argument_list;
+
+          frm.calling->expr_it     = frm.calling->expr_list.begin();
+          frm.calling->expr_it_end = frm.calling->expr_list.end();
+
+          frm.calling->expr_it     = nullptr;
+          frm.calling->expr_it_end = nullptr;
+
+          frm.calling->return_value = return_value;
+        }
+
+      else
+        {
+          call(routine,{},return_value);
+        }
     }
-
-
-  auto&  frm = m_frame_stack[m_number_of_frames++];
-
-  frm.routine_name = routine_name;
-
-
-  auto&  ls = r->get_stmt_list();
-
-  frm.begin   = ls->begin();
-  frm.current = ls->begin();
-  frm.end     = ls->end();
-
-  frm.object_list.clear();
-
-  frm.eval_it     = nullptr;
-  frm.eval_it_end = nullptr;
-
-  auto  arg_it = argument_list.crbegin();
-
-    for(auto&  p: r->get_parameter_list())
-    {
-      frm.object_list.emplace_back(*arg_it++);
-
-      frm.object_list.back().set_name(p);
-    }
-
-
-  m_state = state::ready;
-*/
 }
 
 
@@ -290,7 +314,11 @@ finish_stmt(millisecond  ms) noexcept
   else
     if(stmt.is_exit())
     {
-      m_returned_value = stack.size()? stack.top().evaluate(this):value();
+        if(frame.return_value)
+        {
+          *frame.return_value = stack.size()? stack.top().evaluate(this):value();
+        }
+
 
       m_state = state::exited;
     }
@@ -358,6 +386,12 @@ return_(value  v) noexcept
     {
       auto  previous = m_top_frame->previous;
 
+        if(m_top_frame->return_value)
+        {
+          *m_top_frame->return_value = std::move(v);
+        }
+
+
       delete m_top_frame           ;
              m_top_frame = previous;
 
@@ -403,6 +437,46 @@ run(millisecond  ms) noexcept
 
       auto&  frame = *m_top_frame;
 
+        if(frame.calling)
+        {
+          auto&  cal = *frame.calling;
+
+            if(cal.eval_it != cal.eval_it_end)
+            {
+              operate_stack(cal.operand_stack,*cal.eval_it++,this);
+            }
+
+          else
+            if(cal.expr_it != cal.expr_it_end)
+            {
+              auto&  e = *cal.expr_it++;
+
+              cal.eval_it     = e.begin();
+              cal.eval_it_end = e.end();
+            }
+
+          else
+            {
+              auto  previous = frame.calling;
+
+              std::vector<value>  buf;
+
+                for(auto&  o: frame.calling->operand_stack)
+                {
+                  buf.emplace_back(o.evaluate(this));
+                }
+
+
+              value_list  vals(buf.data(),buf.size());
+
+              call(*frame.calling->routine,vals,frame.calling->return_value);
+
+              delete frame.calling           ;
+                     frame.calling = previous;
+            }
+        }
+
+      else
         if(frame.eval_it)
         {
             if(frame.eval_it != frame.eval_it_end)

@@ -155,6 +155,15 @@ public:
 
 
 class
+value_list: public list<value>
+{
+public:
+  using list::list;
+
+};
+
+
+class
 object: public value
 {
   gbstd::string  m_name;
@@ -183,6 +192,7 @@ public:
 
 using objects::reference;
 using objects::value;
+using objects::value_list;
 using objects::object;
 using objects::property;
 

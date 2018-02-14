@@ -153,8 +153,10 @@ void
 expr::
 print() const noexcept
 {
-    if(!m_data->number_of_elements)
+    if(!*this)
     {
+//      printf("expr::print  無効なdata\n");
+
       return;
     }
 

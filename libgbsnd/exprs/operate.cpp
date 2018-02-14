@@ -151,15 +151,25 @@ operate_binary(operand&  lo, operand&  ro, operator_word  opw, execution_context
         }
 
 
+        if(lv.is_reference())
+        {
+          lv = lv.get_reference()();
+        }
+
+
         if(!lv.is_routine())
         {
           printf("左辺がroutineではない\n");
+
+          lv.print();
 
           return;
         }
 
 
-      ctx->call("",lv.get_routine(),ro.get_expression_list());
+      lo = operand(value());
+
+      ctx->prepare_call(lv.get_routine(),ro.get_expression_list(),lo.get_value_pointer());
 
       return;
     }

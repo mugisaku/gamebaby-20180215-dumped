@@ -244,6 +244,8 @@ public:
   const operation&    get_operation()         const noexcept{return m_data.op;}
   const value&        get_value()             const noexcept{return m_data.v;}
 
+  value*  get_value_pointer() noexcept{return &m_data.v;}
+
   value  evaluate(execution_context*  ctx) const noexcept;
 
   void  print() const noexcept;
