@@ -20,13 +20,13 @@ list
 
 public:
   list() noexcept{}
-  list(std::initializer_list<T>  ls) noexcept{assign(ls.data(),ls.size());}
+  list(std::initializer_list<T>  ls) noexcept{assign(ls.begin(),ls.size());}
   list(const T*  src, size_t  n) noexcept{assign(src,n);}
   list(const list&   rhs) noexcept{*this = rhs;}
   list(      list&&  rhs) noexcept{*this = std::move(rhs);}
  ~list(){clear();}
 
-  list&  operator=(const list&   rhs) noexcept
+  list&  operator=(const list&  rhs) noexcept
   {
       if(this != &rhs)
       {

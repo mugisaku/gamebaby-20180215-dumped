@@ -462,7 +462,9 @@ make_expr(script_token_cursor&  cur) noexcept
 
 
 QUIT:
-  return mk.output();
+  auto  e = mk.output();
+
+  return std::move(e);
 }
 
 
@@ -479,6 +481,8 @@ make_expr_list(script_token_cursor&  cur) noexcept
     {
       auto  ctx = cur->get_stream_context();
 
+      mk.clear();
+
         switch(read(cur,mk))
         {
       case(result::got_end):
@@ -488,32 +492,40 @@ make_expr_list(script_token_cursor&  cur) noexcept
             {
               buf.emplace_back(std::move(e));
             }
+
+
           goto QUIT;
           break;
       case(result::got_colon):
           printf("処理できない\':\'\n");
 
           ctx.print();
+
+          ++cur;
+
           goto QUIT;
           break;
       case(result::got_semicolon):
           printf("処理できない\';\'\n");
 
           ctx.print();
+
+          ++cur;
+
           goto QUIT;
           break;
       case(result::got_comma):
           e = mk.output();
 
-            if(e)
+            if(!e)
             {
-              buf.emplace_back(std::move(e));
-
               goto QUIT;
             }
 
 
-          mk.clear();
+          buf.emplace_back(std::move(e));
+
+          ++cur;
           break;
       case(result::got_error):
           printf("make_expr_list error\n");
@@ -524,12 +536,11 @@ make_expr_list(script_token_cursor&  cur) noexcept
         }
     }
 
-for(auto&  e: buf)
-{
-e.print();
-}
+
 QUIT:
-  return expr_list(buf.data(),buf.size());
+  expr_list  els(buf.data(),buf.size());
+
+  return std::move(els);
 }
 
 

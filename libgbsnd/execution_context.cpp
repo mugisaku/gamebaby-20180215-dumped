@@ -131,9 +131,11 @@ void
 execution_context::
 call(const stmts::routine&  routine, const value_list&  argument_list, value*  return_value) noexcept
 {
-    if(routine.get_parameter_list().size() != argument_list.size())
-    {
-      printf("引数の数が一致しない\n");
+  auto&  paras = routine.get_parameter_list();
+
+   if(paras.size() != argument_list.size())
+   {
+      printf("引数の数が一致しない paras(%d) != args(%d)\n",paras.size(),argument_list.size());
 
       m_state = state::not_ready;
 
@@ -176,11 +178,9 @@ call(const stmts::routine&  routine, const value_list&  argument_list, value*  r
 
   auto  arg_it = argument_list.begin();
 
-    for(auto&  p: routine.get_parameter_list())
+    for(auto&  p: paras)
     {
-      frm.object_list.emplace_back(*arg_it++);
-
-      frm.object_list.back().set_name(p);
+      frm.object_list.emplace_back(value(*arg_it++),p);
     }
 
 
@@ -215,45 +215,50 @@ void
 execution_context::
 prepare_call(const routine&  routine, const expr_list&  argument_list, value*  return_value) noexcept
 {
-    if(m_top_frame)
+    if(!m_top_frame)
     {
-      auto&  frm = *m_top_frame;
+      printf("prepare_call error: フレームがない\n");
 
-        if(argument_list.size())
+      return;
+    }
+
+
+  auto&  frm = *m_top_frame;
+
+    if(argument_list.size())
+    {
+        if(!frm.calling)
         {
-            if(!frm.calling)
-            {
-              frm.calling = new calling_preparation;
+          frm.calling = new calling_preparation;
 
-              frm.calling->previous = nullptr;
-            }
-
-          else
-            {
-              auto  previous = frm.calling                          ;
-                               frm.calling = new calling_preparation;
-
-              frm.calling->previous = previous;
-            }
-
-
-          frm.calling->routine = &routine;
-
-          frm.calling->expr_list = argument_list;
-
-          frm.calling->expr_it     = frm.calling->expr_list.begin();
-          frm.calling->expr_it_end = frm.calling->expr_list.end();
-
-          frm.calling->expr_it     = nullptr;
-          frm.calling->expr_it_end = nullptr;
-
-          frm.calling->return_value = return_value;
+          frm.calling->previous = nullptr;
         }
 
       else
         {
-          call(routine,{},return_value);
+          auto  previous = frm.calling                          ;
+                           frm.calling = new calling_preparation;
+
+          frm.calling->previous = previous;
         }
+
+
+      frm.calling->routine = &routine;
+
+      frm.calling->expr_list = argument_list;
+
+      frm.calling->expr_it     = frm.calling->expr_list.begin();
+      frm.calling->expr_it_end = frm.calling->expr_list.end();
+
+      frm.calling->eval_it     = nullptr;
+      frm.calling->eval_it_end = nullptr;
+
+      frm.calling->return_value = return_value;
+    }
+
+  else
+    {
+      call(routine,{},return_value);
     }
 }
 
@@ -396,11 +401,6 @@ return_(value  v) noexcept
              m_top_frame = previous;
 
       --m_number_of_frames;
-
-        if(m_top_frame)
-        {
-          m_top_frame->operand_stack.push(std::move(v));
-        }
     }
 }
 
@@ -457,7 +457,7 @@ run(millisecond  ms) noexcept
 
           else
             {
-              auto  previous = frame.calling;
+              auto  previous = frame.calling->previous;
 
               std::vector<value>  buf;
 

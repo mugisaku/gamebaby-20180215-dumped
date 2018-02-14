@@ -209,6 +209,12 @@ clear() noexcept
       break;
   case(kind::routine):
       break;
+  case(kind::property):
+      break;
+  case(kind::square_wave):
+      break;
+  case(kind::noise):
+      break;
     }
 
 

@@ -169,8 +169,6 @@ object: public value
   gbstd::string  m_name;
 
 public:
-  using value::value;
-
   object(value&&  v, gbstd::string_view  name) noexcept: value(std::move(v)), m_name(name){}
   object(            gbstd::string_view  name) noexcept:                      m_name(name){}
 

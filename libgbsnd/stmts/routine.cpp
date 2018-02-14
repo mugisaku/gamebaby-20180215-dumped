@@ -14,15 +14,29 @@ routine(const script_token_string&  parals_src, const script_token_string&  blk_
 {
   std::vector<gbstd::string>  buf;
 
-    for(auto&  tok: parals_src)
+  auto  it     = parals_src.begin();
+  auto  it_end = parals_src.end();
+
+    while(it != it_end)
     {
-         if(!tok.is_identifier())
+         if(it->is_identifier())
          {
-           break;
+           buf.emplace_back(it->get_identifier().view());
+
+           ++it;
+
+             if(it->is_operator_word())
+             {
+               ++it;
+             }
          }
 
+       else
+         {
+           printf("仮引数部分に不明な要素\n");
 
-      buf.emplace_back(tok.get_identifier().view());
+           break;
+         }
     }
 
 

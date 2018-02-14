@@ -378,7 +378,15 @@ build(const char*  label_base,
 
                   script_token_cursor  expr_cur(cur->get_token_string());
 
-                  swdat.case_exprs.emplace_back(make_expr(expr_cur));
+                  auto  e = make_expr(expr_cur);
+
+                    if(!e)
+                    {
+                      printf("caseの後に式がない\n");
+                    }
+
+
+                  swdat.case_exprs.emplace_back(std::move(e));
 
 
                   buf.emplace_back(stmt_kind::label,*label);
@@ -485,7 +493,12 @@ build(const char*  label_base,
 
           else
             {
-              buf.emplace_back(stmt_kind::evaluate_and_dump,make_expr(cur));
+              auto  e = make_expr(cur);
+
+                if(e)
+                {
+                  buf.emplace_back(stmt_kind::evaluate_and_dump,std::move(e));
+                }
             }
         }
 

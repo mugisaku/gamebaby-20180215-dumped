@@ -69,14 +69,15 @@ assign(const expr_element*  e, size_t  n) noexcept
 {
   unrefer();
 
+
   size_t  size = sizeof(data)+(sizeof(expr_element)*n);
 
-  auto  ptr = static_cast<data*>(malloc(size));
+  m_data = static_cast<data*>(malloc(size));
 
-  ptr->reference_count    = 1;
-  ptr->number_of_elements = n;
+  m_data->reference_count    = 1;
+  m_data->number_of_elements = n;
 
-  expr_element*  dst = ptr->elements;
+  expr_element*  dst = m_data->elements;
 
     while(n--)
     {
@@ -84,7 +85,7 @@ assign(const expr_element*  e, size_t  n) noexcept
     }
 
 
-  m_data = ptr;
+//printf("%p is allocated\n",m_data);
 }
 
 
@@ -96,6 +97,8 @@ unrefer() noexcept
     {
         if(!--m_data->reference_count)
         {
+//printf("%p is deleted\n",m_data);
+
             for(auto&  e: *this)
             {
               gbstd::destruct(e);
@@ -109,8 +112,8 @@ unrefer() noexcept
 }
 
 
-expr_element*  expr::begin() const noexcept{return &m_data->elements[0];}
-expr_element*    expr::end() const noexcept{return begin()+m_data->number_of_elements;}
+expr_element*  expr::begin() const noexcept{return m_data->elements;}
+expr_element*    expr::end() const noexcept{return m_data->elements+m_data->number_of_elements;}
 
 
 

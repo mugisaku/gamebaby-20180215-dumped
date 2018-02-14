@@ -198,6 +198,7 @@ main(int  argc, char**  argv)
     }
 
 
+
   script = gbsnd::script::build_from_file(f,file_path);
 
     if(asm_output)

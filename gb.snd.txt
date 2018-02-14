@@ -69,9 +69,9 @@ noise        no;
 
 
 routine
-ret()
+ret(x,y,z)
 {
-  print 9;
+  return x+y*z;
 }
 
 
@@ -91,7 +91,7 @@ main()
     {
         if(!b)
         {
-ret();
+print ret(1,2,3);
             if(sq.frequency < 800)
             {
               sq.frequency += 10;
